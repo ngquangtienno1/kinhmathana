@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('title', 125);
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('upload_files')->onDelete('set null');
-            $table->string('link', 255)->nullable();
+            $table->string('image')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->timestamps();
         });
     }
 

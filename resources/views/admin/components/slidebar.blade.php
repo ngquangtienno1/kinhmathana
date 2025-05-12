@@ -75,11 +75,12 @@
                             </ul>
                         </div>
                     </div>
+
                 </li>
 
-                <!-- Order Management -->
+                <!-- Quản lý Slider -->
                 <li class="nav-item">
-                    <p class="navbar-vertical-label">Order Management</p>
+                    <p class="navbar-vertical-label">Quản lý Slider</p>
                     <hr class="navbar-vertical-line" />
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-orders" role="button"
@@ -89,15 +90,15 @@
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                 </div>
                                 <span class="nav-link-icon"><span data-feather="shopping-cart"></span></span>
-                                <span class="nav-link-text">Orders</span>
+                                <span class="nav-link-text">Slider</span>
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-orders">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.slider.index') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Order List</span>
+                                            <span class="nav-link-text">Danh sách Slider</span>
                                         </div>
                                     </a>
                                 </li>
@@ -139,15 +140,16 @@
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                 </div>
                                 <span class="nav-link-icon"><span data-feather="percent"></span></span>
-                                <span class="nav-link-text">Marketing</span>
+                                <span class="nav-link-text">Tin tức</span>
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-marketing">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                id="nv-marketing">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.news.index') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Discount Codes</span>
+                                            <span class="nav-link-text">Danh sách tin tức</span>
                                         </div>
                                     </a>
                                 </li>
@@ -250,7 +252,8 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-customers">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                id="nv-customers">
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
@@ -400,7 +403,8 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-settings">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                id="nv-settings">
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
