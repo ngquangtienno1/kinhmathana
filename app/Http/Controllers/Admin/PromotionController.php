@@ -29,7 +29,11 @@ class PromotionController extends Controller
      */
     public function create()
     {
-        $products = Product::where('status', 'active')->get();
+        try {
+            $products = Product::where('status', 'active')->get();
+        } catch (\Exception $e) {
+            $products = collect([]);
+        }
         return view('admin.promotions.create', compact('products'));
     }
 
@@ -113,7 +117,11 @@ class PromotionController extends Controller
      */
     public function edit(Promotion $promotion)
     {
-        $products = Product::where('status', 'active')->get();
+        try {
+            $products = Product::where('status', 'active')->get();
+        } catch (\Exception $e) {
+            $products = collect([]);
+        }
         $selectedProducts = $promotion->products->pluck('id')->toArray();
         
         return view('admin.promotions.edit', compact('promotion', 'products', 'selectedProducts'));

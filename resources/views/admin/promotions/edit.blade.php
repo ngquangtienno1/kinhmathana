@@ -149,8 +149,9 @@
                             </div>
                         </div>
 
+                        @if($products->count() > 0)
                         <div class="form-group">
-                            <label for="products">Apply to Products (Optional)</label>
+                            <label for="products">Áp dụng cho sản phẩm (không bắt buộc)</label>
                             <select name="products[]" id="products" class="form-control select2 @error('products') is-invalid @enderror" multiple>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" {{ in_array($product->id, old('products', $promotion->products->pluck('id')->toArray())) ? 'selected' : '' }}>
@@ -158,11 +159,12 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="form-text text-muted">If no products are selected, the promotion will apply to all products</small>
+                            <small class="form-text text-muted">Nếu không chọn sản phẩm, khuyến mãi sẽ áp dụng cho tất cả sản phẩm</small>
                             @error('products')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        @endif
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Update Promotion</button>

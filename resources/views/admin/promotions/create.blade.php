@@ -148,6 +148,7 @@
                             </div>
                         </div>
 
+                        @if($products->count() > 0)
                         <div class="form-group">
                             <label for="products">Áp dụng cho sản phẩm (không bắt buộc)</label>
                             <select name="products[]" id="products" class="form-control select2 @error('products') is-invalid @enderror" multiple>
@@ -162,6 +163,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        @endif
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Tạo khuyến mãi</button>
