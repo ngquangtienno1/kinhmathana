@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.slider.index') }}">Slider</a>
+        <a href="{{ route('admin.sliders.index') }}">Slider</a>
     </li>
     <li class="breadcrumb-item active">Thêm Slider</li>
 @endsection

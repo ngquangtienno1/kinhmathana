@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.slider.index') }}">Slider</a>
+        <a href="{{ route('admin.sliders.index') }}">Slider</a>
     </li>
     <li class="breadcrumb-item active">Thêm Slider</li>
 @endsection
@@ -18,7 +18,7 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.slider.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.sliders.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
                     <div class="col-12">
@@ -68,7 +68,7 @@
                     <div class="col-12">
                         <div class="d-flex gap-2">
                             <button class="btn btn-primary" type="submit">Lưu</button>
-                            <a href="{{ route('admin.slider.index') }}" class="btn btn-light">Hủy</a>
+                            <a href="{{ route('admin.sliders.index') }}" class="btn btn-light">Hủy</a>
                         </div>
                     </div>
                 </div>

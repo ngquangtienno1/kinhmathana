@@ -27,6 +27,9 @@
                         <span class="fas fa-trash me-2"></span>Xóa
                     </button>
                 </form>
+                <a href="{{ route('admin.news.index') }}" class="btn btn-phoenix-secondary">
+                    <span class="fas fa-arrow-left me-2"></span>Quay lại
+                </a>
             </div>
         </div>
     </div>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\SliderController;
 
 
@@ -17,7 +18,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     //Slider
-    Route::prefix('sliders')->name('slider.')->group(function () {
+    Route::prefix('sliders')->name('sliders.')->group(function () {
         Route::get('/',                [SliderController::class, 'index'])->name('index');
         Route::get('/{id}/show',       [SliderController::class, 'show'])->name('show');
         Route::get('/create',          [SliderController::class, 'create'])->name('create');
@@ -43,5 +44,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/bin',             [NewsController::class, 'bin'])->name('bin');
         Route::put('/{id}/restore',    [NewsController::class, 'restore'])->name('restore');
         Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete');
+    });
+
+    //Brands
+    Route::prefix('brands')->name('brands.')->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [BrandController::class, 'show'])->name('show');
+        Route::get('/create',          [BrandController::class, 'create'])->name('create');
+        Route::post('/store',          [BrandController::class, 'store'])->name('store');
+        Route::get('/{id}/edit',       [BrandController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update',     [BrandController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [BrandController::class, 'destroy'])->name('destroy');
+        Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete');
     });
 });

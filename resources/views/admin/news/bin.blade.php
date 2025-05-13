@@ -14,6 +14,11 @@
         <div class="col-auto">
             <h2 class="mb-0">Thùng rác Tin tức</h2>
         </div>
+        <div class="col-auto ms-auto">
+            <a href="{{ route('admin.news.index') }}" class="btn btn-phoenix-secondary">
+                <span class="fas fa-arrow-left me-2"></span>Quay lại
+            </a>
+        </div>
     </div>
 
     <div class="card">
@@ -29,7 +34,7 @@
                             </th>
                             <th class="align-middle text-center" style="width:70px;">ẢNH</th>
                             <th class="align-middle text-center" style="width:220px;">TIÊU ĐỀ</th>
-                            <th class="align-middle text-start" style="width:350px;">NỘI DUNG</th>
+                            <th class="align-middle text-center" style="width:350px;">NỘI DUNG</th>
                             <th class="align-middle text-center" style="width:150px;">NGÀY XÓA</th>
                             <th class="align-middle text-center" style="width:120px;"></th>
                         </tr>
@@ -54,7 +59,7 @@
                                 <td class="align-middle text-center">
                                     <a class="fw-semibold line-clamp-3 mb-0" href="#">{{ $item->title }}</a>
                                 </td>
-                                <td class="align-middle text-start">
+                                <td class="align-middle text-center">
                                     <span class="text-body-tertiary">{{ Str::limit($item->content, 80) }}</span>
                                 </td>
                                 <td class="align-middle text-center text-body-tertiary">

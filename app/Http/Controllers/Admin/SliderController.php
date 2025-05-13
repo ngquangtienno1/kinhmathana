@@ -31,6 +31,10 @@ class SliderController extends Controller
             }
         }
 
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
         $sliders = $query->orderBy('sort_order', 'asc')->paginate(10);
         $deletedCount = Slider::onlyTrashed()->count();
         $activeCount = Slider::where('is_active', true)->count();
@@ -67,7 +71,7 @@ class SliderController extends Controller
             }
 
             Slider::create($dataNew);
-            return redirect()->route('admin.slider.index')->with('success', 'Thêm slider thành công!');
+            return redirect()->route('admin.sliders.index')->with('success', 'Thêm slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm slider: ' . $e->getMessage());
         }
@@ -104,7 +108,7 @@ class SliderController extends Controller
             }
 
             $slider->update($dataNew);
-            return redirect()->route('admin.slider.index')->with('success', 'Cập nhật slider thành công!');
+            return redirect()->route('admin.sliders.index')->with('success', 'Cập nhật slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật slider: ' . $e->getMessage());
         }
@@ -115,7 +119,7 @@ class SliderController extends Controller
         try {
             $slider = Slider::findOrFail($id);
             $slider->delete(); // Soft delete
-            return redirect()->route('admin.slider.index')->with('error', 'Xóa slider thành công!');
+            return redirect()->route('admin.sliders.index')->with('error', 'Xóa slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa slider: ' . $e->getMessage());
         }
@@ -132,7 +136,7 @@ class SliderController extends Controller
         try {
             $slider = Slider::onlyTrashed()->findOrFail($id);
             $slider->restore();
-            return redirect()->route('admin.slider.bin')->with('success', 'Khôi phục slider thành công!');
+            return redirect()->route('admin.sliders.bin')->with('success', 'Khôi phục slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục slider: ' . $e->getMessage());
         }
@@ -149,7 +153,7 @@ class SliderController extends Controller
             }
 
             $slider->forceDelete();
-            return redirect()->route('admin.slider.bin')->with('error', 'Xóa vĩnh viễn slider thành công!');
+            return redirect()->route('admin.sliders.bin')->with('error', 'Xóa vĩnh viễn slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn slider: ' . $e->getMessage());
         }

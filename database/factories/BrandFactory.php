@@ -17,7 +17,12 @@ class BrandFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->company(),
+            'description' => $this->faker->paragraph(),
+            'image' => null,
+            'is_active' => $this->faker->boolean(80),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

@@ -17,13 +17,13 @@
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
-                href="{{ route('admin.slider.index') }}"><span>Tất cả </span><span
+                href="{{ route('admin.sliders.index') }}"><span>Tất cả </span><span
                     class="text-body-tertiary fw-semibold">({{ $sliders->total() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
-                href="{{ route('admin.slider.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
+                href="{{ route('admin.sliders.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                     class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="{{ route('admin.slider.bin') }}"><span>Thùng rác </span><span
+        <li class="nav-item"><a class="nav-link" href="{{ route('admin.sliders.bin') }}"><span>Thùng rác </span><span
                     class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span></a>
         </li>
     </ul>
@@ -32,7 +32,7 @@
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.slider.index') }}" method="GET">
+                    <form class="position-relative" action="{{ route('admin.sliders.index') }}" method="GET">
                         <input class="form-control search-input search" type="search" name="search"
                             placeholder="Tìm kiếm slider" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
@@ -42,7 +42,7 @@
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>
-                    <a href="{{ route('admin.slider.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.sliders.create') }}" class="btn btn-primary">
                         <span class="fas fa-plus me-2"></span>Thêm slider
                     </a>
                 </div>
@@ -60,8 +60,16 @@
                                         data-bulk-select='{"body":"sliders-table-body"}' />
                                 </div>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;"
-                                data-sort="id">ID</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
+                                <a href="{{ route('admin.sliders.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                    class="text-body" style="text-decoration:none;">
+                                    ID
+                                    @if (request('sort') === 'id')
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                    @endif
+                                </a>
+                            </th>
                             <th class="sort white-space-nowrap align-middle fs-9" scope="col" style="width:70px;">
                                 ẢNH
                             </th>
@@ -98,7 +106,7 @@
                                 </td>
                                 <td class="title align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
-                                        href="{{ route('admin.slider.show', $slider->id) }}">{{ $slider->title }}</a>
+                                        href="{{ route('admin.sliders.show', $slider->id) }}">{{ $slider->title }}</a>
                                 </td>
                                 <td class="description align-middle ps-4">
                                     <span class="text-body-tertiary">{{ Str::limit($slider->description, 50) }}</span>
@@ -125,11 +133,11 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.slider.show', $slider->id) }}">Xem</a>
+                                                href="{{ route('admin.sliders.show', $slider->id) }}">Xem</a>
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.slider.edit', $slider->id) }}">Sửa</a>
+                                                href="{{ route('admin.sliders.edit', $slider->id) }}">Sửa</a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.slider.destroy', $slider->id) }}"
+                                            <form action="{{ route('admin.sliders.destroy', $slider->id) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -170,73 +178,4 @@
     </div>
 </div>
 
-@endsection
-
-@section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const bulkSelectCheckbox = document.getElementById('checkbox-bulk-sliders-select');
-        const checkboxes = document.querySelectorAll('.slider-checkbox');
-        const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
-
-        // Handle bulk select checkbox
-        bulkSelectCheckbox.addEventListener('change', function() {
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            updateBulkDeleteButton();
-        });
-
-        // Handle individual checkboxes
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                updateBulkDeleteButton();
-                // Update bulk select checkbox state
-                bulkSelectCheckbox.checked = Array.from(checkboxes).every(cb => cb.checked);
-            });
-        });
-
-        // Update bulk delete button visibility
-        function updateBulkDeleteButton() {
-            const checkedCount = document.querySelectorAll('.slider-checkbox:checked').length;
-            bulkDeleteBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
-        }
-
-        // Handle bulk delete
-        bulkDeleteBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(document.querySelectorAll('.slider-checkbox:checked'))
-                .map(checkbox => checkbox.value);
-
-            if (selectedIds.length > 0) {
-                if (confirm('Bạn có chắc chắn muốn xóa mềm các slider đã chọn?')) {
-                    // Create form and submit
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '{{ route('admin.slider.bulk-delete') }}';
-
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = '{{ csrf_token() }}';
-
-                    const methodField = document.createElement('input');
-                    methodField.type = 'hidden';
-                    methodField.name = '_method';
-                    methodField.value = 'DELETE';
-
-                    const idsField = document.createElement('input');
-                    idsField.type = 'hidden';
-                    idsField.name = 'ids';
-                    idsField.value = JSON.stringify(selectedIds);
-
-                    form.appendChild(csrfToken);
-                    form.appendChild(methodField);
-                    form.appendChild(idsField);
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            }
-        });
-    });
-</script>
 @endsection

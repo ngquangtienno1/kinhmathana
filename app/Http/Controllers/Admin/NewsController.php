@@ -31,7 +31,11 @@ class NewsController extends Controller
             }
         }
 
-        $news = $query->orderBy('id', 'desc')->paginate(10);
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
+        $news = $query->paginate(10);
         $deletedCount = News::onlyTrashed()->count();
         $activeCount = News::where('is_active', true)->count();
 

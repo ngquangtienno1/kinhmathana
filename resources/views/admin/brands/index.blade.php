@@ -1,40 +1,42 @@
 @extends('admin.layouts')
-@section('title', 'Tin tức')
+
+@section('title', 'Thương hiệu')
+
 @section('content')
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Tin tức</a>
+        <a href="#">Thương hiệu</a>
     </li>
-    <li class="breadcrumb-item active">Danh sách Tin tức</li>
+    <li class="breadcrumb-item active">Danh sách thương hiệu</li>
 @endsection
 
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Tin tức</h2>
+            <h2 class="mb-0">Thương hiệu</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
-                href="{{ route('admin.news.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $news->total() }})</span></a></li>
+                href="{{ route('admin.brands.index') }}"><span>Tất cả </span><span
+                    class="text-body-tertiary fw-semibold">({{ $brands->total() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
-                href="{{ route('admin.news.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
+                href="{{ route('admin.brands.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                     class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="{{ route('admin.news.bin') }}"><span>Thùng rác </span><span
+        <li class="nav-item"><a class="nav-link" href="{{ route('admin.brands.bin') }}"><span>Thùng rác </span><span
                     class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span></a>
         </li>
     </ul>
-    <div id="news"
-        data-list='{"valueNames":["title","description","sort_order","status","created_at"],"page":10,"pagination":true}'>
+    <div id="brands"
+        data-list='{"valueNames":["name","description","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.news.index') }}" method="GET">
+                    <form class="position-relative" action="{{ route('admin.brands.index') }}" method="GET">
                         <input class="form-control search-input search" type="search" name="search"
-                            placeholder="Tìm kiếm tin tức" value="{{ request('search') }}" aria-label="Search" />
+                            placeholder="Tìm kiếm thương hiệu" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
                 </div>
@@ -42,8 +44,8 @@
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>
-                    <a href="{{ route('admin.news.create') }}" class="btn btn-primary">
-                        <span class="fas fa-plus me-2"></span>Thêm tin tức
+                    <a href="{{ route('admin.brands.create') }}" class="btn btn-primary">
+                        <span class="fas fa-plus me-2"></span>Thêm thương hiệu
                     </a>
                 </div>
             </div>
@@ -56,12 +58,12 @@
                         <tr>
                             <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
                                 <div class="form-check mb-0 fs-8">
-                                    <input class="form-check-input" id="checkbox-bulk-sliders-select" type="checkbox"
-                                        data-bulk-select='{"body":"news-table-body"}' />
+                                    <input class="form-check-input" id="checkbox-bulk-brands-select" type="checkbox"
+                                        data-bulk-select='{"body":"brands-table-body"}' />
                                 </div>
                             </th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
-                                <a href="{{ route('admin.news.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                <a href="{{ route('admin.brands.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     ID
                                     @if (request('sort') === 'id')
@@ -71,11 +73,12 @@
                                 </a>
                             </th>
                             <th class="sort white-space-nowrap align-middle fs-9" scope="col" style="width:70px;">
-                                ẢNH</th>
+                                ẢNH
+                            </th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
-                                data-sort="title">TIÊU ĐỀ</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="content" style="width:200px;">
-                                NỘI DUNG</th>
+                                data-sort="name">TÊN THƯƠNG HIỆU</th>
+                            <th class="sort align-middle ps-4" scope="col" data-sort="description"
+                                style="width:200px;">MÔ TẢ</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
                                 TRẠNG THÁI</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="created_at"
@@ -83,41 +86,39 @@
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
                         </tr>
                     </thead>
-                    <tbody class="list" id="news-table-body">
-                        @forelse ($news as $item)
+                    <tbody class="list" id="brands-table-body">
+                        @forelse ($brands as $brand)
                             <tr class="position-static">
                                 <td class="fs-9 align-middle">
                                     <div class="form-check mb-0 fs-8">
-                                        <input class="form-check-input news-checkbox" type="checkbox"
-                                            value="{{ $item->id }}" />
+                                        <input class="form-check-input brand-checkbox" type="checkbox"
+                                            value="{{ $brand->id }}" />
                                     </div>
                                 </td>
                                 <td class="id align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ $item->id }}</span>
+                                    <span class="text-body-tertiary">{{ $brand->id }}</span>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-0">
-                                    @if ($item->image)
-                                        <a class="d-block border border-translucent rounded-2" href="#">
-                                            <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                                width="53" />
-                                        </a>
-                                    @endif
+                                    <a class="d-block border border-translucent rounded-2" href="#">
+                                        <img src="{{ asset('storage/' . $brand->image) }}" alt=""
+                                            width="53" />
+                                    </a>
                                 </td>
-                                <td class="title align-middle ps-4">
+                                <td class="name align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
-                                        href="{{ route('admin.news.show', $item->id) }}">{{ $item->title }}</a>
+                                        href="{{ route('admin.brands.show', $brand->id) }}">{{ $brand->name }}</a>
                                 </td>
                                 <td class="description align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ Str::limit($item->content, 50) }}</span>
+                                    <span class="text-body-tertiary">{{ Str::limit($brand->description, 50) }}</span>
                                 </td>
                                 <td class="status align-middle ps-4">
                                     <span
-                                        class="badge badge-phoenix fs-10 {{ $item->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
-                                        {{ $item->is_active ? 'Hoạt động' : 'Không hoạt động' }}
+                                        class="badge badge-phoenix fs-10 {{ $brand->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
+                                        {{ $brand->is_active ? 'Hoạt động' : 'Không hoạt động' }}
                                     </span>
                                 </td>
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
-                                    {{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '' }}
+                                    {{ $brand->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
@@ -129,16 +130,16 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.news.show', $item->id) }}">Xem</a>
+                                                href="{{ route('admin.brands.show', $brand->id) }}">Xem</a>
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.news.edit', $item->id) }}">Sửa</a>
+                                                href="{{ route('admin.brands.edit', $brand->id) }}">Sửa</a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.news.destroy', $item->id) }}"
+                                            <form action="{{ route('admin.brands.destroy', $brand->id) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa tin tức này?')">Xóa</button>
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')">Xóa</button>
                                             </form>
                                         </div>
                                     </div>
@@ -146,7 +147,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4">Không có tin tức nào</td>
+                                <td colspan="9" class="text-center py-4">Không có thương hiệu nào</td>
                             </tr>
                         @endforelse
                     </tbody>
