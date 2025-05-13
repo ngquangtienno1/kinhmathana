@@ -158,7 +158,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="form-text text-muted">Leave empty to apply to all products</small>
+                            <small class="form-text text-muted">If no products are selected, the promotion will apply to all products</small>
                             @error('products')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

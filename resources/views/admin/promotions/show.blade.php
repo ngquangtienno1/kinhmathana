@@ -1,10 +1,10 @@
 @extends('admin.layouts')
 
-@section('title', 'Promotion Details')
+@section('title', 'Chi tiết khuyến mãi')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('admin.promotions.index') }}">Promotions</a></li>
-    <li class="breadcrumb-item active">Details</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.promotions.index') }}">Khuyến mãi</a></li>
+    <li class="breadcrumb-item active">Chi tiết</li>
 @endsection
 
 @section('content')
@@ -13,7 +13,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Promotion Details: {{ $promotion->name }}</h3>
+                    <h3 class="card-title">Thông tin khuyến mãi</h3>
                     <div class="card-tools">
                         <a href="{{ route('admin.promotions.edit', $promotion->id) }}" class="btn btn-primary">
                             <i class="fas fa-edit"></i> Edit
@@ -37,30 +37,30 @@
                                             <td>{{ $promotion->id }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Name</th>
+                                            <th>Tên khuyến mãi</th>
                                             <td>{{ $promotion->name }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Code</th>
+                                            <th>Mã code</th>
                                             <td><code>{{ $promotion->code }}</code></td>
                                         </tr>
                                         <tr>
-                                            <th>Description</th>
+                                            <th>Giảm giá</th>
                                             <td>{{ $promotion->description ?: 'No description provided' }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Status</th>
+                                            <th>Trạng thái</th>
                                            <td>
                                             @if($promotion->is_active)
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-success">Hoạt động</span>
                                             @else
-                                                <span class="badge bg-danger">Inactive</span>
+                                                <span class="badge bg-danger">Không hoạt động</span>
                                             @endif
                                         </td>
 
                                         </tr>
                                         <tr>
-                                            <th>Created At</th>
+                                            <th>Thời gian</th>
                                             <td>{{ $promotion->created_at->format('M d, Y H:i:s') }}</td>
                                         </tr>
                                         <tr>
@@ -74,56 +74,56 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Discount Information</h5>
+                                    <h5 class="mb-0">Thông tin giảm giá</h5>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
                                         <tr>
-                                            <th width="30%">Discount Type</th>
+                                            <th width="30%">Loại giảm giá</th>
                                             <td>
                                                 @if($promotion->discount_type === 'percentage')
-                                                    Percentage (%)
+                                                    Phần trăm (%)
                                                 @else
-                                                    Fixed Amount
+                                                    Số tiền cố định
                                                 @endif
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Discount Value</th>
+                                            <th>Giá trị giảm</th>
                                             <td>
                                                 @if($promotion->discount_type === 'percentage')
                                                     {{ $promotion->discount_value }}%
                                                 @else
-                                                    ${{ number_format($promotion->discount_value, 2) }}
+                                                    {{ number_format($promotion->discount_value, 2) }}₫
                                                 @endif
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Minimum Purchase</th>
+                                            <th>Giá trị đơn tối thiểu</th>
                                             <td>
                                                 @if($promotion->minimum_purchase > 0)
-                                                    ${{ number_format($promotion->minimum_purchase, 2) }}
+                                                    {{ number_format($promotion->minimum_purchase, 2) }}₫
                                                 @else
-                                                    No minimum
+                                                    Không yêu cầu tối thiểu
                                                 @endif
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Usage Limit</th>
+                                            <th>Giới hạn lượt dùng</th>
                                             <td>
                                                 @if($promotion->usage_limit)
                                                     {{ $promotion->usage_limit }}
                                                 @else
-                                                    Unlimited
+                                                    Không giới hạn
                                                 @endif
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Current Usage</th>
+                                            <th>Đã sử dụng</th>
                                             <td>{{ $promotion->used_count ?: 0 }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Start Date</th>
+                                            <th>Ngày bắt đầu</th>
                                             <td>
                                                 <div class="input-group">
                                                     <input type="text" name="start_date" id="start_date" class="form-control" value="{{ $promotion->start_date }}" readonly>
@@ -136,7 +136,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>End Date</th>
+                                            <th>Ngày kết thúc</th>
                                             <td>{{ $promotion->end_date }}</td>
                                         </tr>
                                     </table>
@@ -149,7 +149,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Applied Products</h5>
+                                    <h5 class="mb-0">Sản phẩm áp dụng</h5>
                                 </div>
                                 <div class="card-body">
                                     @if($promotion->products->count() > 0)
@@ -158,9 +158,9 @@
                                                 <thead>
                                                     <tr>
                                                         <th>ID</th>
-                                                        <th>Product Name</th>
-                                                        <th>Price</th>
-                                                        <th>Actions</th>
+                                                        <th>Tên sản phẩm</th>
+                                                        <th>Giá</th>
+                                                        <th>Thao tác</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -170,8 +170,8 @@
                                                             <td>{{ $product->name }}</td>
                                                             <td>${{ number_format($product->price, 2) }}</td>
                                                             <td>
-                                                                <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-info">
-                                                                    <i class="fas fa-eye"></i> View
+                                                                <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-info" title="Xem">
+                                                                    <i class="fas fa-eye"></i> Xem
                                                                 </a>
                                                             </td>
                                                         </tr>
@@ -181,7 +181,7 @@
                                         </div>
                                     @else
                                         <div class="alert alert-info">
-                                            This promotion applies to all products.
+                                            Khuyến mãi này áp dụng cho tất cả sản phẩm.
                                         </div>
                                     @endif
                                 </div>

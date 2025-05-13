@@ -41,6 +41,31 @@ class PromotionController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'name.required' => 'Tên khuyến mãi không được để trống.',
+            'name.max' => 'Tên khuyến mãi không được vượt quá 255 ký tự.',
+            'code.required' => 'Mã khuyến mãi không được để trống.',
+            'code.unique' => 'Mã khuyến mãi đã tồn tại.',
+            'code.max' => 'Mã khuyến mãi không được vượt quá 50 ký tự.',
+            'discount_type.required' => 'Vui lòng chọn loại giảm giá.',
+            'discount_type.in' => 'Loại giảm giá không hợp lệ.',
+            'discount_value.required' => 'Vui lòng nhập giá trị giảm.',
+            'discount_value.numeric' => 'Giá trị giảm phải là số.',
+            'discount_value.min' => 'Giá trị giảm phải lớn hơn hoặc bằng 0.',
+            'minimum_purchase.required' => 'Vui lòng nhập giá trị đơn tối thiểu.',
+            'minimum_purchase.numeric' => 'Giá trị đơn tối thiểu phải là số.',
+            'minimum_purchase.min' => 'Giá trị đơn tối thiểu phải lớn hơn hoặc bằng 0.',
+            'usage_limit.integer' => 'Giới hạn lượt dùng phải là số nguyên.',
+            'usage_limit.min' => 'Giới hạn lượt dùng phải lớn hơn 0.',
+            'is_active.boolean' => 'Trạng thái không hợp lệ.',
+            'start_date.required' => 'Vui lòng chọn ngày bắt đầu.',
+            'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
+            'end_date.required' => 'Vui lòng chọn ngày kết thúc.',
+            'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+            'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+            'products.array' => 'Danh sách sản phẩm không hợp lệ.',
+            'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
+        ];
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:promotions',
@@ -54,13 +79,13 @@ class PromotionController extends Controller
             'end_date' => 'required|date|after:start_date',
             'products' => 'nullable|array',
             'products.*' => 'exists:products,id',
-        ]);
+        ], $messages);
 
         // Create promotion
         $promotion = Promotion::create($validated);
 
         // Attach products if any
-        if (isset($validated['products'])) {
+        if (!empty($validated['products'])) {
             $promotion->products()->attach($validated['products']);
         }
 
@@ -126,8 +151,8 @@ class PromotionController extends Controller
         // Update promotion
         $promotion->update($validated);
 
-        // Sync products
-        if (isset($validated['products'])) {
+        // Sync products if any
+        if (!empty($validated['products'])) {
             $promotion->products()->sync($validated['products']);
         } else {
             $promotion->products()->detach();

@@ -30,14 +30,14 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Code</th>
-                                <th>Discount</th>
-                                <th>Status</th>
-                                <th>Duration</th>
-                                <th>Usage</th>
-                                <th>Actions</th>
+                                <th>Mã</th>
+                                <th>Tên khuyến mãi</th>
+                                <th>Mã code</th>
+                                <th>Giảm giá</th>
+                                <th>Trạng thái</th>
+                                <th>Thời gian</th>
+                                <th>Lượt dùng</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,14 +57,13 @@
                                     </td>
                                     <td>
                                         @if($promotion->is_active)
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success">Hoạt động</span>
                                         @else
-                                            <span class="badge bg-danger">Inactive</span>
+                                            <span class="badge bg-danger">Không hoạt động</span>
                                         @endif
                                     </td>
-                                    
                                     <td>
-                                        {{ $promotion->start_date->format('Y-m-d') }} to {{ $promotion->end_date->format('Y-m-d') }}
+                                        {{ $promotion->start_date->format('d/m/Y') }} - {{ $promotion->end_date->format('d/m/Y') }}
                                     </td>
                                     <td>
                                         {{ $promotion->used_count }}
@@ -73,16 +72,16 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.promotions.show', $promotion) }}" class="btn btn-info btn-sm">
+                                        <a href="{{ route('admin.promotions.show', $promotion) }}" class="btn btn-info btn-sm" title="Xem">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('admin.promotions.edit', $promotion) }}" class="btn btn-primary btn-sm">
+                                        <a href="{{ route('admin.promotions.edit', $promotion) }}" class="btn btn-primary btn-sm" title="Sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('admin.promotions.destroy', $promotion) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this promotion?')">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa khuyến mãi này?')" title="Xóa">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -90,7 +89,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">No promotions found</td>
+                                    <td colspan="8" class="text-center">Không có khuyến mãi nào</td>
                                 </tr>
                             @endforelse
                         </tbody>
