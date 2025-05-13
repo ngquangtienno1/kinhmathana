@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
@@ -26,12 +23,10 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false);
             $table->integer('views')->default(0);
             $table->timestamps();
+            $table->softDeletes(); // <-- Thêm dòng này để hỗ trợ soft delete
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');

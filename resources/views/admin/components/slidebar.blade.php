@@ -31,7 +31,7 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-products">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('products.list') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Product List</span>
                                         </div>
