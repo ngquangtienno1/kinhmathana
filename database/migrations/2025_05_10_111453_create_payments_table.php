@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('status', 50);
             $table->string('transaction_code', 100)->unique();
             $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('restrict');
+            $table->decimal('amount', 10, 2); // số tiền thanh toán
+            $table->text('note')->nullable(); // mô tả chi tiết hoặc lỗi thanh toán
             $table->timestamps();
         });
     }

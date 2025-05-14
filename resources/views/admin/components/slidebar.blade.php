@@ -102,7 +102,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{route('admin.payments.index')}}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Payments</span>
                                         </div>
