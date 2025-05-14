@@ -17,7 +17,8 @@ class RoleFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->unique()->word(), // Tạo tên vai trò ngẫu nhiên và duy nhất
+            'description' => $this->faker->sentence(), // Mô tả vai trò
         ];
     }
 }

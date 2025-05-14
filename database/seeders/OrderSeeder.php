@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Order;
 use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
@@ -12,6 +12,9 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // Tạo 100 đơn hàng mẫu
+        Order::factory()
+            ->count(20)
+            ->create();
     }
 }
