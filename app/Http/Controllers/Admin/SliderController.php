@@ -158,20 +158,4 @@ class SliderController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn slider: ' . $e->getMessage());
         }
     }
-    public function bulkDelete(Request $request)
-    {
-        try {
-            $ids = json_decode($request->ids);
-
-            if (empty($ids)) {
-                return redirect()->back()->with('error', 'Không có slider nào được chọn');
-            }
-
-            Slider::whereIn('id', $ids)->delete();
-
-            return redirect()->back()->with('success', 'Đã xóa mềm các slider đã chọn thành công');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mềm các slider');
-        }
-    }
 }

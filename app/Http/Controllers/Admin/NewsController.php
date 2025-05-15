@@ -156,20 +156,4 @@ class NewsController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn tin tức: ' . $e->getMessage());
         }
     }
-    public function bulkDelete(Request $request)
-    {
-        try {
-            $ids = json_decode($request->ids);
-
-            if (empty($ids)) {
-                return redirect()->back()->with('error', 'Không có tin tức nào được chọn');
-            }
-
-            News::whereIn('id', $ids)->delete();
-
-            return redirect()->back()->with('success', 'Đã xóa mềm các tin tức đã chọn thành công');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mềm các tin tức');
-        }
-    }
 }

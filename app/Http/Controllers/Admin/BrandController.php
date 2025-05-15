@@ -156,21 +156,4 @@ class BrandController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn thương hiệu: ' . $e->getMessage());
         }
     }
-
-    public function bulkDelete(Request $request)
-    {
-        try {
-            $ids = json_decode($request->ids);
-
-            if (empty($ids)) {
-                return redirect()->back()->with('error', 'Không có thương hiệu nào được chọn');
-            }
-
-            Brand::whereIn('id', $ids)->delete();
-
-            return redirect()->back()->with('success', 'Đã xóa mềm các thương hiệu đã chọn thành công');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mềm các thương hiệu');
-        }
-    }
 }
