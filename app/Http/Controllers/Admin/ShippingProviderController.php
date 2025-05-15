@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ShippingProvider;
 use App\Models\ShippingFee;
+use App\Models\UploadFile;
+use Illuminate\Support\Facades\Storage;
 
 class ShippingProviderController extends Controller
 {
@@ -30,8 +32,21 @@ class ShippingProviderController extends Controller
             'sort_order' => 'integer'
         ]);
 
-        ShippingProvider::create($validated);
-        return redirect()->back()->with('success', 'Thêm đơn vị vận chuyển thành công');
+        try {
+            // Xử lý upload logo
+            if ($request->hasFile('logo')) {
+                $file = $request->file('logo');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                // Lưu vào thư mục shipping/providers
+                $filePath = $file->storeAs('uploads/shipping/providers', $fileName, 'public');
+                $validated['logo_url'] = asset('storage/' . $filePath);
+            }
+
+            ShippingProvider::create($validated);
+            return redirect()->back()->with('success', 'Thêm đơn vị vận chuyển thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, ShippingProvider $provider)
@@ -49,12 +64,42 @@ class ShippingProviderController extends Controller
             'sort_order' => 'integer'
         ]);
 
-        $provider->update($validated);
-        return redirect()->back()->with('success', 'Cập nhật đơn vị vận chuyển thành công');
+        try {
+            // Xử lý upload logo mới
+            if ($request->hasFile('logo')) {
+                // Xóa logo cũ nếu có
+                if ($provider->logo_url) {
+                    $oldPath = str_replace(asset('storage/'), '', $provider->logo_url);
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                // Upload logo mới
+                $file = $request->file('logo');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                // Lưu vào thư mục shipping/providers
+                $filePath = $file->storeAs('uploads/shipping/providers', $fileName, 'public');
+                $validated['logo_url'] = asset('storage/' . $filePath);
+            }
+
+            $provider->update($validated);
+            return redirect()->back()->with('success', 'Cập nhật đơn vị vận chuyển thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
     public function destroy(ShippingProvider $provider)
     {
+        // Xóa logo nếu có
+        if ($provider->logo_url) {
+            $path = str_replace(asset('storage/'), '', $provider->logo_url);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $provider->delete();
         return redirect()->back()->with('success', 'Xóa đơn vị vận chuyển thành công');
     }
@@ -101,5 +146,15 @@ class ShippingProviderController extends Controller
     {
         $fee->delete();
         return redirect()->back()->with('success', 'Xóa phí vận chuyển thành công');
+    }
+
+    public function updateStatus(Request $request, ShippingProvider $provider)
+    {
+        $validated = $request->validate([
+            'is_active' => 'required|boolean'
+        ]);
+
+        $provider->update($validated);
+        return response()->json(['success' => true]);
     }
 }

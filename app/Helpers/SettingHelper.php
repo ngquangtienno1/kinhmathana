@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 function getSetting($key = null)
 {
     // Cache trong 10 phút
-    $setting = Cache::remember('website_settings', now()->addMinutes(10), function () {
+    $setting = Cache::remember('website_settings', now()->addMinutes(5), function () {
         return WebsiteSetting::first(); // Chỉ lấy 1 bản ghi cấu hình hệ thống
     });
 

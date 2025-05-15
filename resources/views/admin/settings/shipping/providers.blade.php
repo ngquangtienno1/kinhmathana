@@ -17,11 +17,18 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="mb-4">
         <div class="d-flex flex-wrap gap-3">
+            <div class="search-box">
+                <form class="position-relative">
+                    <input class="form-control search-input search" type="search"
+                        placeholder="Tìm kiếm đơn vị vận chuyển" aria-label="Search" />
+                    <span class="fas fa-search search-box-icon"></span>
+                </form>
+            </div>
             <div class="ms-xxl-auto">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProviderModal">
                     <span class="fas fa-plus me-2"></span>Thêm đơn vị vận chuyển
@@ -32,43 +39,62 @@
 
     <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent">
         <div class="table-responsive scrollbar mx-n1 px-1">
-            <table class="table fs-9 mb-0">
+            <table class="table fs-9 mb-0"
+                data-list='{"valueNames":["name","code","status","sort_order"],"page":10,"pagination":true}'>
                 <thead>
                     <tr>
-                        <th scope="col">Tên đơn vị</th>
-                        <th scope="col">Mã</th>
-                        <th scope="col">Trạng thái</th>
-                        <th scope="col">Thứ tự</th>
-                        <th scope="col" class="text-end">Thao tác</th>
+                        <th class="white-space-nowrap fs-9 align-middle ps-0" style="width:20px;">
+                            <div class="form-check mb-0 fs-8">
+                                <input class="form-check-input" id="checkbox-bulk-providers-select" type="checkbox"
+                                    data-bulk-select='{"body":"providers-table-body"}' />
+                            </div>
+                        </th>
+                        <th scope="col" style="width:70px;"></th>
+                        <th class="sort white-space-nowrap" scope="col" data-sort="name">Tên đơn vị</th>
+                        <th class="sort white-space-nowrap" scope="col" data-sort="code">Mã</th>
+                        <th class="sort white-space-nowrap" scope="col" data-sort="status">Trạng thái</th>
+                        <th class="sort white-space-nowrap" scope="col" data-sort="sort_order">Thứ tự</th>
+                        <th class="text-end" scope="col">Thao tác</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="list" id="providers-table-body">
                     @foreach($providers as $provider)
-                    <tr>
-                        <td>{{ $provider->name }}</td>
-                        <td>{{ $provider->code }}</td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                    {{ $provider->is_active ? 'checked' : '' }}
-                                    onchange="updateStatus({{ $provider->id }}, this.checked)">
+                    <tr class="position-static">
+                        <td class="fs-9 align-middle">
+                            <div class="form-check mb-0 fs-8">
+                                <input class="form-check-input" type="checkbox"
+                                    data-bulk-select-row='{"name":"{{ $provider->name }}","code":"{{ $provider->code }}"}' />
                             </div>
                         </td>
-                        <td>{{ $provider->sort_order }}</td>
+                        <td class="align-middle white-space-nowrap py-0">
+                            @if($provider->logo_url)
+                            <img src="{{ $provider->logo_url }}" alt="{{ $provider->name }}" width="40" height="40"
+                                class="rounded" loading="lazy">
+                            @endif
+                        </td>
+                        <td class="name align-middle">{{ $provider->name }}</td>
+                        <td class="code align-middle">{{ $provider->code }}</td>
+                        <td class="status align-middle">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" {{ $provider->is_active ?
+                                'checked' : '' }}
+                                onchange="updateStatus({{ $provider->id }}, this.checked)">
+                            </div>
+                        </td>
+                        <td class="sort_order align-middle">{{ $provider->sort_order }}</td>
                         <td class="text-end">
                             <div class="btn-group">
                                 <a href="{{ route('admin.shipping.fees', $provider->id) }}"
-                                   class="btn btn-sm btn-phoenix-secondary">
-                                    Phí vận chuyển
+                                    class="btn btn-sm btn-phoenix-secondary">
+                                    <span class="fas fa-money-bill me-1"></span>Phí vận chuyển
                                 </a>
-                                <button class="btn btn-sm btn-phoenix-secondary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editProviderModal{{ $provider->id }}">
-                                    Sửa
+                                <button class="btn btn-sm btn-phoenix-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#editProviderModal{{ $provider->id }}">
+                                    <span class="fas fa-edit"></span>
                                 </button>
                                 <button class="btn btn-sm btn-phoenix-secondary text-danger"
-                                        onclick="deleteProvider({{ $provider->id }})">
-                                    Xóa
+                                    onclick="deleteProvider({{ $provider->id }})">
+                                    <span class="fas fa-trash"></span>
                                 </button>
                             </div>
                         </td>
@@ -77,6 +103,21 @@
                 </tbody>
             </table>
         </div>
+        <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+            <div class="col-auto d-flex">
+                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p>
+                <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span class="fas fa-angle-right ms-1"
+                        data-fa-transform="down-1"></span></a>
+                <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
+                        class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+            </div>
+            <div class="col-auto d-flex">
+                <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                <ul class="mb-0 pagination"></ul>
+                <button class="page-link" data-list-pagination="next"><span
+                        class="fas fa-chevron-right"></span></button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -84,7 +125,7 @@
 <div class="modal fade" id="addProviderModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('admin.shipping.providers.store') }}" method="POST">
+            <form action="{{ route('admin.shipping.providers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Thêm đơn vị vận chuyển</h5>
@@ -104,8 +145,8 @@
                         <textarea class="form-control" name="description"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Logo URL</label>
-                        <input type="text" class="form-control" name="logo_url">
+                        <label class="form-label">Logo</label>
+                        <input type="file" class="form-control" name="logo" accept="image/*">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">API Key</label>
@@ -124,6 +165,7 @@
                         <input type="number" class="form-control" name="sort_order" value="0">
                     </div>
                     <div class="form-check">
+                        <input type="hidden" name="is_active" value="0">
                         <input type="checkbox" class="form-check-input" name="is_active" value="1" checked>
                         <label class="form-check-label">Kích hoạt</label>
                     </div>
@@ -142,7 +184,7 @@
 <div class="modal fade" id="editProviderModal{{ $provider->id }}" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('admin.shipping.providers.update', $provider->id) }}" method="POST">
+            <form action="{{ route('admin.shipping.providers.update', $provider->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
@@ -163,8 +205,13 @@
                         <textarea class="form-control" name="description">{{ $provider->description }}</textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Logo URL</label>
-                        <input type="text" class="form-control" name="logo_url" value="{{ $provider->logo_url }}">
+                        <label class="form-label">Logo</label>
+                        @if($provider->logo_url)
+                        <div class="mb-2">
+                            <img src="{{ $provider->logo_url }}" alt="Current logo" style="max-width: 100px; max-height: 100px;" class="img-thumbnail">
+                        </div>
+                        @endif
+                        <input type="file" class="form-control" name="logo" accept="image/*">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">API Key</label>
@@ -183,8 +230,8 @@
                         <input type="number" class="form-control" name="sort_order" value="{{ $provider->sort_order }}">
                     </div>
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="is_active" value="1"
-                            {{ $provider->is_active ? 'checked' : '' }}>
+                        <input type="hidden" name="is_active" value="0">
+                        <input type="checkbox" class="form-check-input" name="is_active" value="1" {{ $provider->is_active ? 'checked' : '' }}>
                         <label class="form-check-label">Kích hoạt</label>
                     </div>
                 </div>
@@ -200,7 +247,7 @@
 
 @push('scripts')
 <script>
-function updateStatus(id, status) {
+    function updateStatus(id, status) {
     fetch(`/admin/shipping/providers/${id}/status`, {
         method: 'POST',
         headers: {
@@ -211,9 +258,9 @@ function updateStatus(id, status) {
     }).then(response => response.json())
       .then(data => {
           if (data.success) {
-              // Thành công
+              window.showToast('success', 'Cập nhật trạng thái thành công');
           } else {
-              alert('Có lỗi xảy ra');
+              window.showToast('error', 'Có lỗi xảy ra');
           }
       });
 }
@@ -230,7 +277,7 @@ function deleteProvider(id) {
               if (data.success) {
                   location.reload();
               } else {
-                  alert('Có lỗi xảy ra');
+                  window.showToast('error', 'Có lỗi xảy ra');
               }
           });
     }

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\UploadFile;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
@@ -13,31 +13,29 @@ class UploadController extends Controller
     {
         $request->validate([
             'file' => 'required|file|max:10240', // Giới hạn 10MB
-            'object_type' => 'required|string|max:50',
-            'object_id' => 'required|integer'
         ]);
 
-        $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $fileType = $file->getClientMimeType();
+        try {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
 
-        // Lưu file vào thư mục storage/app/public/uploads
-        $filePath = $file->storeAs('uploads', $fileName, 'public');
+            // Lưu file vào thư mục storage/app/public/uploads
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
 
-        // Tạo bản ghi trong database
-        $uploadFile = UploadFile::create([
-            'file_name' => $fileName,
-            'file_type' => $fileType,
-            'file_path' => $filePath,
-            'object_type' => $request->object_type,
-            'object_id' => $request->object_id
-        ]);
+            if (!$filePath) {
+                throw new \Exception('Không thể lưu file');
+            }
 
-        return response()->json([
-            'success' => true,
-            'file' => $uploadFile,
-            'url' => asset('storage/' . $filePath)
-        ]);
+            return response()->json([
+                'success' => true,
+                'url' => asset('storage/' . $filePath)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function delete(UploadFile $file)
