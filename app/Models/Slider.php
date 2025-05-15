@@ -10,13 +10,8 @@ class Slider extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'description', 'image_id', 'link', 'sort_order', 'is_active'
+        'title', 'description', 'image_url', 'link', 'sort_order', 'status'
     ];
 
     public $timestamps = false;
-
-    public function image()
-    {
-        return $this->belongsTo(UploadFile::class, 'image_id');
-    }
 }

@@ -9,7 +9,11 @@ class ProductImage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'image_id', 'is_thumbnail'];
+    protected $fillable = [
+        'product_id',
+        'image_url',
+        'sort_order'
+    ];
 
     public $timestamps = ['created_at'];
     const UPDATED_AT = null;
@@ -17,10 +21,5 @@ class ProductImage extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function image()
-    {
-        return $this->belongsTo(UploadFile::class, 'image_id');
     }
 }

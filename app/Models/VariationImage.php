@@ -9,7 +9,11 @@ class VariationImage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['variation_id', 'image_id'];
+    protected $fillable = [
+        'variation_id',
+        'image_url',
+        'sort_order'
+    ];
 
     public $timestamps = ['created_at'];
     const UPDATED_AT = null;
@@ -17,10 +21,5 @@ class VariationImage extends Model
     public function variation()
     {
         return $this->belongsTo(Variation::class);
-    }
-
-    public function image()
-    {
-        return $this->belongsTo(UploadFile::class, 'image_id');
     }
 }

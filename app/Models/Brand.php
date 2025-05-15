@@ -9,14 +9,16 @@ class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'logo_id'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'logo_url',
+        'sort_order',
+        'status'
+    ];
 
     public $timestamps = false;
-
-    public function logo()
-    {
-        return $this->belongsTo(UploadFile::class, 'logo_id');
-    }
 
     public function products()
     {

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WebsiteSetting;
-use App\Models\UploadFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +15,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $settings = WebsiteSetting::with('logo')->first();
+        $settings = WebsiteSetting::first();
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -91,41 +90,24 @@ class SettingController extends Controller
         // Xử lý upload logo nếu có
         if ($request->hasFile('logo')) {
             // Xóa logo cũ nếu có
-            if ($settings->logo_id) {
-                $oldLogo = UploadFile::find($settings->logo_id);
-                if ($oldLogo) {
-                    if (Storage::disk('public')->exists($oldLogo->file_path)) {
-                        Storage::disk('public')->delete($oldLogo->file_path);
-                    }
-                    $oldLogo->delete();
+            if ($settings->logo_url) {
+                $oldPath = str_replace(asset('storage/'), '', $settings->logo_url);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
                 }
             }
 
             // Upload logo mới
             $file = $request->file('logo');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $fileType = $file->getClientMimeType();
-
-            // Lưu file vào thư mục storage/app/public/uploads
             $filePath = $file->storeAs('uploads/logo', $fileName, 'public');
-
-            // Tạo bản ghi trong database
-            $uploadFile = UploadFile::create([
-                'file_name' => $fileName,
-                'file_type' => $fileType,
-                'file_path' => $filePath,
-                'object_type' => 'App\Models\WebsiteSetting',
-                'object_id' => $settings->id ?: 1
-            ]);
-
-            $settings->logo_id = $uploadFile->id;
+            $settings->logo_url = asset('storage/' . $filePath);
         }
 
         $settings->fill($request->except('logo'));
-        $settings->save(); // ✅ Cache sẽ tự được xóa trong model
+        $settings->save();
 
         return redirect()->back()->with('success', 'Cập nhật cài đặt thành công');
-
     }
 
     /**

@@ -21,19 +21,15 @@ function getSetting($key = null)
 }
 
 /**
- * Lấy URL của logo từ cột logo_id (giả sử bạn lưu trong bảng media hoặc uploads).
+ * Lấy URL của logo từ cột logo_url.
  *
  * @return string
  */
 function getLogoUrl()
 {
-    $logoId = getSetting('logo_id');
-
-    if (!$logoId) {
-        return asset('images/default-logo.png'); // fallback nếu chưa có logo
+    $logoUrl = getSetting('logo_url');
+    if ($logoUrl) {
+        return $logoUrl;
     }
-
-    // Giả sử bạn dùng model Media hoặc lưu file theo tên file
-    $logo = \App\Models\UploadFile::find($logoId);
-    return $logo ? asset('storage/' . $logo->file_path) : asset('images/default-logo.png');
+    return asset('images/default-logo.png');
 }

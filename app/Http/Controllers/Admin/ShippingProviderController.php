@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ShippingProvider;
 use App\Models\ShippingFee;
-use App\Models\UploadFile;
 use Illuminate\Support\Facades\Storage;
 
 class ShippingProviderController extends Controller

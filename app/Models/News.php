@@ -9,13 +9,15 @@ class News extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'image_id'];
+    protected $fillable = [
+        'title',
+        'slug',
+        'content',
+        'image_url',
+        'status',
+        'published_at'
+    ];
 
     public $timestamps = ['created_at'];
     const UPDATED_AT = null;
-
-    public function image()
-    {
-        return $this->belongsTo(UploadFile::class, 'image_id');
-    }
 }

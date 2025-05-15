@@ -24,7 +24,7 @@ class WebsiteSetting extends Model
     }
     protected $fillable = [
         'website_name',
-        'logo_id',
+        'logo_url',
         'contact_email',
         'hotline',
         'address',
@@ -55,9 +55,4 @@ class WebsiteSetting extends Model
     ];
 
     public $timestamps = false;
-
-    public function logo()
-    {
-        return $this->belongsTo(UploadFile::class, 'logo_id');
-    }
 }
