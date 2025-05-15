@@ -66,8 +66,8 @@
     <!-- ===============================================-->
     <main class="main" id="top">
         <div class="container-fluid bg-body-tertiary dark__bg-gray-1200">
-            <div class="bg-holder bg-auth-card-overlay"
-                style="background-image:url({{ asset('v1/assets/img/bg/37.png') }});"></div>
+            <div class="bg-holder bg-auth-card-overlay" style="background-image:url(../../../assets/img/bg/37.png);">
+            </div>
             <!--/.bg-holder-->
             <div class="row flex-center position-relative min-vh-100 g-0 py-5">
                 <div class="col-11 col-sm-10 col-xl-8">
@@ -76,8 +76,8 @@
                             <div class="row align-items-center gx-0 gy-7">
                                 <div
                                     class="col-auto bg-body-highlight dark__bg-gray-1100 rounded-3 position-relative overflow-hidden auth-title-box">
-                                    <div class="bg-holder"
-                                        style="background-image:url({{ asset('v1/assets/img/bg/38.png') }});"></div>
+                                    <div class="bg-holder" style="background-image:url(../../../assets/img/bg/38.png);">
+                                    </div>
                                     <!--/.bg-holder-->
                                     <div
                                         class="position-relative px-4 px-lg-7 pt-7 pb-7 pb-sm-5 text-center text-md-start pb-lg-7 pb-md-7">
@@ -98,10 +98,9 @@
                                     </div>
                                     <div class="position-relative z-n1 mb-6 d-none d-md-block text-center mt-md-15"><img
                                             class="auth-title-box-img d-dark-none"
-                                            src="{{ asset('v1/assets/img/spot-illustrations/auth.png') }}"
-                                            alt="" /><img class="auth-title-box-img d-light-none"
-                                            src="{{ asset('v1/assets/img/spot-illustrations/auth-dark.png') }}"
-                                            alt="" />
+                                            src="../../../assets/img/spot-illustrations/auth.png" alt="" /><img
+                                            class="auth-title-box-img d-light-none"
+                                            src="../../../assets/img/spot-illustrations/auth-dark.png" alt="" />
                                     </div>
                                 </div>
                                 <div class="col mx-auto">
@@ -110,9 +109,8 @@
                                                 class="d-flex flex-center text-decoration-none mb-4"
                                                 href="../../../index.html">
                                                 <div class="d-flex align-items-center fw-bolder fs-3 d-inline-block">
-                                                    <img src="{{ asset('v1/assets/img/icons/logo.png') }}"
-                                                        alt="phoenix" width="58" />
-                                                </div>
+                                                    <img src="../../../assets/img/icons/logo.png" alt="phoenix"
+                                                        width="58" /></div>
                                             </a>
                                             <h3 class="text-body-highlight">Sign In</h3>
                                             <p class="text-body-tertiary">Get access to your account</p>
@@ -180,8 +178,7 @@
                                     class="dropdown-item" href="#!">Search in chat</a><a class="dropdown-item"
                                     href="#!">Show history</a><a class="dropdown-item" href="#!">Report to
                                     Admin</a><a class="dropdown-item btn-support-chat" href="#!">Close
-                                    Support</a>
-                            </div>
+                                    Support</a></div>
                         </div>
                     </div>
                     <div class="card-body chat p-0">
@@ -194,7 +191,7 @@
                                 </a><a
                                     class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
                                     href="#!">
-                                    <p class="mb-0 fw-semibold fs-9">I can't reorder a product I previously ordered</p>
+                                    <p class="mb-0 fw-semibold fs-9">I can’t reorder a product I previously ordered</p>
                                     <span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
                                 </a><a
                                     class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
@@ -210,9 +207,9 @@
                             <div class="text-center mt-auto">
                                 <div class="avatar avatar-3xl status-online"><img
                                         class="rounded-circle border border-3 border-light-subtle"
-                                        src="{{ asset('v1/assets/img/team/30.webp') }}" alt="" /></div>
+                                        src="../../../assets/img/team/30.webp" alt="" /></div>
                                 <h5 class="mt-2 mb-3">Eric</h5>
-                                <p class="text-center text-body-emphasis mb-0">Ask us anything – we'll get back to you
+                                <p class="text-center text-body-emphasis mb-0">Ask us anything – we’ll get back to you
                                     here or by email within 24 hours.</p>
                             </div>
                         </div>
@@ -228,8 +225,8 @@
                                 class="d-none" type="file" accept="image/*" id="supportChatPhotos" /><label
                                 class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
                                 for="supportChatAttachment"> <span class="fa-solid fa-paperclip"></span></label><input
-                                class="d-none" type="file" id="supportChatAttachment" />
-                        </div><button class="btn p-0 border-0 send-btn"><span
+                                class="d-none" type="file" id="supportChatAttachment" /></div><button
+                            class="btn p-0 border-0 send-btn"><span
                                 class="fa-solid fa-paper-plane fs-9"></span></button>
                     </div>
                 </div>

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('gender', 20)->nullable();
             $table->string('status_user', 50)->nullable();
             $table->foreignId('avatar_id')->nullable()->constrained('upload_files')->nullOnDelete();
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->enum('role', ['1', '2', '3'])->default('2')->comment('1: Admin, 2: User, 3: Staff');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->rememberToken();
