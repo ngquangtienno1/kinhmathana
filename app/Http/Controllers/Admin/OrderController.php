@@ -14,12 +14,24 @@ class OrderController extends Controller
     /**
      * Hiển thị danh sách đơn hàng
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['user', 'items'])
-            ->latest()
-            ->paginate(10);
+        $query = Order::with(['user', 'items']);
 
+        // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('receiver_name', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $orders = $query->latest()->paginate(10);
         return view('admin.orders.index', compact('orders'));
     }
 
@@ -141,7 +153,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,awaiting_payment,confirmed,processing,shipping,delivered,returned,processing_return,refunded',
+            'status' => 'required|in:pending,awaiting_payment,confirmed,processing,shipping,delivered,returned,processing_return,refunded,cancelled',
             'comment' => 'nullable|string'
         ]);
 
@@ -205,6 +217,11 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        // Kiểm tra xem đơn hàng có ở trạng thái đã hủy không
+        if ($order->status !== 'cancelled') {
+            return back()->with('error', 'Chỉ có thể xóa đơn hàng đã hủy');
+        }
+
         try {
             $order->delete();
             return redirect()

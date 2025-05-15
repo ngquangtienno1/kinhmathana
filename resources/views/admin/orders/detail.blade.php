@@ -19,10 +19,14 @@
             <button class="btn btn-link pe-3 ps-0 text-body" onclick="window.print()">
                 <i class="fas fa-print me-2"></i>In
             </button>
-            @if($order->status != 'cancelled')
-            <button class="btn btn-link px-3 text-body" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
-                <i class="fas fa-undo me-2"></i>Hủy đơn
-                </button>
+            @if($order->status == 'cancelled')
+            <button class="btn btn-link px-3 text-danger" onclick="if(confirm('Bạn có chắc muốn xóa đơn hàng này?')) document.getElementById('delete-order-form').submit();">
+                <i class="fas fa-trash me-2"></i>Xóa đơn hàng
+            </button>
+            <form id="delete-order-form" action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" style="display: none;">
+                @csrf
+                @method('DELETE')
+            </form>
             @endif
         </div>
     </div>
@@ -166,6 +170,9 @@
                                     @case('pending')
                                         <span class="badge bg-warning">Chờ xử lý</span>
                                         @break
+                                    @case('awaiting_payment')
+                                        <span class="badge bg-warning">Chờ thanh toán</span>
+                                        @break
                                     @case('confirmed')
                                         <span class="badge bg-info">Đã xác nhận</span>
                                         @break
@@ -177,6 +184,15 @@
                                         @break
                                     @case('delivered')
                                         <span class="badge bg-success">Đã giao hàng</span>
+                                        @break
+                                    @case('returned')
+                                        <span class="badge bg-warning">Đã trả hàng</span>
+                                        @break
+                                    @case('processing_return')
+                                        <span class="badge bg-info">Đang xử lý trả hàng</span>
+                                        @break
+                                    @case('refunded')
+                                        <span class="badge bg-success">Đã hoàn tiền</span>
                                         @break
                                     @case('cancelled')
                                         <span class="badge bg-danger">Đã hủy</span>
@@ -237,10 +253,14 @@
                             <label class="form-label">Trạng thái đơn hàng</label>
                             <select name="status" class="form-select" {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
                                 <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
+                                <option value="awaiting_payment" {{ $order->status == 'awaiting_payment' ? 'selected' : '' }}>Chờ thanh toán</option>
                                 <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
                                 <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đang xử lý</option>
                                 <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang vận chuyển</option>
                                 <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã giao hàng</option>
+                                <option value="returned" {{ $order->status == 'returned' ? 'selected' : '' }}>Đã trả hàng</option>
+                                <option value="processing_return" {{ $order->status == 'processing_return' ? 'selected' : '' }}>Đang xử lý trả hàng</option>
+                                <option value="refunded" {{ $order->status == 'refunded' ? 'selected' : '' }}>Đã hoàn tiền</option>
                                 <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
                             </select>
                         </div>

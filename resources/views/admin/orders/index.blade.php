@@ -317,8 +317,8 @@
                                         <span class="badge bg-warning">Đang xử lý trả hàng</span>
                                     @elseif ($order->status === 'refunded')
                                         <span class="badge bg-info">Đã hoàn tiền</span>
-                                    @else
-                                        <span class="badge bg-secondary">{{ ucfirst($order->status) }}</span>
+                                 @elseif ($order->status === 'cancelled')
+                                        <span class="badge bg-info">Đã huỷ</span>
                                     @endif
                                 </td> <!-- Trạng thái đơn hàng -->
                                 <td>
@@ -342,20 +342,19 @@
                                                 class="dropdown-item">
                                                 <i class="fas fa-eye me-2"></i> Chi tiết
                                             </a>
-                                            @if ($order->status != 'cancelled')
+                                            @if ($order->status == 'cancelled')
                                                 <a href="#" class="dropdown-item text-danger"
                                                     onclick="event.preventDefault(); 
-                                               if(confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
-                                                   document.getElementById('cancel-order-{{ $order->id }}').submit();
+                                               if(confirm('Bạn có chắc muốn xóa đơn hàng này?')) {
+                                                   document.getElementById('delete-order-{{ $order->id }}').submit();
                                                }">
-                                                    <i class="fas fa-times me-2"></i> Hủy đơn
+                                                    <i class="fas fa-trash me-2"></i> Xóa đơn hàng
                                                 </a>
-                                                <form id="cancel-order-{{ $order->id }}"
-                                                    action="{{ route('admin.orders.update-status', $order->id) }}"
+                                                <form id="delete-order-{{ $order->id }}"
+                                                    action="{{ route('admin.orders.destroy', $order->id) }}"
                                                     method="POST" style="display: none;">
                                                     @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="status" value="cancelled">
+                                                    @method('DELETE')
                                                 </form>
                                             @endif
                                         </div>
