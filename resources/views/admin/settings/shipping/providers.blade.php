@@ -146,7 +146,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Logo</label>
-                        <input type="file" class="form-control" name="logo" accept="image/*">
+                        <input type="file" class="form-control" name="logo_url" accept="image/*">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">API Key</label>
@@ -207,11 +207,11 @@
                     <div class="mb-3">
                         <label class="form-label">Logo</label>
                         @if($provider->logo_url)
-                        <div class="mb-2">
-                            <img src="{{ $provider->logo_url }}" alt="Current logo" style="max-width: 100px; max-height: 100px;" class="img-thumbnail">
-                        </div>
+                            <div class="mb-2">
+                                <img src="{{ $provider->logo_url }}" alt="Current logo" style="max-width: 100px; max-height: 100px;" class="img-thumbnail">
+                            </div>
                         @endif
-                        <input type="file" class="form-control" name="logo" accept="image/*">
+                        <input type="file" class="form-control" name="logo_url" accept="image/*">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">API Key</label>

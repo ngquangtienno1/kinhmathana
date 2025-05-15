@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ShippingProvider;
 use App\Models\ShippingFee;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ShippingProviderController extends Controller
 {
@@ -18,11 +19,11 @@ class ShippingProviderController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:125',
-            'code' => 'required|string|max:50|unique:shipping_providers',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:50|unique:shipping_providers,code',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|string|max:255',
+            'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'api_key' => 'nullable|string|max:255',
             'api_secret' => 'nullable|string|max:255',
             'api_endpoint' => 'nullable|string|max:255',
@@ -31,16 +32,23 @@ class ShippingProviderController extends Controller
             'sort_order' => 'integer'
         ]);
 
-        try {
-            // Xử lý upload logo
-            if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                // Lưu vào thư mục shipping/providers
-                $filePath = $file->storeAs('uploads/shipping/providers', $fileName, 'public');
-                $validated['logo_url'] = asset('storage/' . $filePath);
-            }
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
+        $validated = $validator->validated();
+
+        // Xử lý upload logo
+        if ($request->hasFile('logo_url')) {
+            $file = $request->file('logo_url');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/shipping', $fileName, 'public');
+            $validated['logo_url'] = asset('storage/' . $filePath);
+        }
+
+        try {
             ShippingProvider::create($validated);
             return redirect()->back()->with('success', 'Thêm đơn vị vận chuyển thành công');
         } catch (\Exception $e) {
@@ -50,11 +58,11 @@ class ShippingProviderController extends Controller
 
     public function update(Request $request, ShippingProvider $provider)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:125',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:shipping_providers,code,' . $provider->id,
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|string|max:255',
+            'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'api_key' => 'nullable|string|max:255',
             'api_secret' => 'nullable|string|max:255',
             'api_endpoint' => 'nullable|string|max:255',
@@ -63,25 +71,32 @@ class ShippingProviderController extends Controller
             'sort_order' => 'integer'
         ]);
 
-        try {
-            // Xử lý upload logo mới
-            if ($request->hasFile('logo')) {
-                // Xóa logo cũ nếu có
-                if ($provider->logo_url) {
-                    $oldPath = str_replace(asset('storage/'), '', $provider->logo_url);
-                    if (Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
-                    }
-                }
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-                // Upload logo mới
-                $file = $request->file('logo');
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                // Lưu vào thư mục shipping/providers
-                $filePath = $file->storeAs('uploads/shipping/providers', $fileName, 'public');
-                $validated['logo_url'] = asset('storage/' . $filePath);
+        $validated = $validator->validated();
+
+        // Xử lý upload logo mới
+        if ($request->hasFile('logo_url')) {
+            // Xóa logo cũ nếu có
+            if ($provider->logo_url) {
+                $oldPath = str_replace(asset('storage/'), '', $provider->logo_url);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
             }
 
+            // Upload logo mới
+            $file = $request->file('logo_url');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/shipping', $fileName, 'public');
+            $validated['logo_url'] = asset('storage/' . $filePath);
+        }
+
+        try {
             $provider->update($validated);
             return redirect()->back()->with('success', 'Cập nhật đơn vị vận chuyển thành công');
         } catch (\Exception $e) {

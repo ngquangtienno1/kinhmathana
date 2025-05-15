@@ -8,9 +8,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('admin.settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('admin.settings.update');
 
-    // Upload files
-    Route::post('/upload', [App\Http\Controllers\Admin\UploadController::class, 'upload'])->name('admin.upload');
-    Route::delete('/upload/{file}', [App\Http\Controllers\Admin\UploadController::class, 'delete'])->name('admin.upload.delete');
+
 
     // Quản lý đơn vị vận chuyển
     Route::prefix('shipping')->group(function () {

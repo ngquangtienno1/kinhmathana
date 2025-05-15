@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('website_settings', function (Blueprint $table) {
             $table->id();
             $table->string('website_name', 125);
-            $table->unsignedBigInteger('logo_id')->nullable();
-            $table->foreign('logo_id')->references('id')->on('upload_files')->onDelete('set null');
+            $table->string('logo_url', 255)->nullable();
             $table->string('contact_email', 125);
             $table->string('hotline', 20);
             $table->text('address');

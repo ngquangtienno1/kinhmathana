@@ -73,7 +73,7 @@ class SettingController extends Controller
             'mail_from_name' => 'nullable|string|max:255',
             'ai_api_key' => 'nullable|string|max:255',
             'ai_api_endpoint' => 'nullable|url|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -88,7 +88,7 @@ class SettingController extends Controller
         }
 
         // Xử lý upload logo nếu có
-        if ($request->hasFile('logo')) {
+        if ($request->hasFile('logo_url')) {
             // Xóa logo cũ nếu có
             if ($settings->logo_url) {
                 $oldPath = str_replace(asset('storage/'), '', $settings->logo_url);
@@ -98,13 +98,13 @@ class SettingController extends Controller
             }
 
             // Upload logo mới
-            $file = $request->file('logo');
+            $file = $request->file('logo_url');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('uploads/logo', $fileName, 'public');
             $settings->logo_url = asset('storage/' . $filePath);
         }
 
-        $settings->fill($request->except('logo'));
+        $settings->fill($request->except('logo_url'));
         $settings->save();
 
         return redirect()->back()->with('success', 'Cập nhật cài đặt thành công');

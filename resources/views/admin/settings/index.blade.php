@@ -52,16 +52,14 @@
                             <input type="text" class="form-control" id="website_name" name="website_name" value="{{ old('website_name', $settings->website_name ?? '') }}" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="logo">Logo</label>
-                            <div class="mb-3">
-                                @if(isset($settings->logo))
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $settings->logo->file_path) }}" alt="Logo" class="img-thumbnail" style="max-height: 100px;">
-                                </div>
+                            <label for="logo_url">Logo</label>
+                            <div class="mb-2">
+                                @if(isset($settings->logo_url))
+                                    <img src="{{ $settings->logo_url }}" alt="Logo" class="img-thumbnail" style="max-height: 100px;">
                                 @endif
-                                <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
-                                <small class="form-text text-muted">Upload logo mới sẽ thay thế logo hiện tại.</small>
                             </div>
+                            <input type="file" class="form-control" id="logo_url" name="logo_url" accept="image/*">
+                            <small class="form-text text-muted">Upload logo mới sẽ thay thế logo hiện tại.</small>
                         </div>
                         <div class="form-group mb-3">
                             <label for="contact_email">Email liên hệ</label>
