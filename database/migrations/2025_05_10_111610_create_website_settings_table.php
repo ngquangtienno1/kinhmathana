@@ -14,13 +14,34 @@ return new class extends Migration
         Schema::create('website_settings', function (Blueprint $table) {
             $table->id();
             $table->string('website_name', 125);
-            $table->unsignedBigInteger('logo_id')->nullable();
-            $table->foreign('logo_id')->references('id')->on('upload_files')->onDelete('set null');
+            $table->string('logo_url', 255)->nullable();
             $table->string('contact_email', 125);
             $table->string('hotline', 20);
             $table->text('address');
             $table->string('facebook_url', 255)->nullable();
             $table->string('instagram_url', 255)->nullable();
+
+            // Cấu hình vận chuyển
+            $table->decimal('default_shipping_fee', 10, 2)->default(0);
+            $table->json('shipping_providers')->nullable(); // Danh sách đơn vị giao hàng
+            $table->json('shipping_fee_by_province')->nullable(); // Phí ship theo tỉnh/thành
+
+            // Cấu hình email
+            $table->string('smtp_host', 255)->nullable();
+            $table->string('smtp_port', 10)->nullable();
+            $table->string('smtp_username', 255)->nullable();
+            $table->string('smtp_password', 255)->nullable();
+            $table->string('smtp_encryption', 10)->nullable();
+            $table->string('mail_from_address', 255)->nullable();
+            $table->string('mail_from_name', 255)->nullable();
+
+            // Cấu hình AI gợi ý sản phẩm
+            $table->boolean('enable_ai_recommendation')->default(false);
+            $table->string('ai_api_key', 255)->nullable();
+            $table->string('ai_api_endpoint', 255)->nullable();
+            $table->json('ai_settings')->nullable(); // Các cài đặt khác cho AI
+
+            $table->timestamps();
         });
     }
 

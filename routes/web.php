@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
 
 
@@ -58,5 +59,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
         Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore');
         Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete');
+    });
+
+    // Orders
+    Route::resource('orders', OrderController::class);
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
+        Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status');
+        Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status');
     });
 });

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,6 +17,7 @@ class BrandFactory extends Factory
      */
     public function definition(): array
     {
+        $name = $this->faker->company();
         return [
             'name' => $this->faker->company(),
             'description' => $this->faker->paragraph(),
