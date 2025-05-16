@@ -372,8 +372,10 @@
                     </div>
                 </li>
 
-                <!-- Settings -->
+                <!-- Cài đặt Hệ thống -->
                 <li class="nav-item">
+                    <p class="navbar-vertical-label">Cài đặt Hệ thống</p>
+                    <hr class="navbar-vertical-line" />
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-settings" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-settings">
@@ -382,58 +384,44 @@
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                 </div>
                                 <span class="nav-link-icon"><span data-feather="settings"></span></span>
-                                <span class="nav-link-text">Settings</span>
+                                <span class="nav-link-text">Cài đặt</span>
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
                                 id="nv-settings">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.settings.index') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">General Settings</span>
+                                            <span class="nav-link-text">Cài đặt chung</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.shipping.providers.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Đơn vị vận chuyển</span>
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Payment Methods</span>
+                                            <span class="nav-link-text">Phương thức thanh toán</span>
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Shipping Methods</span>
+                                            <span class="nav-link-text">Email hệ thống</span>
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Tax Settings</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">SEO Settings</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Email Templates</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Backup & Restore</span>
+                                            <span class="nav-link-text">Sao lưu dữ liệu</span>
                                         </div>
                                     </a>
                                 </li>

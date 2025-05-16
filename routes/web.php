@@ -7,12 +7,9 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
 
 
-Route::get('/', function () {
-    return view('admin.index');
-});
-
 //Admin
 Route::prefix('admin')->name('admin.')->group(function () {
+
 
     Route::get('/products', function () {
         return view('admin.products.index');
@@ -67,5 +64,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
         Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status');
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status');
+    });
+
+    // Settings - Cao Quốc An
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
+    // Quản lý đơn vị vận chuyển
+    Route::prefix('shipping')->group(function () {
+        Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])->name('shipping.providers.index');
+        Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])->name('shipping.providers.store');
+        Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])->name('shipping.providers.update');
+        Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])->name('shipping.providers.destroy');
+        Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])->name('shipping.providers.status');
+
+        // Quản lý phí vận chuyển
+        Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])->name('shipping.fees');
+        Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])->name('shipping.fees.store');
+        Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])->name('shipping.fees.update');
+        Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])->name('shipping.fees.destroy');
     });
 });

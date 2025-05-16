@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
             NewsSeeder::class,
             BrandSeeder::class,
         ]);
+
+        $this->call([
+            ShippingProviderSeeder::class,
+            WebsiteSettingSeeder::class,
+        ]);
     }
 }
