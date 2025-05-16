@@ -78,7 +78,7 @@
                 <!-- Quản lý Slider -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-orders" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-slider" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-orders">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
@@ -89,7 +89,7 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-orders">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-slider">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.sliders.index') }}">
                                         <div class="d-flex align-items-center">
@@ -98,23 +98,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.sliders.bin') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Payments</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Shipping</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Returns</span>
+                                            <span class="nav-link-text">Thùng rác</span>
                                         </div>
                                     </a>
                                 </li>
@@ -123,10 +109,10 @@
                     </div>
                 </li>
 
-                <!-- Marketing -->
+                <!-- Quản lý Tin tức -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-marketing" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-news" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-marketing">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
@@ -137,8 +123,7 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                id="nv-marketing">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-news">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.news.index') }}">
                                         <div class="d-flex align-items-center">
@@ -147,23 +132,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.news.bin') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Flash Sales</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Email Marketing</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Affiliate Program</span>
+                                            <span class="nav-link-text">Thùng rác</span>
                                         </div>
                                     </a>
                                 </li>
@@ -172,10 +143,10 @@
                     </div>
                 </li>
 
-                <!-- Content Management -->
+                <!-- Quản lý Brands -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-content" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-brands" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-content">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
@@ -186,7 +157,7 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-content">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-brands">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.brands.index') }}">
                                         <div class="d-flex align-items-center">
@@ -195,30 +166,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.brands.bin') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Comments</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.faqs.index') }}">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">FAQ</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Pages</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Media Library</span>
+                                            <span class="nav-link-text">Thùng rác</span>
                                         </div>
                                     </a>
                                 </li>
@@ -227,47 +177,25 @@
                     </div>
                 </li>
 
-                <!-- Customer Management -->
+                <!-- Quản lý FAQs -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-customers" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-faqs" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-customers">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                 </div>
-                                <span class="nav-link-icon"><span data-feather="users"></span></span>
-                                <span class="nav-link-text">Customers</span>
+                                <span class="nav-link-icon"><span data-feather="help-circle"></span></span>
+                                <span class="nav-link-text">Quản lý FAQs</span>
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                id="nv-customers">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-faqs">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.faqs.index') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Customer List</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Customer Groups</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Reviews</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Wishlist</span>
+                                            <span class="nav-link-text">Danh sách FAQs</span>
                                         </div>
                                     </a>
                                 </li>
@@ -372,7 +300,7 @@
                     </div>
                 </li>
 
-                <!-- Settings -->
+                <!-- Cài đặt Hệ thống -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-settings" role="button"
