@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('date_birth')->nullable();
             $table->string('gender', 20)->nullable();
             $table->string('status_user', 50)->nullable();
-            $table->foreignId('avatar_id')->nullable()->constrained('upload_files')->nullOnDelete();
+            $table->string('avatar_url')->nullable();
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();

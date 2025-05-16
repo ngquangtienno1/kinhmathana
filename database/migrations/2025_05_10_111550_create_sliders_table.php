@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 125);
-            $table->text('description')->nullable();
-            $table->unsignedBigInteger('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('upload_files')->onDelete('set null');
-            $table->string('link', 255)->nullable();
-            $table->integer('sort_order')->default(0);
+            $table->string('title');
+            $table->string('description')->nullable();
+            $table->string('image_url')->nullable();
+            $table->string('link')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
         });
     }
 

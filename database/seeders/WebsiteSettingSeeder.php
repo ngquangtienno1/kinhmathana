@@ -15,7 +15,7 @@ class WebsiteSettingSeeder extends Seeder
     {
         DB::table('website_settings')->insert([
             'website_name' => 'Hana Optical',
-            'logo_id' => null, // Sẽ cập nhật sau khi có logo
+            'logo_url' => 'https://hanaoptical.com/logo.png',
             'contact_email' => 'contact@hanaoptical.com',
             'hotline' => '1900 1234',
             'address' => '123 Đường ABC, Quận XYZ, TP.HCM',

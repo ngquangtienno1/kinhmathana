@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\FaqController;
 
 
 
@@ -24,4 +25,13 @@ Route::prefix('admin')->group(function () {
         Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])->name('admin.shipping.fees.update');
         Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])->name('admin.shipping.fees.destroy');
     });
+
+    // FAQ Routes
+    Route::get('/faqs', [FaqController::class, 'index'])->name('admin.faqs.index');
+    Route::get('/faqs/create', [FaqController::class, 'create'])->name('admin.faqs.create');
+    Route::post('/faqs', [FaqController::class, 'store'])->name('admin.faqs.store');
+    Route::get('/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('admin.faqs.edit');
+    Route::put('/faqs/{faq}', [FaqController::class, 'update'])->name('admin.faqs.update');
+    Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('admin.faqs.destroy');
+    Route::post('/faqs/{faq}/status', [FaqController::class, 'updateStatus'])->name('admin.faqs.status');
 });
