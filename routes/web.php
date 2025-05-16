@@ -18,27 +18,45 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     //Slider
     Route::prefix('sliders')->name('sliders.')->group(function () {
-        Route::resource('/', SliderController::class)->parameters(['' => 'id']);
-        Route::get('/bin', [SliderController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore', [SliderController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/forceDelete', [SliderController::class, 'forceDelete'])->name('forceDelete');
+        Route::get('/',                [SliderController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [SliderController::class, 'show'])->name('show');
+        Route::get('/create',          [SliderController::class, 'create'])->name('create');
+        Route::post('/store',          [SliderController::class, 'store'])->name('store');
+        Route::get('/{id}/edit',       [SliderController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update',     [SliderController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [SliderController::class, 'destroy'])->name('destroy');
+        Route::get('/bin',             [SliderController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [SliderController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete',   [SliderController::class, 'forceDelete'])->name('forceDelete');
         Route::delete('/bulk-delete', [SliderController::class, 'bulkDelete'])->name('bulk-delete');
     });
 
     //News
     Route::prefix('news')->name('news.')->group(function () {
-        Route::resource('/', NewsController::class)->parameters(['' => 'id']);
-        Route::get('/bin', [NewsController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore', [NewsController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/forceDelete', [NewsController::class, 'forceDelete'])->name('forceDelete');
+        Route::get('/', [NewsController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [NewsController::class, 'show'])->name('show');
+        Route::get('/create',          [NewsController::class, 'create'])->name('create');
+        Route::post('/store',          [NewsController::class, 'store'])->name('store');
+        Route::get('/{id}/edit',       [NewsController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update',     [NewsController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [NewsController::class, 'destroy'])->name('destroy');
+        Route::get('/bin',             [NewsController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [NewsController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete');
     });
 
     //Brands
     Route::prefix('brands')->name('brands.')->group(function () {
-        Route::resource('/', BrandController::class)->parameters(['' => 'id']);
-        Route::get('/bin', [BrandController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore', [BrandController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/forceDelete', [BrandController::class, 'forceDelete'])->name('forceDelete');
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [BrandController::class, 'show'])->name('show');
+        Route::get('/create',          [BrandController::class, 'create'])->name('create');
+        Route::post('/store',          [BrandController::class, 'store'])->name('store');
+        Route::get('/{id}/edit',       [BrandController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update',     [BrandController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [BrandController::class, 'destroy'])->name('destroy');
+        Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete');
     });
 
     // Orders
