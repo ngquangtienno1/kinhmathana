@@ -202,7 +202,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.faqs.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">FAQ</span>
                                         </div>
@@ -372,10 +372,8 @@
                     </div>
                 </li>
 
-                <!-- Cài đặt Hệ thống -->
+                <!-- Settings -->
                 <li class="nav-item">
-                    <p class="navbar-vertical-label">Cài đặt Hệ thống</p>
-                    <hr class="navbar-vertical-line" />
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-settings" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-settings">

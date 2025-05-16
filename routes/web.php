@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\FaqController;
 
 
 //Admin
@@ -17,45 +18,27 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     //Slider
     Route::prefix('sliders')->name('sliders.')->group(function () {
-        Route::get('/',                [SliderController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [SliderController::class, 'show'])->name('show');
-        Route::get('/create',          [SliderController::class, 'create'])->name('create');
-        Route::post('/store',          [SliderController::class, 'store'])->name('store');
-        Route::get('/{id}/edit',       [SliderController::class, 'edit'])->name('edit');
-        Route::put('/{id}/update',     [SliderController::class, 'update'])->name('update');
-        Route::delete('/{id}/destroy', [SliderController::class, 'destroy'])->name('destroy');
-        Route::get('/bin',             [SliderController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [SliderController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/forceDelete',   [SliderController::class, 'forceDelete'])->name('forceDelete');
+        Route::resource('/', SliderController::class)->parameters(['' => 'id']);
+        Route::get('/bin', [SliderController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [SliderController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete', [SliderController::class, 'forceDelete'])->name('forceDelete');
         Route::delete('/bulk-delete', [SliderController::class, 'bulkDelete'])->name('bulk-delete');
     });
 
     //News
     Route::prefix('news')->name('news.')->group(function () {
-        Route::get('/', [NewsController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [NewsController::class, 'show'])->name('show');
-        Route::get('/create',          [NewsController::class, 'create'])->name('create');
-        Route::post('/store',          [NewsController::class, 'store'])->name('store');
-        Route::get('/{id}/edit',       [NewsController::class, 'edit'])->name('edit');
-        Route::put('/{id}/update',     [NewsController::class, 'update'])->name('update');
-        Route::delete('/{id}/destroy', [NewsController::class, 'destroy'])->name('destroy');
-        Route::get('/bin',             [NewsController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [NewsController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete');
+        Route::resource('/', NewsController::class)->parameters(['' => 'id']);
+        Route::get('/bin', [NewsController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [NewsController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete', [NewsController::class, 'forceDelete'])->name('forceDelete');
     });
 
     //Brands
     Route::prefix('brands')->name('brands.')->group(function () {
-        Route::get('/', [BrandController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [BrandController::class, 'show'])->name('show');
-        Route::get('/create',          [BrandController::class, 'create'])->name('create');
-        Route::post('/store',          [BrandController::class, 'store'])->name('store');
-        Route::get('/{id}/edit',       [BrandController::class, 'edit'])->name('edit');
-        Route::put('/{id}/update',     [BrandController::class, 'update'])->name('update');
-        Route::delete('/{id}/destroy', [BrandController::class, 'destroy'])->name('destroy');
-        Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete');
+        Route::resource('/', BrandController::class)->parameters(['' => 'id']);
+        Route::get('/bin', [BrandController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [BrandController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete', [BrandController::class, 'forceDelete'])->name('forceDelete');
     });
 
     // Orders
@@ -71,17 +54,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
 
     // Quản lý đơn vị vận chuyển
-    Route::prefix('shipping')->group(function () {
-        Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])->name('shipping.providers.index');
-        Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])->name('shipping.providers.store');
-        Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])->name('shipping.providers.update');
-        Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])->name('shipping.providers.destroy');
-        Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])->name('shipping.providers.status');
+    Route::prefix('shipping')->name('shipping.')->group(function () {
+        Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])->name('providers.index');
+        Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])->name('providers.store');
+        Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])->name('providers.update');
+        Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])->name('providers.destroy');
+        Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])->name('providers.status');
 
         // Quản lý phí vận chuyển
-        Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])->name('shipping.fees');
-        Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])->name('shipping.fees.store');
-        Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])->name('shipping.fees.update');
-        Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])->name('shipping.fees.destroy');
+        Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])->name('fees');
+        Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])->name('fees.store');
+        Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])->name('fees.update');
+        Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])->name('fees.destroy');
+    });
+
+    // FAQ Routes
+    Route::prefix('faqs')->name('faqs.')->group(function () {
+        Route::get('/', [FaqController::class, 'index'])->name('index');
+        Route::get('/create', [FaqController::class, 'create'])->name('create');
+        Route::post('/store', [FaqController::class, 'store'])->name('store');
+        Route::get('/{faq}/edit', [FaqController::class, 'edit'])->name('edit');
+        Route::put('/{faq}', [FaqController::class, 'update'])->name('update');
+        Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('destroy');
+        Route::post('/{faq}/status', [FaqController::class, 'updateStatus'])->name('status');
     });
 });

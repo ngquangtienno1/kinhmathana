@@ -17,7 +17,12 @@ class FaqFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'question' => $this->faker->sentence(),
+            'answer' => $this->faker->paragraph(),
+            'image' => null,
+            'category' => $this->faker->randomElement(['Chung', 'Sản phẩm', 'Vận chuyển', 'Thanh toán', 'Bảo hành']),
+            'sort_order' => $this->faker->numberBetween(0, 100),
+            'is_active' => true
         ];
     }
 }
