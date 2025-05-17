@@ -71,7 +71,7 @@ DB_PASSWORD=your_password
 php artisan migrate
 ```
 
-8. Seed the database (optional):
+8. Seed the database:
 
 ```bash
 php artisan db:seed
@@ -87,6 +87,47 @@ npm run build
 
 ```bash
 php artisan serve
+```
+
+## Role & Permission Management
+
+### Quick Setup
+
+1. Run migrations:
+```bash
+php artisan migrate
+```
+
+2. Seed default roles and permissions:
+```bash
+php artisan db:seed --class=RolePermissionSeeder
+```
+
+3. Clear cache:
+```bash
+php artisan cache:clear
+composer dump-autoload
+```
+
+### Default Roles
+
+- **Admin**: Full access to all features
+- **Staff**: Can manage products, orders, and view FAQs
+- **Customer**: Basic access to view products and FAQs
+
+### Testing
+
+- Test login: `GET /test` (logs in as test user)
+- Test logout: `GET /logout-test`
+
+### Common Issues
+
+If permissions don't work:
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+composer dump-autoload
 ```
 
 ## Development

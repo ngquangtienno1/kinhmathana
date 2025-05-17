@@ -23,11 +23,22 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['male', 'female']);
+        $status = $this->faker->randomElement(['active', 'inactive', 'pending']);
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'name' => $this->faker->name($gender),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => Hash::make('password'), // Mật khẩu mặc định là 'password'
+            'address' => $this->faker->address(),
+            'phone' => $this->faker->phoneNumber(),
+            'date_birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
+            'gender' => $gender,
+            'status_user' => $status,
+            'avatar_url' => $this->faker->imageUrl(200, 200, 'people'),
+            'role_id' => $this->faker->numberBetween(1, 3), // Giả sử có 3 role (1: Admin, 2: Nhân viên, 3: Khách hàng)
+            'email_verified_at' => $this->faker->optional(0.8)->dateTimeThisYear(),
+            'phone_verified_at' => $this->faker->optional(0.7)->dateTimeThisYear(),
             'remember_token' => Str::random(10),
         ];
     }

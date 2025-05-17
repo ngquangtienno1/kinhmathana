@@ -12,7 +12,7 @@
                         </a>
                     </div>
                 </li>
-
+                @if(canAccess('view-products'))
                 <!-- Product Management -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -74,7 +74,9 @@
                         </div>
                     </div>
                 </li>
+                @endif
 
+                @if(canAccess('view-sliders'))
                 <!-- Quản lý Slider -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -91,11 +93,11 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-orders">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.sliders.index') }}">
+                                    {{-- <a class="nav-link" href="{{ route('admin.sliders.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách Slider</span>
                                         </div>
-                                    </a>
+                                    </a> --}}
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
@@ -122,7 +124,9 @@
                         </div>
                     </div>
                 </li>
+                @endif
 
+                @if(canAccess('view-news'))
                 <!-- Marketing -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -139,11 +143,11 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-marketing">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.news.index') }}">
+                                    {{-- <a class="nav-link" href="{{ route('admin.news.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách tin tức</span>
                                         </div>
-                                    </a>
+                                    </a> --}}
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
@@ -170,6 +174,9 @@
                         </div>
                     </div>
                 </li>
+                @endif
+
+
 
                 <!-- Content Management -->
                 <li class="nav-item">
@@ -187,11 +194,11 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-content">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.brands.index') }}">
+                                    {{-- <a class="nav-link" href="{{ route('admin.brands.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách Brands</span>
                                         </div>
-                                    </a>
+                                    </a> --}}
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
@@ -200,6 +207,7 @@
                                         </div>
                                     </a>
                                 </li>
+                                @if(canAccess('view-faqs'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.faqs.index') }}">
                                         <div class="d-flex align-items-center">
@@ -207,6 +215,7 @@
                                         </div>
                                     </a>
                                 </li>
+                                @endif
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
@@ -225,55 +234,7 @@
                         </div>
                     </div>
                 </li>
-
-                <!-- Customer Management -->
-                <li class="nav-item">
-                    <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-customers" role="button"
-                            data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-customers">
-                            <div class="d-flex align-items-center">
-                                <div class="dropdown-indicator-icon-wrapper">
-                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
-                                </div>
-                                <span class="nav-link-icon"><span data-feather="users"></span></span>
-                                <span class="nav-link-text">Customers</span>
-                            </div>
-                        </a>
-                        <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-customers">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Customer List</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Customer Groups</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Reviews</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Wishlist</span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-
+                @if(canAccess('view-users'))
                 <!-- User Management -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -296,20 +257,24 @@
                                         </div>
                                     </a>
                                 </li>
+                                @if(canAccess('view-roles'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.roles.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Roles</span>
                                         </div>
                                     </a>
                                 </li>
+                                @endif
+                                @if(canAccess('view-permissions'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.permissions.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Permissions</span>
                                         </div>
                                     </a>
                                 </li>
+                                @endif
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <div class="d-flex align-items-center">
@@ -321,6 +286,10 @@
                         </div>
                     </div>
                 </li>
+                @endif
+
+
+
 
                 <!-- Reports -->
                 <li class="nav-item">
@@ -369,7 +338,7 @@
                         </div>
                     </div>
                 </li>
-
+                @if(canAccess('view-settings'))
                 <!-- Settings -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -400,16 +369,16 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.roles.index') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Phương thức thanh toán</span>
+                                            <span class="nav-link-text">Quản lý vai trò</span>
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.permissions.index') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Email hệ thống</span>
+                                            <span class="nav-link-text">Quản lý quyền</span>
                                         </div>
                                     </a>
                                 </li>
@@ -424,6 +393,7 @@
                         </div>
                     </div>
                 </li>
+                @endif
             </ul>
         </div>
     </div>
