@@ -57,8 +57,8 @@
                         <div class="mb-3">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" id="is_active" name="is_active" type="checkbox"
-                                    value="1" {{ old('is_active', true) ? 'checked' : '' }} />
-                                <label class="form-check-label" for="is_active">Trạng thái hoạt động</label>
+                                    value="1" {{ old('is_active', false) ? 'checked' : '' }} />
+                                <label class="form-check-label" for="is_active">Hoạt động</label>
                             </div>
                         </div>
 

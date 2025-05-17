@@ -62,6 +62,14 @@
                                         <td>{{ $news->title }}</td>
                                     </tr>
                                     <tr>
+                                        <th>Đường dẫn URL</th>
+                                        <td>
+                                            <code>{{ $news->slug }}</code>
+                                            <small class="text-muted d-block mt-1">URL:
+                                                {{ url('news/' . $news->slug) }}</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Nội dung</th>
                                         <td>{!! nl2br(e($news->content)) !!}</td>
                                     </tr>

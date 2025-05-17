@@ -57,8 +57,27 @@
                         @enderror
                     </div>
 
+                    <div class="col-md-6">
+                        <label class="form-label" for="start_date">Ngày bắt đầu</label>
+                        <input class="form-control @error('start_date') is-invalid @enderror" id="start_date"
+                            name="start_date" type="datetime-local" value="{{ old('start_date') }}" />
+                        @error('start_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="end_date">Ngày kết thúc</label>
+                        <input class="form-control @error('end_date') is-invalid @enderror" id="end_date"
+                            name="end_date" type="datetime-local" value="{{ old('end_date') }}" />
+                        @error('end_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="col-12">
                         <div class="form-check form-switch">
+                            <input type="hidden" name="is_active" value="0">
                             <input class="form-check-input" id="is_active" name="is_active" type="checkbox"
                                 value="1" {{ old('is_active') ? 'checked' : '' }} />
                             <label class="form-check-label" for="is_active">Hoạt động</label>
