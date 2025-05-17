@@ -167,6 +167,34 @@
                                             href="{{ route('admin.payments.show', $payment->id) }}">Xem chi tiết</a>
 
                                         <div class="dropdown-divider"></div>
+                                        <form action="{{ route('admin.payments.updateStatus', $payment->id) }}"
+                                            method="POST" class="d-inline-block">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="đã hoàn thành">
+                                            <button type="submit" class="dropdown-item text-success">
+                                                <i class="fa-solid fa-check me-2"></i> Đánh dấu hoàn thành
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ route('admin.payments.updateStatus', $payment->id) }}"
+                                            method="POST" class="d-inline-block">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="đã hủy">
+                                            <button type="submit" class="dropdown-item text-secondary">
+                                                <i class="fa-solid fa-ban me-2"></i> Hủy thanh toán
+                                            </button>
+                                        </form>
+
+
+
+                                        <div class="dropdown-divider"></div>
+
+                                        <a class="dropdown-item text-info"
+                                            href="{{ route('admin.payments.invoice', $payment->id) }}">
+                                            <i class="fa-solid fa-file-invoice me-2"></i> In hóa đơn
+                                        </a>
                                         <form action="{{ route('admin.payments.destroy', $payment->id) }}"
                                             method="POST" class="d-inline">
                                             @csrf
@@ -184,12 +212,11 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="pagination">
-                {{ $payments->links() }}
-            </div>
         </div>
-
+        {{ $payments->links('pagination::bootstrap-5') }}
     </div>
+
 </div>
+
 
 @endsection

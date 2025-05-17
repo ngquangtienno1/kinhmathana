@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'testcsd2345@example.com',
             'email_verified_at' => now(),
             'password' => bcrypt('password'),
             'role_id' => 1, // Thêm dòng này để tránh lỗi

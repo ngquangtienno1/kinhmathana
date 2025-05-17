@@ -22,7 +22,8 @@ class PaymentController extends Controller
         if ($request->has('status') && in_array($request->status, ['đã hoàn thành', 'đang chờ thanh toán', 'đã hủy', 'thất bại'])) {
             $query->where('status', $request->status);
         }
-        $payments = $query->latest()->paginate(20)->withQueryString();
+
+        $payments = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
         $tatca = Payment::count();
         $dathanhtoan = Payment::where('status', 'đã hoàn thành')->count();
@@ -96,5 +97,30 @@ class PaymentController extends Controller
             // Chuyển hướng với thông báo lỗi nếu trạng thái không hợp lệ
             return redirect()->route('admin.payments.index')->with('error', 'Chỉ có thể xóa thanh toán có trạng thái "đã hủy" hoặc "thất bại".');
         }
+    }
+    public function updateStatus(Request $request, $id)
+    {
+       $request->validate([
+        'status' => 'required|in:đã hoàn thành,đã hủy',
+    ]);
+
+    $payment = Payment::findOrFail($id);
+
+    if ($payment->status !== 'đang chờ thanh toán') {
+        return back()->with('error', 'Chỉ có thể cập nhật trạng thái khi đơn đang chờ thanh toán.');
+    }
+
+    $payment->status = $request->status;
+    $payment->save();
+
+    return back()->with('success', 'Trạng thái thanh toán đã được cập nhật.');
+    }
+
+    public function printInvoice($id)
+    {
+        $payment = Payment::findOrFail($id);
+
+        // Xuất PDF hóa đơn, hoặc redirect đến trang chi tiết
+        return view('admin.payments.invoice', compact('payment'));
     }
 }

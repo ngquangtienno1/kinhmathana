@@ -6,6 +6,8 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -13,14 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        
-        $this->call([
-            RoleSeeder::class, // Gọi trước
-            UserSeeder::class,
-            OrderSeeder::class,
-            PaymentMethodSeeder::class,
-            PaymentSeeder::class,
-        ]);
 
+        // $this->call([
+        //     RoleSeeder::class, // Gọi trước
+        //     UserSeeder::class,
+        //     OrderSeeder::class,
+        //     PaymentMethodSeeder::class,
+        //     PaymentSeeder::class,
+        // ]);
+
+        $this->call([
+            UserSeeder::class,
+            NewsSeeder::class,
+            ProductSeeder::class,
+            CommentSeeder::class,
+        ]);
     }
 }
