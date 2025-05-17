@@ -16,7 +16,6 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('import_price', 10, 2);
             $table->decimal('sale_price', 10, 2);
-            $table->decimal('discount_price', 10, 2);
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->foreignId('brand_id')->nullable()->constrained('brands')->nullOnDelete();
             $table->string('status', 50)->nullable();

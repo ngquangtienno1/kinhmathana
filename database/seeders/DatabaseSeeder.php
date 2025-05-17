@@ -20,5 +20,11 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             ProductSeeder::class,
         ]);
+
+        $this->call([
+            SliderSeeder::class,
+            NewsSeeder::class,
+            BrandSeeder::class,
+        ]);
     }
 }

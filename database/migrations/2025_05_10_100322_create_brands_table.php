@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('name', 125);
             $table->text('description')->nullable();
             $table->string('logo_path', 255)->nullable(); // Đã sửa thành logo_path
+            $table->string('image')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

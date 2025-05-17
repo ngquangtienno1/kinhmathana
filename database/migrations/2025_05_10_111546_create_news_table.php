@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title', 125);
             $table->text('content');
-            $table->unsignedBigInteger('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('upload_files')->onDelete('set null');
+            $table->string('image')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

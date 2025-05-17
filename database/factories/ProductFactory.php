@@ -18,7 +18,6 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomFloat(2, 100, 500),
             'import_price' => $this->faker->randomFloat(2, 50, 400),
             'sale_price' => $this->faker->randomFloat(2, 80, 450),
-            'discount_price' => $this->faker->randomFloat(2, 10, 100),
             'category_id' => 1, // tạo sẵn category id để tránh lỗi
             'brand_id' => 1,
             'status' => 'active',
