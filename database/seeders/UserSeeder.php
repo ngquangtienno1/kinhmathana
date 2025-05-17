@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         // Tạo tài khoản admin
         User::create([
             'name' => 'Admin',
-            'email' => 'admin@gmail.com',
+            'email' => 'tiennqph51552@gmail.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
@@ -34,5 +34,6 @@ class UserSeeder extends Seeder
         User::factory()->count(10)->create([
             'role_id' => $userRole->id
         ]);
+        
     }
 }
