@@ -10,7 +10,7 @@ class News extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'content', 'image', 'is_active'];
+    protected $fillable = ['title', 'content', 'image', 'is_active', 'slug'];
 
     protected $dates = ['deleted_at'];
 }

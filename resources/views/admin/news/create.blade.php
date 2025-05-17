@@ -1,18 +1,18 @@
 @extends('admin.layouts')
-@section('title', 'Thêm Slider')
+@section('title', 'Thêm Tin tức')
 @section('content')
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.sliders.index') }}">Slider</a>
+        <a href="{{ route('admin.news.index') }}">Tin tức</a>
     </li>
-    <li class="breadcrumb-item active">Thêm Slider</li>
+    <li class="breadcrumb-item active">Thêm Tin tức</li>
 @endsection
 
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Thêm Slider</h2>
+            <h2 class="mb-0">Thêm Tin tức</h2>
         </div>
     </div>
 
@@ -26,6 +26,17 @@
                         <input class="form-control @error('title') is-invalid @enderror" id="title" name="title"
                             type="text" value="{{ old('title') }}" required />
                         @error('title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="slug">Đường dẫn URL</label>
+                        <input class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug"
+                            type="text" value="{{ old('slug') }}"
+                            placeholder="Để trống để tự động tạo từ tiêu đề" />
+                        <small class="text-muted">Đường dẫn URL sẽ được tự động tạo từ tiêu đề nếu để trống</small>
+                        @error('slug')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

@@ -56,12 +56,23 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         try {
+            $messages = [
+                'name.required' => 'Vui lòng nhập tên thương hiệu',
+                'name.max' => 'Tên thương hiệu không được vượt quá 125 ký tự',
+                'image.required' => 'Vui lòng chọn hình ảnh',
+                'image.image' => 'File phải là hình ảnh',
+                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
+                'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB'
+            ];
+
             $dataNew = $request->validate([
                 'name' => 'required|string|max:125',
                 'description' => 'nullable|string',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'required|boolean'
-            ]);
+                'is_active' => 'nullable|boolean'
+            ], $messages);
+
+            $dataNew['is_active'] = $request->boolean('is_active');
 
             // Lưu ảnh
             if ($request->hasFile('image')) {
@@ -87,12 +98,23 @@ class BrandController extends Controller
         try {
             $brand = Brand::findOrFail($id);
 
+            $messages = [
+                'name.required' => 'Vui lòng nhập tên thương hiệu',
+                'name.max' => 'Tên thương hiệu không được vượt quá 125 ký tự',
+                'image.image' => 'File phải là hình ảnh',
+                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
+                'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB'
+            ];
+
             $dataNew = $request->validate([
                 'name' => 'required|string|max:125',
                 'description' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'required|boolean'
-            ]);
+                'is_active' => 'nullable|boolean'
+            ], $messages);
+
+            // Set is_active value based on checkbox
+            $dataNew['is_active'] = $request->boolean('is_active');
 
             if ($request->hasFile('image')) {
                 $imgPath = $request->file('image')->store('images/brands', 'public');

@@ -214,15 +214,15 @@
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                 </div>
                                 <span class="nav-link-icon"><span data-feather="user-check"></span></span>
-                                <span class="nav-link-text">Users</span>
+                                <span class="nav-link-text">Người dùng</span>
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-users">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.listUser') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">User List</span>
+                                            <span class="nav-link-text">Danh sách người dùng</span>
                                         </div>
                                     </a>
                                 </li>

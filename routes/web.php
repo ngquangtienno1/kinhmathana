@@ -1,17 +1,36 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\SocialController;
+
+
+Route::get('login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
+Route::get('logout', [AuthenticationController::class, 'logout'])->name('logout');
+Route::get('register', [AuthenticationController::class, 'register'])->name('register');
+Route::post('postRegister', [AuthenticationController::class, 'postRegister'])->name('postRegister');
+
+Route::get('/auth/google', [SocialController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
+
+Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
+Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
 
 
 //Admin
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('checkAdmin')->group(function () {
 
+    //User
+    Route::get('user', [UserController::class, 'index'])->name('listUser');
 
+    //Product
     Route::get('/products', function () {
         return view('admin.products.index');
     });

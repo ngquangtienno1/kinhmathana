@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Thương hiệu</a>
+        <a href="{{ route('admin.brands.index') }}">Thương hiệu</a>
     </li>
     <li class="breadcrumb-item active">Danh sách thương hiệu</li>
 @endsection
