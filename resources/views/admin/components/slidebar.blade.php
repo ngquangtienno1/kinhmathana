@@ -93,11 +93,11 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-slider">
                                 <li class="nav-item">
-                                    {{-- <a class="nav-link" href="{{ route('admin.sliders.index') }}">
+                                    <a class="nav-link" href="{{ route('admin.sliders.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách Slider</span>
                                         </div>
-                                    </a> --}}
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.sliders.bin') }}">
@@ -129,11 +129,11 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-news">
                                 <li class="nav-item">
-                                    {{-- <a class="nav-link" href="{{ route('admin.news.index') }}">
+                                    <a class="nav-link" href="{{ route('admin.news.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách tin tức</span>
                                         </div>
-                                    </a> --}}
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.news.bin') }}">
@@ -166,11 +166,11 @@
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-brands">
                                 <li class="nav-item">
-                                    {{-- <a class="nav-link" href="{{ route('admin.brands.index') }}">
+                                    <a class="nav-link" href="{{ route('admin.brands.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách Brands</span>
                                         </div>
-                                    </a> --}}
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.brands.bin') }}">
