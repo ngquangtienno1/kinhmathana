@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PermissionController extends Controller
 {
@@ -34,14 +35,26 @@ class PermissionController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:permissions',
-            'slug' => 'required|string|max:255|unique:permissions',
             'description' => 'nullable|string|max:1000',
         ]);
+
+        // Tự động tạo slug từ tên quyền
+        $slug = Str::slug($validated['name']);
+
+        // Kiểm tra nếu slug đã tồn tại
+        $count = 1;
+        $originalSlug = $slug;
+        while (Permission::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         Permission::create($validated);
 
         return redirect()->route('admin.permissions.index')
-            ->with('success', 'Permission created successfully.');
+            ->with('success', 'Thêm quyền thành công');
     }
 
     public function edit(Permission $permission)
@@ -53,14 +66,26 @@ class PermissionController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
-            'slug' => 'required|string|max:255|unique:permissions,slug,' . $permission->id,
             'description' => 'nullable|string|max:1000',
         ]);
+
+        // Tự động tạo slug từ tên quyền
+        $slug = Str::slug($validated['name']);
+
+        // Kiểm tra nếu slug đã tồn tại (trừ permission hiện tại)
+        $count = 1;
+        $originalSlug = $slug;
+        while (Permission::where('slug', $slug)->where('id', '!=', $permission->id)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         $permission->update($validated);
 
         return redirect()->route('admin.permissions.index')
-            ->with('success', 'Permission updated successfully.');
+            ->with('success', 'Cập nhật quyền thành công');
     }
 
     public function destroy(Permission $permission)

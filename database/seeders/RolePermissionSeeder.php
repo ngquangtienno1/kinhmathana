@@ -160,6 +160,12 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Quản lý SEO', 'slug' => 'manage-seo', 'description' => 'Cho phép quản lý thông tin SEO'],
             ['name' => 'Quản lý backup', 'slug' => 'manage-backups', 'description' => 'Cho phép quản lý sao lưu dữ liệu'],
             ['name' => 'Quản lý log', 'slug' => 'manage-logs', 'description' => 'Cho phép xem và quản lý log hệ thống'],
+
+            // Quản lý vận chuyển
+            ['name' => 'Xem đơn vị vận chuyển', 'slug' => 'view-shipping', 'description' => 'Cho phép xem danh sách đơn vị vận chuyển'],
+            ['name' => 'Thêm đơn vị vận chuyển', 'slug' => 'create-shipping', 'description' => 'Cho phép thêm đơn vị vận chuyển mới'],
+            ['name' => 'Sửa đơn vị vận chuyển', 'slug' => 'edit-shipping', 'description' => 'Cho phép chỉnh sửa đơn vị vận chuyển'],
+            ['name' => 'Xóa đơn vị vận chuyển', 'slug' => 'delete-shipping', 'description' => 'Cho phép xóa đơn vị vận chuyển'],
         ];
 
         // Thêm timestamps cho mỗi permission
