@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\PaymentController;
 
 
 Route::get('login', [AuthenticationController::class, 'login'])->name('login');
@@ -115,4 +117,22 @@ Route::prefix('admin')->name('admin.')->middleware('checkAdmin')->group(function
         Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('destroy');
         Route::post('/{faq}/status', [FaqController::class, 'updateStatus'])->name('status');
     });
+
+    //Quản lý thanh toán
+
+    Route::resource('payments', PaymentController::class);
+    Route::patch('/payments/{id}/status', [PaymentController::class, 'updateStatus'])->name('payments.updateStatus');
+    Route::get('/payments/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('payments.invoice');
+
+
+    // Quản lý bình luận
+    Route::resource('comments', CommentController::class);
+    Route::patch('/comments/toggle-visibility/{id}', [CommentController::class, 'toggleVisibility'])->name('comments.toggleVisibility');
+
+    Route::prefix('comments')->name('comments.')->group(function () {
+        Route::get('trashed', [CommentController::class, 'trashed'])->name('trashed');
+        Route::patch('{id}/restore', [CommentController::class, 'restore'])->name('restore');
+        Route::delete('{id}/force-delete', [CommentController::class, 'forceDelete'])->name('forceDelete');
+    });
+    Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.updateStatus');
 });

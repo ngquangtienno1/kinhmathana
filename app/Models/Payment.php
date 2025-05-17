@@ -10,7 +10,10 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_id', 'status', 'transaction_code', 'payment_method_id'
+        'order_id',
+        'status',
+        'transaction_code',
+        'payment_method_id'
     ];
 
     public $timestamps = ['created_at'];
@@ -24,5 +27,9 @@ class Payment extends Model
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+    public function getFormattedPaymentDateAttribute()
+    {
+        return \Carbon\Carbon::parse($this->payment_date)->format('d M, Y');
     }
 }

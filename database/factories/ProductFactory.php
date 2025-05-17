@@ -22,21 +22,27 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->words(3, true);
+        $price = $this->faker->numberBetween(100000, 5000000);
+        $salePrice = $this->faker->boolean(30)
+            ? $this->faker->numberBetween(50000, $price - 10000)
+            : $price;
+        $discountPrice = $this->faker->boolean(20)
+            ? $this->faker->numberBetween(10000, min($salePrice - 10000, 1000000))
+            : 0;
+
         return [
-            'name' => $name,
-            'slug' => Str::slug($name),
-            'sku' => 'PRD-' . $this->faker->unique()->numberBetween(10000, 99999),
-            'description' => $this->faker->paragraph(),
-            'price' => $this->faker->numberBetween(100000, 5000000),
-            'sale_price' => $this->faker->optional(0.3)->numberBetween(50000, 4000000),
-            'stock' => $this->faker->numberBetween(0, 100),
-            'brand_id' => Brand::factory(),
+            'name' => $this->faker->words(3, true),
+            'description_short' => $this->faker->sentence(),
+            'description_long' => $this->faker->paragraphs(3, true),
+            'price' => $price,
+            'import_price' => $this->faker->numberBetween(50000, 2000000),
+            'sale_price' => $salePrice,
+            'discount_price' => $discountPrice,
             'category_id' => Category::factory(),
-            'is_active' => $this->faker->boolean(80),
+            'brand_id' => Brand::factory(),
+            'status' => $this->faker->randomElement(['active', 'inactive', 'draft']),
             'is_featured' => $this->faker->boolean(20),
-            'meta_title' => $this->faker->words(4, true),
-            'meta_description' => $this->faker->sentence(),
+            'views' => $this->faker->numberBetween(0, 1000),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => now(),
         ];
