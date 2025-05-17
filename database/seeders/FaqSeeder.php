@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Faq;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,7 @@ class FaqSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // Tạo 20 FAQ mẫu
+        Faq::factory(20)->create();
     }
 }

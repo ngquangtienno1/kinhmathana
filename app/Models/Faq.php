@@ -9,7 +9,19 @@ class Faq extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['question', 'answer'];
+    protected $fillable = [
+        'question',
+        'answer',
+        'image',
+        'category',
+        'sort_order',
+        'is_active'
+    ];
 
-    public $timestamps = false;
+    protected $casts = [
+        'is_active' => 'boolean',
+        'sort_order' => 'integer'
+    ];
+
+    public $timestamps = true;
 }

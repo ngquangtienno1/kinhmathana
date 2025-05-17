@@ -6,15 +6,17 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>@yield('title') - Hana Admin</title>
+    <title>@yield('title') - {{ getSetting('website_name') }}</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
     <!-- ===============================================-->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('v1/assets/img/favicons/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('v1/assets/img/favicons/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('v1/assets/img/favicons/favicon-16x16.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('v1/assets/img/favicons/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ getLogoUrl() }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ getLogoUrl() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ getLogoUrl() }}">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{ getLogoUrl() }}">
+
     <link rel="manifest" href="{{ asset('v1/assets/img/favicons/manifest.json') }}">
     <meta name="msapplication-TileImage" content="{{ asset('v1/assets/img/favicons/mstile-150x150.png') }}">
     <meta name="theme-color" content="#ffffff">
@@ -54,4 +56,6 @@
     <link href="{{ asset('v1/vendors/leaflet/leaflet.css') }}" rel="stylesheet">
     <link href="{{ asset('v1/vendors/leaflet.markercluster/MarkerCluster.css') }}" rel="stylesheet">
     <link href="{{ asset('v1/vendors/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
+
+
 </head>

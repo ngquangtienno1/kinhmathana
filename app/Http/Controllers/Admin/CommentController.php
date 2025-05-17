@@ -81,12 +81,18 @@ class CommentController extends Controller
         // Lấy danh sách các trạng thái hiện có trong DB (distinct)
         $availableStatuses = Comment::select('status')->distinct()->pluck('status');
 
+        // Đếm số lượng bình luận đang hoạt động và đã xóa
+        $activeCount = Comment::whereNull('deleted_at')->count();
+        $deletedCount = Comment::onlyTrashed()->count();
+
         return view('admin.comments.index', compact(
             'comments',
             'news',
             'products',
             'status',
-            'availableStatuses'
+            'availableStatuses',
+            'activeCount',
+            'deletedCount'
         ));
     }
 

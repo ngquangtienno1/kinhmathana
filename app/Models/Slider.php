@@ -4,19 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Slider extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title', 'description', 'image_id', 'link', 'sort_order', 'is_active'
+        'title',
+        'description',
+        'image',
+        'sort_order',
+        'is_active'
     ];
 
-    public $timestamps = false;
-
-    public function image()
-    {
-        return $this->belongsTo(UploadFile::class, 'image_id');
-    }
+    protected $dates = ['deleted_at'];
 }

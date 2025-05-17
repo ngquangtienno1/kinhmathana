@@ -9,15 +9,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class NewsFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence(6, true),
+            'content' => $this->faker->paragraphs(10, true),
+            'slug' => $this->faker->slug,
+            'image' => null,
+            'is_active' => $this->faker->boolean(70),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

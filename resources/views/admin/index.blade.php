@@ -1,13 +1,70 @@
-
 @extends('admin.layouts')
 
 @section('title', 'Dashboard')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item active">Dashboard</li>
+<li class="breadcrumb-item active">Dashboard</li>
 @endsection
 
 @section('content')
+<style>
+    /* Đảm bảo toast hiện đúng màu và text rõ */
+.toast {
+    color: #fff !important; /* màu chữ trắng */
+    background-color: #28a745 !important; /* màu xanh success */
+    box-shadow: 0 0 10px rgba(0,0,0,0.3) !important; /* thêm bóng để dễ nhìn */
+    opacity: 1 !important; /* chắc chắn toast không bị mờ */
+    font-weight: 600 !important;
+    margin-top: 50px !important;
+}
+
+/* Nếu bạn dùng các loại toast khác */
+.toast-success {
+    background-color: #28a745 !important;
+}
+.toast-error {
+    background-color: #dc3545 !important;
+}
+.toast-info {
+    background-color: #17a2b8 !important;
+}
+.toast-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important; /* màu chữ tối cho warning */
+}
+
+/* Nếu text bị ẩn do overflow */
+.toast-message {
+    overflow: visible !important;
+}
+
+/* Đảm bảo font size dễ đọc */
+.toast-message, .toast-title {
+    font-size: 14px !important;
+}
+
+</style>
+@if(session('message'))
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+    toastr.success("{{ session('message') }}");
+</script>
+@endif
 
 
 

@@ -7,12 +7,12 @@
     <li class="breadcrumb-item active">Quản lý bình luận</li>
 @endsection
 
-@if (session('success'))
+{{-- @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
 @if (session('error'))
     <div class="alert alert-danger">{{ session('error') }}</div>
-@endif
+@endif --}}
 
 <div class="mb-9">
     <div id="commentSummary"
@@ -94,18 +94,29 @@
             </div>
         </div>
         <div class="mb-3 d-flex gap-2">
-            <a href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => null])) }}"
-                class="btn btn-outline-primary {{ is_null(request('status')) ? 'active' : '' }}">
-                Tất cả bình luận
-            </a>
-            <a href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'active'])) }}"
-                class="btn btn-outline-success {{ request('status') === 'active' ? 'active' : '' }}">
-                Bình luận đang hoạt động
-            </a>
-            <a href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'trashed'])) }}"
-                class="btn btn-outline-warning {{ request('status') === 'trashed' ? 'active' : '' }}">
-                Bình luận đã xóa mềm
-            </a>
+            <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+                <li class="nav-item">
+                    <a class="nav-link {{ is_null(request('status')) ? 'active' : '' }}"
+                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => null])) }}">
+                        <span>Tất cả </span>
+                        <span class="text-body-tertiary fw-semibold">({{ $comments->total() }})</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') === 'active' ? 'active' : '' }}"
+                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'active'])) }}">
+                        <span>Đang hoạt động </span>
+                        <span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') === 'trashed' ? 'active' : '' }}"
+                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'trashed'])) }}">
+                        <span>Thùng rác </span>
+                        <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>
+                    </a>
+                </li>
+            </ul>
         </div>
 
         <div class="table-responsive scrollbar">
@@ -156,101 +167,27 @@
                             </td>
 
                             <td>{{ $comment->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="align-middle text-end white-space-nowrap pe-0 action">
+                            <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                 <div class="btn-reveal-trigger position-static">
                                     <button
                                         class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                        type="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false" data-bs-reference="parent">
+                                        type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                        aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                         <span class="fas fa-ellipsis-h fs-10"></span>
                                     </button>
-
                                     <div class="dropdown-menu dropdown-menu-end py-2">
-
-                                        <a class="dropdown-item"
-                                            href="{{ route('admin.comments.show', $comment->id) }}">
-                                            <i class="fa-solid fa-eye me-2"></i> Xem chi tiết
-                                        </a>
-                                        <!-- Thay đổi trạng thái -->
-                                        <li>
-                                            <form action="{{ route('admin.comments.updateStatus', $comment->id) }}"
-                                                method="POST" class="px-2">
-                                                @csrf
-                                                @method('PATCH')
-                                                <select name="status" class="form-select form-select-sm"
-                                                    onchange="this.form.submit()">
-                                                    <option disabled selected>Chọn trạng thái</option>
-                                                    <option value="đã duyệt"
-                                                        {{ $comment->status === 'đã duyệt' ? 'selected' : '' }}>Đã
-                                                        duyệt</option>
-                                                    <option value="chờ duyệt"
-                                                        {{ $comment->status === 'chờ duyệt' ? 'selected' : '' }}>Chờ
-                                                        duyệt</option>
-                                                    <option value="spam"
-                                                        {{ $comment->status === 'spam' ? 'selected' : '' }}>Spam
-                                                    </option>
-                                                    <option value="chặn"
-                                                        {{ $comment->status === 'chặn' ? 'selected' : '' }}>Bị chặn
-                                                    </option>
-                                                </select>
-                                            </form>
-                                        </li>
+                                        <a class="dropdown-item" href="">Xem</a>
+                                        <a class="dropdown-item" href="">Sửa</a>
                                         <div class="dropdown-divider"></div>
-                                        @if ($status === 'trashed')
-                                            <form action="{{ route('admin.comments.restore', $comment->id) }}"
-                                                method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm"
-                                                    onclick="return confirm('Khôi phục bình luận này?')">Khôi
-                                                    phục</button>
-                                            </form>
-
-                                            <form action="{{ route('admin.comments.forceDelete', $comment->id) }}"
-                                                method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Xóa vĩnh viễn bình luận này?')">Xóa vĩnh
-                                                    viễn</button>
-                                            </form>
-                                        @else
-                                            <!-- Nút xóa mềm khi bình luận chưa xóa -->
-                                            <form action="{{ route('admin.comments.destroy', $comment->id) }}"
-                                                method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Xóa bình luận này?')">Xóa</button>
-                                            </form>
-                                        @endif
-
-                                        @if ($comment->trashed())
-                                            <button class="btn btn-sm btn-secondary" disabled>Đã xóa mềm</button>
-                                        @else
-                                            <form
-                                                action="{{ route('admin.comments.toggleVisibility', $comment->id) }}"
-                                                method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="is_hidden"
-                                                    value="{{ $comment->is_hidden ? 0 : 1 }}">
-                                                <button type="submit"
-                                                    class="btn btn-sm {{ $comment->is_hidden ? 'btn-secondary' : 'btn-success' }}">
-                                                    {{ $comment->is_hidden ? 'Hiện' : 'Ẩn' }}
-                                                </button>
-                                            </form>
-                                        @endif
-
-
-
-
+                                        <form action="" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger"
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa slider này?')">Xóa</button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>
-
-
-
                         </tr>
                         @empty
                             <tr>

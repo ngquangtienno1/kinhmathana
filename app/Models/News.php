@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class News extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'content', 'image_id'];
+    protected $fillable = ['title', 'content', 'image', 'is_active', 'slug'];
 
-    public $timestamps = ['created_at'];
-    const UPDATED_AT = null;
-
-    public function image()
-    {
-        return $this->belongsTo(UploadFile::class, 'image_id');
-    }
+    protected $dates = ['deleted_at'];
 }

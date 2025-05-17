@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('variation_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('variation_id')->constrained('variations')->onDelete('cascade');
-            $table->foreignId('image_id')->constrained('upload_files')->onDelete('cascade');
+            $table->foreignId('variation_id')->constrained()->onDelete('cascade');
+            $table->string('image')->nullable();
+            $table->boolean('is_primary')->default(false);
             $table->timestamps();
         });
     }

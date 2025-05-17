@@ -13,10 +13,23 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        Role::create([
-            'id' => 1,
-            'name' => 'Admin',
-        ]);
+        $roles = [
+            [
+                'name' => 'Admin',
+                'description' => 'Quản trị viên hệ thống'
+            ],
+            [
+                'name' => 'User',
+                'description' => 'Người dùng thông thường'
+            ],
+            [
+                'name' => 'Staff',
+                'description' => 'Nhân viên'
+            ]
+        ];
+
+        foreach ($roles as $role) {
+            Role::create($role);
+        }
     }
 }

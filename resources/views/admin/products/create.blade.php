@@ -5,10 +5,10 @@
 @section('content')
 
 @section('breadcrumbs')
-<li class="breadcrumb-item">
-    <a href="#">Products</a>
-</li>
-<li class="breadcrumb-item active">Add Product</li>
+    <li class="breadcrumb-item">
+        <a href="#">Products</a>
+    </li>
+    <li class="breadcrumb-item active">Add Product</li>
 @endsection
 <form class="mb-9">
     <div class="row g-3 flex-between-end mb-5">
@@ -26,8 +26,8 @@
             <h4 class="mb-3">Product Title</h4><input class="form-control mb-5" type="text"
                 placeholder="Write title here..." />
             <div class="mb-6">
-                <h4 class="mb-3"> Product Description</h4><textarea class="tinymce" name="content"
-                    data-tinymce='{"height":"15rem","placeholder":"Write a description here..."}'></textarea>
+                <h4 class="mb-3"> Product Description</h4>
+                <textarea class="tinymce" name="content" data-tinymce='{"height":"15rem","placeholder":"Write a description here..."}'></textarea>
             </div>
             <h4 class="mb-3">Display images</h4>
             <div class="dropzone dropzone-multiple p-0 mb-5" id="my-awesome-dropzone" data-dropzone="data-dropzone">
@@ -35,8 +35,9 @@
                 <div class="dz-preview d-flex flex-wrap">
                     <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center position-relative me-2 mb-2"
                         style="height:80px;width:80px;"><img class="dz-image" src="../../../assets/img/products/23.png"
-                            alt="..." data-dz-thumbnail="data-dz-thumbnail" /><a class="dz-remove text-body-quaternary"
-                            href="#!" data-dz-remove="data-dz-remove"><span data-feather="x"></span></a></div>
+                            alt="..." data-dz-thumbnail="data-dz-thumbnail" /><a
+                            class="dz-remove text-body-quaternary" href="#!" data-dz-remove="data-dz-remove"><span
+                                data-feather="x"></span></a></div>
                 </div>
                 <div class="dz-message text-body-tertiary text-opacity-85" data-dz-message="data-dz-message">Drag your
                     photo here<span class="text-body-secondary px-1">or</span><button class="btn btn-link p-0"
@@ -68,13 +69,13 @@
                                 class="me-sm-2 fs-4 nav-icons" data-feather="globe"></span><span
                                 class="d-none d-sm-inline">Global Delivery</span></a><a
                             class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
-                            id="attributesTab" data-bs-toggle="tab" data-bs-target="#attributesTabContent" role="tab"
-                            aria-controls="attributesTabContent" aria-selected="false"> <span
+                            id="attributesTab" data-bs-toggle="tab" data-bs-target="#attributesTabContent"
+                            role="tab" aria-controls="attributesTabContent" aria-selected="false"> <span
                                 class="me-sm-2 fs-4 nav-icons" data-feather="sliders"></span><span
                                 class="d-none d-sm-inline">Attributes</span></a><a
                             class="nav-link text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
-                            id="advancedTab" data-bs-toggle="tab" data-bs-target="#advancedTabContent" role="tab"
-                            aria-controls="advancedTabContent" aria-selected="false"> <span
+                            id="advancedTab" data-bs-toggle="tab" data-bs-target="#advancedTabContent"
+                            role="tab" aria-controls="advancedTabContent" aria-selected="false"> <span
                                 class="me-sm-2 fs-4 nav-icons" data-feather="lock"></span><span
                                 class="d-none d-sm-inline">Advanced</span></a></div>
                 </div>
@@ -127,7 +128,8 @@
                                             <td class="text-body-tertiary fw-semibold py-1">30th June, 2021</td>
                                         </tr>
                                         <tr>
-                                            <td class="text-body-highlight fw-bold py-1">Total stock over lifetime:</td>
+                                            <td class="text-body-highlight fw-bold py-1">Total stock over lifetime:
+                                            </td>
                                             <td class="text-body-tertiary fw-semibold py-1">20,000</td>
                                         </tr>
                                     </tbody>
@@ -152,7 +154,8 @@
                                     </div>
                                     <div class="mb-4">
                                         <div class="form-check mb-1"><input class="form-check-input" type="radio"
-                                                name="shippingRadio" id="fullfilledByPhoenix" checked="checked" /><label
+                                                name="shippingRadio" id="fullfilledByPhoenix"
+                                                checked="checked" /><label
                                                 class="form-check-label fs-8 text-body d-flex align-items-center"
                                                 for="fullfilledByPhoenix">Fullfilled by Phoenix <span
                                                     class="badge badge-phoenix badge-phoenix-warning fs-10 ms-2">Recommended</span></label>
@@ -164,7 +167,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="fs-9 fw-semibold mb-0">See our <a class="fw-bold" href="#!">Delivery terms and
+                                <p class="fs-9 fw-semibold mb-0">See our <a class="fw-bold" href="#!">Delivery
+                                        terms and
                                         conditions </a>for details.</p>
                             </div>
                         </div>
@@ -215,16 +219,17 @@
                                     type="checkbox" /><label class="form-check-label text-body fs-8"
                                     for="biodegradableCheck">Biodegradable</label></div>
                             <div class="mb-3">
-                                <div class="form-check"><input class="form-check-input" id="frozenCheck" type="checkbox"
-                                        checked="checked" /><label class="form-check-label text-body fs-8"
-                                        for="frozenCheck">Frozen Product</label><input class="form-control" type="text"
+                                <div class="form-check"><input class="form-check-input" id="frozenCheck"
+                                        type="checkbox" checked="checked" /><label
+                                        class="form-check-label text-body fs-8" for="frozenCheck">Frozen
+                                        Product</label><input class="form-control" type="text"
                                         placeholder="Max. allowed Temperature" style="max-width: 350px;" /></div>
                             </div>
-                            <div class="form-check"><input class="form-check-input" id="productCheck" type="checkbox"
-                                    checked="checked" /><label class="form-check-label text-body fs-8"
-                                    for="productCheck">Expiry Date of Product</label><input
-                                    class="form-control inventory-attributes datetimepicker" id="inventory" type="text"
-                                    style="max-width: 350px;" placeholder="d/m/y"
+                            <div class="form-check"><input class="form-check-input" id="productCheck"
+                                    type="checkbox" checked="checked" /><label
+                                    class="form-check-label text-body fs-8" for="productCheck">Expiry Date of
+                                    Product</label><input class="form-control inventory-attributes datetimepicker"
+                                    id="inventory" type="text" style="max-width: 350px;" placeholder="d/m/y"
                                     data-options='{"disableMobile":true}' /></div>
                         </div>
                         <div class="tab-pane fade" id="advancedTabContent" role="tabpanel"
@@ -232,8 +237,8 @@
                             <h5 class="mb-3 text-body-highlight">Advanced</h5>
                             <div class="row g-3">
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Product ID Type</h5><select class="form-select"
-                                        aria-label="form-select-lg example">
+                                    <h5 class="mb-2 text-body-highlight">Product ID Type</h5><select
+                                        class="form-select" aria-label="form-select-lg example">
                                         <option selected="selected">ISBN</option>
                                         <option value="1">UPC</option>
                                         <option value="2">EAN</option>
@@ -272,8 +277,8 @@
                                 <div class="col-12 col-sm-6 col-xl-12">
                                     <div class="mb-4">
                                         <div class="d-flex flex-wrap mb-2">
-                                            <h5 class="mb-0 text-body-highlight me-2">Vendor</h5><a class="fw-bold fs-9"
-                                                href="#!">Add new vendor</a>
+                                            <h5 class="mb-0 text-body-highlight me-2">Vendor</h5><a
+                                                class="fw-bold fs-9" href="#!">Add new vendor</a>
                                         </div><select class="form-select mb-3" aria-label="category">
                                             <option value="men-cloth">Men's Clothing</option>
                                             <option value="women-cloth">Womens's Clothing</option>
@@ -289,8 +294,8 @@
                                 </div>
                                 <div class="col-12 col-sm-6 col-xl-12">
                                     <div class="d-flex flex-wrap mb-2">
-                                        <h5 class="mb-0 text-body-highlight me-2">Tags</h5><a class="fw-bold fs-9 lh-sm"
-                                            href="#!">View all tags</a>
+                                        <h5 class="mb-0 text-body-highlight me-2">Tags</h5><a
+                                            class="fw-bold fs-9 lh-sm" href="#!">View all tags</a>
                                     </div><select class="form-select" aria-label="category">
                                         <option value="men-cloth">Men's Clothing</option>
                                         <option value="women-cloth">Womens's Clothing</option>
