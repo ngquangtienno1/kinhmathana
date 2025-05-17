@@ -129,14 +129,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <<<<<<< HEAD <a class="nav-link" href="{{ route('admin.payments.index') }}">
-                                        =======
-                                        <a class="nav-link" href="{{ route('admin.sliders.bin') }}">
-                                            >>>>>>> a90ff1f874d0891176283d54712963d42fc652e3
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Thùng rác</span>
-                                            </div>
-                                        </a>
+                                    <a class="nav-link" href="{{ route('admin.sliders.bin') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Thùng rác</span>
+                                        </div>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -157,27 +154,22 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <<<<<<< HEAD <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                id="nv-marketing">
-                                =======
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-news">
-                                    >>>>>>> a90ff1f874d0891176283d54712963d42fc652e3
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.news.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách tin tức</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.news.bin') }}">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Thùng rác</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-news">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.news.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách tin tức</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.news.bin') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Thùng rác</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </li>
@@ -230,20 +222,15 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <<<<<<< HEAD <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                id="nv-customers">
-                                =======
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-faqs">
-                                    >>>>>>> a90ff1f874d0891176283d54712963d42fc652e3
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.faqs.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách FAQs</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-faqs">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.faqs.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách FAQs</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </li>
