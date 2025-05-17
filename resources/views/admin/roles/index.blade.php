@@ -16,19 +16,13 @@
         </div>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
 
     <div class="mb-4">
         <div class="d-flex flex-wrap gap-3">
             <div class="search-box">
                 <form class="position-relative" action="{{ route('admin.roles.index') }}" method="GET">
-                    <input class="form-control search-input search" type="search" name="search" placeholder="Tìm kiếm vai trò" value="{{ request('search') }}" />
+                    <input class="form-control search-input search" type="search" name="search"
+                        placeholder="Tìm kiếm vai trò" value="{{ request('search') }}" />
                     <span class="fas fa-search search-box-icon"></span>
                 </form>
             </div>
@@ -49,7 +43,8 @@
                     <tr>
                         <th class="white-space-nowrap fs-9 align-middle ps-0" style="width:20px;">
                             <div class="form-check mb-0 fs-8">
-                                <input class="form-check-input" id="checkbox-bulk-roles-select" type="checkbox" data-bulk-select='{"body":"roles-table-body"}' />
+                                <input class="form-check-input" id="checkbox-bulk-roles-select" type="checkbox"
+                                    data-bulk-select='{"body":"roles-table-body"}' />
                             </div>
                         </th>
                         <th class="sort white-space-nowrap" scope="col" data-sort="id">ID</th>
@@ -64,7 +59,8 @@
                     <tr class="position-static">
                         <td class="fs-9 align-middle">
                             <div class="form-check mb-0 fs-8">
-                                <input class="form-check-input" type="checkbox" data-bulk-select-row='{"name":"{{ $role->name }}","description":"{{ $role->description }}"}' />
+                                <input class="form-check-input" type="checkbox"
+                                    data-bulk-select-row='{"name":"{{ $role->name }}","description":"{{ $role->description }}"}' />
                             </div>
                         </td>
                         <td class="id align-middle">{{ $role->id }}</td>
@@ -72,22 +68,27 @@
                         <td class="description align-middle">{{ $role->description }}</td>
                         <td class="permissions align-middle">
                             @foreach($role->permissions as $permission)
-                                <span class="badge bg-info">{{ $permission->name }}</span>
+                            <span class="badge bg-info">{{ $permission->name }}</span>
                             @endforeach
                         </td>
                         <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                             @if(auth()->user()->hasPermission('edit-users'))
                             <div class="btn-reveal-trigger position-static">
-                                <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                <button
+                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                    type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                    aria-expanded="false" data-bs-reference="parent">
                                     <span class="fas fa-ellipsis-h fs-10"></span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end py-2">
                                     <a class="dropdown-item" href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
                                     <div class="dropdown-divider"></div>
-                                    <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
+                                        class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
+                                        <button type="submit" class="dropdown-item text-danger"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
                                     </form>
                                 </div>
                             </div>
@@ -105,7 +106,8 @@
         <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
             <div class="col-auto d-flex">
                 <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
-                    Hiển thị {{ $roles->firstItem() ?? 0 }} đến {{ $roles->lastItem() ?? 0 }} của {{ $roles->total() }} kết quả
+                    Hiển thị {{ $roles->firstItem() ?? 0 }} đến {{ $roles->lastItem() ?? 0 }} của {{ $roles->total() }}
+                    kết quả
                 </p>
             </div>
             <div class="col-auto d-flex">
@@ -119,7 +121,7 @@
 
 @push('scripts')
 <script>
-function deleteRole(id) {
+    function deleteRole(id) {
     if (confirm('Bạn có chắc chắn muốn xóa?')) {
         fetch(`/admin/roles/${id}`, {
             method: 'DELETE',

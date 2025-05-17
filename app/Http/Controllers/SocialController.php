@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
+class SocialController extends Controller
+{
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            $user = User::updateOrCreate(
+                ['email' => $googleUser->getEmail()],
+                [
+                    'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                    'password' => bcrypt(Str::random(24)), // nếu muốn cho mật khẩu random
+                ]
+            );
+
+            Auth::login($user);
+
+            return redirect()->route('admin')->with('message', 'Đăng nhập Google thành công');
+        } catch (\Exception $e) {
+            return redirect()->route('login')->with('error', 'Đăng nhập Google thất bại: ' . $e->getMessage());
+        }
+    }
+}

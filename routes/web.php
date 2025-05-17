@@ -1,20 +1,41 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Models\User;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\Admin\HomeController;
 
-// Authentication Routes
-Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+
+Route::get('login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
+Route::get('logout', [AuthenticationController::class, 'logout'])->name('logout');
+Route::get('register', [AuthenticationController::class, 'register'])->name('register');
+Route::post('postRegister', [AuthenticationController::class, 'postRegister'])->name('postRegister');
+
+Route::get('/auth/google', [SocialController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
+
+Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
+Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
+
+
+
 
 // Admin routes group
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
     // Settings routes
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])
         ->name('settings.index')
         ->middleware(['permission:view-settings']);
@@ -94,24 +115,90 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::put('/permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
         Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
     });
-});
 
-// Test routes
-Route::get('/test', function () {
-    $user = User::find(3);
-    Auth::login($user);
-    session()->regenerate();
 
-    return response()->json([
-        'user' => $user->name,
-        'role' => $user->role_id,
-        'permissions' => $user->role->permissions->pluck('slug'),
-        'is_authenticated' => Auth::check(),
-        'session_id' => session()->getId()
-    ]);
-});
+    //User
+    Route::get('user', [UserController::class, 'index'])
+        ->name('listUser')
+        ->middleware(['permission:view-users']);
 
-Route::get('/logout-test', function () {
-    Auth::logout();
-    return 'Đã đăng xuất khỏi tài khoản tạm.';
+    //Product
+    Route::get('/products', function () {
+        return view('admin.products.index');
+    })->middleware(['permission:view-products']);
+
+    //Slider
+    Route::prefix('sliders')->name('sliders.')->middleware(['permission:view-sliders'])->group(function () {
+        Route::get('/',                [SliderController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [SliderController::class, 'show'])->name('show');
+        Route::get('/create',          [SliderController::class, 'create'])->name('create')
+            ->middleware(['permission:create-sliders']);
+        Route::post('/store',          [SliderController::class, 'store'])->name('store')
+            ->middleware(['permission:create-sliders']);
+        Route::get('/{id}/edit',       [SliderController::class, 'edit'])->name('edit')
+            ->middleware(['permission:edit-sliders']);
+        Route::put('/{id}/update',     [SliderController::class, 'update'])->name('update')
+            ->middleware(['permission:edit-sliders']);
+        Route::delete('/{id}/destroy', [SliderController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:delete-sliders']);
+        Route::get('/bin',             [SliderController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [SliderController::class, 'restore'])->name('restore')
+            ->middleware(['permission:edit-sliders']);
+        Route::delete('/{id}/forceDelete',   [SliderController::class, 'forceDelete'])->name('forceDelete')
+            ->middleware(['permission:delete-sliders']);
+        Route::delete('/bulk-delete', [SliderController::class, 'bulkDelete'])->name('bulk-delete')
+            ->middleware(['permission:delete-sliders']);
+    });
+
+    //News
+    Route::prefix('news')->name('news.')->middleware(['permission:view-news'])->group(function () {
+        Route::get('/', [NewsController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [NewsController::class, 'show'])->name('show');
+        Route::get('/create',          [NewsController::class, 'create'])->name('create')
+            ->middleware(['permission:create-news']);
+        Route::post('/store',          [NewsController::class, 'store'])->name('store')
+            ->middleware(['permission:create-news']);
+        Route::get('/{id}/edit',       [NewsController::class, 'edit'])->name('edit')
+            ->middleware(['permission:edit-news']);
+        Route::put('/{id}/update',     [NewsController::class, 'update'])->name('update')
+            ->middleware(['permission:edit-news']);
+        Route::delete('/{id}/destroy', [NewsController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:delete-news']);
+        Route::get('/bin',             [NewsController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [NewsController::class, 'restore'])->name('restore')
+            ->middleware(['permission:edit-news']);
+        Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete')
+            ->middleware(['permission:delete-news']);
+    });
+
+    //Brands
+    Route::prefix('brands')->name('brands.')->middleware(['permission:view-brands'])->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [BrandController::class, 'show'])->name('show');
+        Route::get('/create',          [BrandController::class, 'create'])->name('create')
+            ->middleware(['permission:create-brands']);
+        Route::post('/store',          [BrandController::class, 'store'])->name('store')
+            ->middleware(['permission:create-brands']);
+        Route::get('/{id}/edit',       [BrandController::class, 'edit'])->name('edit')
+            ->middleware(['permission:edit-brands']);
+        Route::put('/{id}/update',     [BrandController::class, 'update'])->name('update')
+            ->middleware(['permission:edit-brands']);
+        Route::delete('/{id}/destroy', [BrandController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:delete-brands']);
+        Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore')
+            ->middleware(['permission:edit-brands']);
+        Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete')
+            ->middleware(['permission:delete-brands']);
+    });
+
+    // Orders
+    Route::resource('orders', OrderController::class)->middleware(['permission:view-orders']);
+    Route::prefix('orders')->name('orders.')->middleware(['permission:view-orders'])->group(function () {
+        Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
+        Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status')
+            ->middleware(['permission:edit-orders']);
+        Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
+            ->middleware(['permission:edit-orders']);
+    });
 });

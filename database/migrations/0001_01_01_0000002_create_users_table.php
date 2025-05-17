@@ -21,8 +21,8 @@ return new class extends Migration
             $table->date('date_birth')->nullable();
             $table->string('gender', 20)->nullable();
             $table->string('status_user', 50)->nullable();
-            $table->string('avatar_url')->nullable();
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->string('image')->nullable();
+            $table->enum('role', ['1', '2', '3'])->default('2')->comment('1: Admin, 2: User, 3: Staff');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->rememberToken();

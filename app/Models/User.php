@@ -17,9 +17,18 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'address', 'phone', 'email', 'password',
-        'date_birth', 'gender', 'status_user',
-        'avatar_url', 'role_id', 'email_verified_at', 'phone_verified_at'
+        'name',
+        'address',
+        'phone',
+        'email',
+        'password',
+        'date_birth',
+        'gender',
+        'status_user',
+        'avatar_id',
+        'role_id',
+        'email_verified_at',
+        'phone_verified_at'
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -84,4 +93,3 @@ class User extends Authenticatable
         return $this->role->permissions->whereIn('slug', $permissions)->count() === count($permissions);
     }
 }
-

@@ -80,7 +80,7 @@
                 <!-- Quản lý Slider -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-orders" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-slider" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-orders">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
@@ -91,7 +91,7 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-orders">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-slider">
                                 <li class="nav-item">
                                     {{-- <a class="nav-link" href="{{ route('admin.sliders.index') }}">
                                         <div class="d-flex align-items-center">
@@ -100,23 +100,9 @@
                                     </a> --}}
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.sliders.bin') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Payments</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Shipping</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Returns</span>
+                                            <span class="nav-link-text">Thùng rác</span>
                                         </div>
                                     </a>
                                 </li>
@@ -130,7 +116,7 @@
                 <!-- Marketing -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-marketing" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-news" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-marketing">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
@@ -141,7 +127,7 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-marketing">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-news">
                                 <li class="nav-item">
                                     {{-- <a class="nav-link" href="{{ route('admin.news.index') }}">
                                         <div class="d-flex align-items-center">
@@ -150,23 +136,9 @@
                                     </a> --}}
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.news.bin') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Flash Sales</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Email Marketing</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Affiliate Program</span>
+                                            <span class="nav-link-text">Thùng rác</span>
                                         </div>
                                     </a>
                                 </li>
@@ -178,10 +150,10 @@
 
 
 
-                <!-- Content Management -->
+                <!-- Quản lý Brands -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-content" role="button"
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-brands" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-content">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
@@ -192,7 +164,7 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-content">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-brands">
                                 <li class="nav-item">
                                     {{-- <a class="nav-link" href="{{ route('admin.brands.index') }}">
                                         <div class="d-flex align-items-center">
@@ -201,7 +173,7 @@
                                     </a> --}}
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.brands.bin') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Comments</span>
                                         </div>
@@ -245,15 +217,15 @@
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                 </div>
                                 <span class="nav-link-icon"><span data-feather="user-check"></span></span>
-                                <span class="nav-link-text">Users</span>
+                                <span class="nav-link-text">Người dùng</span>
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-users">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{{ route('admin.listUser') }}">
                                         <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">User List</span>
+                                            <span class="nav-link-text">Danh sách người dùng</span>
                                         </div>
                                     </a>
                                 </li>
