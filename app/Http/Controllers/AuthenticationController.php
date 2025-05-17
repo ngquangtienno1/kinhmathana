@@ -16,46 +16,33 @@ class AuthenticationController extends Controller
     {
         return view('admin.login.login');
     }
-    public function postLogin(UserLoginRequest $request)
+    public function postLogin(Request $request)
     {
-        // $request->validate([
-        //     'email' => 'required|email|exists:users,email',
-        //     'password' => 'required|string|min:8',
-        // ], [
-        //     'email.required' => 'Không được để trống email',
-        //     'email.email' => 'Email không đúng định dạng ',
-        //     'email.exists'=> 'Email chưa được đăng ký',
-        //     'password.required'=>'Không được để trống password',
-        //     'password.string'=> 'Password không phải là chuỗi',
-        //     'password.min'=> 'Password phải trên 8 ký tự'
-        // ]);
-        $dataUserLogin = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
-        $remember = $request->has('remember');
-
-        if (Auth::attempt($dataUserLogin, $remember)) {
-            //Logout het tai khoan khac
-            Session::where('user_id', Auth::id())->delete();
-            // Tao phien dang nhap moi
-            session()->put('user_id', Auth::id());
-            if (Auth::user()->role == 1) {
-                return redirect()->route('admin')->with([
-                    'message' => 'Đăng nhập thành công'
-                ]);
-            } else {
-                return redirect()->route('login')->with([
-                    'message' => 'Đăng nhập thất bại'
-                ]);
-            }
-        } else {
-            return redirect()->back()->with([
-                'message' => 'Email hoặc password không đúng'
-            ]);
-        }
+        // Check email trước
+        $user = User::where('email', $request->email)->first();
+    if (!$user) {
+        return redirect()->back()->withErrors([
+            'email' => 'Email chưa được đăng ký',
+        ])->withInput();
     }
 
+    if (!Hash::check($request->password, $user->password)) {
+        return redirect()->back()->withErrors([
+            'password' => 'Mật khẩu không đúng',
+        ])->withInput();
+    }
+    
+        // Đúng cả email và password -> login
+        Auth::login($user, $request->has('remember'));
+    
+        session()->put('user_id', Auth::id());
+        if (Auth::user()->role == 1) {
+            return redirect()->route('admin')->with('message', 'Đăng nhập thành công');
+        } else {
+            return redirect()->route('home')->with('message', 'Đăng nhập thành công');
+        }
+    }
+    
     public function logout()
     {
         Auth::logout();
@@ -74,14 +61,15 @@ class AuthenticationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
         ], [
             'name.required' => 'Vui lòng nhập tên',
             'email.required' => 'Vui lòng nhập email',
             'email.email' => 'Email không đúng định dạng',
             'email.unique' => 'Email đã tồn tại',
             'password.required' => 'Vui lòng nhập mật khẩu',
-            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự'
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+             'password.confirmed' => 'Mật khẩu xác nhận không khớp'
         ]);
 
         $user = User::create([
