@@ -14,4 +14,3 @@
 <script src="{{ asset('v1/vendors/echarts/echarts.min.js') }}"></script>
 <script src="{{ asset('v1/assets/js/dashboards/ecommerce-dashboard.js') }}"></script>
 
-

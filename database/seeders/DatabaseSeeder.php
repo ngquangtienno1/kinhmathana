@@ -13,17 +13,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
-            UserSeeder::class,
+            // User::factory(10)->create();
+            // UserSeeder::class,
             OrderSeeder::class,
-        ]);
-
-        $this->call([
             SliderSeeder::class,
             NewsSeeder::class,
             BrandSeeder::class,
-        ]);
-
-        $this->call([
             ShippingProviderSeeder::class,
             WebsiteSettingSeeder::class,
         ]);
