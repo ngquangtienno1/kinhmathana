@@ -2,13 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Otp;
+use App\Models\Role;
+use App\Models\Favorite;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -20,7 +26,7 @@ class User extends Authenticatable
         'gender',
         'status_user',
         'avatar_id',
-        'role',
+        'role_id',
         'email_verified_at',
         'phone_verified_at'
     ];
@@ -48,5 +54,42 @@ class User extends Authenticatable
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function hasPermission($permission)
+    {
+        if (!$this->role) {
+            Log::info('User has no role', ['user_id' => $this->id]);
+            return false;
+        }
+
+        $hasPermission = $this->role->permissions->contains('slug', $permission);
+        Log::info('Checking permission', [
+            'user_id' => $this->id,
+            'role_id' => $this->role_id,
+            'permission' => $permission,
+            'has_permission' => $hasPermission,
+            'user_permissions' => $this->role->permissions->pluck('slug')
+        ]);
+
+        return $hasPermission;
+    }
+
+    public function hasAnyPermission(array $permissions)
+    {
+        if (!$this->role) {
+            return false;
+        }
+
+        return $this->role->permissions->whereIn('slug', $permissions)->count() > 0;
+    }
+
+    public function hasAllPermissions(array $permissions)
+    {
+        if (!$this->role) {
+            return false;
+        }
+
+        return $this->role->permissions->whereIn('slug', $permissions)->count() === count($permissions);
     }
 }
