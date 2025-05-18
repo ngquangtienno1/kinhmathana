@@ -75,10 +75,37 @@
                             </div>
                         </div>
                     </li>
+                    @if (canAccess('view-orders'))
+                        <!-- Orders Management -->
+                        <li class="nav-item">
+                            <div class="nav-item-wrapper">
+                                <a class="nav-link dropdown-indicator label-1" href="#nv-orders" role="button"
+                                    data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-orders">
+                                    <div class="d-flex align-items-center">
+                                        <div class="dropdown-indicator-icon-wrapper">
+                                            <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                        </div>
+                                        <span class="nav-link-icon"><span data-feather="shopping-cart"></span></span>
+                                        <span class="nav-link-text">Đơn hàng</span>
+                                    </div>
+                                </a>
+                                <div class="parent-wrapper label-1">
+                                    <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                        id="nv-orders">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('admin.orders.index') }}">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="nav-link-text">Danh sách đơn hàng</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    @endif
                     <!-- Bình luận -->
                     <li class="nav-item">
-                        <p class="navbar-vertical-label">Bình luận & Đánh giá</p>
-                        <hr class="navbar-vertical-line" />
                         <div class="nav-item-wrapper">
                             <a class="nav-link dropdown-indicator label-1" href="#nv-comments" role="button"
                                 data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-comments">
@@ -90,17 +117,26 @@
                                     <span class="nav-link-text">Bình luận</span>
                                 </div>
                             </a>
-                            {{-- <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-comments">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.comments.index') }}">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Danh sách bình luận</span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div> --}}
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-comments">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.comments.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách bình luận</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                            href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'trashed'])) }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Thùng rác</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </li>
                 @endif
@@ -120,7 +156,8 @@
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-slider">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-slider">
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('admin.sliders.index') }}">
                                             <div class="d-flex align-items-center">
@@ -190,7 +227,7 @@
                                         <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                     </div>
                                     <span class="nav-link-icon"><span data-feather="tag"></span></span>
-                                    <span class="nav-link-text">Quản lý Brands</span>
+                                    <span class="nav-link-text">Brands</span>
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
@@ -206,33 +243,50 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('admin.brands.bin') }}">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Comments</span>
+                                                <span class="nav-link-text">Thùng rác</span>
                                             </div>
                                         </a>
                                     </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+                @if (canAccess('view-faqs'))
+                    <!-- Quản lý FAQ -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-faqs" role="button"
+                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-content">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="help-circle"></span></span>
+                                    <span class="nav-link-text">FAQ</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-faqs">
                                     @if (canAccess('view-faqs'))
                                         <li class="nav-item">
                                             <a class="nav-link" href="{{ route('admin.faqs.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">FAQ</span>
+                                                    <span class="nav-link-text">Danh sách FAQ</span>
                                                 </div>
                                             </a>
                                         </li>
                                     @endif
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Pages</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Media Library</span>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @if (canAccess('delete-faqs'))
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="nav-link-text">Thùng rác</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>

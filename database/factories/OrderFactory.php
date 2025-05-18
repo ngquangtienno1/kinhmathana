@@ -43,12 +43,12 @@ class OrderFactory extends Factory
             'total_amount' => $totalAmount,
             'payment_method' => $this->faker->randomElement(['cod', 'banking', 'momo', 'vnpay', 'zalopay']),
             'payment_status' => $this->faker->randomElement([
-                'pending', 'paid', 'failed', 'refunded', 
+                'pending', 'paid', 'failed', 'refunded',
                 'cancelled', 'partially_paid', 'disputed'
             ]),
             'status' => $this->faker->randomElement([
-                'pending', 'awaiting_payment', 'confirmed', 
-                'processing', 'shipping', 'delivered', 
+                'pending', 'awaiting_payment', 'confirmed',
+                'processing', 'shipping', 'delivered',
                 'returned', 'processing_return', 'refunded'
             ]),
             'note' => $this->faker->boolean(30) ? $this->faker->sentence() : null,

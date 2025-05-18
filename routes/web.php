@@ -1,19 +1,21 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
-use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\PermissionController;
-use App\Models\User;
-use App\Http\Controllers\SocialController;
-use App\Http\Controllers\Admin\HomeController;
 
 
 
@@ -28,7 +30,6 @@ Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallb
 
 Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
-
 
 
 
@@ -201,4 +202,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
             ->middleware(['permission:edit-orders']);
     });
+
+    //Quản lý thanh toán
+
+    Route::resource('payments', PaymentController::class);
+    Route::patch('/payments/{id}/status', [PaymentController::class, 'updateStatus'])->name('payments.updateStatus');
+    Route::get('/payments/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('payments.invoice');
+
+
+    // Quản lý bình luận
+    Route::resource('comments', CommentController::class);
+    Route::patch('/comments/toggle-visibility/{id}', [CommentController::class, 'toggleVisibility'])->name('comments.toggleVisibility');
+
+    Route::prefix('comments')->name('comments.')->group(function () {
+        Route::get('trashed', [CommentController::class, 'trashed'])->name('trashed');
+        Route::patch('{id}/restore', [CommentController::class, 'restore'])->name('restore');
+        Route::delete('{id}/force-delete', [CommentController::class, 'forceDelete'])->name('forceDelete');
+    });
+    Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.updateStatus');
 });

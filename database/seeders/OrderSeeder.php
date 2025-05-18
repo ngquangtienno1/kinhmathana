@@ -14,7 +14,7 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        // Tạo 100 đơn hàng mẫu
+        // Tạo 20 đơn hàng mẫu
         Order::factory()
             ->count(20)
             ->create();

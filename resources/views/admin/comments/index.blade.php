@@ -15,8 +15,8 @@
 @endif --}}
 
 <div class="mb-9">
-    <div id="commentSummary"
-        data-list='{"valueNames":["userId","userName","entityType","entityId","content","createdAt","action"],"page":10,"pagination":true}'>
+    <div id="comments"
+        data-list='{"valueNames":["userId","userName","entityType","entityId","content","status","createdAt"],"page":10,"pagination":true}'>
         <div class="row mb-4 gx-6 gy-3 align-items-center">
             <div class="col-auto">
                 <h2 class="mb-0">Quản lý bình luận</h2>
@@ -26,15 +26,13 @@
         <div class="row g-3 justify-content-between align-items-end mb-4">
             <div class="col-12 col-sm-auto">
                 <div class="search-box me-3">
-                    <form method="GET" action="{{ route('admin.comments.index') }}" class="position-relative">
-                        <input value="{{ request('search') }}" class="form-control search-input search" name="search"
-                            type="search" placeholder="Tìm kiếm theo nội dung, tên, email, ID đối tượng"
-                            aria-label="Search" />
+                    <div class="position-relative">
+                        <input class="form-control search-input search" type="search"
+                            placeholder="Tìm kiếm theo nội dung, tên, email, ID đối tượng" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
-                    </form>
+                    </div>
                 </div>
             </div>
-
 
             <div class="col-12 col-sm-auto d-flex flex-wrap gap-2">
                 <div>
@@ -48,7 +46,6 @@
                         </select>
                     </form>
                 </div>
-
 
                 @if (request('entity_type') == 'news' && count($news))
                     <div>
@@ -93,6 +90,7 @@
                 </div>
             </div>
         </div>
+
         <div class="mb-3 d-flex gap-2">
             <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
                 <li class="nav-item">
@@ -133,17 +131,17 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="list">
                     @forelse ($comments as $comment)
                         <tr>
-                            <td>{{ $comment->id }}</td>
-                            <td>{{ $comment->user->name ?? 'N/A' }} <br>
+                            <td class="userId">{{ $comment->id }}</td>
+                            <td class="userName">{{ $comment->user->name ?? 'N/A' }} <br>
                                 <small>{{ $comment->user->email ?? '' }}</small>
                             </td>
-                            <td>{{ $comment->entity_type }}</td>
-                            <td>{{ $comment->entity_id }}</td>
-                            <td>{{ $comment->content }}</td>
-                            <td>
+                            <td class="entityType">{{ $comment->entity_type }}</td>
+                            <td class="entityId">{{ $comment->entity_id }}</td>
+                            <td class="content">{{ $comment->content }}</td>
+                            <td class="status">
                                 @switch($comment->status)
                                     @case('đã duyệt')
                                         <span class="badge bg-success">Đã duyệt</span>
@@ -166,7 +164,7 @@
                                 @endswitch
                             </td>
 
-                            <td>{{ $comment->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="createdAt">{{ $comment->created_at->format('d/m/Y H:i') }}</td>
                             <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                 <div class="btn-reveal-trigger position-static">
                                     <button
@@ -179,11 +177,12 @@
                                         <a class="dropdown-item" href="">Xem</a>
                                         <a class="dropdown-item" href="">Sửa</a>
                                         <div class="dropdown-divider"></div>
-                                        <form action="" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.comments.destroy', $comment->id) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa slider này?')">Xóa</button>
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">Xóa</button>
                                         </form>
                                     </div>
                                 </div>
@@ -191,17 +190,31 @@
                         </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Không có bình luận nào.</td>
+                                <td colspan="8" class="text-center">Không có bình luận nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
-            <div class="mt-3">
-                {{ $comments->links('pagination::bootstrap-5') }}
+            <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+                <div class="col-auto d-flex">
+                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
+                    </p>
+                    <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
+                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
+                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                </div>
+                <div class="col-auto d-flex">
+                    <button class="page-link" data-list-pagination="prev"><span
+                            class="fas fa-chevron-left"></span></button>
+                    <ul class="mb-0 pagination"></ul>
+                    <button class="page-link pe-0" data-list-pagination="next">
+                        <span class="fas fa-chevron-right"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-
 @endsection
