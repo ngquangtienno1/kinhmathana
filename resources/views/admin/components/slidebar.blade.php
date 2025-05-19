@@ -23,51 +23,85 @@
                                         <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                     </div>
                                     <span class="nav-link-icon"><span data-feather="box"></span></span>
-                                    <span class="nav-link-text">Products</span>
+                                    <span class="nav-link-text">Sản phẩm</span>
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
                                 <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
                                     id="nv-products">
+
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">
+                                        <a class="nav-link" href="{{ route('admin.products.list') }}">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Product List</span>
+                                                <span class="nav-link-text">Danh sách sản phẩm</span>
                                             </div>
                                         </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.variations.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Biến thể sản phẩm</span>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.categories.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách danh mục</span>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.brands.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Thương hiệu</span>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <div class="nav-item-wrapper">
+                                            <a class="nav-link dropdown-indicator label-1" href="#nv-attributes"
+                                                role="button" data-bs-toggle="collapse"
+                                                aria-expanded="{{ request()->is('admin/colors*') || request()->is('admin/sizes*') ? 'true' : 'false' }}"
+                                                aria-controls="nv-attributes">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="dropdown-indicator-icon-wrapper">
+                                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                                    </div>
+                                                    <span class="nav-link-text">Thuộc tính</span>
+                                                </div>
+                                            </a>
+                                            <div class="parent-wrapper label-1">
+                                                <ul class="nav collapse parent {{ request()->is('admin/colors*') || request()->is('admin/sizes*') ? 'show' : '' }}"
+                                                    data-bs-parent="#nv-products" id="nv-attributes">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link {{ request()->is('admin/colors*') ? 'active' : '' }}"
+                                                            href="{{ route('admin.colors.index') }}">
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="nav-link-text">Màu sắc</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link {{ request()->is('admin/sizes*') ? 'active' : '' }}"
+                                                            href="{{ route('admin.sizes.index') }}">
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="nav-link-text">Kích thước</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Categories</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Brands</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Variations</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Attributes</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Inventory</span>
+                                                <span class="nav-link-text">Tồn kho</span>
                                             </div>
                                         </a>
                                     </li>
@@ -202,13 +236,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.news.bin') }}">
+                                    {{-- Thùng rác tin tức - chưa có route --}}
+                                    {{-- <li class="nav-item">
+                                        <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Thùng rác</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -240,13 +275,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.brands.bin') }}">
+                                    {{-- Thùng rác brands - chưa có route --}}
+                                    {{-- <li class="nav-item">
+                                        <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Thùng rác</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -278,15 +314,16 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (canAccess('delete-faqs'))
+                                    {{-- Thùng rác FAQ - chưa có route --}}
+                                    {{-- @if (canAccess('delete-faqs'))
                                         <li class="nav-item">
-                                            <a class="nav-link" href="">
+                                            <a class="nav-link" href="#">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Thùng rác</span>
                                                 </div>
                                             </a>
                                         </li>
-                                    @endif
+                                    @endif --}}
                                 </ul>
                             </div>
                         </div>
@@ -335,13 +372,14 @@
                                             </a>
                                         </li>
                                     @endif
-                                    <li class="nav-item">
+                                    {{-- Activity Log - chưa có route --}}
+                                    {{-- <li class="nav-item">
                                         <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Activity Log</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -443,13 +481,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    {{-- Sao lưu dữ liệu - chưa có route --}}
+                                    {{-- <li class="nav-item">
                                         <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Sao lưu dữ liệu</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
