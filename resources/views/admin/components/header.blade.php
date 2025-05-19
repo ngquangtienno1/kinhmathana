@@ -1,3 +1,5 @@
+@stack('styles')
+
 <nav class="navbar navbar-top fixed-top navbar-expand" id="navbarDefault">
     <div class="collapse navbar-collapse justify-content-between">
         <div class="navbar-logo">
@@ -194,222 +196,30 @@
                     data-bs-target="#searchBoxModal"><span data-feather="search"
                         style="height:19px;width:19px;margin-bottom: 2px;"></span></a></li>
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" style="min-width: 2.25rem" role="button"
+                <a class="nav-link position-relative" href="#" style="min-width: 2.25rem" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    data-bs-auto-close="outside"><span class="d-block" style="height:20px;width:20px;"><span
-                            data-feather="bell" style="height:20px;width:20px;"></span></span></a>
+                    data-bs-auto-close="outside" id="notificationDropdownToggle">
+                    <span class="d-block" style="height:20px;width:20px;position:relative;">
+                        <span data-feather="bell" style="height:20px;width:20px;"></span>
+                        <span id="notification-badge"
+                            style="display:none;position:absolute;top:-9px;right:-5px;min-width:20px;height:18px;background:#ff3b3b;color:#fff;font-size:12px;font-weight:bold;line-height:15px;text-align:center;border-radius:50%;border:2px solid #fff;z-index:10;"></span>
+                    </span>
+                </a>
                 <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret"
-                    id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
+                    id="navbarDropdownNotfication" aria-labelledby="notificationDropdownToggle"
+                    style="min-width:350px;max-width:400px;">
                     <div class="card position-relative border-0">
                         <div class="card-header p-2">
                             <div class="d-flex justify-content-between">
-                                <h5 class="text-body-emphasis mb-0">Notifications</h5><button
-                                    class="btn btn-link p-0 fs-9 fw-normal" type="button">Mark all as
-                                    read</button>
+                                <h5 class="text-body-emphasis mb-0">Thông báo</h5>
+                                <a href="{{ route('admin.notifications.index') }}"
+                                    class="btn btn-link p-0 fs-9 fw-normal">Xem tất cả</a>
                             </div>
                         </div>
                         <div class="card-body p-0">
-                            <div class="scrollbar-overlay" style="height: 27rem;">
-                                <div class="px-2 px-sm-3 py-3 notification-card position-relative read border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/30.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Jessie Samson</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>💬</span>Mentioned you in a
-                                                    comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">10m</span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:41
-                                                        AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3">
-                                                <div class="avatar-name rounded-circle"><span>J</span></div>
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Jane Foster</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>📅</span>Created an event.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">20m</span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:20
-                                                        AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle avatar-placeholder"
-                                                    src="{{ asset('v1/assets/img/team/40x40/avatar.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Jessie Samson</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>👍</span>Liked your comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">1h</span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">9:30 AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/57.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Kiera Anderson</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>💬</span>Mentioned you in a
-                                                    comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">9:11 AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/59.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Herman Carter</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>👤</span>Tagged you in a
-                                                    comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:58
-                                                        PM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="px-2 px-sm-3 py-3 notification-card position-relative read ">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/58.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Benjamin Button</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>👍</span>Liked your comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:18
-                                                        AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer p-0 border-top border-translucent border-0">
-                            <div class="my-2 text-center fw-bold fs-10 text-body-tertiary text-opactity-85"><a
-                                    class="fw-bolder" href="pages/notifications.html">Notification history</a>
+                            <div class="scrollbar-overlay" style="max-height: 27rem;"
+                                id="dropdown-notification-list">
+                                <div class="text-center py-4 text-muted">Đang tải...</div>
                             </div>
                         </div>
                     </div>
@@ -437,9 +247,8 @@
                             <div class="row text-center align-items-center gx-0 gy-0">
                                 <div class="col-4"><a
                                         class="d-block bg-body-secondary-hover p-2 rounded-3 text-center text-decoration-none mb-3"
-                                        href="#!"><img
-                                            src="{{ asset('v1/assets/img/nav-icons/behance.webp') }} " alt=""
-                                            width="30" />
+                                        href="#!"><img src="{{ asset('v1/assets/img/nav-icons/behance.webp') }} "
+                                            alt="" width="30" />
                                         <p class="mb-0 text-body-emphasis text-truncate fs-10 mt-1 pt-1">Behance
                                         </p>
                                     </a></div>
@@ -572,11 +381,11 @@
                         <div class="overflow-auto scrollbar" style="height: 10rem;">
                             <ul class="nav d-flex flex-column mb-2 pb-1">
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom"
-                                            data-feather="user"></span><span>Thông tin tài khoản</span></a></li>
+                                            class="me-2 text-body align-bottom" data-feather="user"></span><span>Thông
+                                            tin tài khoản</span></a></li>
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"><span
-                                            class="me-2 text-body align-bottom"
-                                            data-feather="pie-chart"></span>Thống kê</a></li>
+                                            class="me-2 text-body align-bottom" data-feather="pie-chart"></span>Thống
+                                        kê</a></li>
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
                                             class="me-2 text-body align-bottom" data-feather="lock"></span>Posts
                                         &amp; Activity</a></li>
@@ -584,7 +393,8 @@
                                             class="me-2 text-body align-bottom" data-feather="settings"></span>Cài đặt
                                         &amp; Bảo mật </a></li>
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="help-circle"></span>Hỗ trợ</a></li>
+                                            class="me-2 text-body align-bottom" data-feather="help-circle"></span>Hỗ
+                                        trợ</a></li>
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
                                             class="me-2 text-body align-bottom"
                                             data-feather="globe"></span>Language</a>
@@ -593,7 +403,8 @@
                         </div>
                         <div class="card-footer p-0 border-top border-translucent">
 
-                            <div class="px-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="{{ route('logout') }}">
+                            <div class="px-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100"
+                                    href="{{ route('logout') }}">
                                     <span class="me-2" data-feather="log-out"> </span>Đăng xuất</a>
                             </div>
                             <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a
@@ -607,3 +418,132 @@
         </ul>
     </div>
 </nav>
+@push('styles')
+    <style>
+        .dropdown-notification-dot {
+            position: absolute;
+            left: -4px;
+            top: 2px;
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            z-index: 2;
+        }
+
+        .dropdown-menu.dropdown-menu-end.py-2 {
+            min-width: 180px !important;
+            padding: 8px 0;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 9999;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            text-align: left;
+        }
+
+        .dropdown-item.dropdown-mark-as-read {
+            white-space: nowrap;
+            font-size: 15px;
+            padding: 8px 18px;
+            text-align: left !important;
+            direction: ltr;
+        }
+    </style>
+@endpush
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            function renderDropdownNotifications(data) {
+                let html = '';
+                if (data.notifications.length === 0) {
+                    html = '<div class="text-center py-4 text-muted">Không có thông báo</div>';
+                } else {
+                    data.notifications.forEach(function(n, idx) {
+                        html += `
+                        <div class="d-flex align-items-center px-3 py-2 border-bottom dropdown-notification-item ${n.is_read ? 'read' : 'unread'}"
+                             style="position:relative;${!n.is_read ? 'background:#e9ecef !important;' : 'background:#fff !important;'}"
+                             data-notification-id="${n.id}">
+                            <div class="avatar avatar-m me-3 position-relative" style="width:40px;height:40px;">
+                                ${!n.is_read ? '<span class="dropdown-notification-dot"></span>' : ''}
+                                ${n.avatar ? `<img class="rounded-circle" src="${n.avatar}" width="40" height="40" alt="">` : `<span class='avatar-name rounded-circle bg-primary d-flex align-items-center justify-content-center' style='width:40px;height:40px;font-size:20px;'>🔔</span>`}
+                            </div>
+                            <div class="flex-1 me-sm-3">
+                                <div class="fw-bold mb-1">${n.title || 'Hệ thống'}</div>
+                                <div class="fs-9 text-body-highlight mb-1">${n.content}</div>
+                                <div class="small text-body-secondary"><span class="me-1 fas fa-clock"></span>${n.time_ago || ''}</div>
+                            </div>
+                            ${!n.is_read ? `
+                                                                <div class="dropdown ms-2">
+                                                                    <button class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                                                        <span class="fas fa-ellipsis-h fs-10 text-body"></span>
+                                                                    </button>
+                                                                    <div class="dropdown-menu dropdown-menu-end py-2" style="min-width:180px;z-index:9999;left:auto;right:0;text-align:left;">
+                                                                        <a class="dropdown-item dropdown-mark-as-read" href="#">Đánh dấu đã đọc</a>
+                                                                    </div>
+                                                                </div>
+                                                                ` : ''}
+                        </div>`;
+                    });
+                }
+                $('#dropdown-notification-list').html(html);
+                if (data.unreadCount > 0) {
+                    $('#notification-badge').show().text(data.unreadCount);
+                } else {
+                    $('#notification-badge').hide();
+                }
+                // Gắn sự kiện đánh dấu đã đọc cho dropdown
+                $('.dropdown-mark-as-read').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    const card = $(this).closest('.dropdown-notification-item');
+                    const id = card.data('notification-id');
+                    $.ajax({
+                        url: `/admin/notifications/${id}/mark-as-read`,
+                        method: 'POST',
+                        success: function() {
+                            card.removeClass('unread').addClass('read');
+                            card.css('background',
+                                '#fff'); // Đổi nền trắng ngay khi đánh dấu đã đọc
+                            card.find('.dropdown-notification-dot').remove();
+                            card.find('.dropdown').remove();
+                            // Reload lại badge
+                            $.get("{{ url('/admin/notifications/dropdown') }}", function(
+                                data) {
+                                if (data.unreadCount > 0) {
+                                    $('#notification-badge').show().text(data
+                                        .unreadCount);
+                                } else {
+                                    $('#notification-badge').hide();
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            function loadDropdownNotifications() {
+                $.get("{{ url('/admin/notifications/dropdown') }}", function(data) {
+                    renderDropdownNotifications(data);
+                });
+            }
+            // Load khi mở dropdown
+            $('#notificationDropdownToggle').on('click', function() {
+                loadDropdownNotifications();
+            });
+            // Load badge số lượng chưa đọc khi vừa load trang
+            $.get("{{ url('/admin/notifications/dropdown') }}", function(data) {
+                if (data.unreadCount > 0) {
+                    $('#notification-badge').show().text(data.unreadCount);
+                } else {
+                    $('#notification-badge').hide();
+                }
+            });
+        });
+    </script>
+@endpush
