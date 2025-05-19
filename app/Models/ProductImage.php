@@ -9,14 +9,7 @@ class ProductImage extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'product_id',
-        'image_url',
-        'sort_order'
-    ];
-
-    public $timestamps = ['created_at'];
-    const UPDATED_AT = null;
+    protected $fillable = ['product_id', 'image_path', 'is_thumbnail'];
 
     public function product()
     {
