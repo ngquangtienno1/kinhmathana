@@ -2,24 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Brand;
 use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
- */
 class ProductFactory extends Factory
 {
     protected $model = Product::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $price = $this->faker->numberBetween(100000, 5000000);
@@ -32,19 +21,16 @@ class ProductFactory extends Factory
 
         return [
             'name' => $this->faker->words(3, true),
-            'description_short' => $this->faker->sentence(),
-            'description_long' => $this->faker->paragraphs(3, true),
-            'price' => $price,
-            'import_price' => $this->faker->numberBetween(50000, 2000000),
-            'sale_price' => $salePrice,
-            'discount_price' => $discountPrice,
-            'category_id' => Category::factory(),
-            'brand_id' => Brand::factory(),
-            'status' => $this->faker->randomElement(['active', 'inactive', 'draft']),
-            'is_featured' => $this->faker->boolean(20),
+            'description_short' => $this->faker->sentence,
+            'description_long' => $this->faker->paragraph,
+            'price' => $this->faker->randomFloat(2, 100, 500),
+            'import_price' => $this->faker->randomFloat(2, 50, 400),
+            'sale_price' => $this->faker->randomFloat(2, 80, 450),
+            'category_id' => 1, // tạo sẵn category id để tránh lỗi
+            'brand_id' => 1,
+            'status' => 'active',
+            'is_featured' => $this->faker->boolean,
             'views' => $this->faker->numberBetween(0, 1000),
-            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'updated_at' => now(),
         ];
     }
 }

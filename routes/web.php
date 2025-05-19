@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\ProductImageController;
+use App\Http\Controllers\Admin\VariationImageController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\BrandController;
@@ -16,8 +18,13 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\VariationController;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Admin\CategoryController;
 
-// Redirect root to login page
+// Redirect login
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -38,7 +45,7 @@ Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookC
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
-    // Settings routes
+
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])
         ->name('settings.index')
@@ -129,6 +136,81 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::get('/products', function () {
         return view('admin.products.index');
     })->middleware(['permission:view-products']);
+    // Product
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('list');
+        Route::get('/{id}/show',       [ProductController::class, 'show'])->name('show');
+        Route::get('/create',          [ProductController::class, 'create'])->name('create');
+        Route::post('store', [ProductController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [ProductController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [ProductController::class, 'update'])->name('update');
+        Route::delete('destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
+        Route::get('bin', [ProductController::class, 'bin'])->name('bin');
+        Route::put('restore/{id}', [ProductController::class, 'restore'])->name('restore');
+        Route::delete('forceDelete/{id}', [ProductController::class, 'forceDelete'])->name('forceDelete');
+        Route::delete('bulk-delete', [ProductController::class, 'bulkDelete'])->name('bulk-delete');
+    });
+    // Product Images (quản lý ảnh theo sản phẩm)
+    Route::prefix('product_images')->name('product_images.')->group(function () {
+        Route::get('/{product}', [ProductImageController::class, 'index'])->name('index');
+        Route::get('/{product}/create', [ProductImageController::class, 'create'])->name('create');
+        Route::post('/{product}', [ProductImageController::class, 'store'])->name('store');
+        Route::get('/{product}/{id}/edit', [ProductImageController::class, 'edit'])->name('edit');
+        Route::put('/{product}/{id}', [ProductImageController::class, 'update'])->name('update');
+        Route::delete('/{product}/{id}', [ProductImageController::class, 'destroy'])->name('destroy');
+        Route::post('/{product}/{id}/thumbnail', [ProductImageController::class, 'setThumbnail'])->name('setThumbnail');
+    });
+    // Variations
+    Route::prefix('variations')->name('variations.')->group(function () {
+        Route::get('/',                [VariationController::class, 'index'])->name('index');
+        Route::get('/create',          [VariationController::class, 'create'])->name('create');
+        Route::post('/store',          [VariationController::class, 'store'])->name('store');
+        Route::get('/{variation}/show',       [VariationController::class, 'show'])->name('show');
+        Route::get('/{variation}/edit',       [VariationController::class, 'edit'])->name('edit');
+        Route::put('/{variation}/update',     [VariationController::class, 'update'])->name('update');
+        Route::delete('/{variation}/destroy', [VariationController::class, 'destroy'])->name('destroy');
+        Route::get('/bin',             [VariationController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [VariationController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/forceDelete', [VariationController::class, 'forceDelete'])->name('forceDelete');
+    });
+    // Variations Images
+    Route::prefix('variation_images')->name('variation_images.')->group(function () {
+        Route::get('/{variation}', [VariationImageController::class, 'index'])->name('index');
+        Route::get('/{variation}/create', [VariationImageController::class, 'create'])->name('create');
+        Route::post('/{variation}', [VariationImageController::class, 'store'])->name('store');
+        Route::delete('/{variation}/{id}', [VariationImageController::class, 'destroy'])->name('destroy');
+        Route::post('/{variation}/{id}/thumbnail', [VariationImageController::class, 'setThumbnail'])->name('setThumbnail'); // ✅ THÊM DÒNG NÀY
+    });
+    // Color
+    Route::prefix('colors')->name('colors.')->group(function () {
+        Route::get('/', [ColorController::class, 'index'])->name('index');
+        Route::get('/create', [ColorController::class, 'create'])->name('create');
+        Route::post('/', [ColorController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [ColorController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [ColorController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [ColorController::class, 'destroy'])->name('destroy');
+    });
+    // Sizes
+    Route::prefix('sizes')->name('sizes.')->group(function () {
+        Route::get('/', [SizeController::class, 'index'])->name('index');
+        Route::get('/create', [SizeController::class, 'create'])->name('create');
+        Route::post('/', [SizeController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [SizeController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [SizeController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [SizeController::class, 'destroy'])->name('destroy');
+    });
+    // Category
+    Route::prefix('categories')->name('categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/store', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::get('bin', [CategoryController::class, 'bin'])->name('bin');
+        Route::put('restore/{id}', [CategoryController::class, 'restore'])->name('restore');
+        Route::delete('forceDelete/{id}', [CategoryController::class, 'forceDelete'])->name('forceDelete');
+    });
 
     //Slider
     Route::prefix('sliders')->name('sliders.')->middleware(['permission:view-sliders'])->group(function () {
@@ -206,7 +288,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     //Quản lý thanh toán
-
     Route::resource('payments', PaymentController::class);
     Route::patch('/payments/{id}/status', [PaymentController::class, 'updateStatus'])->name('payments.updateStatus');
     Route::get('/payments/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('payments.invoice');
