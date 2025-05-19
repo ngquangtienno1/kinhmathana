@@ -47,37 +47,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         ->name('settings.update')
         ->middleware(['permission:update-settings']);
 
-    // Shipping routes
-    Route::prefix('shipping')->middleware(['permission:view-shipping'])->group(function () {
-        Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])
-            ->name('shipping.providers.index');
-        Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])
-            ->name('shipping.providers.store')
-            ->middleware(['permission:edit-shipping']);
-        Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])
-            ->name('shipping.providers.update')
-            ->middleware(['permission:edit-shipping']);
-        Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])
-            ->name('shipping.providers.destroy')
-            ->middleware(['permission:edit-shipping']);
-        Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])
-            ->name('shipping.providers.status')
-            ->middleware(['permission:edit-shipping']);
-
-        // Shipping fees routes
-        Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])
-            ->name('shipping.fees');
-        Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])
-            ->name('shipping.fees.store')
-            ->middleware(['permission:edit-shipping']);
-        Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])
-            ->name('shipping.fees.update')
-            ->middleware(['permission:edit-shipping']);
-        Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])
-            ->name('shipping.fees.destroy')
-            ->middleware(['permission:edit-shipping']);
-    });
-
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:view-faqs'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');
@@ -120,11 +89,41 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
     });
 
-
-    //User
+    // User Management
     Route::get('user', [UserController::class, 'index'])
         ->name('listUser')
         ->middleware(['permission:view-users']);
+
+    // Shipping routes
+    Route::prefix('shipping')->middleware(['permission:view-shipping'])->group(function () {
+        Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])
+            ->name('shipping.providers.index');
+        Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])
+            ->name('shipping.providers.store')
+            ->middleware(['permission:edit-shipping']);
+        Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])
+            ->name('shipping.providers.update')
+            ->middleware(['permission:edit-shipping']);
+        Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])
+            ->name('shipping.providers.destroy')
+            ->middleware(['permission:edit-shipping']);
+        Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])
+            ->name('shipping.providers.status')
+            ->middleware(['permission:edit-shipping']);
+
+        // Shipping fees routes
+        Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])
+            ->name('shipping.fees');
+        Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])
+            ->name('shipping.fees.store')
+            ->middleware(['permission:edit-shipping']);
+        Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])
+            ->name('shipping.fees.update')
+            ->middleware(['permission:edit-shipping']);
+        Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])
+            ->name('shipping.fees.destroy')
+            ->middleware(['permission:edit-shipping']);
+    });
 
     //Product
     Route::get('/products', function () {

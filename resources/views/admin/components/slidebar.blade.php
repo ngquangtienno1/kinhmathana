@@ -202,13 +202,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.news.bin') }}">
+                                    {{-- Thùng rác tin tức - chưa có route --}}
+                                    {{-- <li class="nav-item">
+                                        <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Thùng rác</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -240,13 +241,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.brands.bin') }}">
+                                    {{-- Thùng rác brands - chưa có route --}}
+                                    {{-- <li class="nav-item">
+                                        <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Thùng rác</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -278,15 +280,16 @@
                                             </a>
                                         </li>
                                     @endif
-                                    @if (canAccess('delete-faqs'))
+                                    {{-- Thùng rác FAQ - chưa có route --}}
+                                    {{-- @if (canAccess('delete-faqs'))
                                         <li class="nav-item">
-                                            <a class="nav-link" href="">
+                                            <a class="nav-link" href="#">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Thùng rác</span>
                                                 </div>
                                             </a>
                                         </li>
-                                    @endif
+                                    @endif --}}
                                 </ul>
                             </div>
                         </div>
@@ -335,13 +338,14 @@
                                             </a>
                                         </li>
                                     @endif
-                                    <li class="nav-item">
+                                    {{-- Activity Log - chưa có route --}}
+                                    {{-- <li class="nav-item">
                                         <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Activity Log</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -351,8 +355,8 @@
 
 
 
-                <!-- Reports -->
-                <li class="nav-item">
+                {{-- Reports - chưa có routes --}}
+                {{-- <li class="nav-item">
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-reports" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-reports">
@@ -397,7 +401,7 @@
                             </ul>
                         </div>
                     </div>
-                </li>
+                </li> --}}
                 @if (canAccess('view-settings'))
                     <!-- Settings -->
                     <li class="nav-item">
@@ -443,13 +447,14 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    {{-- Sao lưu dữ liệu - chưa có route --}}
+                                    {{-- <li class="nav-item">
                                         <a class="nav-link" href="#">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Sao lưu dữ liệu</span>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>
