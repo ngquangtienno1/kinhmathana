@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ProductSupportController;
+use App\Http\Controllers\Admin\OrderController;
 
 Route::get('/', function () {
     return view('admin.index');
@@ -34,3 +35,6 @@ Route::delete('/admin/products/support/{id}', [ProductSupportController::class, 
 
 Route::get('/admin/products/support/{id}/email', [ProductSupportController::class, 'showEmailForm'])->name('admin.products.support.emailForm');
 Route::post('/admin/products/support/{id}/email', [ProductSupportController::class, 'sendEmail'])->name('admin.products.support.sendEmail');
+
+Route::get('/admin/orders/{id}/status-history', [OrderController::class, 'showStatusHistory'])
+    ->name('admin.orders.status-history');

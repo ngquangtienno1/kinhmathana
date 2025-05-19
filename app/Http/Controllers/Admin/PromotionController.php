@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Promotion;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -31,10 +32,12 @@ class PromotionController extends Controller
     {
         try {
             $products = Product::where('status', 'active')->get();
+            $categories = Category::all();
         } catch (\Exception $e) {
             $products = collect([]);
+            $categories = collect([]);
         }
-        return view('admin.promotions.create', compact('products'));
+        return view('admin.promotions.create', compact('products', 'categories'));
     }
 
     /**
@@ -69,6 +72,8 @@ class PromotionController extends Controller
             'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
             'products.array' => 'Danh sách sản phẩm không hợp lệ.',
             'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
+            'categories.array' => 'Danh sách danh mục không hợp lệ.',
+            'categories.*.exists' => 'Danh mục được chọn không tồn tại.',
         ];
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -83,6 +88,8 @@ class PromotionController extends Controller
             'end_date' => 'required|date|after:start_date',
             'products' => 'nullable|array',
             'products.*' => 'exists:products,id',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
         ], $messages);
 
         // Create promotion
@@ -91,6 +98,11 @@ class PromotionController extends Controller
         // Attach products if any
         if (!empty($validated['products'])) {
             $promotion->products()->attach($validated['products']);
+        }
+
+        // Attach categories if any
+        if (!empty($validated['categories'])) {
+            $promotion->categories()->attach($validated['categories']);
         }
 
         return redirect()->route('admin.promotions.index')
@@ -105,7 +117,7 @@ class PromotionController extends Controller
      */
     public function show(Promotion $promotion)
     {
-        $promotion->load('products', 'usages.order', 'usages.user');
+        $promotion->load('products', 'categories', 'usages.order', 'usages.user');
         return view('admin.promotions.show', compact('promotion'));
     }
 
@@ -119,12 +131,15 @@ class PromotionController extends Controller
     {
         try {
             $products = Product::where('status', 'active')->get();
+            $categories = Category::all();
         } catch (\Exception $e) {
             $products = collect([]);
+            $categories = collect([]);
         }
         $selectedProducts = $promotion->products->pluck('id')->toArray();
+        $selectedCategories = $promotion->categories->pluck('id')->toArray();
         
-        return view('admin.promotions.edit', compact('promotion', 'products', 'selectedProducts'));
+        return view('admin.promotions.edit', compact('promotion', 'products', 'categories', 'selectedProducts', 'selectedCategories'));
     }
 
     /**
@@ -154,6 +169,8 @@ class PromotionController extends Controller
             'end_date' => 'required|date|after:start_date',
             'products' => 'nullable|array',
             'products.*' => 'exists:products,id',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:categories,id',
         ]);
 
         // Update promotion
@@ -164,6 +181,13 @@ class PromotionController extends Controller
             $promotion->products()->sync($validated['products']);
         } else {
             $promotion->products()->detach();
+        }
+
+        // Sync categories if any
+        if (!empty($validated['categories'])) {
+            $promotion->categories()->sync($validated['categories']);
+        } else {
+            $promotion->categories()->detach();
         }
 
         return redirect()->route('admin.promotions.index')
@@ -185,6 +209,7 @@ class PromotionController extends Controller
         }
         
         $promotion->products()->detach();
+        $promotion->categories()->detach();
         $promotion->delete();
 
         return redirect()->route('admin.promotions.index')

@@ -28,6 +28,11 @@ class Promotion extends Model
         return $this->belongsToMany(Product::class, 'promotion_products');
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'promotion_categories');
+    }
+
     public function usages()
     {
         return $this->hasMany(PromotionUsage::class);
@@ -40,5 +45,27 @@ class Promotion extends Model
                $now->greaterThanOrEqualTo($this->start_date) && 
                $now->lessThanOrEqualTo($this->end_date) &&
                ($this->usage_limit === null || $this->used_count < $this->usage_limit);
+    }
+
+    /**
+     * Kiểm tra xem sản phẩm có thuộc danh mục được áp dụng mã giảm giá không
+     */
+    public function isProductEligible(Product $product)
+    {
+        // Nếu không có danh mục nào được chọn, áp dụng cho tất cả sản phẩm
+        if ($this->categories->isEmpty()) {
+            return true;
+        }
+
+        // Kiểm tra xem sản phẩm có thuộc bất kỳ danh mục nào được chọn không
+        return $this->categories->contains($product->category_id);
+    }
+
+    /**
+     * Kiểm tra xem đơn hàng có đủ điều kiện để áp dụng mã giảm giá không
+     */
+    public function isOrderEligible($totalAmount)
+    {
+        return $totalAmount >= $this->minimum_purchase;
     }
 } 

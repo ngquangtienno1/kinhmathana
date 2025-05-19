@@ -130,9 +130,26 @@
                 </div>
             </div>
 
+            @if($categories->count() > 0)
+            <div class="mb-4">
+                <label class="form-label" for="categories">Áp dụng cho danh mục</label>
+                <select name="categories[]" id="categories" class="form-select select2 @error('categories') is-invalid @enderror" multiple>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <small class="form-text text-muted">Nếu không chọn danh mục, khuyến mãi sẽ áp dụng cho tất cả danh mục</small>
+                @error('categories')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            @endif
+
             @if($products->count() > 0)
             <div class="mb-4">
-                <label class="form-label" for="products">Áp dụng cho sản phẩm</label>
+                <label class="form-label" for="products">Áp dụng cho sản phẩm cụ thể (tùy chọn)</label>
                 <select name="products[]" id="products" class="form-select select2 @error('products') is-invalid @enderror" multiple>
                     @foreach($products as $product)
                         <option value="{{ $product->id }}" {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>
@@ -140,7 +157,7 @@
                         </option>
                     @endforeach
                 </select>
-                <small class="form-text text-muted">Nếu không chọn sản phẩm, khuyến mãi sẽ áp dụng cho tất cả sản phẩm</small>
+                <small class="form-text text-muted">Nếu đã chọn danh mục, chỉ cần chọn sản phẩm cụ thể nếu muốn giới hạn thêm</small>
                 @error('products')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -173,9 +190,9 @@
 <script src="{{ asset('v1/vendors/flatpickr/flatpickr.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        // Initialize Select2
+        // Initialize Select2 for both products and categories
         $('.select2').select2({
-            placeholder: 'Chọn sản phẩm',
+            placeholder: 'Chọn danh mục hoặc sản phẩm',
             width: '100%'
         });
 

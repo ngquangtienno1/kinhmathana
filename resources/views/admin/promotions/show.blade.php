@@ -94,6 +94,47 @@
             </div>
         </div>
 
+        <div class="mb-4">
+            <h4 class="mb-3">Điều kiện áp dụng</h4>
+            
+            <div class="mb-3">
+                <h5 class="mb-2">Giá trị đơn hàng tối thiểu</h5>
+                <p class="mb-0">
+                    @if($promotion->minimum_purchase > 0)
+                        {{ number_format($promotion->minimum_purchase) }}đ
+                    @else
+                        Không yêu cầu
+                    @endif
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <h5 class="mb-2">Danh mục áp dụng</h5>
+                @if($promotion->categories->count() > 0)
+                    <ul class="list-unstyled mb-0">
+                        @foreach($promotion->categories as $category)
+                            <li>{{ $category->name }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="mb-0">Áp dụng cho tất cả danh mục</p>
+                @endif
+            </div>
+
+            <div class="mb-3">
+                <h5 class="mb-2">Sản phẩm cụ thể</h5>
+                @if($promotion->products->count() > 0)
+                    <ul class="list-unstyled mb-0">
+                        @foreach($promotion->products as $product)
+                            <li>{{ $product->name }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="mb-0">Không giới hạn sản phẩm cụ thể</p>
+                @endif
+            </div>
+        </div>
+
         @if($promotion->products->count() > 0)
         <div class="card">
             <div class="card-body">
