@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class ProductController extends Controller
 {
-public function index(Request $request)
+    public function index(Request $request)
     {
         $query = Product::query();
 
@@ -23,14 +23,14 @@ public function index(Request $request)
 
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
-                  ->orWhereHas('category', function ($subQ) use ($search) {
-                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                  })
-                  ->orWhereHas('brand', function ($subQ) use ($search) {
-                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                  });
+                    ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
+                    ->orWhereHas('category', function ($subQ) use ($search) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    })
+                    ->orWhereHas('brand', function ($subQ) use ($search) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    });
             });
         }
 
@@ -45,7 +45,7 @@ public function index(Request $request)
             }
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+        $products = $query->orderBy('created_at', 'desc')->get();
         $activeCount = Product::where('status', 'Hoạt động')->count();
         $deletedCount = Product::onlyTrashed()->count();
 
@@ -54,9 +54,9 @@ public function index(Request $request)
     public function show($id)
     {
         // Eager load cả quan hệ images để show ảnh
-    $product = Product::with('images')->findOrFail($id);
+        $product = Product::with('images')->findOrFail($id);
 
-    return view('admin.products.show', compact('product'));
+        return view('admin.products.show', compact('product'));
     }
 
     public function create()
@@ -137,12 +137,12 @@ public function index(Request $request)
         return redirect()->route('admin.products.list')->with('success', 'Cập nhật sản phẩm thành công.');
     }
 
-public function destroy($id)
-{
-    $product = Product::findOrFail($id);
-    $product->delete();
-    return redirect()->route('admin.products.list')->with('success', 'Xóa mềm sản phẩm thành công.');
-}
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return redirect()->route('admin.products.list')->with('success', 'Xóa mềm sản phẩm thành công.');
+    }
 
     public function bin()
     {
@@ -150,22 +150,21 @@ public function destroy($id)
         return view('admin.products.bin', compact('products'));
     }
 
- public function restore($id)
-{
-    $product = Product::withTrashed()->findOrFail($id);
-    $product->restore();
-    return redirect()->route('admin.products.bin')->with('success', 'Khôi phục sản phẩm thành công.');
-}
-
-public function forceDelete($id)
-{
-    try {
+    public function restore($id)
+    {
         $product = Product::withTrashed()->findOrFail($id);
-        $product->forceDelete();
-        return redirect()->route('admin.products.bin')->with('success', 'Xóa vĩnh viễn sản phẩm thành công.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn sản phẩm.');
+        $product->restore();
+        return redirect()->route('admin.products.bin')->with('success', 'Khôi phục sản phẩm thành công.');
     }
-}
 
+    public function forceDelete($id)
+    {
+        try {
+            $product = Product::withTrashed()->findOrFail($id);
+            $product->forceDelete();
+            return redirect()->route('admin.products.bin')->with('success', 'Xóa vĩnh viễn sản phẩm thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn sản phẩm.');
+        }
+    }
 }

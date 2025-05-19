@@ -6,7 +6,7 @@
     <li class="breadcrumb-item">
         <a href="#">Tin tức</a>
     </li>
-    <li class="breadcrumb-item active">Danh sách Tin tức</li>
+    <li class="breadcrumb-item active">Danh sách tin tức</li>
 @endsection
 
 <div class="mb-9">
@@ -18,7 +18,7 @@
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
                 href="{{ route('admin.news.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $news->total() }})</span></a></li>
+                    class="text-body-tertiary fw-semibold">({{ $news->count() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
                 href="{{ route('admin.news.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                     class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
@@ -28,7 +28,7 @@
         </li>
     </ul>
     <div id="news"
-        data-list='{"valueNames":["title","description","sort_order","status","created_at"],"page":10,"pagination":true}'>
+        data-list='{"valueNames":["title","content","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
@@ -56,7 +56,7 @@
                         <tr>
                             <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
                                 <div class="form-check mb-0 fs-8">
-                                    <input class="form-check-input" id="checkbox-bulk-sliders-select" type="checkbox"
+                                    <input class="form-check-input" id="checkbox-bulk-news-select" type="checkbox"
                                         data-bulk-select='{"body":"news-table-body"}' />
                                 </div>
                             </th>
@@ -96,18 +96,16 @@
                                     <span class="text-body-tertiary">{{ $item->id }}</span>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-0">
-                                    @if ($item->image)
-                                        <a class="d-block border border-translucent rounded-2" href="#">
-                                            <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                                width="53" />
-                                        </a>
-                                    @endif
+                                    <a class="d-block border border-translucent rounded-2" href="#">
+                                        <img src="{{ asset('storage/' . $item->image) }}" alt=""
+                                            width="53" />
+                                    </a>
                                 </td>
                                 <td class="title align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
                                         href="{{ route('admin.news.show', $item->id) }}">{{ $item->title }}</a>
                                 </td>
-                                <td class="description align-middle ps-4">
+                                <td class="content align-middle ps-4">
                                     <span class="text-body-tertiary">{{ Str::limit($item->content, 50) }}</span>
                                 </td>
                                 <td class="status align-middle ps-4">
@@ -117,7 +115,7 @@
                                     </span>
                                 </td>
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
-                                    {{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '' }}
+                                    {{ $item->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
@@ -146,7 +144,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4">Không có tin tức nào</td>
+                                <td colspan="9" class="text-center py-4">Không có tin tức nào</td>
                             </tr>
                         @endforelse
                     </tbody>

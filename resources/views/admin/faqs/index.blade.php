@@ -10,20 +10,32 @@
 @endsection
 
 <div class="mb-9">
-    <div id="faqs" data-list='{"valueNames":["image","question","category","status"],"page":10,"pagination":true}'>
-        <div class="row g-3 mb-4">
-            <div class="col-auto">
-                <h2 class="mb-0">Quản lý FAQ</h2>
-            </div>
+    <div class="row g-3 mb-4">
+        <div class="col-auto">
+            <h2 class="mb-0">Quản lý FAQ</h2>
         </div>
-
+    </div>
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item"><a class="nav-link active" aria-current="page"
+                href="{{ route('admin.faqs.index') }}"><span>Tất cả </span><span
+                    class="text-body-tertiary fw-semibold">({{ $faqs->count() }})</span></a></li>
+        <li class="nav-item"><a class="nav-link"
+                href="{{ route('admin.faqs.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
+                    class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
+        </li>
+        {{-- <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs.bin') }}"><span>Thùng rác </span><span
+                    class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span></a>
+        </li> --}}
+    </ul>
+    <div id="faqs" data-list='{"valueNames":["question","category","status"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
-                    <div class="position-relative">
-                        <input class="form-control search-input search" type="search" placeholder="Tìm kiếm FAQ" />
+                    <form class="position-relative" action="{{ route('admin.faqs.index') }}" method="GET">
+                        <input class="form-control search-input search" type="search" name="search"
+                            placeholder="Tìm kiếm FAQ" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
-                    </div>
+                    </form>
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -52,6 +64,9 @@
                     </ul>
                 </div>
                 <div class="ms-xxl-auto">
+                    <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
+                        <span class="fas fa-trash me-2"></span>Xóa mềm
+                    </button>
                     <a href="{{ route('admin.faqs.create') }}" class="btn btn-primary">
                         <span class="fas fa-plus me-2"></span>Thêm FAQ
                     </a>
@@ -64,46 +79,54 @@
                 <table class="table fs-9 mb-0">
                     <thead>
                         <tr>
-                            <th class="white-space-nowrap fs-9 align-middle ps-0" style="width:20px;">
+                            <th class="align-middle text-center px-3" style="width:44px;">
                                 <div class="form-check mb-0 fs-8">
                                     <input class="form-check-input" id="checkbox-bulk-faqs-select" type="checkbox"
                                         data-bulk-select='{"body":"faqs-table-body"}' />
                                 </div>
                             </th>
-                            <th class="sort white-space-nowrap" scope="col" data-sort="image">Hình ảnh</th>
-                            <th class="sort white-space-nowrap" scope="col" data-sort="question">Câu hỏi</th>
-                            <th class="sort white-space-nowrap" scope="col" data-sort="category">Danh mục</th>
-                            <th class="sort white-space-nowrap" scope="col" data-sort="status">Trạng thái</th>
-                            <th class="text-end" scope="col">Thao tác</th>
+                            <th class="sort align-middle text-center px-3" scope="col" style="width:70px;">ID</th>
+                            <th class="sort align-middle text-center px-3" scope="col" style="width:90px;">ẢNH</th>
+                            <th class="sort align-middle text-start px-4" scope="col" style="min-width:300px;">Câu
+                                hỏi</th>
+                            <th class="sort align-middle text-center px-3" scope="col" style="width:150px;">Danh mục
+                            </th>
+                            <th class="sort align-middle text-center px-3" scope="col" style="width:130px;">Trạng
+                                thái</th>
+                            <th class="align-middle text-center px-3" scope="col" style="width:110px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="list" id="faqs-table-body">
                         @forelse($faqs as $faq)
                             <tr class="position-static">
-                                <td class="fs-9 align-middle">
+                                <td class="align-middle text-center px-3">
                                     <div class="form-check mb-0 fs-8">
-                                        <input class="form-check-input" type="checkbox"
-                                            data-bulk-select-row='{"question":"{{ $faq->question }}","category":"{{ $faq->category }}"}' />
+                                        <input class="form-check-input faq-checkbox" type="checkbox"
+                                            value="{{ $faq->id }}" />
                                     </div>
                                 </td>
-                                <td class="image align-middle">
+                                <td class="id align-middle text-center px-3">{{ $faq->id }}</td>
+                                <td class="align-middle text-center px-3">
                                     @if ($faq->image)
-                                        <img src="{{ asset($faq->image) }}" alt="{{ $faq->question }}" class="rounded"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <a class="d-block border border-translucent rounded-2" href="#">
+                                            <img src="{{ asset($faq->image) }}" alt="{{ $faq->question }}"
+                                                class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                        </a>
                                     @else
                                         <div class="rounded bg-light" style="width: 50px; height: 50px;"></div>
                                     @endif
                                 </td>
-                                <td class="question align-middle">{{ $faq->question }}</td>
-                                <td class="category align-middle">{{ $faq->category }}</td>
-                                <td class="status align-middle">
-                                    <div class="form-check form-switch">
+                                <td class="question align-middle text-start px-4">{{ $faq->question }}</td>
+                                <td class="category align-middle text-center px-3">{{ $faq->category }}</td>
+                                <td class="status align-middle text-center px-3">
+                                    <div class="form-check form-switch d-flex justify-content-center">
                                         <input class="form-check-input" type="checkbox" role="switch"
                                             {{ $faq->is_active ? 'checked' : '' }}
                                             onchange="updateStatus({{ $faq->id }}, this.checked)">
                                     </div>
                                 </td>
-                                <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
+                                <td
+                                    class="align-middle text-center px-3 white-space-nowrap pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
                                         <button
                                             class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
@@ -128,7 +151,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Không có dữ liệu</td>
+                                <td colspan="7" class="text-center">Không có dữ liệu</td>
                             </tr>
                         @endforelse
                     </tbody>

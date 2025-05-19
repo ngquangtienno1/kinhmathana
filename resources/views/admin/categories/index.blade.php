@@ -3,8 +3,8 @@
 @section('content')
 
 @section('breadcrumbs')
-<li class="breadcrumb-item"><a href="#">Categories</a></li>
-<li class="breadcrumb-item active">Danh sách danh mục</li>
+    <li class="breadcrumb-item"><a href="#">Categories</a></li>
+    <li class="breadcrumb-item active">Danh sách danh mục</li>
 @endsection
 
 <div class="mb-9">
@@ -16,7 +16,8 @@
 
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item">
-            <a class="nav-link {{ request('status') == null ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
+            <a class="nav-link {{ request('status') == null ? 'active' : '' }}"
+                href="{{ route('admin.categories.index') }}">
                 Tất cả <span class="text-body-tertiary fw-semibold">({{ $categories->total() }})</span>
             </a>
         </li>
@@ -54,7 +55,7 @@
                 </tr>
             </thead>
 
-          <tbody>
+            <tbody>
                 @forelse ($categories as $category)
                     <tr>
                         <td class="align-middle text-center">
@@ -65,13 +66,16 @@
                         <td class="align-middle text-center">{{ optional($category->parent)->name ?? '-' }}</td>
                         <td class="align-middle text-end pe-4 btn-reveal-trigger">
                             <div class="btn-reveal-trigger position-static">
-                                <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                        type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button
+                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                    type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="fas fa-ellipsis-h fs-10"></span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end py-2">
-                                    <a class="dropdown-item" href="{{ route('admin.categories.edit', $category->id) }}">Sửa</a>
-                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                                    <a class="dropdown-item"
+                                        href="{{ route('admin.categories.edit', $category->id) }}">Sửa</a>
+                                    <form action="{{ route('admin.categories.destroy', $category->id) }}"
+                                        method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="dropdown-item text-danger"
@@ -93,7 +97,8 @@
 
     <div class="d-flex justify-content-between py-2">
         <div>
-            <p class="mb-0">Hiển thị {{ $categories->firstItem() }} đến {{ $categories->lastItem() }} trong tổng số {{ $categories->total() }} mục</p>
+            <p class="mb-0">Hiển thị {{ $categories->firstItem() }} đến {{ $categories->lastItem() }} trong tổng số
+                {{ $categories->total() }} mục</p>
         </div>
         <div>
             {{ $categories->links() }}

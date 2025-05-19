@@ -57,20 +57,13 @@ class CommentController extends Controller
             $query->where('status', $request->status);
         }
 
-        $comments = $query->latest()->paginate(10);
+        $comments = $query->latest()->get();
         $activeCount = Comment::where('status', 'active')->count();
         $deletedCount = Comment::onlyTrashed()->count();
 
         // Lấy danh sách bài viết và sản phẩm cho filter
         $news = News::pluck('title', 'id');
         $products = Product::pluck('name', 'id');
-
-        if ($request->ajax()) {
-            return response()->json([
-                'html' => view('admin.comments._table', compact('comments'))->render(),
-                'pagination' => view('admin.comments._pagination', compact('comments'))->render()
-            ]);
-        }
 
         return view('admin.comments.index', compact('comments', 'activeCount', 'deletedCount', 'news', 'products'));
     }

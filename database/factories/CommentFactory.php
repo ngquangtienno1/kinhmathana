@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +10,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $entityTypes = ['news', 'product'];
+        $statusList = ['chờ duyệt', 'đã duyệt', 'spam', 'chặn'];
+
         return [
-            //
+            'user_id'     => User::factory(),
+            'entity_type' => $this->faker->randomElement($entityTypes),
+            'entity_id'   => $this->faker->numberBetween(1, 50),
+            'content'     => $this->faker->paragraph(2),
+            'status'      => $this->faker->randomElement($statusList),
+            'is_hidden'   => $this->faker->boolean(40), // 40% bị ẩn
         ];
     }
 }
