@@ -132,6 +132,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:edit-shipping']);
     });
 
+    //Product
+    Route::get('/products', function () {
+        return view('admin.products.index');
+    })->middleware(['permission:view-products']);
     // Product
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('list');

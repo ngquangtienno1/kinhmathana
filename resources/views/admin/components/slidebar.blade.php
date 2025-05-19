@@ -389,8 +389,8 @@
 
 
 
-                <!-- Reports -->
-                <li class="nav-item">
+                {{-- Reports - chưa có routes --}}
+                {{-- <li class="nav-item">
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-reports" role="button"
                             data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-reports">
@@ -435,7 +435,7 @@
                             </ul>
                         </div>
                     </div>
-                </li>
+                </li> --}}
                 @if (canAccess('view-settings'))
                     <!-- Settings -->
                     <li class="nav-item">
