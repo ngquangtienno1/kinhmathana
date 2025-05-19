@@ -40,7 +40,8 @@
                     <div class="mb-3">
                         <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('slug') is-invalid @enderror"
-                               id="slug" name="slug" value="{{ old('slug') }}" required>
+                               id="slug" name="slug" value="{{ old('slug') }}" readonly>
+                        <small class="text-muted">Slug sẽ được tự động tạo từ tên quyền</small>
                         @error('slug')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -63,4 +64,21 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.getElementById('name').addEventListener('input', function() {
+            let slug = this.value
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[đĐ]/g, 'd')
+                .replace(/([^0-9a-z-\s])/g, '')
+                .replace(/(\s+)/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            document.getElementById('slug').value = slug;
+        });
+    </script>
+    @endpush
 @endsection

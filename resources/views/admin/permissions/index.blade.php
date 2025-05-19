@@ -18,9 +18,7 @@
         </div>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+
 
     <div class="mb-4">
         <div class="d-flex flex-wrap gap-3">

@@ -38,76 +38,76 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])
         ->name('settings.index')
-        ->middleware(['permission:view-settings']);
+        ->middleware(['permission:xem-cai-dat']);
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])
         ->name('settings.update')
-        ->middleware(['permission:update-settings']);
+        ->middleware(['permission:cap-nhat-cai-dat']);
 
     // Shipping routes
-    Route::prefix('shipping')->middleware(['permission:view-shipping'])->group(function () {
+    Route::prefix('shipping')->middleware(['permission:xem-don-vi-van-chuyen'])->group(function () {
         Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])
             ->name('shipping.providers.index');
         Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])
             ->name('shipping.providers.store')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
         Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])
             ->name('shipping.providers.update')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
         Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])
             ->name('shipping.providers.destroy')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
         Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])
             ->name('shipping.providers.status')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
 
         // Shipping fees routes
         Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])
             ->name('shipping.fees');
         Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])
             ->name('shipping.fees.store')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
         Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])
             ->name('shipping.fees.update')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
         Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])
             ->name('shipping.fees.destroy')
-            ->middleware(['permission:edit-shipping']);
+            ->middleware(['permission:sua-don-vi-van-chuyen']);
     });
 
     // FAQ routes
-    Route::prefix('faqs')->middleware(['permission:view-faqs'])->group(function () {
+    Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');
         Route::get('/create', [FaqController::class, 'create'])->name('faqs.create')
-            ->middleware(['permission:create-faqs']);
+            ->middleware(['permission:them-faq']);
         Route::post('/', [FaqController::class, 'store'])->name('faqs.store')
-            ->middleware(['permission:create-faqs']);
+            ->middleware(['permission:them-faq']);
         Route::get('/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit')
-            ->middleware(['permission:edit-faqs']);
+            ->middleware(['permission:sua-faq']);
         Route::put('/{faq}', [FaqController::class, 'update'])->name('faqs.update')
-            ->middleware(['permission:edit-faqs']);
+            ->middleware(['permission:sua-faq']);
         Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy')
-            ->middleware(['permission:delete-faqs']);
+            ->middleware(['permission:xoa-faq']);
         Route::post('/{faq}/status', [FaqController::class, 'updateStatus'])->name('faqs.status')
-            ->middleware(['permission:edit-faqs']);
+            ->middleware(['permission:sua-faq']);
     });
 
     // Role Management Routes
-    Route::prefix('roles')->middleware(['permission:view-users'])->group(function () {
+    Route::prefix('roles')->middleware(['permission:xem-danh-sach-nguoi-dung'])->group(function () {
         Route::get('/', [RoleController::class, 'index'])->name('roles.index');
         Route::get('/create', [RoleController::class, 'create'])->name('roles.create')
-            ->middleware(['permission:edit-users']);
+            ->middleware(['permission:sua-nguoi-dung']);
         Route::post('/', [RoleController::class, 'store'])->name('roles.store')
-            ->middleware(['permission:edit-users']);
+            ->middleware(['permission:sua-nguoi-dung']);
         Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit')
-            ->middleware(['permission:edit-users']);
+            ->middleware(['permission:sua-nguoi-dung']);
         Route::put('/{role}', [RoleController::class, 'update'])->name('roles.update')
-            ->middleware(['permission:edit-users']);
+            ->middleware(['permission:sua-nguoi-dung']);
         Route::delete('/{role}', [RoleController::class, 'destroy'])->name('roles.destroy')
-            ->middleware(['permission:edit-users']);
+            ->middleware(['permission:sua-nguoi-dung']);
     });
 
     // Permission Management Routes
-    Route::middleware(['permission:edit-permissions'])->group(function () {
+    Route::middleware(['permission:sua-quyen'])->group(function () {
         Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
         Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
         Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
@@ -120,85 +120,85 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     //User
     Route::get('user', [UserController::class, 'index'])
         ->name('listUser')
-        ->middleware(['permission:view-users']);
+        ->middleware(['permission:xem-danh-sach-nguoi-dung']);
 
     //Product
     Route::get('/products', function () {
         return view('admin.products.index');
-    })->middleware(['permission:view-products']);
+    })->middleware(['permission:xem-danh-sach-san-pham']);
 
     //Slider
-    Route::prefix('sliders')->name('sliders.')->middleware(['permission:view-sliders'])->group(function () {
+    Route::prefix('sliders')->name('sliders.')->middleware(['permission:xem-danh-sach-slider'])->group(function () {
         Route::get('/',                [SliderController::class, 'index'])->name('index');
         Route::get('/{id}/show',       [SliderController::class, 'show'])->name('show');
         Route::get('/create',          [SliderController::class, 'create'])->name('create')
-            ->middleware(['permission:create-sliders']);
+            ->middleware(['permission:them-slider']);
         Route::post('/store',          [SliderController::class, 'store'])->name('store')
-            ->middleware(['permission:create-sliders']);
+            ->middleware(['permission:them-slider']);
         Route::get('/{id}/edit',       [SliderController::class, 'edit'])->name('edit')
-            ->middleware(['permission:edit-sliders']);
+            ->middleware(['permission:sua-slider']);
         Route::put('/{id}/update',     [SliderController::class, 'update'])->name('update')
-            ->middleware(['permission:edit-sliders']);
+            ->middleware(['permission:sua-slider']);
         Route::delete('/{id}/destroy', [SliderController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:delete-sliders']);
+            ->middleware(['permission:xoa-slider']);
         Route::get('/bin',             [SliderController::class, 'bin'])->name('bin');
         Route::put('/{id}/restore',    [SliderController::class, 'restore'])->name('restore')
-            ->middleware(['permission:edit-sliders']);
+            ->middleware(['permission:sua-slider']);
         Route::delete('/{id}/forceDelete',   [SliderController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:delete-sliders']);
+            ->middleware(['permission:xoa-slider']);
         Route::delete('/bulk-delete', [SliderController::class, 'bulkDelete'])->name('bulk-delete')
-            ->middleware(['permission:delete-sliders']);
+            ->middleware(['permission:xoa-slider']);
     });
 
     //News
-    Route::prefix('news')->name('news.')->middleware(['permission:view-news'])->group(function () {
+    Route::prefix('news')->name('news.')->middleware(['permission:xem-news'])->group(function () {
         Route::get('/', [NewsController::class, 'index'])->name('index');
         Route::get('/{id}/show',       [NewsController::class, 'show'])->name('show');
         Route::get('/create',          [NewsController::class, 'create'])->name('create')
-            ->middleware(['permission:create-news']);
+            ->middleware(['permission:them-news']);
         Route::post('/store',          [NewsController::class, 'store'])->name('store')
-            ->middleware(['permission:create-news']);
+            ->middleware(['permission:them-news']);
         Route::get('/{id}/edit',       [NewsController::class, 'edit'])->name('edit')
-            ->middleware(['permission:edit-news']);
+            ->middleware(['permission:sua-news']);
         Route::put('/{id}/update',     [NewsController::class, 'update'])->name('update')
-            ->middleware(['permission:edit-news']);
+            ->middleware(['permission:sua-news']);
         Route::delete('/{id}/destroy', [NewsController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:delete-news']);
+            ->middleware(['permission:xoa-news']);
         Route::get('/bin',             [NewsController::class, 'bin'])->name('bin');
         Route::put('/{id}/restore',    [NewsController::class, 'restore'])->name('restore')
-            ->middleware(['permission:edit-news']);
+            ->middleware(['permission:sua-news']);
         Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:delete-news']);
+            ->middleware(['permission:xoa-news']);
     });
 
     //Brands
-    Route::prefix('brands')->name('brands.')->middleware(['permission:view-brands'])->group(function () {
+    Route::prefix('brands')->name('brands.')->middleware(['permission:xem-danh-sach-thuong-hieu'])->group(function () {
         Route::get('/', [BrandController::class, 'index'])->name('index');
         Route::get('/{id}/show',       [BrandController::class, 'show'])->name('show');
         Route::get('/create',          [BrandController::class, 'create'])->name('create')
-            ->middleware(['permission:create-brands']);
+            ->middleware(['permission:them-thuong-hieu']);
         Route::post('/store',          [BrandController::class, 'store'])->name('store')
-            ->middleware(['permission:create-brands']);
+            ->middleware(['permission:them-thuong-hieu']);
         Route::get('/{id}/edit',       [BrandController::class, 'edit'])->name('edit')
-            ->middleware(['permission:edit-brands']);
+            ->middleware(['permission:sua-thuong-hieu']);
         Route::put('/{id}/update',     [BrandController::class, 'update'])->name('update')
-            ->middleware(['permission:edit-brands']);
+            ->middleware(['permission:sua-thuong-hieu']);
         Route::delete('/{id}/destroy', [BrandController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:delete-brands']);
+            ->middleware(['permission:xoa-thuong-hieu']);
         Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
         Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore')
-            ->middleware(['permission:edit-brands']);
+            ->middleware(['permission:sua-thuong-hieu']);
         Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:delete-brands']);
+            ->middleware(['permission:xoa-thuong-hieu']);
     });
 
     // Orders
-    Route::resource('orders', OrderController::class)->middleware(['permission:view-orders']);
-    Route::prefix('orders')->name('orders.')->middleware(['permission:view-orders'])->group(function () {
+    Route::resource('orders', OrderController::class)->middleware(['permission:xem-danh-sach-don-hang']);
+    Route::prefix('orders')->name('orders.')->middleware(['permission:xem-danh-sach-don-hang'])->group(function () {
         Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
         Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status')
-            ->middleware(['permission:edit-orders']);
+            ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
-            ->middleware(['permission:edit-orders']);
+            ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
     });
 });

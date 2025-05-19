@@ -12,7 +12,7 @@
                         </a>
                     </div>
                 </li>
-                @if(canAccess('view-products'))
+                @if(canAccess('xem-danh-sach-san-pham'))
                 <!-- Product Management -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -76,7 +76,7 @@
                 </li>
                 @endif
 
-                @if(canAccess('view-sliders'))
+                @if(canAccess('xem-danh-sach-slider'))
                 <!-- Quản lý Slider -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -112,7 +112,7 @@
                 </li>
                 @endif
 
-                @if(canAccess('view-news'))
+                @if(canAccess('xem-news'))
                 <!-- Marketing -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -148,7 +148,15 @@
                 </li>
                 @endif
 
-
+                @if(canAccess('xem-danh-sach-faq'))
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.faqs.index') }}">
+                        <div class="d-flex align-items-center">
+                            <span class="nav-link-text">FAQ</span>
+                        </div>
+                    </a>
+                </li>
+                @endif
 
                 <!-- Quản lý Brands -->
                 <li class="nav-item">
@@ -179,7 +187,7 @@
                                         </div>
                                     </a>
                                 </li>
-                                @if(canAccess('view-faqs'))
+                                @if(canAccess('xem-danh-sach-faq'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.faqs.index') }}">
                                         <div class="d-flex align-items-center">
@@ -206,7 +214,7 @@
                         </div>
                     </div>
                 </li>
-                @if(canAccess('view-users'))
+                @if(canAccess('xem-danh-sach-nguoi-dung'))
                 <!-- User Management -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -229,7 +237,7 @@
                                         </div>
                                     </a>
                                 </li>
-                                @if(canAccess('view-roles'))
+                                @if(canAccess('xem-danh-sach-vai-tro'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.roles.index') }}">
                                         <div class="d-flex align-items-center">
@@ -238,7 +246,7 @@
                                     </a>
                                 </li>
                                 @endif
-                                @if(canAccess('view-permissions'))
+                                @if(canAccess('xem-danh-sach-quyen'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.permissions.index') }}">
                                         <div class="d-flex align-items-center">
@@ -259,9 +267,6 @@
                     </div>
                 </li>
                 @endif
-
-
-
 
                 <!-- Reports -->
                 <li class="nav-item">
@@ -310,7 +315,7 @@
                         </div>
                     </div>
                 </li>
-                @if(canAccess('view-settings'))
+                @if(canAccess('xem-cai-dat'))
                 <!-- Settings -->
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
