@@ -3,6 +3,7 @@
 ## 1. Cài đặt các package cần thiết
 ```bash
 composer install
+composer dump-autoload
 composer require laravel/sanctum
 composer require laravel/socialite
 ```
