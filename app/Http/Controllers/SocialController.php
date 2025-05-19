@@ -23,13 +23,14 @@ class SocialController extends Controller
                 ['email' => $googleUser->getEmail()],
                 [
                     'name' => $googleUser->getName() ?? $googleUser->getNickname(),
-                    'password' => bcrypt(Str::random(24)), // nếu muốn cho mật khẩu random
+                    'password' => bcrypt(Str::random(24)),
+                    'role_id' => 2,
                 ]
             );
 
             Auth::login($user);
 
-            return redirect()->route('admin')->with('message', 'Đăng nhập Google thành công');
+            return redirect()->route('admin.home')->with('message', 'Đăng nhập Google thành công');
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Đăng nhập Google thất bại: ' . $e->getMessage());
         }
