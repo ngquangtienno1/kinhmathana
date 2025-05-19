@@ -17,7 +17,10 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\PermissionController;
 
-
+// Redirect root to login page
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 Route::get('login', [AuthenticationController::class, 'login'])->name('login');
 Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');

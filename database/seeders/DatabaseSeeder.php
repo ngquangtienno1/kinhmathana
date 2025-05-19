@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\RolePermission;
 use Illuminate\Database\Seeder;
-
-
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,32 +13,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // RoleSeeder::class,
-            UserSeeder::class,
-            RoleSeeder::class,
-            // User::factory(10)->create();
-            // UserSeeder::class,
+            RoleSeeder::class,        // Chạy trước để tạo roles
+            UserSeeder::class,        // Sau đó tạo users với role_id
+            NewsSeeder::class,        // Tạo tin tức
+            ProductSeeder::class,     // Tạo sản phẩm
+            CommentSeeder::class,     // Tạo bình luận
+            RolePermissionSeeder::class, // Tạo role permission
+            // Các seeder khác có thể thêm vào đây
             // OrderSeeder::class,
             // SliderSeeder::class,
-            // NewsSeeder::class,
             // BrandSeeder::class,
             // ShippingProviderSeeder::class,
             // WebsiteSettingSeeder::class,
-
-            // $this->call([
-            //     RoleSeeder::class, // Gọi trước
-            //     UserSeeder::class,
-            //     OrderSeeder::class,
-            //     PaymentMethodSeeder::class,
-            //     PaymentSeeder::class,
-            // ]);
-
-            $this->call([
-                UserSeeder::class,
-                NewsSeeder::class,
-                ProductSeeder::class,
-                CommentSeeder::class,
-            ]),
         ]);
     }
 }
