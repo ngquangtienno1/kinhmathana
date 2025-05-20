@@ -111,8 +111,27 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'support.hanaeyewear@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Hana Eyewear Support'),
+    ],
+
+    'department_emails' => [
+        'support' => [
+            'address' => 'support.hanaeyewear@gmail.com',
+            'name' => 'Hana Eyewear Support'
+        ],
+        'sales' => [
+            'address' => 'sales.hanaeyewear@gmail.com',
+            'name' => 'Hana Eyewear Sales'
+        ],
+        'cskh' => [
+            'address' => 'cskh.hanaeyewear@gmail.com',
+            'name' => 'Hana Eyewear CSKH'
+        ],
+        'order' => [
+            'address' => 'order.hanaeyewear@gmail.com',
+            'name' => 'Hana Eyewear Orders'
+        ],
     ],
 
 ];

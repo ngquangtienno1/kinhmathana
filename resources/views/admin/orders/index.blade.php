@@ -134,9 +134,7 @@
                         style="height: 40px;">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </a>
-                    <button class="btn btn-primary d-flex align-items-center" style="height: 40px;">
-                        <span class="fas fa-plus me-2"></span>Add order
-                    </button>
+                  
                 </div>
             </div>
         </div>
