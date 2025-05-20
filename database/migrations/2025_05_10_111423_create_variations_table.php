@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('discount_price', 10, 2);
             $table->integer('stock_quantity')->default(0);
             $table->timestamps();
+            $table->softDeletes(); // <-- Thêm dòng này để hỗ trợ soft delete
         });
     }
 
