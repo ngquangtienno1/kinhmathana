@@ -3,6 +3,8 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ProductSupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
@@ -12,10 +14,8 @@ use App\Http\Controllers\Admin\VariationImageController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\ReviewController;
-
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AuthenticationController;
@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CancellationReasonController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
 // Redirect login
 Route::get('/', function () {
@@ -346,6 +348,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
+
+        // Order Status History Routes (Moved inside admin group)
+        Route::get('/{order}/status-history', [OrderStatusHistoryController::class, 'show'])->name('status.history');
+        Route::patch('/{order}/status-update', [OrderStatusHistoryController::class, 'updateStatus'])->name('status.update'); // Renamed to avoid conflict with OrderController updateStatus
     });
 
     // Reviews
@@ -383,5 +389,32 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-vinh-vien-binh-luan']);
         Route::patch('/{comment}/status', [CommentController::class, 'updateStatus'])->name('updateStatus')
             ->middleware(['permission:an-hien-binh-luan']);
+    });
+
+    // Promotion routes
+    Route::resource('promotions', PromotionController::class)->except(['index', 'generateCode', 'store', 'show', 'edit', 'update', 'destroy']);
+    Route::prefix('promotions')->name('promotions.')->group(function () {
+        Route::get('/', [PromotionController::class, 'index'])->name('index');
+        Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
+        Route::post('/', [PromotionController::class, 'store'])->name('store');
+        Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
+        Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
+        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+    });
+
+    // Support routes (Updated to match desired behavior)
+    Route::prefix('support')->name('support.')->group(function () {
+        Route::get('/', [ProductSupportController::class, 'showForm'])->name('create'); // /admin/support -> showForm (Form)
+        Route::post('/', [ProductSupportController::class, 'submitForm'])->name('store'); // POST /admin/support -> submitForm (Store Form Data)
+
+        Route::get('/list', [ProductSupportController::class, 'index'])->name('list'); // /admin/support/list -> index (List)
+
+        Route::get('/{support}', [ProductSupportController::class, 'show'])->name('show'); // /admin/support/{support} -> show (Show Detail)
+        Route::patch('/{support}/status', [ProductSupportController::class, 'updateStatus'])->name('updateStatus'); // PATCH /admin/support/{support}/status -> updateStatus
+        Route::post('/{support}/done', [ProductSupportController::class, 'markAsDone'])->name('done'); // POST /admin/support/{support}/done -> markAsDone
+        Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy'); // DELETE /admin/support/{support} -> destroy
+        Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm'); // /admin/support/{support}/email -> showEmailForm
+        Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail'); // POST /admin/support/{support}/send-email -> sendEmail
     });
 });
