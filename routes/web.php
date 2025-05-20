@@ -72,18 +72,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     // Role Management Routes
-    Route::prefix('roles')->middleware(['permission:xem-danh-sach-nguoi-dung'])->group(function () {
+    Route::prefix('roles')->middleware(['permission:xem-danh-sach-vai-tro'])->group(function () {
         Route::get('/', [RoleController::class, 'index'])->name('roles.index');
         Route::get('/create', [RoleController::class, 'create'])->name('roles.create')
-            ->middleware(['permission:sua-nguoi-dung']);
+            ->middleware(['permission:them-vai-tro']);
         Route::post('/', [RoleController::class, 'store'])->name('roles.store')
-            ->middleware(['permission:sua-nguoi-dung']);
+            ->middleware(['permission:them-vai-tro']);
         Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit')
-            ->middleware(['permission:sua-nguoi-dung']);
+            ->middleware(['permission:sua-vai-tro']);
         Route::put('/{role}', [RoleController::class, 'update'])->name('roles.update')
-            ->middleware(['permission:sua-nguoi-dung']);
+            ->middleware(['permission:sua-vai-tro']);
         Route::delete('/{role}', [RoleController::class, 'destroy'])->name('roles.destroy')
-            ->middleware(['permission:sua-nguoi-dung']);
+            ->middleware(['permission:xoa-vai-tro']);
     });
 
     // Permission Management Routes
@@ -135,7 +135,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     //Product
     Route::get('/products', function () {
         return view('admin.products.index');
-    })->middleware(['permission:view-products']);
+    })->middleware(['permission:xem-danh-sach-san-pham']);
     // Product
     Route::prefix('products')->name('products.')->middleware(['permission:xem-danh-sach-san-pham'])->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('list');

@@ -72,7 +72,7 @@
                                 @endforeach
                             </td>
                             <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
-                                @if (auth()->user()->hasPermission('edit-users'))
+                                @if (auth()->user()->hasPermission('them-vai-tro'))
                                     <div class="btn-reveal-trigger position-static">
                                         <button
                                             class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
@@ -80,18 +80,20 @@
                                             aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                             <span class="fas fa-ellipsis-h fs-10"></span>
                                         </button>
-                                        <div class="dropdown-menu dropdown-menu-end py-2">
-                                            <a class="dropdown-item"
-                                                href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
-                                            <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
-                                                class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
-                                            </form>
-                                        </div>
+                                        @if (auth()->user()->hasPermission('sua-vai-tro'))
+                                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
+                                                <div class="dropdown-divider"></div>
+                                                <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger"
+                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
+                                                </form>
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
                             </td>

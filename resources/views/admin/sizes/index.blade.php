@@ -39,67 +39,81 @@
         </div>
     </div>
 
-    <div class="table-responsive scrollbar">
-        <table class="table fs-9 mb-0">
-            <thead>
-                <tr>
-                    <th class="text-center">ID</th>
-                    <th class="ps-4">Tên size</th>
-                    <th class="ps-4">Mô tả</th>
-                    <th class="text-center">Thứ tự</th>
-                    <th class="text-end pe-4">Thao tác</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @forelse($sizes as $size)
+    <div
+        class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+        <div class="table-responsive scrollbar mx-n1 px-1">
+            <table class="table fs-9 mb-0">
+                <thead>
                     <tr>
-                        <td class="align-middle text-center">{{ $size->id }}</td>
-                        <td class="align-middle ps-4">{{ $size->name }}</td>
-                        <td class="align-middle ps-4">{{ $size->description }}</td>
-                        <td class="align-middle text-center">{{ $size->sort_order }}</td>
-                        <td class="align-middle text-end pe-4 btn-reveal-trigger">
-                            <div class="btn-reveal-trigger position-static">
-                                <button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="fas fa-ellipsis-h fs-10"></span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end py-2">
-                                    <a class="dropdown-item" href="{{ route('admin.sizes.edit', $size->id) }}">Sửa</a>
-                                    <div class="dropdown-divider"></div>
-                                    <form action="{{ route('admin.sizes.destroy', $size->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger"
-                                            onclick="return confirm('Bạn có chắc muốn xoá size này?')">Xoá</button>
-                                    </form>
-                                </div>
+                        <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
+                            <div class="form-check mb-0 fs-8">
+                                <input class="form-check-input" id="checkbox-bulk-sizes-select" type="checkbox"
+                                    data-bulk-select='{"body":"sizes-table-body"}' />
                             </div>
-                        </td>
+                        </th>
+                        <th class="sort white-space-nowrap align-middle ps-4">ID</th>
+                        <th class="sort align-middle ps-4">Tên size</th>
+                        <th class="sort align-middle ps-4">Mô tả</th>
+                        <th class="sort align-middle ps-4">Thứ tự</th>
+                        <th class="sort text-end align-middle pe-0 ps-4">Thao tác</th>
                     </tr>
-
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">Chưa có size nào.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
-        <div class="col-auto d-flex">
-            <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
-                Hiển thị {{ $sizes->firstItem() }} đến {{ $sizes->lastItem() }} trong tổng số {{ $sizes->total() }}
-                size
-            </p>
-            <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả<span
-                    class="fas fa-angle-right ms-1"></span></a>
+                </thead>
+                <tbody class="list" id="sizes-table-body">
+                    @forelse($sizes as $size)
+                        <tr class="position-static">
+                            <td class="align-middle ps-0">
+                                <div class="form-check mb-0 fs-8">
+                                    <input class="form-check-input size-checkbox" type="checkbox"
+                                        value="{{ $size->id }}" />
+                                </div>
+                            </td>
+                            <td class="align-middle ps-4">{{ $size->id }}</td>
+                            <td class="align-middle ps-4">{{ $size->name }}</td>
+                            <td class="align-middle ps-4">{{ $size->description }}</td>
+                            <td class="align-middle ps-4">{{ $size->sort_order }}</td>
+                            <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
+                                <div class="btn-reveal-trigger position-static">
+                                    <button
+                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        type="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <span class="fas fa-ellipsis-h fs-10"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end py-2">
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.sizes.edit', $size->id) }}">Sửa</a>
+                                        <div class="dropdown-divider"></div>
+                                        <form action="{{ route('admin.sizes.destroy', $size->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger"
+                                                onclick="return confirm('Bạn có chắc muốn xoá size này?')">Xoá</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">Chưa có size nào.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-        <div class="col-auto d-flex">
-            {{ $sizes->links() }}
+        <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+            <div class="col-auto d-flex">
+                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
+                    Hiển thị {{ $sizes->firstItem() }} đến {{ $sizes->lastItem() }} trong tổng số
+                    {{ $sizes->total() }} size
+                </p>
+                <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
+                        class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+            </div>
+            <div class="col-auto d-flex">
+                {{ $sizes->links() }}
+            </div>
         </div>
     </div>
 </div>

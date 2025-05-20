@@ -15,12 +15,23 @@
                 @if (canAccess('xem-danh-sach-san-pham') ||
                         canAccess('xem-bien-the-san-pham') ||
                         canAccess('xem-danh-sach-danh-muc') ||
-                        canAccess('xem-danh-sach-thuong-hieu'))
+                        canAccess('xem-danh-sach-thuong-hieu') ||
+                        canAccess('xem-danh-sach-mau-sac') ||
+                        canAccess('xem-danh-sach-kich-thuoc'))
                     <!-- Product Management -->
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
                             <a class="nav-link dropdown-indicator label-1" href="#nv-products" role="button"
-                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-products">
+                                data-bs-toggle="collapse"
+                                aria-expanded="{{ request()->is('admin/products*') ||
+                                request()->is('admin/variations*') ||
+                                request()->is('admin/categories*') ||
+                                request()->is('admin/brands*') ||
+                                request()->is('admin/colors*') ||
+                                request()->is('admin/sizes*')
+                                    ? 'true'
+                                    : 'false' }}"
+                                aria-controls="nv-products">
                                 <div class="d-flex align-items-center">
                                     <div class="dropdown-indicator-icon-wrapper">
                                         <span class="fas fa-caret-right dropdown-indicator-icon"></span>
@@ -30,11 +41,20 @@
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-products">
+                                <ul class="nav collapse parent {{ request()->is('admin/products*') ||
+                                request()->is('admin/variations*') ||
+                                request()->is('admin/categories*') ||
+                                request()->is('admin/brands*') ||
+                                request()->is('admin/colors*') ||
+                                request()->is('admin/sizes*')
+                                    ? 'show'
+                                    : '' }}"
+                                    data-bs-parent="#navbarVerticalCollapse" id="nv-products">
+
                                     @if (canAccess('xem-danh-sach-san-pham'))
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('admin.products.list') }}">
+                                            <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+                                                href="{{ route('admin.products.list') }}">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Danh sách sản phẩm</span>
                                                 </div>
@@ -44,7 +64,8 @@
 
                                     @if (canAccess('xem-bien-the-san-pham'))
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('admin.variations.index') }}">
+                                            <a class="nav-link {{ request()->is('admin/variations*') ? 'active' : '' }}"
+                                                href="{{ route('admin.variations.index') }}">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Biến thể sản phẩm</span>
                                                 </div>
@@ -54,7 +75,8 @@
 
                                     @if (canAccess('xem-danh-sach-danh-muc'))
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('admin.categories.index') }}">
+                                            <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
+                                                href="{{ route('admin.categories.index') }}">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Danh sách danh mục</span>
                                                 </div>
@@ -64,11 +86,56 @@
 
                                     @if (canAccess('xem-danh-sach-thuong-hieu'))
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('admin.brands.index') }}">
+                                            <a class="nav-link {{ request()->is('admin/brands*') ? 'active' : '' }}"
+                                                href="{{ route('admin.brands.index') }}">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Thương hiệu</span>
                                                 </div>
                                             </a>
+                                        </li>
+                                    @endif
+
+                                    @if (canAccess('xem-mau-sac') || canAccess('xem-kich-thuoc'))
+                                        <li class="nav-item">
+                                            <div class="nav-item-wrapper">
+                                                <a class="nav-link dropdown-indicator label-1" href="#nv-attributes"
+                                                    role="button" data-bs-toggle="collapse"
+                                                    aria-expanded="{{ request()->is('admin/colors*') || request()->is('admin/sizes*') ? 'true' : 'false' }}"
+                                                    aria-controls="nv-attributes">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="dropdown-indicator-icon-wrapper">
+                                                            <span
+                                                                class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                                        </div>
+                                                        <span class="nav-link-text">Thuộc tính</span>
+                                                    </div>
+                                                </a>
+                                                <div class="parent-wrapper label-1">
+                                                    <ul class="nav collapse parent {{ request()->is('admin/colors*') || request()->is('admin/sizes*') ? 'show' : '' }}"
+                                                        data-bs-parent="#nv-products" id="nv-attributes">
+                                                        @if (canAccess('xem-mau-sac'))
+                                                            <li class="nav-item">
+                                                                <a class="nav-link {{ request()->is('admin/colors*') ? 'active' : '' }}"
+                                                                    href="{{ route('admin.colors.index') }}">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <span class="nav-link-text">Màu sắc</span>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (canAccess('xem-kich-thuoc'))
+                                                            <li class="nav-item">
+                                                                <a class="nav-link {{ request()->is('admin/sizes*') ? 'active' : '' }}"
+                                                                    href="{{ route('admin.sizes.index') }}">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <span class="nav-link-text">Kích thước</span>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </li>
                                     @endif
                                 </ul>
@@ -77,7 +144,7 @@
                     </li>
                 @endif
 
-                @if (canAccess('view-orders'))
+                @if (canAccess('xem-danh-sach-don-hang'))
                     <!-- Orders Management -->
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
