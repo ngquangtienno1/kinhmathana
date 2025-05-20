@@ -38,7 +38,7 @@ class CancellationReasonController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $cancellationReasons = $query->paginate(10);
+        $cancellationReasons = $query->get();
         $activeCount = CancellationReason::where('is_active', true)->count();
         $deletedCount = CancellationReason::onlyTrashed()->count();
         $adminCount = CancellationReason::where('type', 'admin')->count();
