@@ -5,7 +5,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
-
+use App\Http\Controllers\Admin\ReviewController;
 
 Route::get('/', function () {
     return view('admin.index');
@@ -68,4 +68,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status');
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status');
     });
+
+    // Reviews
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
+        Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-delete', [ReviewController::class, 'bulkDelete'])->name('bulk-delete');
+    });
 });
+
