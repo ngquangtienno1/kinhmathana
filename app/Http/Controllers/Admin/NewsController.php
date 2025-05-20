@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
@@ -35,7 +36,7 @@ class NewsController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $news = $query->paginate(10);
+        $news = $query->get();
         $deletedCount = News::onlyTrashed()->count();
         $activeCount = News::where('is_active', true)->count();
 
@@ -60,8 +61,16 @@ class NewsController extends Controller
                 'title' => 'required|string|max:125',
                 'content' => 'required|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'required|boolean'
+                'is_active' => 'required|boolean',
+                'slug' => 'nullable|string|max:125|unique:news,slug'
             ]);
+
+            // Tạo slug từ tiêu đề nếu không có slug được nhập
+            if (empty($request->slug)) {
+                $dataNew['slug'] = Str::slug($dataNew['title']);
+            } else {
+                $dataNew['slug'] = Str::slug($request->slug);
+            }
 
             // Lưu ảnh
             if ($request->hasFile('image')) {
@@ -93,6 +102,9 @@ class NewsController extends Controller
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'is_active' => 'required|boolean'
             ]);
+
+            // Tạo slug từ tiêu đề
+            $dataNew['slug'] = Str::slug($dataNew['title']);
 
             if ($request->hasFile('image')) {
                 $imgPath = $request->file('image')->store('images/news', 'public');
@@ -154,22 +166,6 @@ class NewsController extends Controller
             return redirect()->route('admin.news.bin')->with('error', 'Xóa vĩnh viễn tin tức thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn tin tức: ' . $e->getMessage());
-        }
-    }
-    public function bulkDelete(Request $request)
-    {
-        try {
-            $ids = json_decode($request->ids);
-
-            if (empty($ids)) {
-                return redirect()->back()->with('error', 'Không có tin tức nào được chọn');
-            }
-
-            News::whereIn('id', $ids)->delete();
-
-            return redirect()->back()->with('success', 'Đã xóa mềm các tin tức đã chọn thành công');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mềm các tin tức');
         }
     }
 }

@@ -36,11 +36,30 @@ class ReviewController extends Controller
         return back()->with('success', 'Đánh giá sản phẩm thành công');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $reviews = Review::with(['user', 'product'])
-            ->latest()
-            ->paginate(10);
+        $query = Review::with(['user', 'product']);
+
+        // Tìm kiếm
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('content', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('product', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
+        $reviews = $query->get();
         
         return view('admin.reviews.index', compact('reviews'));
     }

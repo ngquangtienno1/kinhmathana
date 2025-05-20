@@ -1,114 +1,134 @@
-@extends('admin.layouts.app')
+@extends('admin.layouts')
 
 @section('title', 'Chi tiết đánh giá')
 
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.reviews.index') }}">Đánh giá</a>
+    </li>
+    <li class="breadcrumb-item active">Chi tiết đánh giá</li>
+@endsection
+
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Chi tiết đánh giá</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('admin.reviews.index') }}" class="btn btn-default">
-                            <i class="fas fa-arrow-left"></i> Quay lại
-                        </a>
+<div class="mb-9">
+    <div class="row g-3 mb-4">
+        <div class="col-auto">
+            <h2 class="mb-0">Chi tiết đánh giá</h2>
+        </div>
+        <div class="col-auto ms-auto">
+            <div class="d-flex gap-2">
+                <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-phoenix-danger"
+                        onclick="return confirm('Bạn có chắc chắn muốn xóa đánh giá này?')">
+                        <span class="fas fa-trash me-2"></span>Xóa
+                    </button>
+                </form>
+                <a href="{{ route('admin.reviews.index') }}" class="btn btn-phoenix-secondary">
+                    <span class="fas fa-arrow-left me-2"></span>Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="mb-4">
+                        <h4 class="mb-3">Thông tin sản phẩm</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 200px;">Sản phẩm</th>
+                                        <td>
+                                            <a href="{{ route('admin.products.show', $review->product_id) }}" class="text-decoration-none">
+                                                {{ $review->product->name }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Đánh giá</th>
+                                        <td>
+                                            <div class="text-warning d-flex align-items-center">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= $review->rating)
+                                                        <i class="fas fa-star me-1"></i>
+                                                    @else
+                                                        <i class="far fa-star me-1"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nội dung đánh giá</th>
+                                        <td>{!! nl2br(e($review->content)) !!}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>Thông tin đánh giá</h5>
-                            <table class="table">
-                                <tr>
-                                    <th style="width: 200px;">Sản phẩm:</th>
-                                    <td>
-                                        <a href="{{ route('admin.products.show', $review->product_id) }}">
-                                            {{ $review->product->name }}
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Người đánh giá:</th>
-                                    <td>{{ $review->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email:</th>
-                                    <td>{{ $review->user->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Số điện thoại:</th>
-                                    <td>{{ $review->user->phone }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Đánh giá:</th>
-                                    <td>
-                                        <div class="text-warning">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                @if($i <= $review->rating)
-                                                    <i class="fas fa-star"></i>
-                                                @else
-                                                    <i class="far fa-star"></i>
-                                                @endif
-                                            @endfor
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Thời gian:</th>
-                                    <td>{{ $review->created_at->format('H:i d/m/Y') }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Thông tin đơn hàng</h5>
-                            <table class="table">
-                                <tr>
-                                    <th style="width: 200px;">Mã đơn hàng:</th>
-                                    <td>
-                                        <a href="{{ route('admin.orders.show', $review->order_id) }}">
-                                            #{{ $review->order->order_number }}
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Trạng thái đơn hàng:</th>
-                                    <td>
-                                        <span class="badge badge-success">
-                                            {{ $review->order->status }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Ngày đặt hàng:</th>
-                                    <td>{{ $review->order->created_at->format('d/m/Y') }}</td>
-                                </tr>
+
+                <div class="col-12">
+                    <div class="mb-4">
+                        <h4 class="mb-3">Thông tin người đánh giá</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 200px;">Tên người dùng</th>
+                                        <td>{{ $review->user->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ $review->user->email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Số điện thoại</th>
+                                        <td>{{ $review->user->phone }}</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
+                </div>
 
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <h5>Nội dung đánh giá</h5>
-                            <div class="card">
-                                <div class="card-body">
-                                    {{ $review->content }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <form action="{{ route('admin.reviews.destroy', $review->id) }}" 
-                                  method="POST" 
-                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá này?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Xóa đánh giá
-                                </button>
-                            </form>
+                <div class="col-12">
+                    <div class="mb-4">
+                        <h4 class="mb-3">Thông tin đơn hàng</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 200px;">Mã đơn hàng</th>
+                                        <td>
+                                            <a href="{{ route('admin.orders.show', $review->order_id) }}" class="text-decoration-none">
+                                                #{{ $review->order->order_number }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Trạng thái đơn hàng</th>
+                                        <td>
+                                            <span class="badge badge-phoenix fs-10 badge-phoenix-success">
+                                                {{ $review->order->status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày đặt hàng</th>
+                                        <td>{{ $review->order->created_at->format('d/m/Y H:i') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày đánh giá</th>
+                                        <td>{{ $review->created_at->format('d/m/Y H:i') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

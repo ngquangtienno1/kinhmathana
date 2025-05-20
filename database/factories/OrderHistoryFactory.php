@@ -4,53 +4,52 @@ namespace Database\Factories;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Models\OrderHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderHistoryFactory extends Factory
 {
-    protected $model = OrderHistory::class;
-
-    public function definition()
+    public function definition(): array
     {
         $statuses = [
-            'pending', 'awaiting_payment', 'confirmed', 'processing',
-            'shipping', 'delivered', 'returned', 'processing_return', 'refunded'
+            'pending',
+            'awaiting_payment',
+            'confirmed',
+            'processing',
+            'shipping',
+            'delivered',
+            'returned',
+            'processing_return',
+            'refunded',
+            'cancelled'
         ];
         $paymentStatuses = [
-            'pending', 'paid', 'failed', 'refunded', 'cancelled',
-            'partially_paid', 'disputed'
+            'pending',
+            'paid',
+            'failed',
+            'refunded',
+            'cancelled',
+            'partially_paid',
+            'disputed'
         ];
 
-        $isStatusChange = $this->faker->boolean();
-        
-        if ($isStatusChange) {
-            $statusIndex = array_rand($statuses);
-            $fromStatus = $statusIndex > 0 ? $statuses[$statusIndex - 1] : null;
-            $toStatus = $statuses[$statusIndex];
-            $fromPaymentStatus = null;
-            $toPaymentStatus = null;
-        } else {
-            $paymentStatusIndex = array_rand($paymentStatuses);
-            $fromPaymentStatus = $paymentStatusIndex > 0 ? $paymentStatuses[$paymentStatusIndex - 1] : null;
-            $toPaymentStatus = $paymentStatuses[$paymentStatusIndex];
-            $fromStatus = null;
-            $toStatus = null;
-        }
+        $statusFrom = $this->faker->randomElement($statuses);
+        $statusTo = $this->faker->randomElement(array_diff($statuses, [$statusFrom]));
 
         return [
             'order_id' => Order::factory(),
             'user_id' => User::factory(),
-            'status_from' => $fromStatus,
-            'status_to' => $toStatus,
-            'payment_status_from' => $fromPaymentStatus,
-            'payment_status_to' => $toPaymentStatus,
+            'status_from' => $statusFrom,
+            'status_to' => $statusTo, // Đảm bảo luôn có giá trị
+            'payment_status_from' => $this->faker->randomElement($paymentStatuses),
+            'payment_status_to' => $this->faker->randomElement($paymentStatuses),
             'comment' => $this->faker->sentence(),
-            'additional_data' => $this->faker->boolean(30) ? [
-                'ip_address' => $this->faker->ipv4,
-                'user_agent' => $this->faker->userAgent,
-                'location' => $this->faker->city
-            ] : null,
+            'additional_data' => json_encode([
+                'ip_address' => $this->faker->ipv4(),
+                'user_agent' => $this->faker->userAgent(),
+                'location' => $this->faker->city(),
+            ]),
+            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
+            'updated_at' => now(),
         ];
     }
-} 
+}

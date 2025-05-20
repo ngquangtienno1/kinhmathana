@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -25,18 +26,34 @@ class OrderController extends Controller
         // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('receiver_name', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('receiver_name', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
-        $orders = $query->latest()->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+        // Lọc theo trạng thái thanh toán
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+        // Lọc theo trạng thái đơn hàng
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->latest()->get();
+        // Đếm số lượng các trạng thái
+        $countAll = Order::count();
+        $countPending = Order::where('payment_status', 'pending')->count();
+        $countUnfulfilled = Order::where('status', 'pending')->count();
+        $countCompleted = Order::where('status', 'delivered')->count();
+        $countRefunded = Order::where('payment_status', 'refunded')->count();
+        $countFailed = Order::where('payment_status', 'failed')->count();
+        return view('admin.orders.index', compact('orders', 'countAll', 'countPending', 'countUnfulfilled', 'countCompleted', 'countRefunded', 'countFailed'));
     }
 
     /**

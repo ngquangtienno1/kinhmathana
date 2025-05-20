@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+    {  
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique()->comment('Mã đơn hàng');
@@ -49,15 +49,15 @@ return new class extends Migration
 
             // Trạng thái đơn hàng
             $table->enum('status', [
-               'pending',           // Đơn hàng vừa được tạo
-        'awaiting_payment',  // Chờ thanh toán
-        'confirmed',         // Đã xác nhận đơn
-        'processing',        // Đang đóng gói/kiểm hàng
-        'shipping',          // Đang vận chuyển
-        'delivered',         // Đã giao hàng
-        'returned',          // Khách trả hàng
-        'processing_return', // Đang xử lý trả hàng
-        'refunded',          // Đã hoàn tiền
+                'pending',           // Đơn hàng vừa được tạo
+                'awaiting_payment',  // Chờ thanh toán
+                'confirmed',         // Đã xác nhận đơn
+                'processing',        // Đang đóng gói/kiểm hàng
+                'shipping',          // Đang vận chuyển
+                'delivered',         // Đã giao hàng
+                'returned',          // Khách trả hàng
+                'processing_return', // Đang xử lý trả hàng
+                'refunded',          // Đã hoàn tiền
             ])->default('pending');
 
             // Thông tin bổ sung
@@ -66,7 +66,7 @@ return new class extends Migration
             $table->timestamp('confirmed_at')->nullable()->comment('Thời điểm xác nhận đơn hàng');
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
-            
+
             $table->timestamps();
             $table->softDeletes();
         });

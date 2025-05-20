@@ -1,22 +1,26 @@
-<!DOCTYPE html>
-<html lang="en-US" dir="ltr" data-navigation-type="default" data-navbar-horizontal-shape="default">
+    <!DOCTYPE html>
+    <html lang="en-US" dir="ltr" data-navigation-type="default" data-navbar-horizontal-shape="default">
 
 
-<!-- Mirrored from prium.github.io/phoenix/v1.22.0/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 10 May 2025 16:39:55 GMT -->
-<!-- Added by HTTrack -->
-<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-@include('admin.components.head')
+    <!-- Mirrored from prium.github.io/phoenix/v1.22.0/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 10 May 2025 16:39:55 GMT -->
+    <!-- Added by HTTrack -->
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-<body>
-    <!-- ===============================================-->
-    <!--    Main Content-->
-    <!-- ===============================================-->
-    <main class="main" id="top">
+    @include('admin.components.head')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <body>
+        <!-- ===============================================-->
+        <!--    Main Content-->
+        <!-- ===============================================-->
+        <main class="main" id="top">
 
-        @include('admin.components.slidebar')
-        @include('admin.components.header')
+            @include('admin.components.slidebar')
+            @include('admin.components.header')
 
 
 

@@ -31,11 +31,11 @@ class SliderController extends Controller
             }
         }
 
-        $sort = $request->get('sort', 'id');
+        $sort = $request->get('sort', 'created_at');
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $sliders = $query->orderBy('sort_order', 'asc')->paginate(10);
+        $sliders = $query->orderBy('sort_order', 'asc')->get();
         $deletedCount = Slider::onlyTrashed()->count();
         $activeCount = Slider::where('is_active', true)->count();
 
@@ -56,13 +56,30 @@ class SliderController extends Controller
     public function store(Request $request)
     {
         try {
+            $messages = [
+                'title.required' => 'Vui lòng nhập tiêu đề',
+                'title.max' => 'Tiêu đề không được vượt quá 125 ký tự',
+                'image.required' => 'Vui lòng chọn hình ảnh',
+                'image.image' => 'File phải là hình ảnh',
+                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
+                'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB',
+                'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên',
+                'start_date.date' => 'Ngày bắt đầu không hợp lệ',
+                'end_date.date' => 'Ngày kết thúc không hợp lệ',
+                'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu'
+            ];
+
             $dataNew = $request->validate([
                 'title' => 'required|string|max:125',
                 'description' => 'nullable|string',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'sort_order' => 'nullable|integer',
-                'is_active' => 'required|boolean'
-            ]);
+                'is_active' => 'nullable|boolean',
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date|after_or_equal:start_date'
+            ], $messages);
+
+            $dataNew['is_active'] = $request->boolean('is_active');
 
             // Lưu ảnh
             if ($request->hasFile('image')) {
@@ -88,13 +105,27 @@ class SliderController extends Controller
         try {
             $slider = Slider::findOrFail($id);
 
+            $messages = [
+                'title.required' => 'Vui lòng nhập tiêu đề',
+                'title.max' => 'Tiêu đề không được vượt quá 125 ký tự',
+                'image.image' => 'File phải là hình ảnh',
+                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
+                'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB',
+                'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên',
+                'start_date.date' => 'Ngày bắt đầu không hợp lệ',
+                'end_date.date' => 'Ngày kết thúc không hợp lệ',
+                'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu'
+            ];
+
             $dataNew = $request->validate([
                 'title' => 'required|string|max:125',
                 'description' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'sort_order' => 'nullable|integer',
-                'is_active' => 'required|boolean'
-            ]);
+                'is_active' => 'nullable|boolean',
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date|after_or_equal:start_date'
+            ], $messages);
 
             if ($request->hasFile('image')) {
                 $imgPath = $request->file('image')->store('images/sliders', 'public');
@@ -156,22 +187,6 @@ class SliderController extends Controller
             return redirect()->route('admin.sliders.bin')->with('error', 'Xóa vĩnh viễn slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn slider: ' . $e->getMessage());
-        }
-    }
-    public function bulkDelete(Request $request)
-    {
-        try {
-            $ids = json_decode($request->ids);
-
-            if (empty($ids)) {
-                return redirect()->back()->with('error', 'Không có slider nào được chọn');
-            }
-
-            Slider::whereIn('id', $ids)->delete();
-
-            return redirect()->back()->with('success', 'Đã xóa mềm các slider đã chọn thành công');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mềm các slider');
         }
     }
 }

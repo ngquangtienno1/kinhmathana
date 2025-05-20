@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Order;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Faker\Generator as Faker;
 
 class OrderSeeder extends Seeder
 {
@@ -12,9 +14,7 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        // Tạo 100 đơn hàng mẫu
-        Order::factory()
-            ->count(20)
-            ->create();
+        // Tạo 20 đơn hàng mẫu
+        Order::factory()->count(20)->create();
     }
 }

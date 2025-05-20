@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,24 +14,56 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Lấy role Admin
-        $adminRole = Role::where('name', 'Admin')->first();
-        $userRole = Role::where('name', 'User')->first();
-
-        // Tạo tài khoản admin
+        // Tạo tài khoản admin mặc định
         User::create([
             'name' => 'Admin',
-            'email' => 'tiennqph51552@gmail.com',
+            'email' => 'admin@example.com',
             'password' => Hash::make('password'),
+            'address' => '123 Admin Street',
+            'phone' => '0123456789',
+            'date_birth' => '1990-01-01',
+            'gender' => 'male',
+            'status_user' => 'active',
+            'avatar_url' => 'https://ui-avatars.com/api/?name=Admin&background=random',
+            'role_id' => 1, // Admin role
             'email_verified_at' => now(),
-            'remember_token' => Str::random(10),
-            'role_id' => $adminRole->id
+            'phone_verified_at' => now(),
         ]);
 
-        // Tạo 10 người dùng mẫu với role User
-        User::factory()->count(10)->create([
-            'role_id' => $userRole->id
+        // Tạo tài khoản nhân viên mặc định
+        User::create([
+            'name' => 'Staff',
+            'email' => 'staff@example.com',
+            'password' => Hash::make('password'),
+            'address' => '456 Staff Street',
+            'phone' => '0987654321',
+            'date_birth' => '1995-01-01',
+            'gender' => 'female',
+            'status_user' => 'active',
+            'avatar_url' => 'https://ui-avatars.com/api/?name=Staff&background=random',
+            'role_id' => 2, // Staff role
+            'email_verified_at' => now(),
+            'phone_verified_at' => now(),
         ]);
-        
+
+        // Tạo tài khoản khách hàng mặc định
+        User::create([
+            'name' => 'Customer',
+            'email' => 'customer@example.com',
+            'password' => Hash::make('password'),
+            'address' => '789 Customer Street',
+            'phone' => '0123456788',
+            'date_birth' => '2000-01-01',
+            'gender' => 'male',
+            'status_user' => 'active',
+            'avatar_url' => 'https://ui-avatars.com/api/?name=Customer&background=random',
+            'role_id' => 3, // Customer role
+            'email_verified_at' => now(),
+            'phone_verified_at' => now(),
+        ]);
+
+        // Tạo thêm 20 tài khoản ngẫu nhiên
+        User::factory()->count(20)->create();
+        // User::factory(5)->create();
     }
 }

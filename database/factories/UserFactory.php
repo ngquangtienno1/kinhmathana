@@ -25,22 +25,23 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['male', 'female']);
+        $status = $this->faker->randomElement(['active', 'inactive', 'pending']);
+
         return [
-            'name' => $this->faker->name(), // Tên người dùng
-            'address' => $this->faker->address(), // Địa chỉ
-            'phone' => $this->faker->phoneNumber(), // Số điện thoại
-            'email' => $this->faker->unique()->safeEmail(), // Email duy nhất
-            'password' => bcrypt('password'), // Mật khẩu mặc định
-            'date_birth' => $this->faker->date('Y-m-d', '-18 years'), // Ngày sinh (ít nhất 18 tuổi)
-            'gender' => $this->faker->randomElement(['male', 'female', 'other']), // Giới tính
-            'status_user' => $this->faker->randomElement(['active', 'inactive', 'banned']), // Trạng thái người dùng
-            'avatar_id' => null, // Không có avatar mặc định
-            'role_id' => Role::where('name', 'User')->first()->id, // Mặc định là role User
-            'email_verified_at' => $this->faker->optional()->dateTime(), // Thời gian xác thực email
-            'phone_verified_at' => $this->faker->optional()->dateTime(), // Thời gian xác thực số điện thoại
-            'remember_token' => Str::random(10), // Token nhớ đăng nhập
-            'created_at' => now(),
-            'updated_at' => now(),
+            'name' => $this->faker->name($gender),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => Hash::make('password'), // Mật khẩu mặc định là 'password'
+            'address' => $this->faker->address(),
+            'phone' => $this->faker->phoneNumber(),
+            'date_birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
+            'gender' => $gender,
+            'status_user' => $status,
+            'avatar_url' => $this->faker->imageUrl(200, 200, 'people'),
+            'role_id' => $this->faker->numberBetween(1, 3), // Giả sử có 3 role (1: Admin, 2: Nhân viên, 3: Khách hàng)
+            'email_verified_at' => $this->faker->optional(0.8)->dateTimeThisYear(),
+            'phone_verified_at' => $this->faker->optional(0.7)->dateTimeThisYear(),
+            'remember_token' => Str::random(10),
         ];
     }
 
@@ -49,7 +50,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

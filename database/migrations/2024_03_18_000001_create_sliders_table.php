@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('subtitle')->nullable();
-            $table->string('image');
-            $table->string('link')->nullable();
-            $table->integer('order')->default(0);
+            $table->string('title', 125);
+            $table->mediumText('description')->nullable();
+            $table->string('image')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -30,4 +32,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('sliders');
     }
-}; 
+};

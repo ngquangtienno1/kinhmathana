@@ -2,43 +2,35 @@
 
 namespace Database\Factories;
 
-use App\Models\Brand;
 use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
- */
 class ProductFactory extends Factory
 {
     protected $model = Product::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $name = $this->faker->words(3, true);
+        $price = $this->faker->numberBetween(100000, 5000000);
+        $salePrice = $this->faker->boolean(30)
+            ? $this->faker->numberBetween(50000, $price - 10000)
+            : $price;
+        $discountPrice = $this->faker->boolean(20)
+            ? $this->faker->numberBetween(10000, min($salePrice - 10000, 1000000))
+            : 0;
+
         return [
-            'name' => $name,
-            'slug' => Str::slug($name),
-            'sku' => 'PRD-' . $this->faker->unique()->numberBetween(10000, 99999),
-            'description' => $this->faker->paragraph(),
-            'price' => $this->faker->numberBetween(100000, 5000000),
-            'sale_price' => $this->faker->optional(0.3)->numberBetween(50000, 4000000),
-            'stock' => $this->faker->numberBetween(0, 100),
-            'brand_id' => Brand::factory(),
-            'category_id' => Category::factory(),
-            'is_active' => $this->faker->boolean(80),
-            'is_featured' => $this->faker->boolean(20),
-            'meta_title' => $this->faker->words(4, true),
-            'meta_description' => $this->faker->sentence(),
-            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'updated_at' => now(),
+            'name' => $this->faker->words(3, true),
+            'description_short' => $this->faker->sentence,
+            'description_long' => $this->faker->paragraph,
+            'price' => $this->faker->randomFloat(2, 100, 500),
+            'import_price' => $this->faker->randomFloat(2, 50, 400),
+            'sale_price' => $this->faker->randomFloat(2, 80, 450),
+            'category_id' => 1, // tạo sẵn category id để tránh lỗi
+            'brand_id' => 1,
+            'status' => 'active',
+            'is_featured' => $this->faker->boolean,
+            'views' => $this->faker->numberBetween(0, 1000),
         ];
     }
 }
