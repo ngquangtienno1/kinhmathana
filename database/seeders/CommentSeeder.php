@@ -16,29 +16,6 @@ class CommentSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        $faker = \Faker\Factory::create();
-
-        $users = User::pluck('id')->all();
-        $newsItems = News::pluck('id')->all();
-        $products = Product::pluck('id')->all();
-
-        // Tổng số comment muốn tạo
-        $totalComments = 50;
-
-        for ($i = 0; $i < $totalComments; $i++) {
-            // Random entity type và ID tương ứng
-            $type = $faker->randomElement(['news', 'product']);
-            $entityId = $type === 'news'
-                ? $faker->randomElement($newsItems)
-                : $faker->randomElement($products);
-
-            Comment::create([
-                'user_id' => $faker->randomElement($users),
-                'entity_type' => $type,
-                'entity_id' => $entityId,
-                'content' => $faker->paragraph(),
-            ]);
-        }
+        Comment::factory()->count(20)->create();
     }
 }

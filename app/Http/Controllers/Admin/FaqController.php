@@ -30,8 +30,11 @@ class FaqController extends Controller
             $query->where('category', $request->category);
         }
 
-        $faqs = $query->orderBy('sort_order')->paginate(5)->withQueryString();
-        return view('admin.faqs.index', compact('faqs'));
+        $faqs = $query->orderBy('sort_order')->get();
+        // $deletedCount = Faq::onlyTrashed()->count();
+        $activeCount = Faq::where('is_active', true)->count();
+
+        return view('admin.faqs.index', compact('faqs', 'activeCount'));
     }
 
     /**

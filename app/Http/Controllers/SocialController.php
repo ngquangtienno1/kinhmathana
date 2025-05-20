@@ -35,4 +35,30 @@ class SocialController extends Controller
             return redirect()->route('login')->with('error', 'Đăng nhập Google thất bại: ' . $e->getMessage());
         }
     }
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback()
+    {
+        try {
+            $facebookUser = Socialite::driver('facebook')->stateless()->user();
+
+            $user = User::updateOrCreate(
+                ['email' => $facebookUser->getEmail()],
+                [
+                    'name' => $facebookUser->getName() ?? $facebookUser->getNickname(),
+                    'password' => bcrypt(Str::random(24)),
+                    'role_id' => 1,
+                ]
+            );
+
+            Auth::login($user);
+
+            return redirect()->route('admin.home')->with('message', 'Đăng nhập Facebook thành công');
+        } catch (\Exception $e) {
+            return redirect()->route('login')->with('error', 'Đăng nhập Facebook thất bại: ' . $e->getMessage());
+        }
+    }
 }

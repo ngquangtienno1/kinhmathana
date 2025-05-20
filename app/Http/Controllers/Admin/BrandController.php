@@ -35,7 +35,7 @@ class BrandController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $brands = $query->paginate(10);
+        $brands = $query->get();
         $deletedCount = Brand::onlyTrashed()->count();
         $activeCount = Brand::where('is_active', true)->count();
 

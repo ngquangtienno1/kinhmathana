@@ -9,6 +9,10 @@ use App\Models\Discount;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderPlaced;
+use App\Mail\OrderDelivered;
+use App\Mail\OrderDeliveryFailed;
 
 class OrderController extends Controller
 {
@@ -32,7 +36,16 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->latest()->paginate(10);
+        // Lọc theo trạng thái thanh toán
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+        // Lọc theo trạng thái đơn hàng
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->latest()->get();
         // Đếm số lượng các trạng thái
         $countAll = Order::count();
         $countPending = Order::where('payment_status', 'pending')->count();
@@ -81,6 +94,13 @@ class OrderController extends Controller
                 'status' => $data['status'],
                 'note' => 'Đơn hàng được tạo'
             ]);
+
+            // Gửi email xác nhận đơn hàng
+            if ($order->user && $order->user->email) {
+                Mail::to($order->user->email)->send(new OrderPlaced($order));
+            } elseif ($order->customer_email) {
+                Mail::to($order->customer_email)->send(new OrderPlaced($order));
+            }
 
             DB::commit();
             return redirect()
@@ -177,11 +197,24 @@ class OrderController extends Controller
                 $order->update(['confirmed_at' => now()]);
             } elseif ($request->status === 'delivered' && !$order->completed_at) {
                 $order->update(['completed_at' => now()]);
+
+                // Gửi email khi đơn hàng được giao thành công
+                if ($order->user && $order->user->email) {
+                    Mail::to($order->user->email)->send(new OrderDelivered($order));
+                } elseif ($order->customer_email) {
+                    Mail::to($order->customer_email)->send(new OrderDelivered($order));
+                }
+            } elseif ($request->status === 'returned' && $oldStatus === 'shipping') {
+                // Gửi email khi giao hàng thất bại
+                if ($order->user && $order->user->email) {
+                    Mail::to($order->user->email)->send(new OrderDeliveryFailed($order));
+                } elseif ($order->customer_email) {
+                    Mail::to($order->customer_email)->send(new OrderDeliveryFailed($order));
+                }
             }
 
             // Lưu lịch sử
             $order->histories()->create([
-                // 'user_id' => auth()->id(),
                 'status_from' => $oldStatus,
                 'status_to' => $request->status,
                 'comment' => $request->comment

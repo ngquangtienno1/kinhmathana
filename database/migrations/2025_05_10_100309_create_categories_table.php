@@ -17,7 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
-            
+            $table->softDeletes(); // <-- Thêm dòng này để hỗ trợ soft delete
+
         });
     }
 

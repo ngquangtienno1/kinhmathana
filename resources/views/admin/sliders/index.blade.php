@@ -18,7 +18,7 @@
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
                 href="{{ route('admin.sliders.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $sliders->total() }})</span></a></li>
+                    class="text-body-tertiary fw-semibold">({{ $sliders->count() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
                 href="{{ route('admin.sliders.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                     class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
