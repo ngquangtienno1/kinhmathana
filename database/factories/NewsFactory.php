@@ -14,6 +14,7 @@ class NewsFactory extends Factory
         return [
             'title' => $this->faker->sentence(6, true),
             'content' => $this->faker->paragraphs(10, true),
+            'slug' => $this->faker->slug,
             'image' => null,
             'is_active' => $this->faker->boolean(70),
             'created_at' => now(),

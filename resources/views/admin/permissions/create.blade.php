@@ -3,13 +3,13 @@
 @section('title', 'Thêm quyền mới')
 
 @section('breadcrumbs')
-<li class="breadcrumb-item">
-    <a href="#">Cài đặt</a>
-</li>
-<li class="breadcrumb-item">
-    <a href="{{ route('admin.permissions.index') }}">Quyền</a>
-</li>
-<li class="breadcrumb-item active">Thêm mới</li>
+    <li class="breadcrumb-item">
+        <a href="#">Cài đặt</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.permissions.index') }}">Quyền</a>
+    </li>
+    <li class="breadcrumb-item active">Thêm mới</li>
 @endsection
 
 @section('content')
@@ -20,18 +20,14 @@
             </div>
         </div>
 
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
-
         <div class="card">
             <div class="card-body">
                 <form action="{{ route('admin.permissions.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Tên quyền <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror"
-                               id="name" name="name" value="{{ old('name') }}" required>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                            name="name" value="{{ old('name') }}" required>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -49,8 +45,8 @@
 
                     <div class="mb-3">
                         <label for="description" class="form-label">Mô tả</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror"
-                                  id="description" name="description" rows="3">{{ old('description') }}</textarea>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                            rows="3">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
