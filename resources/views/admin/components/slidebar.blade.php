@@ -213,6 +213,36 @@
                     </li>
                 @endif
 
+                @if (canAccess('xem-danh-sach-danh-gia'))
+                    <!-- Đánh giá -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-reviews" role="button"
+                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-reviews">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="star"></span></span>
+                                    <span class="nav-link-text">Đánh giá</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-reviews">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.reviews.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách đánh giá</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
                 @if (canAccess('xem-danh-sach-slider'))
                     <!-- Quản lý Slider -->
                     <li class="nav-item">

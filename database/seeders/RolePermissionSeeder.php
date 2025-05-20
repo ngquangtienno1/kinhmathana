@@ -305,6 +305,10 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xóa vĩnh viễn lý do huỷ đơn', 'slug' => 'xoa-vinh-vien-ly-do-huy-don', 'description' => 'Cho phép xóa vĩnh viễn lý do huỷ đơn'],
             ['name' => 'Xem thùng rác lý do huỷ đơn', 'slug' => 'xem-thung-rac-ly-do-huy-don', 'description' => 'Cho phép xem thùng rác tin tức'],
 
+            //Quản lý đánh giá
+            ['name' => 'Xem danh sách đánh giá', 'slug' => 'xem-danh-sach-danh-gia', 'description' => 'Cho phép xem danh sách đánh giá'],
+            ['name' => 'Xóa đánh giá', 'slug' => 'xoa-danh-gia', 'description' => 'Cho phép xóa đánh giá'],
+
             // Quản lý dashboard
             ['name' => 'Xem dashboard', 'slug' => 'xem-dashboard', 'description' => 'Cho phép xem trang dashboard'],
             ['name' => 'Xem thống kê', 'slug' => 'xem-thong-ke', 'description' => 'Cho phép xem thống kê hệ thống'],
