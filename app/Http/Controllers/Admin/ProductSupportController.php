@@ -10,13 +10,13 @@ class ProductSupportController extends Controller
 {
     public function showForm()
     {
-        return view('admin.products.support');
+        return view('admin.support.support');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $supports = ProductSupport::orderByDesc('created_at')->paginate(20);
-        return view('admin.products.support_list', compact('supports'));
+        return view('admin.support.support_list', compact('supports'));
     }
 
     public function submitForm(Request $request)
@@ -40,7 +40,7 @@ class ProductSupportController extends Controller
     public function show($id)
     {
         $support = \App\Models\ProductSupport::findOrFail($id);
-        return view('admin.products.support_show', compact('support'));
+        return view('admin.support.support_show', compact('support'));
     }
 
     public function markAsDone($id)
@@ -61,7 +61,7 @@ class ProductSupportController extends Controller
     public function editStatus($id)
     {
         $support = \App\Models\ProductSupport::findOrFail($id);
-        return view('admin.products.support_status', compact('support'));
+        return view('admin.support.support_status', compact('support'));
     }
 
     public function updateStatus(Request $request, $id)
@@ -78,7 +78,7 @@ class ProductSupportController extends Controller
     public function showEmailForm($id)
     {
         $support = \App\Models\ProductSupport::findOrFail($id);
-        return view('admin.products.support_email', compact('support'));
+        return view('admin.support.support_email', compact('support'));
     }
 
     public function sendEmail(Request $request, $id)

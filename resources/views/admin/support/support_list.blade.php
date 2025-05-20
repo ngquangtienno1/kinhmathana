@@ -1,10 +1,10 @@
 @extends('admin.layouts')
 
-@section('title', 'Quản lý hỗ trợ khách hàng')
+@section('title', 'Support List')
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="/admin/products">Products</a>
+        <a href="{{ route('admin.support.index') }}">Support</a>
     </li>
     <li class="breadcrumb-item active">Quản lý hỗ trợ khách hàng</li>
 @endsection
@@ -24,6 +24,8 @@
                     <span class="fas fa-search search-box-icon"></span>
                 </form>
             </div>
+            {{-- Các nút filter/action khác nếu cần đồng bộ từ products/index.blade.php --}}
+            {{-- <div class="ms-xxl-auto"><button class="btn btn-primary"><span class="fas fa-plus me-2"></span>Thêm hỗ trợ</button></div> --}}
         </div>
     </div>
     <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
@@ -68,7 +70,9 @@
                                     @elseif($item->status == 'đã giải quyết') bg-success
                                     @else bg-secondary
                                     @endif
-                                ">{{ ucfirst($item->status) }}</span>
+                                ">
+                                    {{ ucfirst($item->status) }}
+                                </span>
                             </td>
                             <td class="text-center">{{ $item->created_at->format('d/m/Y H:i') }}</td>
                             <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
@@ -79,18 +83,18 @@
                                         <span class="fas fa-ellipsis-h fs-10"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
-                                        <a class="dropdown-item" href="{{ route('admin.products.support.show', $item->id) }}">
+                                        <a class="dropdown-item" href="{{ route('admin.support.show', $item->id) }}">
                                             <i class="fas fa-eye text-info me-2"></i>Xem chi tiết
                                         </a>
                                         @if($item->status == 'mới')
-                                            <form action="{{ route('admin.products.support.done', $item->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('admin.support.done', $item->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 <button type="submit" class="dropdown-item" onclick="return confirm('Xác nhận đánh dấu đã xử lý?')">
                                                     <i class="fas fa-check text-success me-2"></i>Đánh dấu đã xử lý
                                                 </button>
                                             </form>
                                         @endif
-                                        <form action="{{ route('admin.products.support.delete', $item->id) }}" method="POST" style="display:inline;">
+                                        <form action="{{ route('admin.support.delete', $item->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn chắc chắn muốn xóa?')">
@@ -110,13 +114,18 @@
     </div>
     <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
         <div class="col-auto d-flex">
-            <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p>
+            <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
+                 @if($supports->total() > 0)
+                    Hiển thị {{ $supports->firstItem() }} - {{ $supports->lastItem() }} trên tổng số {{ $supports->total() }} hỗ trợ
+                @else
+                    Không có dữ liệu
+                @endif
+            </p>
         </div>
         <div class="col-auto d-flex">
             {{ $supports->appends(request()->query())->links() }}
         </div>
     </div>
-    
 </div>
 
 @endsection 

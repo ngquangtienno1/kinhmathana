@@ -1,16 +1,16 @@
 @extends('admin.layouts')
 
-@section('title', 'Gửi email cho khách hàng')
+@section('title', 'Support Email')
 
 @section('breadcrumbs')
 <li class="breadcrumb-item">
-    <a href="/admin/products">Products</a>
+    <a href="{{ route('admin.support.index') }}">Support</a>
 </li>
 <li class="breadcrumb-item">
-    <a href="{{ route('admin.products.support.list') }}">Quản lý hỗ trợ khách hàng</a>
+    <a href="{{ route('admin.support.list') }}">Quản lý hỗ trợ khách hàng</a>
 </li>
 <li class="breadcrumb-item">
-    <a href="{{ route('admin.products.support.show', $support->id) }}">Chi tiết</a>
+    <a href="{{ route('admin.support.show', $support->id) }}">Chi tiết</a>
 </li>
 <li class="breadcrumb-item active">Gửi email</li>
 @endsection
@@ -24,7 +24,7 @@
     </div>
     <div class="card shadow-sm">
         <div class="card-body p-4">
-            <form method="POST" action="{{ route('admin.products.support.sendEmail', $support->id) }}">
+            <form method="POST" action="{{ route('admin.support.sendEmail', $support->id) }}">
                 @csrf
                 <div class="mb-3">
                     <label for="subject" class="form-label"><strong>Tiêu đề</strong></label>
@@ -37,7 +37,7 @@
                     @error('content') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
                 <button type="submit" class="btn btn-primary">Gửi email</button>
-                <a href="{{ route('admin.products.support.show', $support->id) }}" class="btn btn-secondary ms-2">Quay lại</a>
+                <a href="{{ route('admin.support.show', $support->id) }}" class="btn btn-secondary ms-2">Quay lại</a>
             </form>
         </div>
     </div>
