@@ -349,11 +349,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     // Reviews
-    Route::prefix('reviews')->name('reviews.')->group(function () {
+    Route::prefix('reviews')->name('reviews.')->middleware(['permission:xem-danh-sach-danh-gia'])->group(function () {
         Route::get('/', [ReviewController::class, 'index'])->name('index');
         Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
-        Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
-        Route::post('/bulk-delete', [ReviewController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy')->middleware(['permission:xoa-danh-gia']);
     });
 
     //Quản lý thanh toán

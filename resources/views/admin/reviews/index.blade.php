@@ -30,12 +30,13 @@
                     </button>
                 </div>
             </div>
-                        </div>
-        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white border-top border-bottom border-translucent position-relative top-1">
+        </div>
+        <div
+            class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white border-top border-bottom border-translucent position-relative top-1">
             <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table fs-9 mb-0">
-                            <thead>
-                                <tr>
+                    <thead>
+                        <tr>
                             <th class="align-middle text-center px-3" style="width:10px;">
                                 <div class="form-check mb-0 fs-8">
                                     <input class="form-check-input" id="checkbox-bulk-reviews-select" type="checkbox"
@@ -83,7 +84,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Nội dung
                                     @if (request('sort') === 'content')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -92,13 +94,15 @@
                                     class="text-body" style="text-decoration:none;">
                                     Ngày tạo
                                     @if (request('sort') === 'created_at')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
-                                    </th>
-                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">Thao tác</th>
-                                </tr>
-                            </thead>
+                            </th>
+                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">Thao tác
+                            </th>
+                        </tr>
+                    </thead>
                     <tbody class="list" id="reviews-table-body">
                         @forelse ($reviews as $review)
                             <tr>
@@ -113,16 +117,16 @@
                                 </td>
                                 <td class="userName align-middle ps-4">
                                     {{ $review->user->name ?? 'N/A' }}<br><small>{{ $review->user->email ?? '' }}</small>
-                                    </td>
+                                </td>
                                 <td class="productName align-middle ps-4">
-                                        <a href="{{ route('admin.products.show', $review->product_id) }}">
+                                    <a href="{{ route('admin.products.show', $review->product_id) }}">
                                         {{ $review->product->name ?? 'N/A' }}
-                                        </a>
-                                    </td>
+                                    </a>
+                                </td>
                                 <td class="rating align-middle ps-4">
                                     <div class="text-warning d-flex align-items-center" style="min-width: 100px;">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= $review->rating)
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= $review->rating)
                                                 <i class="fas fa-star me-1"></i>
                                             @else
                                                 <i class="far fa-star me-1"></i>
@@ -136,34 +140,36 @@
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
-                                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        <button
+                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
                                             type="button" data-bs-toggle="dropdown" data-boundary="window"
                                             aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                             <span class="fas fa-ellipsis-h fs-10"></span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
-                                            <a class="dropdown-item" href="{{ route('admin.reviews.show', $review->id) }}">Xem</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('admin.reviews.show', $review->id) }}">Xem</a>
                                             {{-- <a class="dropdown-item" href="{{ route('admin.reviews.edit', $review->id) }}">Sửa</a> --}}
                                             <div class="dropdown-divider"></div>
-                                        <form action="{{ route('admin.reviews.destroy', $review->id) }}" 
+                                            <form action="{{ route('admin.reviews.destroy', $review->id) }}"
                                                 method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
+                                                @csrf
+                                                @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"
                                                     onclick="return confirm('Bạn có chắc chắn muốn xóa đánh giá này?')">Xóa</button>
-                                        </form>
+                                            </form>
                                         </div>
                                     </div>
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
                         @empty
                             <tr>
                                 <td colspan="8" class="text-center py-4">Không có đánh giá nào</td>
                             </tr>
                         @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                    </tbody>
+                </table>
+            </div>
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
@@ -172,7 +178,7 @@
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                     <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
-                    </div>
+                </div>
                 <div class="col-auto d-flex">
                     <button class="page-link" data-list-pagination="prev"><span
                             class="fas fa-chevron-left"></span></button>
@@ -186,59 +192,4 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Xử lý checkbox bulk delete
-        const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
-        const checkboxes = document.querySelectorAll('.review-checkbox');
-        const bulkSelectCheckbox = document.getElementById('checkbox-bulk-reviews-select');
-
-        function updateBulkDeleteButton() {
-            const checkedBoxes = document.querySelectorAll('.review-checkbox:checked');
-            bulkDeleteBtn.style.display = checkedBoxes.length > 0 ? 'block' : 'none';
-        }
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateBulkDeleteButton);
-        });
-
-        bulkSelectCheckbox.addEventListener('change', function() {
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            updateBulkDeleteButton();
-        });
-
-        // Xử lý bulk delete
-        bulkDeleteBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(document.querySelectorAll('.review-checkbox:checked'))
-                .map(checkbox => checkbox.value);
-
-            if (selectedIds.length === 0) return;
-
-            if (confirm('Bạn có chắc chắn muốn xóa các đánh giá đã chọn?')) {
-                // Gửi request xóa
-                fetch('{{ route("admin.reviews.bulk-delete") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ ids: selectedIds })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                    location.reload();
-                    } else {
-                        alert('Có lỗi xảy ra khi xóa đánh giá');
-                }
-            });
-        }
-    });
-});
-</script>
-@endpush
-
-@endsection 
+@endsection

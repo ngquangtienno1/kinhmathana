@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\Review;
@@ -43,15 +44,15 @@ class ReviewController extends Controller
         // Tìm kiếm
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('content', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                  })
-                  ->orWhereHas('product', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('product', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -60,7 +61,7 @@ class ReviewController extends Controller
         $query->orderBy($sort, $direction);
 
         $reviews = $query->get();
-        
+
         return view('admin.reviews.index', compact('reviews'));
     }
 
@@ -74,17 +75,9 @@ class ReviewController extends Controller
     {
         $review = Review::findOrFail($id);
         $review->delete();
-        
+
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Đã xóa đánh giá thành công');
-    }
-
-    public function bulkDelete(Request $request)
-    {
-        $ids = $request->ids;
-        Review::whereIn('id', $ids)->delete();
-        
-        return response()->json(['success' => 'Đã xóa các đánh giá đã chọn']);
     }
 
     public function userCanReview(Request $request)
@@ -102,4 +95,4 @@ class ReviewController extends Controller
 
         return response()->json(['can_review' => $canReview]);
     }
-} 
+}
