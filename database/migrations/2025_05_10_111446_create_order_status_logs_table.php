@@ -14,9 +14,34 @@ return new class extends Migration
         Schema::create('order_status_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
-            $table->string('old_status', 50);
-            $table->string('new_status', 50);
-            $table->timestamp('changed_at')->useCurrent();
+            $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete()
+                  ->comment('User thực hiện thay đổi trạng thái');
+            $table->enum('old_status', [
+                'pending',           // Đơn hàng vừa được tạo
+                'awaiting_payment',  // Chờ thanh toán
+                'confirmed',         // Đã xác nhận đơn
+                'processing',        // Đang đóng gói/kiểm hàng
+                'shipping',          // Đang vận chuyển
+                'delivered',         // Đã giao hàng
+                'returned',          // Khách trả hàng
+                'processing_return', // Đang xử lý trả hàng
+                'refunded',          // Đã hoàn tiền
+            ])->comment('Trạng thái cũ');
+            $table->enum('new_status', [
+                'pending',           // Đơn hàng vừa được tạo
+                'awaiting_payment',  // Chờ thanh toán
+                'confirmed',         // Đã xác nhận đơn
+                'processing',        // Đang đóng gói/kiểm hàng
+                'shipping',          // Đang vận chuyển
+                'delivered',         // Đã giao hàng
+                'returned',          // Khách trả hàng
+                'processing_return', // Đang xử lý trả hàng
+                'refunded',          // Đã hoàn tiền
+            ])->comment('Trạng thái mới');
+            $table->text('note')->nullable()->comment('Ghi chú về việc thay đổi trạng thái');
+            $table->json('metadata')->nullable()->comment('Dữ liệu bổ sung (VD: thông tin vận chuyển, lý do huỷ...)');
+            $table->timestamp('changed_at')->useCurrent()->comment('Thời điểm thay đổi trạng thái');
+            $table->timestamps();
         });
     }
 

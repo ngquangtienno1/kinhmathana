@@ -11,8 +11,7 @@ class VariationDetail extends Model
 
     protected $fillable = ['variation_id', 'color_id', 'size_id'];
 
-    public $timestamps = ['created_at'];
-    const UPDATED_AT = null;
+    public $timestamps = true; // bảng có created_at
 
     public function variation()
     {

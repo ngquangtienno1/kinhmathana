@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
 <li class="breadcrumb-item">
-    <a href="{{ route('admin.support.index') }}">Support</a>
+    <a href="{{ route('admin.support.list') }}">Support</a>
 </li>
 <li class="breadcrumb-item active">Gửi yêu cầu hỗ trợ</li>
 @endsection
@@ -21,7 +21,7 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-            <form method="POST" action="{{ route('admin.support.form') }}">
+            <form method="POST" action="{{ route('admin.support.store') }}">
                 @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">Họ tên</label>

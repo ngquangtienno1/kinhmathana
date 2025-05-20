@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.support.index') }}">Support</a>
+        <a href="{{ route('admin.support.list') }}">Support</a>
     </li>
     <li class="breadcrumb-item active">Quản lý hỗ trợ khách hàng</li>
 @endsection
@@ -19,13 +19,13 @@
     <div class="mb-4">
         <div class="d-flex flex-wrap gap-3">
             <div class="search-box">
-                <form class="position-relative" method="GET">
+                <form class="position-relative" method="GET" action="{{ route('admin.support.list') }}">
                     <input class="form-control search-input search" type="search" name="q" value="{{ request('q') }}" placeholder="Tìm kiếm hỗ trợ khách hàng" aria-label="Search" />
                     <span class="fas fa-search search-box-icon"></span>
                 </form>
             </div>
             {{-- Các nút filter/action khác nếu cần đồng bộ từ products/index.blade.php --}}
-            {{-- <div class="ms-xxl-auto"><button class="btn btn-primary"><span class="fas fa-plus me-2"></span>Thêm hỗ trợ</button></div> --}}
+            {{-- <div class="ms-xxl-auto"><a href="{{ route('admin.support.create') }}" class="btn btn-primary"><span class="fas fa-plus me-2"></span>Thêm hỗ trợ</a></div> --}}
         </div>
     </div>
     <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
@@ -94,7 +94,7 @@
                                                 </button>
                                             </form>
                                         @endif
-                                        <form action="{{ route('admin.support.delete', $item->id) }}" method="POST" style="display:inline;">
+                                        <form action="{{ route('admin.support.destroy', $item->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn chắc chắn muốn xóa?')">
