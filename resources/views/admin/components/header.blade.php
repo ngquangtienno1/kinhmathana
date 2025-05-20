@@ -7,9 +7,14 @@
                         class="toggle-line"></span></span></button>
             <a class="navbar-brand me-1 me-sm-3" href="index.html">
                 <div class="d-flex align-items-center">
-                    <div class="d-flex align-items-center"><img src="{{ getLogoUrl() }} " alt="phoenix"
-                            width="27" />
-                        <h5 class="logo-text ms-2 d-none d-sm-block">{{ getSetting('website_name') }}</h5>
+                    <div class="d-flex align-items-center logo-container" style="margin-left: 20px;">
+                        <div class="logo-wrapper">
+                            <img src="{{ getLogoUrl() }}" alt="phoenix" width="32" class="logo-img"
+                                style="border-radius: 5px;" />
+                        </div>
+                        <h5 class="logo-text ms-3 d-none d-sm-block fw-bold">
+                            <span class="gradient-text">{{ getSetting('website_name') }}</span>
+                        </h5>
                     </div>
                 </div>
             </a>
@@ -104,7 +109,8 @@
                                 <div class="d-flex align-items-center">
                                     <div class="fw-normal text-body-highlight title"><span
                                             class="fa-solid fa-file-zipper text-body"
-                                            data-fa-transform="shrink-2"></span> Library MacBook folder.rar
+                                            data-fa-transform="shrink-2"></span>
+                                        Library MacBook folder.rar
                                     </div>
                                 </div>
                             </a>
@@ -112,7 +118,8 @@
                                 <div class="d-flex align-items-center">
                                     <div class="fw-normal text-body-highlight title"> <span
                                             class="fa-solid fa-file-lines text-body"
-                                            data-fa-transform="shrink-2"></span> Feature MacBook extensions.txt
+                                            data-fa-transform="shrink-2"></span>
+                                        Feature MacBook extensions.txt
                                     </div>
                                 </div>
                             </a>
@@ -238,7 +245,8 @@
                                                 data-bs-reference="parent"><span
                                                     class="fas fa-ellipsis-h fs-10 text-body"></span></button>
                                             <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
+                                                    href="#!">Mark
+                                                    as
                                                     unread</a></div>
                                         </div>
                                     </div>
@@ -269,7 +277,8 @@
                                                 data-bs-reference="parent"><span
                                                     class="fas fa-ellipsis-h fs-10 text-body"></span></button>
                                             <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
+                                                    href="#!">Mark
+                                                    as
                                                     unread</a></div>
                                         </div>
                                     </div>
@@ -301,7 +310,8 @@
                                                 data-bs-reference="parent"><span
                                                     class="fas fa-ellipsis-h fs-10 text-body"></span></button>
                                             <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
+                                                    href="#!">Mark
+                                                    as
                                                     unread</a></div>
                                         </div>
                                     </div>
@@ -334,7 +344,8 @@
                                                 data-bs-reference="parent"><span
                                                     class="fas fa-ellipsis-h fs-10 text-body"></span></button>
                                             <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
+                                                    href="#!">Mark
+                                                    as
                                                     unread</a></div>
                                         </div>
                                     </div>
@@ -368,7 +379,8 @@
                                                 data-bs-reference="parent"><span
                                                     class="fas fa-ellipsis-h fs-10 text-body"></span></button>
                                             <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
+                                                    href="#!">Mark
+                                                    as
                                                     unread</a></div>
                                         </div>
                                     </div>
@@ -400,7 +412,8 @@
                                                 data-bs-reference="parent"><span
                                                     class="fas fa-ellipsis-h fs-10 text-body"></span></button>
                                             <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark as
+                                                    href="#!">Mark
+                                                    as
                                                     unread</a></div>
                                         </div>
                                     </div>
@@ -609,3 +622,68 @@
         </ul>
     </div>
 </nav>
+
+<style>
+    .logo-container {
+        position: relative;
+        padding: 6px 0;
+    }
+
+    .logo-wrapper {
+        position: relative;
+        padding: 6px;
+        border-radius: 10px;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        box-shadow: 4px 4px 8px #d9d9d9, -4px -4px 8px #ffffff;
+        transition: all 0.3s ease;
+    }
+
+    .logo-wrapper:hover {
+        transform: translateY(-2px);
+        box-shadow: 6px 6px 12px #d9d9d9, -6px -6px 12px #ffffff;
+    }
+
+    .logo-img {
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .logo-wrapper:hover .logo-img {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .gradient-text {
+        background: linear-gradient(45deg, #2c3e50, #3498db, #2980b9);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 3s linear infinite;
+        font-size: 1.25rem;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes shine {
+        to {
+            background-position: 200% center;
+        }
+    }
+
+    .navbar-brand {
+        transition: all 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+        opacity: 0.95;
+    }
+
+    /* Dark mode support */
+    [data-bs-theme="dark"] .logo-wrapper {
+        background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+        box-shadow: 4px 4px 8px #1a1a1a, -4px -4px 8px #2d2d2d;
+    }
+
+    [data-bs-theme="dark"] .logo-wrapper:hover {
+        box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #2d2d2d;
+    }
+</style>
