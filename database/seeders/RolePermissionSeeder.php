@@ -296,6 +296,15 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xóa vĩnh viễn tin tức', 'slug' => 'xoa-vinh-vien-news', 'description' => 'Cho phép xóa vĩnh viễn tin tức'],
             ['name' => 'Xem thùng rác tin tức', 'slug' => 'xem-thung-rac-news', 'description' => 'Cho phép xem thùng rác tin tức'],
 
+            //Quản lý lý do huỷ đơn
+            ['name' => 'Xem lý do huỷ đơn', 'slug' => 'xem-ly-do-huy-don', 'description' => 'Cho phép xem danh sách lý do huỷ đơn'],
+            ['name' => 'Thêm lý do huỷ đơn', 'slug' => 'them-ly-do-huy-don', 'description' => 'Cho phép thêm lý do huỷ đơn'],
+            ['name' => 'Sửa lý do huỷ đơn', 'slug' => 'sua-ly-do-huy-don', 'description' => 'Cho phép chỉnh sửa lý do huỷ đơn'],
+            ['name' => 'Xóa lý do huỷ đơn', 'slug' => 'xoa-ly-do-huy-don', 'description' => 'Cho phép xóa lý do huỷ đơn'],
+            ['name' => 'Khôi phục lý do huỷ đơn', 'slug' => 'khoi-phuc-ly-do-huy-don', 'description' => 'Cho phép khôi phục lý do huỷ đơn đã xóa'],
+            ['name' => 'Xóa vĩnh viễn lý do huỷ đơn', 'slug' => 'xoa-vinh-vien-ly-do-huy-don', 'description' => 'Cho phép xóa vĩnh viễn lý do huỷ đơn'],
+            ['name' => 'Xem thùng rác lý do huỷ đơn', 'slug' => 'xem-thung-rac-ly-do-huy-don', 'description' => 'Cho phép xem thùng rác tin tức'],
+
             // Quản lý dashboard
             ['name' => 'Xem dashboard', 'slug' => 'xem-dashboard', 'description' => 'Cho phép xem trang dashboard'],
             ['name' => 'Xem thống kê', 'slug' => 'xem-thong-ke', 'description' => 'Cho phép xem thống kê hệ thống'],

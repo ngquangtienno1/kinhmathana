@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CancellationReasonController;
 
 // Redirect login
 Route::get('/', function () {
@@ -310,6 +311,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-thuong-hieu']);
         Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-thuong-hieu']);
+    });
+
+    // Lý do huỷ đơn
+    Route::prefix('cancellation-reasons')->name('cancellation_reasons.')->middleware(['permission:xem-ly-do-huy-don'])->group(function () {
+        Route::get('/', [CancellationReasonController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [CancellationReasonController::class, 'show'])->name('show');
+        Route::get('/create', [CancellationReasonController::class, 'create'])->name('create')
+            ->middleware(['permission:them-ly-do-huy-don']);
+        Route::post('/store', [CancellationReasonController::class, 'store'])->name('store')
+            ->middleware(['permission:them-ly-do-huy-don']);
+        Route::get('/{id}/edit', [CancellationReasonController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-ly-do-huy-don']);
+        Route::put('/{id}/update', [CancellationReasonController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-ly-do-huy-don']);
+        Route::delete('/{id}/destroy', [CancellationReasonController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-ly-do-huy-don']);
+        Route::get('/bin', [CancellationReasonController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [CancellationReasonController::class, 'restore'])->name('restore')
+            ->middleware(['permission:khoi-phuc-ly-do-huy-don']);
+        Route::delete('/{id}/forceDelete', [CancellationReasonController::class, 'forceDelete'])->name('forceDelete')
+            ->middleware(['permission:xoa-vinh-vien-ly-do-huy-don']);
     });
 
     // Orders

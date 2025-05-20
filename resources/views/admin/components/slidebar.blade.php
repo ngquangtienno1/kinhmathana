@@ -342,6 +342,46 @@
                     </li>
                 @endif
 
+                @if (canAccess('xem-ly-do-huy-don'))
+                    <!-- Quản lý Lý do hủy -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-cancellation-reasons"
+                                role="button" data-bs-toggle="collapse" aria-expanded="false"
+                                aria-controls="nv-cancellation-reasons">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="x-circle"></span></span>
+                                    <span class="nav-link-text">Lý do hủy đơn</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-cancellation-reasons">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.cancellation_reasons.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách lý do hủy</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    @if (canAccess('xem-thung-rac-ly-do-huy-don'))
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('admin.cancellation_reasons.bin') }}">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="nav-link-text">Thùng rác</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
                 @if (canAccess('xem-danh-sach-nguoi-dung') || canAccess('xem-danh-sach-vai-tro') || canAccess('xem-danh-sach-quyen'))
                     <!-- User Management -->
                     <li class="nav-item">
