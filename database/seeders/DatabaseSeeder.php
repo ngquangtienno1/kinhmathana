@@ -47,8 +47,11 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,         // Tạo FAQ
 
             // 6. Seeder cho đơn hàng và thanh toán
-            // OrderSeeder::class,     // Tạo đơn hàng
+            OrderSeeder::class,     // Tạo đơn hàng
             // PaymentSeeder::class,   // Tạo thanh toán
+
+            // 7. Seeder cho lý do huỷ
+            CancellationReasonSeeder::class,
         ]);
     }
 

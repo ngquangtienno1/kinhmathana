@@ -32,7 +32,16 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->latest()->paginate(10);
+        // Lọc theo trạng thái thanh toán
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+        // Lọc theo trạng thái đơn hàng
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->latest()->get();
         // Đếm số lượng các trạng thái
         $countAll = Order::count();
         $countPending = Order::where('payment_status', 'pending')->count();

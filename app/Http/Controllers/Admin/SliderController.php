@@ -35,7 +35,7 @@ class SliderController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $sliders = $query->orderBy('sort_order', 'asc')->paginate(10);
+        $sliders = $query->orderBy('sort_order', 'asc')->get();
         $deletedCount = Slider::onlyTrashed()->count();
         $activeCount = Slider::where('is_active', true)->count();
 

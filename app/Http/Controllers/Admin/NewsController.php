@@ -36,7 +36,7 @@ class NewsController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $news = $query->paginate(10);
+        $news = $query->get();
         $deletedCount = News::onlyTrashed()->count();
         $activeCount = News::where('is_active', true)->count();
 

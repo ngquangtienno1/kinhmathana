@@ -14,6 +14,6 @@ class FaqSeeder extends Seeder
     public function run(): void
     {
         // Tạo 20 FAQ mẫu
-        Faq::factory(20)->create();
+        Faq::factory()->count(10)->create();
     }
 }

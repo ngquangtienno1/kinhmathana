@@ -6,23 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('variation_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('variation_id')->constrained()->onDelete('cascade');
-            $table->string('image')->nullable();
-            $table->boolean('is_primary')->default(false);
-            $table->timestamps();
+            $table->foreignId('variation_id')->constrained('variations')->onDelete('cascade');
+            $table->string('image_path', 255); // sửa đúng theo thiết kế
+            $table->timestamp('created_at')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('variation_images');

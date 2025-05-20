@@ -2,17 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\News;
+use App\Models\CancellationReason;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class NewsSeeder extends Seeder
+class CancellationReasonSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        News::factory()->count(10)->create();
+        CancellationReason::factory()->count(10)->create();
     }
 }
