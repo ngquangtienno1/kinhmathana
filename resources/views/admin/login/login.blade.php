@@ -124,69 +124,87 @@
 
                                         <!-- BẮT ĐẦU THẺ FORM Ở ĐÂY -->
                                         <form action="{{ route('postLogin') }}" method="POST">
-    @csrf
+                                            @csrf
 
-    <button type="button" class="btn btn-phoenix-secondary w-100 mb-3" onclick="location.href='{{ route('login.google') }}'">
-        <span class="fab fa-google text-danger me-2 fs-9"></span>Đăng nhập bằng google
-    </button>
+                                            <button type="button" class="btn btn-phoenix-secondary w-100 mb-3"
+                                                onclick="location.href='{{ route('login.google') }}'">
+                                                <span class="fab fa-google text-danger me-2 fs-9"></span>Đăng nhập bằng
+                                                google
+                                            </button>
+                                            <button type="button" class="btn btn-phoenix-secondary w-100 mb-3"
+                                                onclick="location.href='{{ route('login.facebook') }}'">
+                                                <span class="fab fa-facebook text-primary me-2 fs-9"></span>Đăng nhập
+                                                bằng
+                                                facebook
+                                            </button>
 
-    <div class="position-relative">
-        <hr class="bg-body-secondary mt-5 mb-4" />
-        <div class="divider-content-center bg-body-emphasis">hoặc sử dụng email</div>
-    </div>
+                                            <div class="position-relative">
+                                                <hr class="bg-body-secondary mt-5 mb-4" />
+                                                <div class="divider-content-center bg-body-emphasis">hoặc sử dụng email
+                                                </div>
+                                            </div>
 
-    <div class="mb-3 text-start">
-    <label class="form-label" for="email">Email</label>
-    <div class="form-icon-container">
-        <input class="form-control form-icon-input " id="email"
-            name="email" type="email" placeholder="Hãy nhập email" value="{{ old('email') }}" />
-        <span class="fas fa-user text-body fs-9 form-icon"></span>
-        @error('email')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
+                                            <div class="mb-3 text-start">
+                                                <label class="form-label" for="email">Email</label>
+                                                <div class="form-icon-container">
+                                                    <input class="form-control form-icon-input " id="email"
+                                                        name="email" type="email" placeholder="Hãy nhập email"
+                                                        value="{{ old('email') }}" />
+                                                    <span class="fas fa-user text-body fs-9 form-icon"></span>
+                                                    @error('email')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
 
-<div class="mb-3 text-start">
-    <label class="form-label" for="password">Mật khẩu</label>
-    <div class="form-icon-container position-relative" data-password="data-password">
-        <input class="form-control form-icon-input pe-6 " id="password" 
-            name="password" type="password" placeholder="Mật khẩu" data-password-input="data-password-input" />
-        <span class="fas fa-key text-body fs-9 form-icon"></span>
-        <button type="button" class="btn px-3 py-0 h-100 position-absolute top-0 end-0 fs-7 text-body-tertiary"
-            data-password-toggle="data-password-toggle">
-            <span class="uil uil-eye show"></span>
-            <span class="uil uil-eye-slash hide"></span>
-        </button>
-    </div>
+                                            <div class="mb-3 text-start">
+                                                <label class="form-label" for="password">Mật khẩu</label>
+                                                <div class="form-icon-container position-relative"
+                                                    data-password="data-password">
+                                                    <input class="form-control form-icon-input pe-6 " id="password"
+                                                        name="password" type="password" placeholder="Mật khẩu"
+                                                        data-password-input="data-password-input" />
+                                                    <span class="fas fa-key text-body fs-9 form-icon"></span>
+                                                    <button type="button"
+                                                        class="btn px-3 py-0 h-100 position-absolute top-0 end-0 fs-7 text-body-tertiary"
+                                                        data-password-toggle="data-password-toggle">
+                                                        <span class="uil uil-eye show"></span>
+                                                        <span class="uil uil-eye-slash hide"></span>
+                                                    </button>
+                                                </div>
 
-    {{-- Để text lỗi ra ngoài form-icon-container để không ảnh hưởng chiều cao container --}}
-    @error('password')
-        <div class="text-danger mt-1">{{ $message }}</div>
-    @enderror
-</div>
+                                                {{-- Để text lỗi ra ngoài form-icon-container để không ảnh hưởng chiều cao container --}}
+                                                @error('password')
+                                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                                @enderror
+                                            </div>
 
 
 
-    <div class="row flex-between-center mb-7">
-        <div class="col-auto">
-            <div class="form-check mb-0">
-                <input class="form-check-input" id="basic-checkbox" name="remember"
-                    type="checkbox" {{ old('remember') ? 'checked' : '' }} />
-                <label class="form-check-label mb-0" for="basic-checkbox">Lưu tài khoản</label>
-            </div>
-        </div>
-        <div class="col-auto">
-            <a class="fs-9 fw-semibold" href="forgot-password.html">Quên mật khẩu?</a>
-        </div>
-    </div>
+                                            <div class="row flex-between-center mb-7">
+                                                <div class="col-auto">
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input" id="basic-checkbox"
+                                                            name="remember" type="checkbox"
+                                                            {{ old('remember') ? 'checked' : '' }} />
+                                                        <label class="form-check-label mb-0" for="basic-checkbox">Lưu
+                                                            tài khoản</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <a class="fs-9 fw-semibold" href="forgot-password.html">Quên mật
+                                                        khẩu?</a>
+                                                </div>
+                                            </div>
 
-    <button type="submit" class="btn btn-primary w-100 mb-3">Đăng nhập</button>
+                                            <button type="submit" class="btn btn-primary w-100 mb-3">Đăng
+                                                nhập</button>
 
-    <div class="text-center">
-        <a class="fs-9 fw-bold" href="{{ route('register') }}">Tạo tài khoản mới</a>
-    </div>
-</form>
+                                            <div class="text-center">
+                                                <a class="fs-9 fw-bold" href="{{ route('register') }}">Tạo tài khoản
+                                                    mới</a>
+                                            </div>
+                                        </form>
 
                                         <!-- KẾT THÚC THẺ FORM Ở ĐÂY -->
                                     </div>
