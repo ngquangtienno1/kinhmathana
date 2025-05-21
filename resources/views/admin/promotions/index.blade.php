@@ -98,7 +98,7 @@
                 </div>
             </div>
             <div
-                class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white border-top border-bottom border-translucent position-relative top-1">
+                class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
                 <div class="table-responsive scrollbar mx-n1 px-1">
                     <table class="table fs-9 mb-0">
                         <thead>
