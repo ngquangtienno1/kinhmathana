@@ -406,12 +406,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:an-hien-binh-luan']);
     });
 
-    // Promotion routes
-    Route::resource('promotions', PromotionController::class)->except(['index', 'generateCode', 'store', 'show', 'edit', 'update', 'destroy']);
-    Route::prefix('promotions')->name('promotions.')->group(function () {
+    // Khuyến mãi
+    Route::prefix('promotions')->name('promotions.')->middleware(['permission:xem-danh-sach-khuyen-mai'])->group(function () {
         Route::get('/', [PromotionController::class, 'index'])->name('index');
-        Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
+        Route::get('/create', [PromotionController::class, 'create'])->name('create');
         Route::post('/', [PromotionController::class, 'store'])->name('store');
+        Route::delete('/bulk-delete', [PromotionController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');

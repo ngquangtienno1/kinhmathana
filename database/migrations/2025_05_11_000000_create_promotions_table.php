@@ -39,4 +39,4 @@ class CreatePromotionsTable extends Migration
     {
         Schema::dropIfExists('promotions');
     }
-} 
+}

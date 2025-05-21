@@ -243,6 +243,36 @@
                     </li>
                 @endif
 
+                @if (canAccess('xem-danh-sach-khuyen-mai'))
+                    <!-- Khuyến mãi -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-promotions" role="button"
+                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-promotions">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="percent"></span></span>
+                                    <span class="nav-link-text">Khuyến mãi</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-promotions">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.promotions.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách khuyến mãi</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
                 @if (canAccess('xem-danh-sach-slider'))
                     <!-- Quản lý Slider -->
                     <li class="nav-item">
@@ -442,7 +472,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{{ route('admin.roles.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Quản lý vai trò</span>
+                                                    <span class="nav-link-text">Roles</span>
                                                 </div>
                                             </a>
                                         </li>
@@ -451,7 +481,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{{ route('admin.permissions.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Quản lý quyền</span>
+                                                    <span class="nav-link-text">Permissions</span>
                                                 </div>
                                             </a>
                                         </li>
@@ -527,7 +557,7 @@
             class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center">
             <span class="uil uil-left-arrow-to-left fs-8"></span>
             <span class="uil uil-arrow-from-right fs-8"></span>
-            <span class="navbar-vertical-footer-text ms-2">Chế độ xem thu gọn</span>
+            <span class="navbar-vertical-footer-text ms-2">Collapsed View</span>
         </button>
     </div>
 </nav>
