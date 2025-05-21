@@ -45,6 +45,9 @@
                     </form>
                 </div>
                 <div class="ms-xxl-auto">
+                    <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
+                        <span class="fas fa-trash me-2"></span>Xóa mềm
+                    </button>
                     <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
                         <span class="fas fa-plus me-2"></span>Thêm sản phẩm
                     </a>
@@ -165,5 +168,61 @@
         </div>
     </div>
 </div>
+
+<form id="bulk-delete-form" action="{{ route('admin.products.bulkDestroy') }}" method="POST"
+    style="display:none;">
+    @csrf
+    @method('DELETE')
+    <input type="hidden" name="ids" id="bulk-delete-ids">
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bulkCheckbox = document.getElementById('checkbox-bulk-products-select');
+        const itemCheckboxes = document.querySelectorAll('.product-checkbox');
+        const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+        const bulkDeleteForm = document.getElementById('bulk-delete-form');
+        const bulkDeleteIds = document.getElementById('bulk-delete-ids');
+
+        function updateBulkDeleteBtn() {
+            let checkedCount = 0;
+            itemCheckboxes.forEach(function(checkbox) {
+                if (checkbox.checked) checkedCount++;
+            });
+            if (checkedCount > 0) {
+                bulkDeleteBtn.style.display = '';
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        if (bulkCheckbox) {
+            bulkCheckbox.addEventListener('change', function() {
+                itemCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = bulkCheckbox.checked;
+                });
+                updateBulkDeleteBtn();
+            });
+        }
+        itemCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateBulkDeleteBtn();
+            });
+        });
+        updateBulkDeleteBtn(); // Initial state
+
+        // Xử lý submit xoá mềm
+        bulkDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const checkedIds = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            if (checkedIds.length === 0) return;
+            if (!confirm('Bạn có chắc chắn muốn xóa mềm các sản phẩm đã chọn?')) return;
+            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteForm.submit();
+        });
+    });
+</script>
 
 @endsection

@@ -158,6 +158,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-vinh-vien-san-pham']);
         Route::delete('bulk-delete', [ProductController::class, 'bulkDelete'])->name('bulk-delete')
             ->middleware(['permission:xoa-nhieu-san-pham']);
+        Route::delete('/bulk-delete', [App\Http\Controllers\Admin\ProductController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [App\Http\Controllers\Admin\ProductController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [App\Http\Controllers\Admin\ProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     // Product Images
@@ -275,6 +278,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-slider']);
         Route::delete('/bulk-delete', [SliderController::class, 'bulkDelete'])->name('bulk-delete')
             ->middleware(['permission:xoa-slider']);
+        Route::delete('/bulk-delete', [SliderController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [SliderController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [SliderController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     //News
@@ -296,6 +302,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-news']);
         Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-news']);
+        Route::delete('/bulk-delete', [NewsController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [NewsController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [NewsController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     //Brands
@@ -317,6 +326,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-thuong-hieu']);
         Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-thuong-hieu']);
+        Route::delete('/bulk-delete', [BrandController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [BrandController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [BrandController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     // Lý do huỷ đơn
@@ -338,6 +350,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:khoi-phuc-ly-do-huy-don']);
         Route::delete('/{id}/forceDelete', [CancellationReasonController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-vinh-vien-ly-do-huy-don']);
+        Route::delete('/bulk-delete', [CancellationReasonController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [CancellationReasonController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [CancellationReasonController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     // Order Management

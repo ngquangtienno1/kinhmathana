@@ -442,7 +442,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{{ route('admin.roles.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Roles</span>
+                                                    <span class="nav-link-text">Quản lý vai trò</span>
                                                 </div>
                                             </a>
                                         </li>
@@ -451,7 +451,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{{ route('admin.permissions.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Permissions</span>
+                                                    <span class="nav-link-text">Quản lý quyền</span>
                                                 </div>
                                             </a>
                                         </li>
@@ -527,7 +527,7 @@
             class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center">
             <span class="uil uil-left-arrow-to-left fs-8"></span>
             <span class="uil uil-arrow-from-right fs-8"></span>
-            <span class="navbar-vertical-footer-text ms-2">Collapsed View</span>
+            <span class="navbar-vertical-footer-text ms-2">Chế độ xem thu gọn</span>
         </button>
     </div>
 </nav>
