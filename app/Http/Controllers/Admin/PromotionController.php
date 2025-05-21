@@ -221,15 +221,26 @@ class PromotionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function generateCode()
+    public function generateCode(Request $request)
     {
         $code = strtoupper(Str::random(8));
-        
-        // Ensure code is unique
         while (Promotion::where('code', $code)->exists()) {
             $code = strtoupper(Str::random(8));
         }
-        
-        return response()->json(['code' => $code]);
+
+        // Kiểm tra nếu đang ở trang edit
+        if ($request->has('edit')) {
+            $promotion = Promotion::findOrFail($request->edit);
+            $products = Product::where('status', 'active')->get();
+            $categories = Category::all();
+            $selectedProducts = $promotion->products->pluck('id')->toArray();
+            $selectedCategories = $promotion->categories->pluck('id')->toArray();
+            return view('admin.promotions.edit', compact('promotion', 'products', 'categories', 'selectedProducts', 'selectedCategories', 'code'));
+        }
+
+        // Mặc định trả về trang create
+        $products = Product::where('status', 'active')->get();
+        $categories = Category::all();
+        return view('admin.promotions.create', compact('products', 'categories', 'code'));
     }
 } 

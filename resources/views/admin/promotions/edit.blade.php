@@ -57,7 +57,7 @@
                 <label class="form-label" for="code">Mã khuyến mãi <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <input type="text" name="code" id="code" class="form-control @error('code') is-invalid @enderror" value="{{ old('code', $promotion->code) }}" required placeholder="Nhập mã khuyến mãi">
-                    <button type="button" id="generate-code" class="btn btn-phoenix-secondary">Tạo mã</button>
+                    <a href="{{ route('admin.promotions.generate-code', ['edit' => $promotion->id]) }}" class="btn btn-phoenix-secondary">Tạo mã</a>
                 </div>
                 @error('code')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -228,17 +228,6 @@
             } else {
                 $('#discount-symbol').text('$');
             }
-        });
-
-        // Generate promotion code
-        $('#generate-code').click(function() {
-            $.ajax({
-                url: "{{ route('admin.promotions.generate-code') }}",
-                type: "GET",
-                success: function(response) {
-                    $('#code').val(response.code);
-                }
-            });
         });
     });
 </script>
