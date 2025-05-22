@@ -557,7 +557,7 @@
             class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center">
             <span class="uil uil-left-arrow-to-left fs-8"></span>
             <span class="uil uil-arrow-from-right fs-8"></span>
-            <span class="navbar-vertical-footer-text ms-2">Collapsed View</span>
+            <span class="navbar-vertical-footer-text ms-2">Chế độ thu gọn</span>
         </button>
     </div>
 </nav>
