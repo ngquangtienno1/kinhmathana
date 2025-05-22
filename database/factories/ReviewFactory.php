@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Review;
+use App\Models\User;
+use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +13,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ReviewFactory extends Factory
 {
+    protected $model = Review::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +23,11 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'product_id' => Product::factory(),
+            'order_id' => Order::factory(),
+            'rating' => $this->faker->numberBetween(1, 5),
+            'content' => $this->faker->paragraph(),
         ];
     }
 }
