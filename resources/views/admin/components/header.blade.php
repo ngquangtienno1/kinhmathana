@@ -5,7 +5,7 @@
                 data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse"
                 aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span
                         class="toggle-line"></span></span></button>
-            <a class="navbar-brand me-1 me-sm-3" href="index.html">
+            <a class="navbar-brand me-1 me-sm-3" href="{{ route('admin.home') }}">
                 <div class="d-flex align-items-center">
                     <div class="d-flex align-items-center logo-container" style="margin-left: 20px;">
                         <div class="logo-wrapper">

@@ -84,17 +84,6 @@
                                         </li>
                                     @endif
 
-                                    @if (canAccess('xem-danh-sach-thuong-hieu'))
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ request()->is('admin/brands*') ? 'active' : '' }}"
-                                                href="{{ route('admin.brands.index') }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Thương hiệu</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
-
                                     @if (canAccess('xem-mau-sac') || canAccess('xem-kich-thuoc'))
                                         <li class="nav-item">
                                             <div class="nav-item-wrapper">
