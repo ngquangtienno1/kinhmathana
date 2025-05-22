@@ -13,6 +13,11 @@
             <h2 class="mb-0">Quản lý đánh giá</h2>
         </div>
     </div>
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item"><a class="nav-link {{ !request('rating') ? 'active' : '' }}" aria-current="page"
+                href="{{ route('admin.reviews.index') }}"><span>Tất cả </span><span
+                    class="text-body-tertiary fw-semibold">({{ $reviews->count() }})</span></a></li>
+    </ul>
     <div id="reviews"
         data-list='{"valueNames":["userId","userName","productName","rating","content","createdAt"],"page":10,"pagination":true}'>
         <div class="mb-4">
@@ -24,15 +29,52 @@
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
                 </div>
+                <div class="scrollbar overflow-hidden-y">
+                    <div class="btn-group position-static" role="group">
+                        <div class="btn-group position-static text-nowrap">
+                            <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
+                                data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                aria-expanded="false" data-bs-reference="parent">
+                                Đánh giá
+                                <span class="fas fa-angle-down ms-2"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item {{ !request('rating') ? 'active' : '' }}"
+                                        href="{{ route('admin.reviews.index', array_merge(request()->except(['rating', 'page']), ['search' => request('search')])) }}">
+                                        Tất cả ({{ $reviews->count() }})
+                                    </a>
+                                </li>
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <li>
+                                        <a class="dropdown-item {{ request('rating') == $i ? 'active' : '' }}"
+                                            href="{{ route('admin.reviews.index', array_merge(request()->except(['rating', 'page']), ['rating' => $i, 'search' => request('search')])) }}">
+                                            <span class="text-warning me-1">
+                                                @for ($j = 1; $j <= 5; $j++)
+                                                    @if ($j <= $i)
+                                                        <i class="fas fa-star"></i>
+                                                    @else
+                                                        <i class="far fa-star"></i>
+                                                    @endif
+                                                @endfor
+                                            </span>
+                                            ({{ ${['zero', 'one', 'two', 'three', 'four', 'five'][$i] . 'StarCount'} }})
+                                        </a>
+                                    </li>
+                                @endfor
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <div class="ms-xxl-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
-                        <span class="fas fa-trash me-2"></span>Xóa
+                        <span class="fas fa-trash me-2"></span>Xóa tất cả
                     </button>
                 </div>
             </div>
         </div>
         <div
-            class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-white border-top border-bottom border-translucent position-relative top-1">
+            class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
             <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table fs-9 mb-0">
                     <thead>
@@ -48,7 +90,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     ID
                                     @if (request('sort') === 'id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -57,7 +100,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Người dùng
                                     @if (request('sort') === 'user_id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -66,7 +110,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Sản phẩm
                                     @if (request('sort') === 'product_id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -75,7 +120,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Đánh giá
                                     @if (request('sort') === 'rating')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -99,7 +145,9 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">Thao tác
+                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">
+                                Thao
+                                tác
                             </th>
                         </tr>
                     </thead>
@@ -174,9 +222,9 @@
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
                     </p>
-                    <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
+                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
-                    <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
+                    <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                 </div>
                 <div class="col-auto d-flex">
@@ -190,6 +238,60 @@
             </div>
         </div>
     </div>
+    <form id="bulk-delete-form" action="{{ route('admin.reviews.bulkDestroy') }}" method="POST"
+        style="display:none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="ids" id="bulk-delete-ids">
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bulkCheckbox = document.getElementById('checkbox-bulk-reviews-select');
+            const itemCheckboxes = document.querySelectorAll('.review-checkbox');
+            const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+            const bulkDeleteForm = document.getElementById('bulk-delete-form');
+            const bulkDeleteIds = document.getElementById('bulk-delete-ids');
+
+            function updateBulkDeleteBtn() {
+                let checkedCount = 0;
+                itemCheckboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) checkedCount++;
+                });
+                if (checkedCount > 0) {
+                    bulkDeleteBtn.style.display = '';
+                } else {
+                    bulkDeleteBtn.style.display = 'none';
+                }
+            }
+
+            if (bulkCheckbox) {
+                bulkCheckbox.addEventListener('change', function() {
+                    itemCheckboxes.forEach(function(checkbox) {
+                        checkbox.checked = bulkCheckbox.checked;
+                    });
+                    updateBulkDeleteBtn();
+                });
+            }
+            itemCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    updateBulkDeleteBtn();
+                });
+            });
+            updateBulkDeleteBtn(); // Initial state
+
+            // Xử lý submit xoá
+            bulkDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const checkedIds = Array.from(itemCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+                if (checkedIds.length === 0) return;
+                if (!confirm('Bạn có chắc chắn muốn xóa các đánh giá đã chọn?')) return;
+                bulkDeleteIds.value = checkedIds.join(',');
+                bulkDeleteForm.submit();
+            });
+        });
+    </script>
 </div>
 
 @endsection

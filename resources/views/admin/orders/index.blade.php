@@ -144,8 +144,8 @@
             class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
             <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table table-sm fs-9 mb-0">
-                    <thead>
-                        <tr>
+        <thead>
+            <tr>
                             <th class="white-space-nowrap fs-9 align-middle ps-0" style="width:26px;">
                                 <div class="form-check mb-0 fs-8"><input class="form-check-input"
                                         id="checkbox-bulk-order-select" type="checkbox"
@@ -166,8 +166,8 @@
                             <th class="sort align-middle text-center px-3 white-space-nowrap" scope="col"
                                 data-sort="date" style="width:120px;">Ngày đặt hàng</th>
                             <th class="sort text-center align-middle px-3" scope="col" style="width:90px;"></th>
-                        </tr>
-                    </thead>
+            </tr>
+        </thead>
                     <tbody class="list" id="order-table-body">
                         @forelse ($orders as $order)
                             <tr>
@@ -278,15 +278,15 @@
                                             @endif
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
+                </td>
+            </tr>
+            @empty
+            <tr>
                                 <td colspan="9" class="text-center py-4">Không có đơn hàng nào</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
             </div>
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">

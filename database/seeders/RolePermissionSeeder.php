@@ -139,6 +139,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm FAQ', 'slug' => 'them-faq', 'description' => 'Cho phép thêm FAQ mới'],
             ['name' => 'Sửa FAQ', 'slug' => 'sua-faq', 'description' => 'Cho phép chỉnh sửa FAQ'],
             ['name' => 'Xóa FAQ', 'slug' => 'xoa-faq', 'description' => 'Cho phép xóa FAQ'],
+            ['name' => 'Xóa nhiều FAQ', 'slug' => 'xoa-nhieu-faq', 'description' => 'Cho phép xóa nhiều FAQ cùng lúc'],
             ['name' => 'Khôi phục FAQ', 'slug' => 'khoi-phuc-faq', 'description' => 'Cho phép khôi phục FAQ đã xóa'],
             ['name' => 'Xóa vĩnh viễn FAQ', 'slug' => 'xoa-vinh-vien-faq', 'description' => 'Cho phép xóa vĩnh viễn FAQ'],
             ['name' => 'Sắp xếp FAQ', 'slug' => 'sap-xep-faq', 'description' => 'Cho phép sắp xếp thứ tự FAQ'],
@@ -160,6 +161,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm khuyến mãi', 'slug' => 'them-khuyen-mai', 'description' => 'Cho phép thêm khuyến mãi mới'],
             ['name' => 'Sửa khuyến mãi', 'slug' => 'sua-khuyen-mai', 'description' => 'Cho phép chỉnh sửa khuyến mãi'],
             ['name' => 'Xóa khuyến mãi', 'slug' => 'xoa-khuyen-mai', 'description' => 'Cho phép xóa khuyến mãi'],
+            ['name' => 'Xóa nhiều khuyến mãi', 'slug' => 'xoa-nhieu-khuyen-mai', 'description' => 'Cho phép xóa nhiều khuyến mãi cùng lúc'],
             ['name' => 'Khôi phục khuyến mãi', 'slug' => 'khoi-phuc-khuyen-mai', 'description' => 'Cho phép khôi phục khuyến mãi đã xóa'],
             ['name' => 'Xóa vĩnh viễn khuyến mãi', 'slug' => 'xoa-vinh-vien-khuyen-mai', 'description' => 'Cho phép xóa vĩnh viễn khuyến mãi'],
             ['name' => 'Xem thùng rác khuyến mãi', 'slug' => 'xem-thung-rac-khuyen-mai', 'description' => 'Cho phép xem thùng rác khuyến mãi'],
@@ -209,6 +211,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm thương hiệu', 'slug' => 'them-thuong-hieu', 'description' => 'Cho phép thêm thương hiệu mới'],
             ['name' => 'Sửa thương hiệu', 'slug' => 'sua-thuong-hieu', 'description' => 'Cho phép chỉnh sửa thương hiệu'],
             ['name' => 'Xóa thương hiệu', 'slug' => 'xoa-thuong-hieu', 'description' => 'Cho phép xóa thương hiệu'],
+            ['name' => 'Xóa nhiều thương hiệu', 'slug' => 'xoa-nhieu-thuong-hieu', 'description' => 'Cho phép xóa nhiều thương hiệu cùng lúc'],
             ['name' => 'Khôi phục thương hiệu', 'slug' => 'khoi-phuc-thuong-hieu', 'description' => 'Cho phép khôi phục thương hiệu đã xóa'],
             ['name' => 'Xóa vĩnh viễn thương hiệu', 'slug' => 'xoa-vinh-vien-thuong-hieu', 'description' => 'Cho phép xóa vĩnh viễn thương hiệu'],
             ['name' => 'Xem thùng rác thương hiệu', 'slug' => 'xem-thung-rac-thuong-hieu', 'description' => 'Cho phép xem thùng rác thương hiệu'],
@@ -292,6 +295,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm tin tức', 'slug' => 'them-news', 'description' => 'Cho phép thêm tin tức mới'],
             ['name' => 'Sửa tin tức', 'slug' => 'sua-news', 'description' => 'Cho phép chỉnh sửa tin tức'],
             ['name' => 'Xóa tin tức', 'slug' => 'xoa-news', 'description' => 'Cho phép xóa tin tức'],
+            ['name' => 'Xóa nhiều tin tức', 'slug' => 'xoa-nhieu-news', 'description' => 'Cho phép xóa nhiều tin tức cùng lúc'],
             ['name' => 'Khôi phục tin tức', 'slug' => 'khoi-phuc-news', 'description' => 'Cho phép khôi phục tin tức đã xóa'],
             ['name' => 'Xóa vĩnh viễn tin tức', 'slug' => 'xoa-vinh-vien-news', 'description' => 'Cho phép xóa vĩnh viễn tin tức'],
             ['name' => 'Xem thùng rác tin tức', 'slug' => 'xem-thung-rac-news', 'description' => 'Cho phép xem thùng rác tin tức'],
@@ -301,6 +305,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm lý do huỷ đơn', 'slug' => 'them-ly-do-huy-don', 'description' => 'Cho phép thêm lý do huỷ đơn'],
             ['name' => 'Sửa lý do huỷ đơn', 'slug' => 'sua-ly-do-huy-don', 'description' => 'Cho phép chỉnh sửa lý do huỷ đơn'],
             ['name' => 'Xóa lý do huỷ đơn', 'slug' => 'xoa-ly-do-huy-don', 'description' => 'Cho phép xóa lý do huỷ đơn'],
+            ['name' => 'Xóa nhiều lý do huỷ đơn', 'slug' => 'xoa-nhieu-ly-do-huy-don', 'description' => 'Cho phép xóa nhiều lý do huỷ đơn cùng lúc'],
             ['name' => 'Khôi phục lý do huỷ đơn', 'slug' => 'khoi-phuc-ly-do-huy-don', 'description' => 'Cho phép khôi phục lý do huỷ đơn đã xóa'],
             ['name' => 'Xóa vĩnh viễn lý do huỷ đơn', 'slug' => 'xoa-vinh-vien-ly-do-huy-don', 'description' => 'Cho phép xóa vĩnh viễn lý do huỷ đơn'],
             ['name' => 'Xem thùng rác lý do huỷ đơn', 'slug' => 'xem-thung-rac-ly-do-huy-don', 'description' => 'Cho phép xem thùng rác tin tức'],
@@ -308,6 +313,7 @@ class RolePermissionSeeder extends Seeder
             //Quản lý đánh giá
             ['name' => 'Xem danh sách đánh giá', 'slug' => 'xem-danh-sach-danh-gia', 'description' => 'Cho phép xem danh sách đánh giá'],
             ['name' => 'Xóa đánh giá', 'slug' => 'xoa-danh-gia', 'description' => 'Cho phép xóa đánh giá'],
+            ['name' => 'Xóa nhiều đánh giá', 'slug' => 'xoa-nhieu-danh-gia', 'description' => 'Cho phép xóa nhiều đánh giá cùng lúc'],
 
             // Quản lý dashboard
             ['name' => 'Xem dashboard', 'slug' => 'xem-dashboard', 'description' => 'Cho phép xem trang dashboard'],

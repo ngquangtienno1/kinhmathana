@@ -39,21 +39,26 @@ class ReviewController extends Controller
 
     public function index(Request $request)
     {
-        $query = Review::with(['user', 'product']);
+        $query = Review::query();
 
-        // Tìm kiếm
+        // Tìm kiếm theo nội dung
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('content', 'like', "%{$search}%")
+                $q->whereRaw('LOWER(content) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('user', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%'])
+                            ->orWhereRaw('LOWER(email) LIKE ?', ['%' . strtolower($search) . '%']);
                     })
                     ->orWhereHas('product', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%");
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
             });
+        }
+
+        // Filter by rating
+        if ($request->filled('rating')) {
+            $query->where('rating', $request->rating);
         }
 
         $sort = $request->get('sort', 'id');
@@ -62,7 +67,14 @@ class ReviewController extends Controller
 
         $reviews = $query->get();
 
-        return view('admin.reviews.index', compact('reviews'));
+        // Count reviews by rating
+        $oneStarCount = Review::where('rating', 1)->count();
+        $twoStarCount = Review::where('rating', 2)->count();
+        $threeStarCount = Review::where('rating', 3)->count();
+        $fourStarCount = Review::where('rating', 4)->count();
+        $fiveStarCount = Review::where('rating', 5)->count();
+
+        return view('admin.reviews.index', compact('reviews', 'oneStarCount', 'twoStarCount', 'threeStarCount', 'fourStarCount', 'fiveStarCount'));
     }
 
     public function show($id)
@@ -94,5 +106,22 @@ class ReviewController extends Controller
         );
 
         return response()->json(['can_review' => $canReview]);
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một đánh giá để xóa.');
+        }
+        try {
+            Review::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.reviews.index')->with('success', 'Đã xóa mềm các đánh giá đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
     }
 }

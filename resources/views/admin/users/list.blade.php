@@ -62,7 +62,8 @@
                                         <a class="d-flex align-items-center text-body text-hover-1000" href="#!">
                                             <div class="avatar avatar-m">
                                                 <img class="rounded-circle"
-                                                    src="{{ asset('assets/img/team/default.webp') }}" alt="" />
+                                                    src="{{ $user->avatar ? asset($user->avatar) : asset('v1/assets/img/blog/blog-1.png') }}"
+                                                    alt="" />
                                             </div>
                                             <h6 class="mb-0 ms-3 fw-semibold">{{ $user->name }}</h6>
                                         </a>

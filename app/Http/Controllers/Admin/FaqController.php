@@ -159,4 +159,29 @@ class FaqController extends Controller
         $faq->update($validator->validated());
         return response()->json(['success' => true]);
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một FAQ để xóa.');
+        }
+        try {
+            foreach ($ids as $id) {
+                $faq = Faq::find($id);
+                if ($faq) {
+                    if ($faq->image) {
+                        \Storage::disk('public')->delete(str_replace('storage/', '', $faq->image));
+                    }
+                    $faq->delete();
+                }
+            }
+            return redirect()->route('admin.faqs.index')->with('success', 'Đã xóa mềm các FAQ đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
 }
