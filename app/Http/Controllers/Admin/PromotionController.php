@@ -52,7 +52,7 @@ class PromotionController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $promotions = $query->paginate(10);
+        $promotions = $query->get();
         $activeCount = Promotion::where('is_active', true)->count();
 
         return view('admin.promotions.index', compact('promotions', 'activeCount'));

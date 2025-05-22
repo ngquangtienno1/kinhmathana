@@ -66,6 +66,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:them-faq']);
         Route::post('/', [FaqController::class, 'store'])->name('faqs.store')
             ->middleware(['permission:them-faq']);
+        Route::delete('bulk-destroy', [FaqController::class, 'bulkDestroy'])->name('faqs.bulkDestroy');
         Route::get('/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit')
             ->middleware(['permission:sua-faq']);
         Route::put('/{faq}', [FaqController::class, 'update'])->name('faqs.update')
@@ -372,6 +373,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     // Reviews
     Route::prefix('reviews')->name('reviews.')->middleware(['permission:xem-danh-sach-danh-gia'])->group(function () {
         Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::delete('bulk-destroy', [ReviewController::class, 'bulkDestroy'])->name('bulkDestroy');
         Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy')->middleware(['permission:xoa-danh-gia']);
     });

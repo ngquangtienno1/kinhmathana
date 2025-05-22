@@ -95,4 +95,21 @@ class ReviewController extends Controller
 
         return response()->json(['can_review' => $canReview]);
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một đánh giá để xóa.');
+        }
+        try {
+            Review::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.reviews.index')->with('success', 'Đã xóa mềm các đánh giá đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
 }
