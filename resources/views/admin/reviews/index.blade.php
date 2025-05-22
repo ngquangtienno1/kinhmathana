@@ -13,6 +13,11 @@
             <h2 class="mb-0">Quản lý đánh giá</h2>
         </div>
     </div>
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item"><a class="nav-link {{ !request('rating') ? 'active' : '' }}" aria-current="page"
+                href="{{ route('admin.reviews.index') }}"><span>Tất cả </span><span
+                    class="text-body-tertiary fw-semibold">({{ $reviews->count() }})</span></a></li>
+    </ul>
     <div id="reviews"
         data-list='{"valueNames":["userId","userName","productName","rating","content","createdAt"],"page":10,"pagination":true}'>
         <div class="mb-4">
@@ -23,6 +28,43 @@
                             placeholder="Tìm kiếm đánh giá" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
+                </div>
+                <div class="scrollbar overflow-hidden-y">
+                    <div class="btn-group position-static" role="group">
+                        <div class="btn-group position-static text-nowrap">
+                            <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
+                                data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                aria-expanded="false" data-bs-reference="parent">
+                                Đánh giá
+                                <span class="fas fa-angle-down ms-2"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item {{ !request('rating') ? 'active' : '' }}"
+                                        href="{{ route('admin.reviews.index', array_merge(request()->except(['rating', 'page']), ['search' => request('search')])) }}">
+                                        Tất cả ({{ $reviews->count() }})
+                                    </a>
+                                </li>
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <li>
+                                        <a class="dropdown-item {{ request('rating') == $i ? 'active' : '' }}"
+                                            href="{{ route('admin.reviews.index', array_merge(request()->except(['rating', 'page']), ['rating' => $i, 'search' => request('search')])) }}">
+                                            <span class="text-warning me-1">
+                                                @for ($j = 1; $j <= 5; $j++)
+                                                    @if ($j <= $i)
+                                                        <i class="fas fa-star"></i>
+                                                    @else
+                                                        <i class="far fa-star"></i>
+                                                    @endif
+                                                @endfor
+                                            </span>
+                                            ({{ ${['zero', 'one', 'two', 'three', 'four', 'five'][$i] . 'StarCount'} }})
+                                        </a>
+                                    </li>
+                                @endfor
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="ms-xxl-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
@@ -48,7 +90,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     ID
                                     @if (request('sort') === 'id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -57,7 +100,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Người dùng
                                     @if (request('sort') === 'user_id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -66,7 +110,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Sản phẩm
                                     @if (request('sort') === 'product_id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -75,7 +120,8 @@
                                     class="text-body" style="text-decoration:none;">
                                     Đánh giá
                                     @if (request('sort') === 'rating')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -99,7 +145,9 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">Thao tác
+                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">
+                                Thao
+                                tác
                             </th>
                         </tr>
                     </thead>

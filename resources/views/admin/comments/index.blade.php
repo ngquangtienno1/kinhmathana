@@ -14,29 +14,7 @@
             <h2 class="mb-0">Quản lý bình luận</h2>
         </div>
     </div>
-    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
-        <li class="nav-item">
-            <a class="nav-link {{ is_null(request('status')) ? 'active' : '' }}"
-                href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => null])) }}">
-                <span>Tất cả </span>
-                <span class="text-body-tertiary fw-semibold">({{ $comments->count() }})</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request('status') === 'active' ? 'active' : '' }}"
-                href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'active'])) }}">
-                <span>Đang hoạt động </span>
-                <span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request('status') === 'trashed' ? 'active' : '' }}"
-                href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'trashed'])) }}">
-                <span>Thùng rác </span>
-                <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>
-            </a>
-        </li>
-    </ul>
+
     <div id="comments"
         data-list='{"valueNames":["userId","userName","entityType","entityId","content","status","createdAt"],"page":10,"pagination":true}'>
         <div class="mb-4">
@@ -47,6 +25,57 @@
                             placeholder="Tìm kiếm bình luận" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
+                </div>
+                {{-- Dropdown lọc theo trạng thái --}}
+                <div class="scrollbar overflow-hidden-y">
+                    <div class="btn-group position-static" role="group">
+                        <div class="btn-group position-static text-nowrap">
+                            <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
+                                data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                aria-expanded="false" data-bs-reference="parent">
+                                Trạng thái
+                                <span class="fas fa-angle-down ms-2"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item {{ !request('status') ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['search' => request('search')])) }}">
+                                        Tất cả ({{ $totalCount }})
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request('status') === 'đã duyệt' ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'đã duyệt', 'search' => request('search')])) }}">
+                                        Đã duyệt ({{ $approvedCount }})
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request('status') === 'chờ duyệt' ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'chờ duyệt', 'search' => request('search')])) }}">
+                                        Chờ duyệt ({{ $pendingCount }})
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request('status') === 'spam' ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'spam', 'search' => request('search')])) }}">
+                                        Spam ({{ $spamCount }})
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request('status') === 'chặn' ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'chặn', 'search' => request('search')])) }}">
+                                        Bị chặn ({{ $blockedCount }})
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request('status') === 'trashed' ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'trashed', 'search' => request('search')])) }}">
+                                        Thùng rác ({{ $deletedCount }})
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="ms-xxl-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">

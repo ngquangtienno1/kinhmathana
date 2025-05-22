@@ -54,8 +54,11 @@ class PromotionController extends Controller
 
         $promotions = $query->get();
         $activeCount = Promotion::where('is_active', true)->count();
+        $inactiveCount = Promotion::where('is_active', false)->count();
+        $percentageCount = Promotion::where('discount_type', 'percentage')->count();
+        $fixedCount = Promotion::where('discount_type', 'fixed')->count();
 
-        return view('admin.promotions.index', compact('promotions', 'activeCount'));
+        return view('admin.promotions.index', compact('promotions', 'activeCount', 'inactiveCount', 'percentageCount', 'fixedCount'));
     }
 
     /**

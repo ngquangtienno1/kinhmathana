@@ -16,6 +16,27 @@
                 <h2 class="mb-0">Danh sách khuyến mãi</h2>
             </div>
         </div>
+        <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+            <li class="nav-item"><a class="nav-link {{ !request('status') && !request('discount_type') ? 'active' : '' }}"
+                    aria-current="page" href="{{ route('admin.promotions.index') }}"><span>Tất cả </span><span
+                        class="text-body-tertiary fw-semibold">({{ $promotions->count() }})</span></a></li>
+            <li class="nav-item"><a class="nav-link {{ request('status') === 'active' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
+                        class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link {{ request('status') === 'inactive' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['status' => 'inactive']) }}"><span>Không hoạt động
+                    </span><span class="text-body-tertiary fw-semibold">({{ $inactiveCount }})</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link {{ request('discount_type') === 'percentage' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['discount_type' => 'percentage']) }}"><span>Phần trăm
+                    </span><span class="text-body-tertiary fw-semibold">({{ $percentageCount }})</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link {{ request('discount_type') === 'fixed' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['discount_type' => 'fixed']) }}"><span>Số tiền </span><span
+                        class="text-body-tertiary fw-semibold">({{ $fixedCount }})</span></a>
+            </li>
+        </ul>
         <div id="promotions"
             data-list='{"valueNames":["name","code","discount","status","time","usage"],"page":10,"pagination":true}'>
             <div class="mb-4">
@@ -119,7 +140,8 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:350px;">
+                                <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                    style="width:350px;">
                                     <a href="{{ route('admin.promotions.index', ['sort' => 'name', 'direction' => request('sort') === 'name' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                         class="text-body" style="text-decoration:none;">
                                         TÊN KHUYẾN MÃI
