@@ -123,7 +123,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->name('shipping.providers.status')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
 
-        // Shipping fees routes
+        // Shipping fees routess
         Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])
             ->name('shipping.fees');
         Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])

@@ -4,10 +4,10 @@
             <ul class="navbar-nav flex-column" id="navbarVerticalNav">
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link label-1" href="#">
+                        <a class="nav-link label-1" href="{{ route('admin.home') }}">
                             <div class="d-flex align-items-center">
                                 <span class="nav-link-icon"><span data-feather="home"></span></span>
-                                <span class="nav-link-text">Dashboard</span>
+                                <span class="nav-link-text">Trang chủ</span>
                             </div>
                         </a>
                     </div>
