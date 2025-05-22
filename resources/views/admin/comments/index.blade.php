@@ -93,31 +93,39 @@
                 </div>
             </div>
         </div>
-        <div class="mb-3 d-flex gap-2">
+        <div class="mb-3 d-flex flex-wrap gap-2">
             <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
                 <li class="nav-item">
-                    <a class="nav-link {{ is_null(request('status')) ? 'active' : '' }}"
-                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => null])) }}">
-                        <span>Tất cả </span>
-                        <span class="text-body-tertiary fw-semibold">({{ $comments->total() }})</span>
+                    <a class="nav-link {{ request('status') === 'all' ? 'active' : '' }}"
+                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'all'])) }}">
+                        Tất cả
+                        <span class="text-body-tertiary fw-semibold">({{ $activeCount + $hiddenCount }})</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request('status') === 'active' ? 'active' : '' }}"
+                    <a class="nav-link {{ request('status') === 'active' || is_null(request('status')) ? 'active' : '' }}"
                         href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'active'])) }}">
-                        <span>Đang hoạt động </span>
+                        Đang hiển thị
                         <span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request('status') === 'hidden' ? 'active' : '' }}"
+                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'hidden'])) }}">
+                        Đã ẩn <span class="text-body-tertiary fw-semibold">({{ $hiddenCount }})</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request('status') === 'trashed' ? 'active' : '' }}"
                         href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'trashed'])) }}">
-                        <span>Thùng rác </span>
+                        Thùng rác
                         <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>
                     </a>
                 </li>
+
             </ul>
         </div>
+
 
         <div class="table-responsive scrollbar">
             <table class="table fs-9 mb-0 border-top border-translucent">
@@ -144,27 +152,13 @@
                             <td>{{ $comment->entity_id }}</td>
                             <td>{{ $comment->content }}</td>
                             <td>
-                                @switch($comment->status)
-                                    @case('đã duyệt')
-                                        <span class="badge bg-success">Đã duyệt</span>
-                                    @break
-
-                                    @case('chờ duyệt')
-                                        <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                                    @break
-
-                                    @case('spam')
-                                        <span class="badge bg-danger">Spam</span>
-                                    @break
-
-                                    @case('chặn')
-                                        <span class="badge bg-dark">Bị chặn</span>
-                                    @break
-
-                                    @default
-                                        <span class="badge bg-secondary">Không rõ</span>
-                                @endswitch
+                                @if ($comment->is_hidden)
+                                    <span class="badge bg-secondary">Đã ẩn</span>
+                                @else
+                                    <span class="badge bg-success">Hiển thị</span>
+                                @endif
                             </td>
+
 
                             <td>{{ $comment->created_at->format('d/m/Y H:i') }}</td>
                             <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
@@ -176,32 +170,51 @@
                                         <span class="fas fa-ellipsis-h fs-10"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
-                                        <a class="dropdown-item" href="">Xem</a>
-                                        <a class="dropdown-item" href="">Sửa</a>
-                                        <div class="dropdown-divider"></div>
-                                        <form action="" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa slider này?')">Xóa</button>
-                                        </form>
+                                        @if ($comment->trashed())
+                                            <form action="{{ route('admin.comments.restore', $comment->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="dropdown-item">Khôi phục</button>
+                                            </form>
+                                            <form action="{{ route('admin.comments.forceDelete', $comment->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                    onclick="return confirm('Xóa vĩnh viễn bình luận này?')">Xóa vĩnh
+                                                    viễn</button>
+                                            </form>
+                                        @else
+                                            <a class="dropdown-item" href="">Xem</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('admin.comments.edit', $comment->id) }}">Sửa</a>
+                                            <div class="dropdown-divider"></div>
+                                            <form action="{{ route('admin.comments.destroy', $comment->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                    onclick="return confirm('Đưa vào thùng rác?')">Xóa</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center">Không có bình luận nào.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center">Không có bình luận nào.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-            <div class="mt-3">
-                {{ $comments->links('pagination::bootstrap-5') }}
-            </div>
+        <div class="mt-3">
+            {{ $comments->links('pagination::bootstrap-5') }}
         </div>
     </div>
+</div>
 
 @endsection

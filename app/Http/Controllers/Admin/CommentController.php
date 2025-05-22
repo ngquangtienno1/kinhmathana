@@ -12,28 +12,29 @@ class CommentController extends Controller
 {
     public function index(Request $request)
     {
+        $status = $request->query('status');
         $query = Comment::query()->with('user');
 
-        // Xử lý trạng thái "đã xóa mềm" (trashed hoặc active)
-        $status = $request->query('status');
-
+        // Xử lý các trạng thái đặc biệt
         if ($status === 'trashed') {
             $query = Comment::onlyTrashed()->with('user');
         } elseif ($status === 'active') {
-            $query = Comment::whereNull('deleted_at')->with('user');
+            $query = Comment::whereNull('deleted_at')->where('is_hidden', false)->with('user');
+        } elseif ($status === 'hidden') {
+            $query = Comment::whereNull('deleted_at')->where('is_hidden', true)->with('user');
         } elseif ($status && $status !== 'all') {
-            // Các trạng thái status thực trong DB: "chờ duyệt", "đã duyệt", "spam", "chặn"
+            // Các trạng thái lưu trong cột `status`
             $query = Comment::withTrashed()->with('user')->where('status', $status);
         } else {
-            // Mặc định: tất cả (kể cả đã xóa mềm)
-            $query = Comment::withTrashed()->with('user');
+            $query = Comment::whereNull('deleted_at')->with('user');
         }
 
-        // Các filter theo entity
+        // Filter theo entity_type
         if ($request->filled('entity_type')) {
             $query->where('entity_type', $request->entity_type);
         }
 
+        // Filter theo entity_id (tùy loại)
         if ($request->entity_type === 'news' && $request->filled('news_id')) {
             $query->where('entity_id', $request->news_id);
         }
@@ -42,7 +43,7 @@ class CommentController extends Controller
             $query->where('entity_id', $request->product_id);
         }
 
-        // Ngày tạo
+        // Lọc theo ngày tạo
         if ($request->filled('from_date')) {
             $query->whereDate('created_at', '>=', $request->from_date);
         }
@@ -51,7 +52,7 @@ class CommentController extends Controller
             $query->whereDate('created_at', '<=', $request->to_date);
         }
 
-        // Tìm kiếm
+        // Tìm kiếm theo nội dung, entity_id hoặc thông tin người dùng
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -64,9 +65,10 @@ class CommentController extends Controller
             });
         }
 
+        // Phân trang
         $comments = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        // Lấy danh sách tin tức & sản phẩm nếu có lọc
+        // Lấy danh sách tin tức và sản phẩm (nếu lọc theo entity)
         $news = [];
         $products = [];
 
@@ -78,11 +80,12 @@ class CommentController extends Controller
             $products = Product::pluck('name', 'id');
         }
 
-        // Lấy danh sách các trạng thái hiện có trong DB (distinct)
-        $availableStatuses = Comment::select('status')->distinct()->pluck('status');
+        // Lấy các status khác nhau trong DB (trừ null)
+        $availableStatuses = Comment::select('status')->distinct()->whereNotNull('status')->pluck('status');
 
-        // Đếm số lượng bình luận đang hoạt động và đã xóa
-        $activeCount = Comment::whereNull('deleted_at')->count();
+        // Đếm số lượng đang hoạt động và đã xóa
+        $activeCount = Comment::whereNull('deleted_at')->where('is_hidden', 0)->count();
+        $hiddenCount = Comment::whereNull('deleted_at')->where('is_hidden', 1)->count();
         $deletedCount = Comment::onlyTrashed()->count();
 
         return view('admin.comments.index', compact(
@@ -92,6 +95,7 @@ class CommentController extends Controller
             'status',
             'availableStatuses',
             'activeCount',
+            'hiddenCount',
             'deletedCount'
         ));
     }
@@ -105,15 +109,36 @@ class CommentController extends Controller
 
     public function show(string $id) {}
 
-    public function edit(Comment $comment) {}
-
-    public function update(Request $request, Comment $comment) {}
-
-    public function destroy($id)
+    public function edit($id)
     {
         $comment = Comment::findOrFail($id);
-        $comment->delete(); // XÓA MỀM
-        return redirect()->back()->with('success', 'Xóa bình luận thành công.');
+        return view('admin.comments.edit', compact('comment'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        $request->validate([
+
+            'is_hidden' => 'required|boolean',
+        ]);
+
+        $comment->is_hidden = $request->input('is_hidden', 0);
+        // cập nhật các trường khác nếu có
+
+        $comment->save();
+
+        return redirect()->route('admin.comments.index')->with('success', 'Cập nhật bình luận thành công!');
+    }
+
+
+    public function destroy(Comment $comment)
+    {
+
+        $comment->update(['is_hidden' => 1]);
+        $comment->delete();
+        return back()->with('success', 'Đã ẩn và xóa mềm bình luận.');
     }
 
     public function toggleVisibility($id, Request $request)
@@ -139,8 +164,11 @@ class CommentController extends Controller
     {
         $comment = Comment::onlyTrashed()->findOrFail($id);
         $comment->restore();
+        $comment->update(['is_hidden' => 0]);
 
-        return redirect()->route('admin.comments.index', ['status' => 'trashed'])->with('success', 'Khôi phục bình luận thành công!');
+        return redirect()
+            ->route('admin.comments.index', ['status' => 'trashed'])
+            ->with('success', 'Khôi phục bình luận thành công và đã hiển thị lại!');
     }
 
     public function forceDelete($id)
