@@ -168,4 +168,61 @@ class NewsController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn tin tức: ' . $e->getMessage());
         }
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một tin tức để xóa.');
+        }
+        try {
+            News::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.news.index')->with('success', 'Đã xóa mềm các tin tức đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một tin tức để khôi phục.');
+        }
+        try {
+            News::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->route('admin.news.bin')->with('success', 'Đã khôi phục các tin tức đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một tin tức để xóa vĩnh viễn.');
+        }
+        try {
+            $newsList = News::withTrashed()->whereIn('id', $ids)->get();
+            foreach ($newsList as $news) {
+                if ($news->image) {
+                    \Storage::disk('public')->delete($news->image);
+                }
+                $news->forceDelete();
+            }
+            return redirect()->route('admin.news.bin')->with('success', 'Đã xóa vĩnh viễn các tin tức đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
+        }
+    }
 }

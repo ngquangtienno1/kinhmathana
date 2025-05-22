@@ -4,10 +4,10 @@
             <ul class="navbar-nav flex-column" id="navbarVerticalNav">
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link label-1" href="#">
+                        <a class="nav-link label-1" href="{{ route('admin.home') }}">
                             <div class="d-flex align-items-center">
                                 <span class="nav-link-icon"><span data-feather="home"></span></span>
-                                <span class="nav-link-text">Dashboard</span>
+                                <span class="nav-link-text">Trang chủ</span>
                             </div>
                         </a>
                     </div>
@@ -234,6 +234,36 @@
                                         <a class="nav-link" href="{{ route('admin.reviews.index') }}">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Danh sách đánh giá</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
+                @if (canAccess('xem-danh-sach-khuyen-mai'))
+                    <!-- Khuyến mãi -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-promotions" role="button"
+                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-promotions">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="percent"></span></span>
+                                    <span class="nav-link-text">Khuyến mãi</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-promotions">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.promotions.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách khuyến mãi</span>
                                             </div>
                                         </a>
                                     </li>
@@ -527,7 +557,7 @@
             class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center">
             <span class="uil uil-left-arrow-to-left fs-8"></span>
             <span class="uil uil-arrow-from-right fs-8"></span>
-            <span class="navbar-vertical-footer-text ms-2">Collapsed View</span>
+            <span class="navbar-vertical-footer-text ms-2">Chế độ thu gọn</span>
         </button>
     </div>
 </nav>

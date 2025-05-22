@@ -131,4 +131,55 @@ class CancellationReasonController extends Controller
         return redirect()->route('admin.cancellation_reasons.bin')
             ->with('success', 'Lý do hủy đã được xóa vĩnh viễn.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một lý do hủy để xóa.');
+        }
+        try {
+            CancellationReason::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.cancellation_reasons.index')->with('success', 'Đã xóa mềm các lý do hủy đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một lý do hủy để khôi phục.');
+        }
+        try {
+            CancellationReason::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->route('admin.cancellation_reasons.bin')->with('success', 'Đã khôi phục các lý do hủy đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một lý do hủy để xóa vĩnh viễn.');
+        }
+        try {
+            CancellationReason::withTrashed()->whereIn('id', $ids)->forceDelete();
+            return redirect()->route('admin.cancellation_reasons.bin')->with('success', 'Đã xóa vĩnh viễn các lý do hủy đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
+        }
+    }
 }

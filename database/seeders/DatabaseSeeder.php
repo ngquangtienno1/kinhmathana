@@ -54,6 +54,9 @@ class DatabaseSeeder extends Seeder
             // 7. Seeder cho lý do huỷ
             CancellationReasonSeeder::class,
             ReviewSeeder::class, // Tạo đánh giá
+
+            // 8. Seeder cho khuyến mãi
+            PromotionSeeder::class, // Tạo khuyến mãi
         ]);
     }
 
@@ -77,6 +80,7 @@ class DatabaseSeeder extends Seeder
             'comments',
             'sliders',
             'faqs',
+            'promotions',
             // 'orders',
             // 'payments',
         ];

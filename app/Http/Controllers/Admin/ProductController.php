@@ -167,4 +167,55 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn sản phẩm.');
         }
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để xóa.');
+        }
+        try {
+            Product::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.products.list')->with('success', 'Đã xóa mềm các sản phẩm đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để khôi phục.');
+        }
+        try {
+            Product::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->route('admin.products.bin')->with('success', 'Đã khôi phục các sản phẩm đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để xóa vĩnh viễn.');
+        }
+        try {
+            Product::withTrashed()->whereIn('id', $ids)->forceDelete();
+            return redirect()->route('admin.products.bin')->with('success', 'Đã xóa vĩnh viễn các sản phẩm đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
+        }
+    }
 }

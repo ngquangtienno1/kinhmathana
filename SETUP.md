@@ -7,6 +7,7 @@ composer install
 composer dump-autoload
 composer require laravel/sanctum
 composer require laravel/socialite
+php artisan storage:link
 ```
 
 ## 2. Tạo file cấu hình môi trường
