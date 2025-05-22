@@ -12,96 +12,49 @@ class CommentController extends Controller
 {
     public function index(Request $request)
     {
-        $status = $request->query('status');
-        $query = Comment::query()->with('user');
+        $query = Comment::query();
 
-        // Xử lý các trạng thái đặc biệt
-        if ($status === 'trashed') {
-            $query = Comment::onlyTrashed()->with('user');
-        } elseif ($status === 'active') {
-            $query = Comment::whereNull('deleted_at')->where('is_hidden', false)->with('user');
-        } elseif ($status === 'hidden') {
-            $query = Comment::whereNull('deleted_at')->where('is_hidden', true)->with('user');
-        } elseif ($status && $status !== 'all') {
-            // Các trạng thái lưu trong cột `status`
-            $query = Comment::withTrashed()->with('user')->where('status', $status);
-        } else {
-            $query = Comment::whereNull('deleted_at')->with('user');
-        }
-
-        // Filter theo entity_type
-        if ($request->filled('entity_type')) {
-            $query->where('entity_type', $request->entity_type);
-        }
-
-        // Filter theo entity_id (tùy loại)
-        if ($request->entity_type === 'news' && $request->filled('news_id')) {
-            $query->where('entity_id', $request->news_id);
-        }
-
-        if ($request->entity_type === 'product' && $request->filled('product_id')) {
-            $query->where('entity_id', $request->product_id);
-        }
-
-        // Lọc theo ngày tạo
-        if ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->from_date);
-        }
-
-        if ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->to_date);
+        // Filter by status
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                // Assuming 'active' means 'đã duyệt' for now, based on previous context.
+                // We'll adjust the view to use specific statuses.
+                $query->where('status', 'đã duyệt');
+            } elseif ($request->status === 'trashed') {
+                $query->onlyTrashed();
+            } else {
+                // Filter by specific status
+                $query->where('status', $request->status);
+            }
         }
 
         // Tìm kiếm theo nội dung, entity_id hoặc thông tin người dùng
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('content', 'like', "%{$search}%")
-                    ->orWhere('entity_id', $search)
-                    ->orWhereHas('user', function ($q2) use ($search) {
-                        $q2->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
+                $q->whereRaw('LOWER(content) LIKE ?', ['%' . strtolower($search) . '%'])
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%'])
+                            ->orWhereRaw('LOWER(email) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
             });
         }
 
-        // Phân trang
-        $comments = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        $comments = $query->get();
 
-        // Lấy danh sách tin tức và sản phẩm (nếu lọc theo entity)
-        $news = [];
-        $products = [];
-
-        if ($request->entity_type === 'news') {
-            $news = News::pluck('title', 'id');
-        }
-
-        if ($request->entity_type === 'product') {
-            $products = Product::pluck('name', 'id');
-        }
-
-        // Lấy các status khác nhau trong DB (trừ null)
-        $availableStatuses = Comment::select('status')->distinct()->whereNotNull('status')->pluck('status');
-
-        // Đếm số lượng đang hoạt động và đã xóa
-        $activeCount = Comment::whereNull('deleted_at')->where('is_hidden', 0)->count();
-        $hiddenCount = Comment::whereNull('deleted_at')->where('is_hidden', 1)->count();
+        $totalCount = Comment::count();
+        $approvedCount = Comment::where('status', 'đã duyệt')->count();
+        $pendingCount = Comment::where('status', 'chờ duyệt')->count();
+        $spamCount = Comment::where('status', 'spam')->count();
+        $blockedCount = Comment::where('status', 'chặn')->count();
         $deletedCount = Comment::onlyTrashed()->count();
 
-        return view('admin.comments.index', compact(
-            'comments',
-            'news',
-            'products',
-            'status',
-            'availableStatuses',
-            'activeCount',
-            'hiddenCount',
-            'deletedCount'
-        ));
+        // Lấy danh sách bài viết và sản phẩm cho filter
+        $news = News::pluck('title', 'id');
+        $products = Product::pluck('name', 'id');
+
+        return view('admin.comments.index', compact('comments', 'totalCount', 'approvedCount', 'pendingCount', 'spamCount', 'blockedCount', 'deletedCount', 'news', 'products'));
     }
-
-
-
 
     public function create() {}
 
@@ -154,11 +107,6 @@ class CommentController extends Controller
 
         return back()->with('success', 'Cập nhật trạng thái bình luận thành công.');
     }
-
-
-
-
-
 
     public function restore($id)
     {

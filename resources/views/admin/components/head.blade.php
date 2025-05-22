@@ -11,7 +11,7 @@
     <!-- ===============================================-->
     <!--    Favicons-->
     <!-- ===============================================-->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ getLogoUrl() }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ getLogoUrl() }}" style="border-radius: 50%;">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ getLogoUrl() }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ getLogoUrl() }}">
 
@@ -40,22 +40,30 @@
     <link href="{{ asset('v1/assets/css/user.min.css') }}" type="text/css" rel="stylesheet" id="user-style-default">
     <script>
         var phoenixIsRTL = window.config.config.phoenixIsRTL;
-      if (phoenixIsRTL) {
-        var linkDefault = document.getElementById('style-default');
-        var userLinkDefault = document.getElementById('user-style-default');
-        linkDefault.setAttribute('disabled', true);
-        userLinkDefault.setAttribute('disabled', true);
-        document.querySelector('html').setAttribute('dir', 'rtl');
-      } else {
-        var linkRTL = document.getElementById('style-rtl');
-        var userLinkRTL = document.getElementById('user-style-rtl');
-        linkRTL.setAttribute('disabled', true);
-        userLinkRTL.setAttribute('disabled', true);
-      }
+        if (phoenixIsRTL) {
+            var linkDefault = document.getElementById('style-default');
+            var userLinkDefault = document.getElementById('user-style-default');
+            linkDefault.setAttribute('disabled', true);
+            userLinkDefault.setAttribute('disabled', true);
+            document.querySelector('html').setAttribute('dir', 'rtl');
+        } else {
+            var linkRTL = document.getElementById('style-rtl');
+            var userLinkRTL = document.getElementById('user-style-rtl');
+            linkRTL.setAttribute('disabled', true);
+            userLinkRTL.setAttribute('disabled', true);
+        }
     </script>
     <link href="{{ asset('v1/vendors/leaflet/leaflet.css') }}" rel="stylesheet">
     <link href="{{ asset('v1/vendors/leaflet.markercluster/MarkerCluster.css') }}" rel="stylesheet">
     <link href="{{ asset('v1/vendors/leaflet.markercluster/MarkerCluster.Default.css') }}" rel="stylesheet">
 
+    <style>
+        /* Add rounded corners to favicon */
+        link[rel="icon"],
+        link[rel="shortcut icon"],
+        link[rel="apple-touch-icon"] {
+            border-radius: 8px !important;
+        }
+    </style>
 
 </head>

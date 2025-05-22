@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
- 
+
 return new class extends Migration
 {
     /**
@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('comments', function (Blueprint $table) {
-            //
-              $table->enum('status', ['chờ duyệt', 'đã duyệt', 'spam', 'chặn'])->default('chờ duyệt')->after('content');
+        Schema::table('reviews', function (Blueprint $table) {
+            $table->foreignId('order_id')->after('product_id')->constrained('orders')->onDelete('cascade');
         });
     }
 
@@ -22,8 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('comments', function (Blueprint $table) {
-            //
+        Schema::table('reviews', function (Blueprint $table) {
+            $table->dropForeign(['order_id']);
+            $table->dropColumn('order_id');
         });
     }
-};
+}; 

@@ -35,7 +35,7 @@ class BrandController extends Controller
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
-        $brands = $query->paginate(10);
+        $brands = $query->get();
         $deletedCount = Brand::onlyTrashed()->count();
         $activeCount = Brand::where('is_active', true)->count();
 
@@ -176,6 +176,63 @@ class BrandController extends Controller
             return redirect()->route('admin.brands.bin')->with('error', 'Xóa vĩnh viễn thương hiệu thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn thương hiệu: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một thương hiệu để xóa.');
+        }
+        try {
+            Brand::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.brands.index')->with('success', 'Đã xóa mềm các thương hiệu đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một thương hiệu để khôi phục.');
+        }
+        try {
+            Brand::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->route('admin.brands.bin')->with('success', 'Đã khôi phục các thương hiệu đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một thương hiệu để xóa vĩnh viễn.');
+        }
+        try {
+            $brands = Brand::withTrashed()->whereIn('id', $ids)->get();
+            foreach ($brands as $brand) {
+                if ($brand->image) {
+                    \Storage::disk('public')->delete($brand->image);
+                }
+                $brand->forceDelete();
+            }
+            return redirect()->route('admin.brands.bin')->with('success', 'Đã xóa vĩnh viễn các thương hiệu đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }
 }

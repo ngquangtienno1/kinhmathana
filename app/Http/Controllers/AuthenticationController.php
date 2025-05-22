@@ -8,47 +8,103 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLoginRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
 
-class AuthenticationController extends Controller
+class AuthenticationController extends BaseController
 {
+    use AuthorizesRequests, ValidatesRequests;
+
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+
     public function login()
     {
         return view('admin.login.login');
     }
-    public function postLogin(Request $request)
+
+    public function postLogin(UserLoginRequest $request)
     {
-        // Check email trước
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return redirect()->back()->withErrors([
-                'email' => 'Email chưa được đăng ký',
-            ])->withInput();
-        }
+        try {
+            // Check email
+            $user = User::where('email', $request->email)
+                       ->with('role')
+                       ->first();
 
-        if (!Hash::check($request->password, $user->password)) {
-            return redirect()->back()->withErrors([
-                'password' => 'Mật khẩu không đúng',
-            ])->withInput();
-        }
+            if (!$user) {
+                Log::warning('Login attempt failed: Email not found', ['email' => $request->email]);
+                return redirect()->back()
+                    ->withErrors(['email' => 'Email chưa được đăng ký'])
+                    ->withInput();
+            }
 
-        // Đúng cả email và password -> login
-        Auth::login($user, $request->has('remember'));
+            // Check password
+            if (!Hash::check($request->password, $user->password)) {
+                Log::warning('Login attempt failed: Invalid password', ['email' => $request->email]);
+                return redirect()->back()
+                    ->withErrors(['password' => 'Mật khẩu không đúng'])
+                    ->withInput();
+            }
 
-        session()->put('user_id', Auth::id());
-        if (Auth::user()->role == 1) {
-            return redirect()->route('admin.listUser')->with('message', 'Đăng nhập thành công');
-        } else {
-            return redirect()->route('home')->with('message', 'Đăng nhập thành công');
+            // Check account status
+            if ($user->status_user !== 'active') {
+                Log::warning('Login attempt failed: Account not active', ['email' => $request->email]);
+                return redirect()->back()
+                    ->withErrors(['email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt'])
+                    ->withInput();
+            }
+
+            // Login successful
+            Auth::login($user, $request->has('remember'));
+            session()->put('user_id', Auth::id());
+
+            Log::info('User logged in successfully', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'role_id' => $user->role_id
+            ]);
+
+            // Redirect based on role_id
+            if (in_array($user->role_id, [1, 2])) { // 1 là admin, 2 là staff
+                return redirect()->route('admin.home')
+                    ->with('message', 'Đăng nhập thành công');
+            } else if ($user->role_id === 3) {
+                Auth::logout(); // Đăng xuất ngay lập tức
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Bạn không có quyền truy cập trang quản trị']);
+            } else {
+                Auth::logout(); // Đăng xuất ngay lập tức
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Tài khoản không hợp lệ']);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Login error', [
+                'email' => $request->email,
+                'error' => $e->getMessage()
+            ]);
+
+            return redirect()->back()
+                ->withErrors(['email' => 'Có lỗi xảy ra, vui lòng thử lại sau'])
+                ->withInput();
         }
     }
 
     public function logout()
     {
-        Auth::logout();
-        return redirect()->route('login')->with([
-            'message' => 'Dang xuat thanh cong'
-        ]);
+        if (Auth::check()) {
+            Log::info('User logged out', ['user_id' => Auth::id()]);
+            Auth::logout();
+            session()->forget('user_id');
+        }
+
+        return redirect()->route('login')
+            ->with('message', 'Đăng xuất thành công');
     }
 
     public function register()
@@ -76,7 +132,7 @@ class AuthenticationController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 2,
+            'role_id' => 3,
             'created_at' => Carbon::now(),
         ]);
 

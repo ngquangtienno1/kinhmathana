@@ -18,7 +18,7 @@
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
                 href="{{ route('admin.sliders.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $sliders->total() }})</span></a></li>
+                    class="text-body-tertiary fw-semibold">({{ $sliders->count() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
                 href="{{ route('admin.sliders.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                     class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
@@ -177,5 +177,60 @@
         </div>
     </div>
 </div>
+
+<form id="bulk-delete-form" action="{{ route('admin.sliders.bulkDestroy') }}" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+    <input type="hidden" name="ids" id="bulk-delete-ids">
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bulkCheckbox = document.getElementById('checkbox-bulk-sliders-select');
+        const itemCheckboxes = document.querySelectorAll('.slider-checkbox');
+        const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+        const bulkDeleteForm = document.getElementById('bulk-delete-form');
+        const bulkDeleteIds = document.getElementById('bulk-delete-ids');
+
+        function updateBulkDeleteBtn() {
+            let checkedCount = 0;
+            itemCheckboxes.forEach(function(checkbox) {
+                if (checkbox.checked) checkedCount++;
+            });
+            if (checkedCount > 0) {
+                bulkDeleteBtn.style.display = '';
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        if (bulkCheckbox) {
+            bulkCheckbox.addEventListener('change', function() {
+                itemCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = bulkCheckbox.checked;
+                });
+                updateBulkDeleteBtn();
+            });
+        }
+        itemCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateBulkDeleteBtn();
+            });
+        });
+        updateBulkDeleteBtn(); // Initial state
+
+        // Xử lý submit xoá mềm
+        bulkDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const checkedIds = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            if (checkedIds.length === 0) return;
+            if (!confirm('Bạn có chắc chắn muốn xóa mềm các slider đã chọn?')) return;
+            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteForm.submit();
+        });
+    });
+</script>
 
 @endsection
