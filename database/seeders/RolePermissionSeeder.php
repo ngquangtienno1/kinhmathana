@@ -74,6 +74,22 @@ class RolePermissionSeeder extends Seeder
     private function createPermissions(): void
     {
         $permissions = [
+
+            // Quản lý khách hàng
+            ['name' => 'Xem danh sách khách hàng', 'slug' => 'xem-danh-sach-khach-hang', 'description' => 'Cho phép xem danh sách khách hàng'],
+            ['name' => 'Xem chi tiết khách hàng', 'slug' => 'xem-chi-tiet-khach-hang', 'description' => 'Cho phép xem chi tiết khách hàng'],
+            ['name' => 'Cập nhật thông tin khách hàng', 'slug' => 'cap-nhat-thong-tin-khach-hang', 'description' => 'Cho phép cập nhật thông tin khách hàng'],
+            ['name' => 'Xóa khách hàng', 'slug' => 'xoa-khach-hang', 'description' => 'Cho phép xóa khách hàng'],
+
+            // Quản lý ticket
+            ['name' => 'Xem danh sách ticket', 'slug' => 'xem-ticket', 'description' => 'Cho phép xem danh sách ticket'],
+            ['name' => 'Sửa ticket', 'slug' => 'sua-ticket', 'description' => 'Cho phép chỉnh sửa ticket'],
+            ['name' => 'Xóa ticket', 'slug' => 'xoa-ticket', 'description' => 'Cho phép xóa ticket'],
+            ['name' => 'Khôi phục ticket', 'slug' => 'khoi-phuc-ticket', 'description' => 'Cho phép khôi phục ticket đã xóa'],
+            ['name' => 'Xóa vĩnh viễn ticket', 'slug' => 'xoa-vinh-vien-ticket', 'description' => 'Cho phép xóa vĩnh viễn ticket'],
+            ['name' => 'Xem thùng rác ticket', 'slug' => 'xem-thung-rac-ticket', 'description' => 'Cho phép xem thùng rác ticket'],
+            ['name' => 'Ẩn/Hiện ticket', 'slug' => 'an-hien-ticket', 'description' => 'Cho phép ẩn/hiện ticket'],
+
             // Quản lý người dùng
             ['name' => 'Xem danh sách người dùng', 'slug' => 'xem-danh-sach-nguoi-dung', 'description' => 'Cho phép xem danh sách người dùng'],
             ['name' => 'Thêm người dùng', 'slug' => 'them-nguoi-dung', 'description' => 'Cho phép thêm người dùng mới'],

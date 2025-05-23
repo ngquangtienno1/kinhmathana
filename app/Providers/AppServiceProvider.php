@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
+    
     {
         // Lấy từ DB hoặc cache qua helper
         Config::set('mail.mailers.smtp.host', getSetting('smtp_host'));
