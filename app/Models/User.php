@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Otp;
 use App\Models\Role;
 use App\Models\Favorite;
+use App\Models\Customer;
+use App\Models\Order;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
@@ -91,5 +93,14 @@ class User extends Authenticatable
         }
 
         return $this->role->permissions->whereIn('slug', $permissions)->count() === count($permissions);
+    }
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

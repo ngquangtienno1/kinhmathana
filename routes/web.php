@@ -28,9 +28,13 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
+use App\Http\Controllers\Admin\CustomerController;
 
 // Redirect login
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('admin.home');
+    }
     return redirect()->route('login');
 });
 
@@ -441,5 +445,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy'); // DELETE /admin/support/{support} -> destroy
         Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm'); // /admin/support/{support}/email -> showEmailForm
         Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail'); // POST /admin/support/{support}/send-email -> sendEmail
+    });
+
+    // Customer Management
+    Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
+        Route::get('/', [CustomerController::class, 'index'])->name('index');
+        Route::get('/{customer}', [CustomerController::class, 'show'])->name('show');
+        Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-thong-tin-khach-hang']);
+        Route::patch('/{customer}/type', [CustomerController::class, 'updateType'])->name('update-type')
+            ->middleware(['permission:sua-loai-khach-hang']);
     });
 });
