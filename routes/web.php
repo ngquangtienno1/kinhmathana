@@ -429,32 +429,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::middleware(['auth'])->group(function () {
         Route::get('comments/scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('comments.scan_badwords');
     });
+
+    // Quản lý ticket
     Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {
+        // Danh sách và xem chi tiết
         Route::get('/', [TicketController::class, 'index'])->name('index');
         Route::get('/{id}', [TicketController::class, 'show'])->name('show');
-
-        Route::get('/{id}/edit', [TicketController::class, 'edit'])
-            ->name('edit')->middleware('permission:sua-ticket');
-
-        Route::put('/{id}', [TicketController::class, 'update'])
-            ->name('update')->middleware('permission:sua-ticket');
-
-        Route::delete('/{id}', [TicketController::class, 'destroy'])
-            ->name('destroy')->middleware('permission:xoa-ticket');
-
         Route::get('/trashed', [TicketController::class, 'trashed'])
             ->name('trashed')->middleware('permission:xem-thung-rac-ticket');
-
+        Route::get('/{id}/edit', [TicketController::class, 'edit'])
+            ->name('edit')->middleware('permission:sua-ticket');
+        Route::put('/{id}', [TicketController::class, 'update'])
+            ->name('update')->middleware('permission:sua-ticket');
+        Route::delete('/{id}', [TicketController::class, 'destroy'])
+            ->name('destroy')->middleware('permission:xoa-ticket');
         Route::patch('/{id}/restore', [TicketController::class, 'restore'])
             ->name('restore')->middleware('permission:khoi-phuc-ticket');
-
         Route::delete('/{id}/force-delete', [TicketController::class, 'forceDelete'])
             ->name('forceDelete')->middleware('permission:xoa-vinh-vien-ticket');
-
         Route::patch('/{id}/toggle-visibility', [TicketController::class, 'toggleVisibility'])
             ->name('toggleVisibility')->middleware('permission:an-hien-ticket');
-       Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
-
+        Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
         Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
     });
 

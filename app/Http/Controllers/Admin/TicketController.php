@@ -87,11 +87,11 @@ class TicketController extends Controller
     {
         $ticket = Ticket::findOrFail($id);
 
-       $request->validate([
-    'status' => 'required|in:mới,đang xử lý,chờ khách,đã đóng',
-    'priority' => 'required|in:thấp,trung bình,cao,khẩn cấp',
-    'assigned_to' => 'nullable|exists:users,id',
-]);
+        $request->validate([
+            'status' => 'required|in:mới,đang xử lý,chờ khách,đã đóng',
+            'priority' => 'required|in:thấp,trung bình,cao,khẩn cấp',
+            'assigned_to' => 'nullable|exists:users,id',
+        ]);
 
         $ticket->update($request->only('status', 'priority', 'assigned_to'));
 
@@ -105,7 +105,11 @@ class TicketController extends Controller
         return redirect()->route('admin.tickets.index')->with('success', 'Ticket đã được đưa vào thùng rác');
     }
 
-
+    public function trashed()
+    {
+        $tickets = Ticket::onlyTrashed()->paginate(10);
+        return view('admin.tickets.trashed', compact('tickets'));
+    }
 
     public function restore($id)
     {
