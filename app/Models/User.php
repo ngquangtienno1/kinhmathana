@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Otp;
 use App\Models\Role;
 use App\Models\Favorite;
+use App\Models\Customer;
+use App\Models\Order;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
@@ -98,5 +100,15 @@ class User extends Authenticatable
     public function isBanned()
     {
         return $this->banned_until && $this->banned_until->isFuture();
+    }
+  
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

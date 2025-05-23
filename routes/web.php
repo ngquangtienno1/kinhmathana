@@ -29,9 +29,13 @@ use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Admin\CustomerController;
 
 // Redirect login
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('admin.home');
+    }
     return redirect()->route('login');
 });
 
@@ -452,5 +456,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
        Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
 
         Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
+    });
+
+    // Customer Management
+    Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
+        Route::get('/', [CustomerController::class, 'index'])->name('index');
+        Route::get('/{customer}', [CustomerController::class, 'show'])->name('show');
+        Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-thong-tin-khach-hang']);
+        Route::patch('/{customer}/type', [CustomerController::class, 'updateType'])->name('update-type')
+            ->middleware(['permission:sua-loai-khach-hang']);
     });
 });

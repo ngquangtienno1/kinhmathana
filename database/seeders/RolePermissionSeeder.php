@@ -74,6 +74,14 @@ class RolePermissionSeeder extends Seeder
     private function createPermissions(): void
     {
         $permissions = [
+
+            // Quản lý khách hàng
+            ['name' => 'Xem danh sách khách hàng', 'slug' => 'xem-danh-sach-khach-hang', 'description' => 'Cho phép xem danh sách khách hàng'],
+            ['name' => 'Xem chi tiết khách hàng', 'slug' => 'xem-chi-tiet-khach-hang', 'description' => 'Cho phép xem chi tiết khách hàng'],
+            ['name' => 'Cập nhật thông tin khách hàng', 'slug' => 'cap-nhat-thong-tin-khach-hang', 'description' => 'Cho phép cập nhật thông tin khách hàng'],
+            ['name' => 'Xóa khách hàng', 'slug' => 'xoa-khach-hang', 'description' => 'Cho phép xóa khách hàng'],
+
+
             // Quản lý người dùng
             ['name' => 'Xem danh sách người dùng', 'slug' => 'xem-danh-sach-nguoi-dung', 'description' => 'Cho phép xem danh sách người dùng'],
             ['name' => 'Thêm người dùng', 'slug' => 'them-nguoi-dung', 'description' => 'Cho phép thêm người dùng mới'],
