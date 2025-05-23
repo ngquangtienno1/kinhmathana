@@ -13,36 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-<<<<<<< HEAD
-        // $this->call([
-        // RoleSeeder::class,
-        // User::factory(10)->create();
-        // UserSeeder::class,
-        // OrderSeeder::class,
-        // SliderSeeder::class,
-        // NewsSeeder::class,
-        // BrandSeeder::class,
-        // ShippingProviderSeeder::class,
-        // WebsiteSettingSeeder::class,
-        // ]);
-
-        // $this->call([
-        //     RoleSeeder::class, // Gọi trước
-        //     UserSeeder::class,
-        //     OrderSeeder::class,
-        //     PaymentMethodSeeder::class,
-        //     PaymentSeeder::class,
-        // ]);
-
-        $this->call([
-            UserSeeder::class,
-            NewsSeeder::class,
-            ProductSeeder::class,
-            CommentSeeder::class,
-        ]);
-    }
-}
-=======
         // Tắt kiểm tra foreign key để tránh lỗi khi xóa dữ liệu
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
@@ -120,4 +90,3 @@ class DatabaseSeeder extends Seeder
         }
     }
 }
->>>>>>> 52422c71142a0bcd42d4cdfa70d9c2a236754c2a

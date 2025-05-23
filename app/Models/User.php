@@ -30,7 +30,9 @@ class User extends Authenticatable
         'email_verified_at',
         'phone_verified_at'
     ];
-
+    protected $casts = [
+        'banned_until' => 'datetime',
+    ];
     protected $hidden = ['password', 'remember_token'];
     protected function casts(): array
     {
@@ -39,6 +41,7 @@ class User extends Authenticatable
             'phone_verified_at' => 'datetime',
             'date_birth' => 'date',
             'password' => 'hashed',
+
         ];
     }
     public function role()
@@ -91,5 +94,9 @@ class User extends Authenticatable
         }
 
         return $this->role->permissions->whereIn('slug', $permissions)->count() === count($permissions);
+    }
+    public function isBanned()
+    {
+        return $this->banned_until && $this->banned_until->isFuture();
     }
 }

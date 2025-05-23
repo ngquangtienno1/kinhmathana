@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
+use App\Http\Controllers\Admin\TicketController;
 
 // Redirect login
 Route::get('/', function () {
@@ -412,6 +413,44 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-vinh-vien-binh-luan']);
         Route::patch('/{comment}/status', [CommentController::class, 'updateStatus'])->name('updateStatus')
             ->middleware(['permission:an-hien-binh-luan']);
+        Route::patch('/{id}/toggle-visibility', [CommentController::class, 'toggleVisibility'])
+            ->name('toggle-visibility')
+            ->middleware(['permission:an-hien-binh-luan']);
     });
     Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.updateStatus');
+    // Quản lý bad words trong CommentController luôn
+    Route::get('comments/badwords', [CommentController::class, 'badWordsIndex'])->name('comments.badwords.index');
+    Route::post('comments/badwords', [CommentController::class, 'badWordsStore'])->name('comments.badwords.store');
+    Route::delete('comments/badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('comments.badwords.destroy');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('comments/scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('comments.scan_badwords');
+    });
+    Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {
+        Route::get('/', [TicketController::class, 'index'])->name('index');
+        Route::get('/{id}', [TicketController::class, 'show'])->name('show');
+
+        Route::get('/{id}/edit', [TicketController::class, 'edit'])
+            ->name('edit')->middleware('permission:sua-ticket');
+
+        Route::put('/{id}', [TicketController::class, 'update'])
+            ->name('update')->middleware('permission:sua-ticket');
+
+        Route::delete('/{id}', [TicketController::class, 'destroy'])
+            ->name('destroy')->middleware('permission:xoa-ticket');
+
+        Route::get('/trashed', [TicketController::class, 'trashed'])
+            ->name('trashed')->middleware('permission:xem-thung-rac-ticket');
+
+        Route::patch('/{id}/restore', [TicketController::class, 'restore'])
+            ->name('restore')->middleware('permission:khoi-phuc-ticket');
+
+        Route::delete('/{id}/force-delete', [TicketController::class, 'forceDelete'])
+            ->name('forceDelete')->middleware('permission:xoa-vinh-vien-ticket');
+
+        Route::patch('/{id}/toggle-visibility', [TicketController::class, 'toggleVisibility'])
+            ->name('toggleVisibility')->middleware('permission:an-hien-ticket');
+       Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
+
+        Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
+    });
 });
