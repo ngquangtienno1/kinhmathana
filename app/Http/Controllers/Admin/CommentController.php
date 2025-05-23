@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ProfanityFilter;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\BadWord;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\News;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -28,7 +32,7 @@ class CommentController extends Controller
             }
         }
 
-        // Tìm kiếm
+        // Tìm kiếm theo nội dung, entity_id hoặc thông tin người dùng
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -41,6 +45,7 @@ class CommentController extends Controller
         }
 
         $comments = $query->get();
+        $badWords = BadWord::latest()->get();
 
         $totalCount = Comment::count();
         $approvedCount = Comment::where('status', 'đã duyệt')->count();
@@ -60,20 +65,45 @@ class CommentController extends Controller
 
     public function store(Request $request) {}
 
+
     public function show(string $id) {}
 
-    public function edit(Comment $comment) {}
+    public function edit($id)
+    {
+        $comment = Comment::findOrFail($id);
+        return view('admin.comments.edit', compact('comment'));
+    }
 
-    public function update(Request $request, Comment $comment) {}
+    public function update(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        $request->validate([
+
+            'is_hidden' => 'required|boolean',
+        ]);
+
+        $comment->is_hidden = $request->input('is_hidden', 0);
+        // cập nhật các trường khác nếu có
+
+        $comment->save();
+
+        return redirect()->route('admin.comments.index')->with('success', 'Cập nhật bình luận thành công!');
+    }
+
 
     public function destroy($id)
     {
         $comment = Comment::findOrFail($id);
-        $comment->delete(); // XÓA MỀM
-        return redirect()->back()->with('success', 'Xóa bình luận thành công.');
+        $comment->delete();  // Đây là soft delete nếu model có SoftDeletes trait
+
+        return redirect()->route('admin.comments.index')
+            ->with('success', 'Đã xóa bình luận (soft delete).');
     }
 
-    public function toggleVisibility($id, Request $request)
+
+
+    public function toggleVisibility($id)
     {
         $comment = Comment::withTrashed()->findOrFail($id);
 
@@ -81,18 +111,23 @@ class CommentController extends Controller
             return back()->with('error', 'Bình luận đã bị xóa, không thể thay đổi trạng thái ẩn/hiện.');
         }
 
-        $comment->is_hidden = $request->input('is_hidden');
+        $comment->is_hidden = !$comment->is_hidden;
         $comment->save();
 
-        return back()->with('success', 'Cập nhật trạng thái bình luận thành công.');
+        return redirect()->route('admin.comments.index')
+            ->with('success', 'Cập nhật trạng thái bình luận thành công.');
     }
+
 
     public function restore($id)
     {
         $comment = Comment::onlyTrashed()->findOrFail($id);
         $comment->restore();
+        $comment->update(['is_hidden' => 0]);
 
-        return redirect()->route('admin.comments.index', ['status' => 'trashed'])->with('success', 'Khôi phục bình luận thành công!');
+        return redirect()
+            ->route('admin.comments.index', ['status' => 'trashed'])
+            ->with('success', 'Khôi phục bình luận thành công và đã hiển thị lại!');
     }
 
     public function forceDelete($id)
@@ -114,5 +149,72 @@ class CommentController extends Controller
 
         // dd($comment->status);
         return redirect()->route('admin.comments.index')->with('success', 'Cập nhật trạng thái bình luận thành công.');
+    }
+    public function badWordsIndex()
+    {
+        $badWords = BadWord::all();
+        return view('admin.comments.badwords', compact('badWords'));
+    }
+
+    // Thêm từ cấm mới
+    public function badWordsStore(Request $request)
+    {
+        $request->validate([
+            'word' => 'required|string|unique:bad_words,word'
+        ]);
+
+        BadWord::create(['word' => $request->word]);
+
+        return redirect()->route('admin.comments.badwords.index')->with('success', 'Thêm từ cấm thành công.');
+    }
+
+    // Xóa từ cấm
+    public function badWordsDestroy(BadWord $badword)
+    {
+        $badword->delete();
+
+        return redirect()->route('admin.comments.badwords.index')->with('success', 'Xóa từ cấm thành công.');
+    }
+    public function updateCommentsStatusAndBanUsers()
+    {
+        $badWords = BadWord::pluck('word')->toArray();
+        $comments = Comment::where('status', '!=', 'trashed')->get();
+        $blockedCount = 0;
+        $pendingCount = 0;
+        $autoApprovedCount = 0;
+        $unblockedCount = 0;
+        foreach ($comments as $comment) {
+            $containsBadWord = false;
+
+            foreach ($badWords as $word) {
+                if (stripos($comment->content, $word) !== false) {
+                    $containsBadWord = true;
+                    break;
+                }
+            }
+
+            if ($containsBadWord) {
+                if ($comment->status !== 'chặn') {
+                    $comment->status = 'chặn';
+                    $comment->save();
+                    $blockedCount++;
+                }
+            } else {
+                if ($comment->status === 'chặn') {
+                    // Nếu trước đó bị chặn nhưng giờ không có từ cấm, chuyển về 'chờ duyệt'
+                    $comment->status = 'chờ duyệt';
+                    $comment->save();
+                    $unblockedCount++;
+                } elseif ($comment->status === 'chờ duyệt') {
+                    // Tự động duyệt bình luận sạch ở trạng thái 'chờ duyệt'
+                    $comment->status = 'đã duyệt';
+                    $comment->save();
+                    $autoApprovedCount++;
+                }
+            }
+        }
+
+        return redirect()->route('admin.comments.index', ['status' => 'chặn'])
+            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch.");
     }
 }
