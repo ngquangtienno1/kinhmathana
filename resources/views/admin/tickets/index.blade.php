@@ -15,7 +15,8 @@
         </div>
     </div>
 
-    <div id="tickets">
+    <div id="tickets"
+        data-list='{"valueNames":["id","name","priority","status","assigned_to","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4 d-flex flex-wrap gap-3 align-items-center">
             <div class="search-box">
                 <form action="{{ route('admin.tickets.index') }}" method="GET" class="position-relative">
@@ -74,22 +75,41 @@
             <table class="table fs-9 mb-0">
                 <thead>
                     <tr>
-                        <th class="text-center">ID</th>
-                        <th class="text-center">Người gửi</th>
-                        <th class="text-center">Ưu tiên</th>
-                        <th class="text-center">Trạng thái</th>
-                        <th class="text-center">Người xử lý</th>
-                        <th class="text-center">Ngày tạo</th>
-                        <th class="text-center">Thao tác</th>
+                        <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
+                            <a href="{{ route('admin.tickets.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                class="text-body" style="text-decoration:none;">
+                                ID
+                                @if (request('sort') === 'id')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="name">Người gửi</th>
+                        <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="priority">Ưu tiên
+                        </th>
+                        <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="status">Trạng thái
+                        </th>
+                        <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="assigned_to">Người
+                            xử lý</th>
+                        <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="created_at">
+                            <a href="{{ route('admin.tickets.index', ['sort' => 'created_at', 'direction' => request('sort') === 'created_at' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                class="text-body" style="text-decoration:none;">
+                                Ngày tạo
+                                @if (request('sort') === 'created_at')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;">Thao tác</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="list" id="tickets-table-body">
                     @forelse($tickets as $ticket)
                         <tr>
-                            <td class="text-center">{{ $ticket->id }}</td>
-                            <td class="text-center">{{ $ticket->user->name ?? 'N/A' }}</td>
-                            <td class="text-center">{{ ucfirst($ticket->priority) }}</td>
-                            <td class="text-center">
+                            <td class="id align-middle ps-4">{{ $ticket->id }}</td>
+                            <td class="name align-middle ps-4">{{ $ticket->user->name ?? 'N/A' }}</td>
+                            <td class="priority align-middle ps-4">{{ ucfirst($ticket->priority) }}</td>
+                            <td class="status align-middle ps-4">
                                 @php
                                     $status = $ticket->status;
                                     switch ($status) {
@@ -111,9 +131,11 @@
                                 @endphp
                                 <span class="badge bg-{{ $badge }}">{{ ucfirst($status) }}</span>
                             </td>
-                            <td class="text-center">{{ $ticket->assignedUser->name ?? 'Chưa gán' }}</td>
-                            <td class="text-center">{{ $ticket->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="text-center">
+                            <td class="assigned_to align-middle ps-4">{{ $ticket->assignedUser->name ?? 'Chưa gán' }}</td>
+                            <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
+                                {{ $ticket->created_at->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="align-middle white-space-nowrap text-end pe-0 ps-4">
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-reveal dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown">
@@ -156,7 +178,6 @@
                                                 </form>
                                             </li>
                                         @endif
-
                                     </ul>
                                 </div>
                             </td>
@@ -174,9 +195,9 @@
             <div class="col-auto d-flex">
                 <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
                 </p>
-                <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả<span class="fas fa-angle-right ms-1"
+                <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span class="fas fa-angle-right ms-1"
                         data-fa-transform="down-1"></span></a>
-                <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn<span
+                <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
                         class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
             </div>
             <div class="col-auto d-flex">

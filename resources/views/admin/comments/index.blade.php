@@ -189,7 +189,8 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                         <a class="dropdown-item" href="">Xem</a>
-                                        <a class="dropdown-item" href="">Sửa</a>
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.comments.edit', $comment->id) }}">Sửa</a>
                                         <div class="dropdown-divider"></div>
 
 

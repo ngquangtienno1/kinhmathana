@@ -42,8 +42,13 @@ class TicketController extends Controller
             });
         }
 
-        // Lấy kết quả
-        $tickets = $query->paginate(10);
+        // Sort
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
+        // Lấy kết quả với phân trang
+        $tickets = $query->get();
 
         // Đếm tổng số và theo trạng thái (đã xóa mềm cũng đếm)
         $totalCount = Ticket::count();
