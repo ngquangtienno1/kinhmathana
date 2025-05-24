@@ -87,11 +87,11 @@ class TicketController extends Controller
     {
         $ticket = Ticket::findOrFail($id);
 
-       $request->validate([
-    'status' => 'required|in:mới,đang xử lý,chờ khách,đã đóng',
-    'priority' => 'required|in:thấp,trung bình,cao,khẩn cấp',
-    'assigned_to' => 'nullable|exists:users,id',
-]);
+        $request->validate([
+            'status' => 'required|in:mới,đang xử lý,chờ khách,đã đóng',
+            'priority' => 'required|in:thấp,trung bình,cao,khẩn cấp',
+            'assigned_to' => 'nullable|exists:users,id',
+        ]);
 
         $ticket->update($request->only('status', 'priority', 'assigned_to'));
 
@@ -151,7 +151,7 @@ class TicketController extends Controller
             'content' => $request->content,
         ]);
 
-        return back()->with('success', 'Đã thêm ghi chú vào yêu cầu hỗ trợ.');
+        return back()->with('success', 'Đã thêm ghi chú nội bộ.');
     }
 
     // ===== XÓA GHI CHÚ =====
@@ -165,4 +165,17 @@ class TicketController extends Controller
 
         return back()->with('success', 'Ghi chú đã được xóa.');
     }
+    public function storeMessage(Request $request, Ticket $ticket)
+{
+    $request->validate([
+        'message' => 'required|string',
+    ]);
+
+    $ticket->messages()->create([
+        'user_id' => Auth::id(), // người gửi
+        'message' => $request->message,
+    ]);
+
+    return back()->with('success', 'Đã gửi tin nhắn.');
+}
 }

@@ -75,17 +75,14 @@
         <hr>
 
         {{-- Form thêm ghi chú --}}
-        <h4>Thêm ghi chú</h4>
-        <form action="{{ route('admin.tickets.ticket-notes.store') }}" method="POST">
+
+        <h5 class="mt-4">Ghi chú nội bộ</h5>
+
+        <form action="{{ route('admin.tickets.ticket-notes.store') }}" method="POST" class="mb-4">
             @csrf
             <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-
-            <div class="mb-3">
-                <label for="note" class="form-label">Nội dung ghi chú</label>
-                <textarea name="content" id="note" class="form-control" rows="3" required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-outline-primary">Lưu ghi chú</button>
+            <textarea name="content" class="form-control mb-2" rows="3" placeholder="Thêm ghi chú..."></textarea>
+            <button type="submit" class="btn btn-sm btn-primary">Lưu ghi chú</button>
         </form>
 
         <hr>

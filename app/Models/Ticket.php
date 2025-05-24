@@ -10,8 +10,13 @@ class Ticket extends Model
     //
     use SoftDeletes;
 
-     protected $fillable = [
-        'title', 'description', 'status', 'priority', 'user_id', 'assigned_to'
+    protected $fillable = [
+        'title',
+        'description',
+        'status',
+        'priority',
+        'user_id',
+        'assigned_to'
     ];
 
     public function user()
@@ -24,7 +29,11 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
     public function notes()
-{
-    return $this->hasMany(TicketNote::class);
-}
+    {
+        return $this->hasMany(TicketNote::class);
+    }
+    public function messages()
+    {
+        return $this->hasMany(TicketMessage::class)->latest();
+    }
 }
