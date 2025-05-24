@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class CommentController extends Controller
 {
@@ -141,46 +142,65 @@ class CommentController extends Controller
 
         return redirect()->route('admin.comments.badwords.index')->with('success', 'Xóa từ cấm thành công.');
     }
-    public function updateCommentsStatusAndBanUsers()
-    {
-        $badWords = BadWord::pluck('word')->toArray();
-        $comments = Comment::where('status', '!=', 'trashed')->get();
-        $blockedCount = 0;
-        $pendingCount = 0;
-        $autoApprovedCount = 0;
-        $unblockedCount = 0;
-        foreach ($comments as $comment) {
-            $containsBadWord = false;
+   public function updateCommentsStatusAndBanUsers()
+{
+    $badWords = BadWord::pluck('word')->toArray();
+    $comments = Comment::where('status', '!=', 'trashed')->get();
 
-            foreach ($badWords as $word) {
-                if (stripos($comment->content, $word) !== false) {
-                    $containsBadWord = true;
-                    break;
-                }
-            }
+    $blockedCount = 0;
+    $pendingCount = 0;
+    $autoApprovedCount = 0;
+    $unblockedCount = 0;
+    $bannedUsers = [];
 
-            if ($containsBadWord) {
-                if ($comment->status !== 'chặn') {
-                    $comment->status = 'chặn';
-                    $comment->save();
-                    $blockedCount++;
-                }
-            } else {
-                if ($comment->status === 'chặn') {
-                    // Nếu trước đó bị chặn nhưng giờ không có từ cấm, chuyển về 'chờ duyệt'
-                    $comment->status = 'chờ duyệt';
-                    $comment->save();
-                    $unblockedCount++;
-                } elseif ($comment->status === 'chờ duyệt') {
-                    // Tự động duyệt bình luận sạch ở trạng thái 'chờ duyệt'
-                    $comment->status = 'đã duyệt';
-                    $comment->save();
-                    $autoApprovedCount++;
-                }
+    $usersToBan = [];
+
+    foreach ($comments as $comment) {
+        $containsBadWord = false;
+
+        foreach ($badWords as $word) {
+            if (stripos($comment->content, $word) !== false) {
+                $containsBadWord = true;
+                break;
             }
         }
 
-        return redirect()->route('admin.comments.index', ['status' => 'chặn'])
-            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch.");
+        if ($containsBadWord) {
+            if ($comment->status !== 'chặn') {
+                $comment->status = 'chặn';
+                $comment->save();
+                $blockedCount++;
+            }
+
+            // Gom các user cần khóa (kể cả comment đã bị chặn rồi)
+            if ($comment->user && !in_array($comment->user->id, $bannedUsers)) {
+                $usersToBan[$comment->user->id] = $comment->user;
+            }
+
+        } else {
+            if ($comment->status === 'chặn') {
+                $comment->status = 'chờ duyệt';
+                $comment->save();
+                $unblockedCount++;
+            } elseif ($comment->status === 'chờ duyệt') {
+                $comment->status = 'đã duyệt';
+                $comment->save();
+                $autoApprovedCount++;
+            }
+        }
     }
+
+    // Khóa tất cả user vi phạm mà chưa bị khóa
+    foreach ($usersToBan as $user) {
+        if (is_null($user->banned_until) || now()->gt($user->banned_until)) {
+            $user->banned_until = now()->addHours(24);
+            $user->save();
+            $bannedUsers[] = $user->id;
+        }
+    }
+
+    return redirect()->route('admin.comments.index', ['status' => 'chặn'])
+        ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch. Đã khóa tạm thời " . count($bannedUsers) . " người dùng.");
+}
+
 }
