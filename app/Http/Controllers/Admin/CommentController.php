@@ -149,8 +149,6 @@ class CommentController extends Controller
         $pendingCount = 0;
         $autoApprovedCount = 0;
         $unblockedCount = 0;
-        $bannedUsersCount = 0;
-
         foreach ($comments as $comment) {
             $containsBadWord = false;
 
@@ -166,16 +164,6 @@ class CommentController extends Controller
                     $comment->status = 'chặn';
                     $comment->save();
                     $blockedCount++;
-
-                    // Ban user if they have a user account
-                    if ($comment->user) {
-                        // Ban user for 7 days if not already banned
-                        if (!$comment->user->banned_until || now()->gt($comment->user->banned_until)) {
-                            $comment->user->banned_until = now()->addDays(7);
-                            $comment->user->save();
-                            $bannedUsersCount++;
-                        }
-                    }
                 }
             } else {
                 if ($comment->status === 'chặn') {
@@ -193,6 +181,6 @@ class CommentController extends Controller
         }
 
         return redirect()->route('admin.comments.index', ['status' => 'chặn'])
-            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận, tự động duyệt $autoApprovedCount bình luận sạch và khóa $bannedUsersCount tài khoản người dùng.");
+            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch.");
     }
 }
