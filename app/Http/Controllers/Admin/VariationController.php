@@ -10,33 +10,32 @@ use App\Models\Size;
 
 class VariationController extends Controller
 {
-   public function index(Request $request)
-{
-    $query = Variation::with(['product', 'variationDetails.color', 'variationDetails.size', 'images']);
+    public function index(Request $request)
+    {
+        $query = Variation::with(['product', 'variationDetails.color', 'variationDetails.size', 'images']);
 
-    // 🔍 Tìm kiếm
-    if ($request->filled('search')) {
-        $search = mb_strtolower(trim($request->search));
-        $query->where(function ($q) use ($search) {
-            $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(sku) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
-              ->orWhereHas('product', function ($subQ) use ($search) {
-                  $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-              });
-        });
+        // 🔍 Tìm kiếm
+        if ($request->filled('search')) {
+            $search = mb_strtolower(trim($request->search));
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(sku) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
+                  ->orWhereHas('product', function ($subQ) use ($search) {
+                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                  });
+            });
+        }
+
+        // 📦 Lọc hết hàng
+        if ($request->filter === 'out_of_stock') {
+            $query->where('stock_quantity', '<=', 0);
+        }
+
+        $variations = $query->latest()->paginate(10);
+
+        return view('admin.variations.index', compact('variations'));
     }
-
-    // 📦 Lọc hết hàng
-    if ($request->filter === 'out_of_stock') {
-        $query->where('stock_quantity', '<=', 0);
-    }
-
-    $variations = $query->latest()->paginate(10);
-
-    return view('admin.variations.index', compact('variations'));
-}
-
 
     public function create()
     {
@@ -107,6 +106,7 @@ class VariationController extends Controller
     public function update(Request $request, Variation $variation)
     {
         $request->validate([
+            'product_id' => 'required|exists:products,id',
             'name' => 'required|string|max:125',
             'price' => 'required|numeric',
             'import_price' => 'required|numeric',
@@ -115,6 +115,8 @@ class VariationController extends Controller
             'color_id' => 'nullable|exists:colors,id',
             'size_id' => 'nullable|exists:sizes,id',
         ], [
+            'product_id.required' => 'Vui lòng chọn sản phẩm cha.',
+            'product_id.exists' => 'Sản phẩm không tồn tại.',
             'name.required' => 'Tên biến thể không được để trống.',
             'price.required' => 'Giá gốc là bắt buộc.',
             'import_price.required' => 'Giá nhập là bắt buộc.',
@@ -125,7 +127,7 @@ class VariationController extends Controller
         ]);
 
         $variation->update($request->only([
-            'name', 'sku', 'price', 'import_price', 'sale_price', 'stock_quantity'
+            'product_id', 'name', 'sku', 'price', 'import_price', 'sale_price', 'stock_quantity'
         ]));
 
         $detail = $variation->variationDetails()->first();

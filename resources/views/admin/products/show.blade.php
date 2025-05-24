@@ -33,34 +33,34 @@
             </div>
         </div>
     </div>
-<div class="card mt-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Ảnh sản phẩm</h5>
-        <a href="{{ route('admin.product_images.index', ['product' => $product->id]) }}" class="btn btn-sm btn-primary">
-    Quản lý ảnh
-</a>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            @forelse ($product->images as $image)
-                <div class="col-md-3 mb-3">
-                    <div class="card h-100">
-                        <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top rounded" style="height: 180px; object-fit: cover;">
-                        <div class="card-body text-center p-2">
-                            @if ($image->is_thumbnail)
-                                <span class="badge bg-success">Thumbnail</span>
-                            @endif
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Ảnh sản phẩm</h5>
+            <a href="{{ route('admin.product_images.index', ['product' => $product->id]) }}" class="btn btn-sm btn-primary">
+                Quản lý ảnh
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @forelse ($product->images as $image)
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top rounded" style="height: 180px; object-fit: cover;">
+                            <div class="card-body text-center p-2">
+                                @if ($image->is_thumbnail)
+                                    <span class="badge bg-success">Thumbnail</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <p class="text-muted">Chưa có ảnh cho sản phẩm này.</p>
-                </div>
-            @endforelse
+                @empty
+                    <div class="col-12">
+                        <p class="text-muted">Chưa có ảnh cho sản phẩm này.</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
-</div>
 
     <div class="card">
         <div class="card-body">
@@ -86,6 +86,10 @@
                                     <tr>
                                         <th>Giá bán</th>
                                         <td>{{ number_format($product->sale_price, 0, ',', '.') }}đ</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Số lượng</th>
+                                        <td>{{ $product->total_stock_quantity }}</td>
                                     </tr>
                                     <tr>
                                         <th>Danh mục</th>

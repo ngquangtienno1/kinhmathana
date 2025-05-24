@@ -27,7 +27,7 @@
                     {{-- Sản phẩm cha --}}
                     <div class="col-6">
                         <label class="form-label">Sản phẩm cha <span class="text-danger">*</span></label>
-                        <select name="product_id" class="form-control @error('product_id') is-invalid @enderror" required>
+                        <select name="product_id" class="form-control @error('product_id') is-invalid @enderror">
                             <option value="">-- Chọn sản phẩm --</option>
                             @foreach ($products as $product)
                                 <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name }}</option>
@@ -39,36 +39,36 @@
                     {{-- Tên biến thể + SKU --}}
                     <div class="col-6">
                         <label class="form-label">Tên biến thể <span class="text-danger">*</span></label>
-                        <input type="text" name="name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror" required>
+                        <input type="text" name="name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror">
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="col-6">
                         <label class="form-label">Mã SKU <span class="text-danger">*</span></label>
-                        <input type="text" name="sku" value="{{ old('sku') }}" class="form-control @error('sku') is-invalid @enderror" required>
+                        <input type="text" name="sku" value="{{ old('sku') }}" class="form-control @error('sku') is-invalid @enderror">
                         @error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     {{-- Giá cả --}}
                     <div class="col-6">
                         <label class="form-label">Giá gốc <span class="text-danger">*</span></label>
-                        <input type="number" name="price" step="0.01" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" required>
+                        <input type="number" name="price" step="0.01" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror">
                         @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="col-6">
                         <label class="form-label">Giá nhập <span class="text-danger">*</span></label>
-                        <input type="number" name="import_price" step="0.01" value="{{ old('import_price') }}" class="form-control @error('import_price') is-invalid @enderror" required>
+                        <input type="number" name="import_price" step="0.01" value="{{ old('import_price') }}" class="form-control @error('import_price') is-invalid @enderror">
                         @error('import_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="col-6">
                         <label class="form-label">Giá bán <span class="text-danger">*</span></label>
-                        <input type="number" name="sale_price" step="0.01" value="{{ old('sale_price') }}" class="form-control @error('sale_price') is-invalid @enderror" required>
+                        <input type="number" name="sale_price" step="0.01" value="{{ old('sale_price') }}" class="form-control @error('sale_price') is-invalid @enderror">
                         @error('sale_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                  
+
                     {{-- Tồn kho --}}
                     <div class="col-6">
                         <label class="form-label">Tồn kho</label>

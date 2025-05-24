@@ -7,11 +7,6 @@
     <li class="breadcrumb-item active">Danh sách danh mục</li>
 @endsection
 
-@php
-    $totalCount = \App\Models\Category::count();
-    $trashedCount = \App\Models\Category::onlyTrashed()->count();
-@endphp
-
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
@@ -23,12 +18,12 @@
         <li class="nav-item">
             <a class="nav-link {{ request('status') == null ? 'active' : '' }}"
                 href="{{ route('admin.categories.index') }}">
-                Tất cả <span class="text-body-tertiary fw-semibold">({{ $totalCount }})</span>
+                Tất cả <span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span>
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ request('bin') === '1' ? 'active' : '' }}" href="{{ route('admin.categories.bin') }}">
-                Thùng rác <span class="text-body-tertiary fw-semibold">({{ $trashedCount }})</span>
+                Thùng rác <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>
             </a>
         </li>
     </ul>

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
@@ -40,6 +41,12 @@ class Product extends Model
     {
         return $this->belongsToMany(Tag::class, 'product_tags');
     }
+
+    public function getTotalStockQuantityAttribute()
+    {
+        return $this->variations->sum('stock_quantity') ?? 0;
+    }
+
     protected static function booted()
     {
         static::deleting(function ($product) {

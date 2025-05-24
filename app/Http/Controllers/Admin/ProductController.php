@@ -15,12 +15,11 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::query()->with(['category', 'brand', 'variations']);
 
         // Tìm kiếm không phân biệt hoa thường và hỗ trợ tiếng Việt
         if ($request->filled('search')) {
             $search = mb_strtolower(trim($request->search));
-
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"])
@@ -45,17 +44,28 @@ class ProductController extends Controller
             }
         }
 
+        // Lọc theo danh mục
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Lọc theo ngày tạo: từ ngày chọn đến hiện tại
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from)
+                  ->whereDate('created_at', '<=', now()->toDateString());
+        }
+
         $products = $query->orderBy('created_at', 'desc')->get();
         $activeCount = Product::where('status', 'Hoạt động')->count();
         $deletedCount = Product::onlyTrashed()->count();
+        $categories = Category::all();
 
-        return view('admin.products.index', compact('products', 'activeCount', 'deletedCount'));
+        return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
     }
+
     public function show($id)
     {
-        // Eager load cả quan hệ images để show ảnh
-        $product = Product::with('images')->findOrFail($id);
-
+        $product = Product::with(['images', 'variations'])->findOrFail($id);
         return view('admin.products.show', compact('product'));
     }
 
@@ -83,7 +93,7 @@ class ProductController extends Controller
             'name.required' => 'Tên sản phẩm là bắt buộc.',
             'category_id.required' => 'Danh mục sản phẩm là bắt buộc.',
             'brand_id.required' => 'Thương hiệu sản phẩm là bắt buộc.',
-            'status.required' => 'Thương hiệu sản phẩm là bắt buộc.',
+            'status.required' => 'Trạng thái sản phẩm là bắt buộc.',
             'description_short.required' => 'Mô tả ngắn sản phẩm là bắt buộc.',
             'price.required' => 'Giá gốc là bắt buộc.',
             'import_price.required' => 'Giá nhập là bắt buộc.',
@@ -122,7 +132,7 @@ class ProductController extends Controller
             'name.required' => 'Tên sản phẩm là bắt buộc.',
             'category_id.required' => 'Danh mục sản phẩm là bắt buộc.',
             'brand_id.required' => 'Thương hiệu sản phẩm là bắt buộc.',
-            'status.required' => 'Thương hiệu sản phẩm là bắt buộc.',
+            'status.required' => 'Trạng thái sản phẩm là bắt buộc.',
             'description_short.required' => 'Mô tả ngắn sản phẩm là bắt buộc.',
             'price.required' => 'Giá gốc là bắt buộc.',
             'import_price.required' => 'Giá nhập là bắt buộc.',

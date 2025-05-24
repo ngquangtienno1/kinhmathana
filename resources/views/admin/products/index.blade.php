@@ -23,7 +23,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ request('status') ? 'Hoạt động' : '' }}"
+            <a class="nav-link {{ request('status') === 'Hoạt động' ? 'active' : '' }}"
                 href="{{ route('admin.products.list', ['status' => 'Hoạt động']) }}">
                 Đang hoạt động <span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span>
             </a>
@@ -34,17 +34,37 @@
             </a>
         </li>
     </ul>
-    <div id="products" data-list='{"valueNames":["name","price","status","created_at"],"page":10,"pagination":true}'>
+    <div id="products" data-list='{"valueNames":["name","price","status","created_at","stock"],"page":10,"pagination":true}'>
         <div class="mb-4">
-            <div class="d-flex flex-wrap gap-3">
-                <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.products.list') }}" method="GET">
-                        <input class="form-control search-input search" type="search" name="search"
-                            placeholder="Tìm kiếm danh mục" value="{{ request('search') }}" />
-                        <span class="fas fa-search search-box-icon"></span>
-                    </form>
+            <form action="{{ route('admin.products.list') }}" method="GET" class="d-flex flex-wrap gap-3 align-items-end">
+                <div class="search-box" style="flex: 1; min-width: 200px;">
+                    <input class="form-control search-input search" type="search" name="search"
+                        placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" />
+                    <span class="fas fa-search search-box-icon"></span>
                 </div>
-                <div class="ms-xxl-auto">
+                <div style="flex: 1; min-width: 200px;">
+                    <select class="form-select" name="category_id">
+                        <option value="">Tất cả danh mục</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <input class="form-control" type="date" name="date_from" placeholder="Ngày tạo từ"
+                        value="{{ request('date_from') }}" />
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fas fa-filter me-2"></span>Lọc
+                    </button>
+                    <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">
+                        <span class="fas fa-eraser me-2"></span>Xóa bộ lọc
+                    </a>
+                </div>
+                <div class="ms-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>
@@ -52,7 +72,7 @@
                         <span class="fas fa-plus me-2"></span>Thêm sản phẩm
                     </a>
                 </div>
-            </div>
+            </form>
         </div>
         <div
             class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
@@ -71,6 +91,7 @@
                             <th class="sort align-middle ps-4">Giá gốc</th>
                             <th class="sort align-middle ps-4">Giá nhập</th>
                             <th class="sort align-middle ps-4">Giá bán</th>
+                            <th class="sort align-middle ps-4">Số lượng</th>
                             <th class="sort align-middle ps-4">Mô tả ngắn</th>
                             <th class="sort align-middle ps-4">Danh mục</th>
                             <th class="sort align-middle ps-4">Thương hiệu</th>
@@ -97,6 +118,9 @@
                                     {{ number_format($product->import_price, 0, ',', '.') }}đ</td>
                                 <td class="align-middle ps-4 text-end">
                                     {{ number_format($product->sale_price, 0, ',', '.') }}đ</td>
+                                <td class="align-middle ps-4 text-center">
+                                    {{ $product->total_stock_quantity }}
+                                </td>
                                 <td class="align-middle ps-4">{{ Str::limit($product->description_short, 50) }}</td>
                                 <td class="align-middle ps-4">{{ optional($product->category)->name ?? '-' }}</td>
                                 <td class="align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
@@ -137,10 +161,9 @@
                                     </div>
                                 </td>
                             </tr>
-
                         @empty
                             <tr>
-                                <td colspan="13" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
+                                <td colspan="14" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
