@@ -31,15 +31,22 @@ class Review extends Model
 
     public static function canReview($userId, $productId, $orderId)
     {
+        // Kiểm tra đơn hàng có tồn tại và thuộc về người dùng không
         $order = Order::where('id', $orderId)
             ->where('user_id', $userId)
-            ->where('status', 'completed')
-            ->whereHas('items', function ($query) use ($productId) {
-                $query->where('product_id', $productId);
-            })
+            ->where('status', 'delivered') // Chỉ cho phép đánh giá khi đơn hàng đã giao thành công
             ->first();
 
         if (!$order) {
+            return false;
+        }
+
+        // Kiểm tra sản phẩm có trong đơn hàng không
+        $productInOrder = $order->items()
+            ->where('product_id', $productId)
+            ->exists();
+
+        if (!$productInOrder) {
             return false;
         }
 
