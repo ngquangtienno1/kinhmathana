@@ -105,7 +105,11 @@ class TicketController extends Controller
         return redirect()->route('admin.tickets.index')->with('success', 'Ticket đã được đưa vào thùng rác');
     }
 
-
+    public function trashed()
+    {
+        $tickets = Ticket::onlyTrashed()->paginate(10);
+        return view('admin.tickets.trashed', compact('tickets'));
+    }
 
     public function restore($id)
     {
@@ -166,16 +170,16 @@ class TicketController extends Controller
         return back()->with('success', 'Ghi chú đã được xóa.');
     }
     public function storeMessage(Request $request, Ticket $ticket)
-{
-    $request->validate([
-        'message' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
 
-    $ticket->messages()->create([
-        'user_id' => Auth::id(), // người gửi
-        'message' => $request->message,
-    ]);
+        $ticket->messages()->create([
+            'user_id' => Auth::id(), // người gửi
+            'message' => $request->message,
+        ]);
 
-    return back()->with('success', 'Đã gửi tin nhắn.');
-}
+        return back()->with('success', 'Đã gửi tin nhắn.');
+    }
 }
