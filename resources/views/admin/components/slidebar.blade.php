@@ -12,6 +12,35 @@
                         </a>
                     </div>
                 </li>
+                @if (canAccess('xem-danh-sach-khach-hang'))
+                    <!-- Quản lý Khách hàng -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-customers" role="button"
+                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-customers">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="users"></span></span>
+                                    <span class="nav-link-text">Khách hàng</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-customers">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.customers.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách khách hàng</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
                 @if (canAccess('xem-danh-sach-san-pham') ||
                         canAccess('xem-bien-the-san-pham') ||
                         canAccess('xem-danh-sach-danh-muc') ||
@@ -148,7 +177,8 @@
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-orders">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-orders">
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('admin.orders.index') }}">
                                             <div class="d-flex align-items-center">
@@ -578,7 +608,6 @@
                         </div>
                     </li>
                 @endif
-
             </ul>
         </div>
     </div>
