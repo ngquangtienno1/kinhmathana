@@ -421,6 +421,21 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->name('toggle-visibility')
             ->middleware(['permission:an-hien-binh-luan']);
     });
+
+    // Khuyến mãi
+    Route::prefix('promotions')->name('promotions.')->middleware(['permission:xem-danh-sach-khuyen-mai'])->group(function () {
+        Route::get('/', [PromotionController::class, 'index'])->name('index');
+        Route::get('/create', [PromotionController::class, 'create'])->name('create');
+        Route::post('/', [PromotionController::class, 'store'])->name('store');
+        Route::delete('/bulk-delete', [PromotionController::class, 'bulkDestroy'])->name('bulkDestroy')
+            ->middleware(['permission:xoa-nhieu-khuyen-mai']);
+        Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
+        Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
+        Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
+        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+    });
+
     Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.updateStatus');
     // Quản lý bad words trong CommentController luôn
     Route::get('comments/badwords', [CommentController::class, 'badWordsIndex'])->name('comments.badwords.index');
@@ -429,35 +444,44 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::middleware(['auth'])->group(function () {
         Route::get('comments/scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('comments.scan_badwords');
     });
+
+    // Quản lý ticket
     Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {
+        // Danh sách và xem chi tiết
         Route::get('/', [TicketController::class, 'index'])->name('index');
         Route::get('/{id}', [TicketController::class, 'show'])->name('show');
-
-        Route::get('/{id}/edit', [TicketController::class, 'edit'])
-            ->name('edit')->middleware('permission:sua-ticket');
-
-        Route::put('/{id}', [TicketController::class, 'update'])
-            ->name('update')->middleware('permission:sua-ticket');
-
-        Route::delete('/{id}', [TicketController::class, 'destroy'])
-            ->name('destroy')->middleware('permission:xoa-ticket');
-
         Route::get('/trashed', [TicketController::class, 'trashed'])
             ->name('trashed')->middleware('permission:xem-thung-rac-ticket');
-
+        Route::get('/{id}/edit', [TicketController::class, 'edit'])
+            ->name('edit')->middleware('permission:sua-ticket');
+        Route::put('/{id}', [TicketController::class, 'update'])
+            ->name('update')->middleware('permission:sua-ticket');
+        Route::delete('/{id}', [TicketController::class, 'destroy'])
+            ->name('destroy')->middleware('permission:xoa-ticket');
         Route::patch('/{id}/restore', [TicketController::class, 'restore'])
             ->name('restore')->middleware('permission:khoi-phuc-ticket');
-
         Route::delete('/{id}/force-delete', [TicketController::class, 'forceDelete'])
             ->name('forceDelete')->middleware('permission:xoa-vinh-vien-ticket');
-
         Route::patch('/{id}/toggle-visibility', [TicketController::class, 'toggleVisibility'])
             ->name('toggleVisibility')->middleware('permission:an-hien-ticket');
-       Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
-
+        Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
         Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
     });
 
+    // Support routes
+    Route::prefix('support')->name('support.')->group(function () {
+        Route::get('/', [ProductSupportController::class, 'showForm'])->name('create'); // /admin/support -> showForm (Form)
+        Route::post('/', [ProductSupportController::class, 'submitForm'])->name('store'); // POST /admin/support -> submitForm (Store Form Data)
+
+        Route::get('/list', [ProductSupportController::class, 'index'])->name('list'); // /admin/support/list -> index (List)
+
+        Route::get('/{support}', [ProductSupportController::class, 'show'])->name('show'); // /admin/support/{support} -> show (Show Detail)
+        Route::patch('/{support}/status', [ProductSupportController::class, 'updateStatus'])->name('updateStatus'); // PATCH /admin/support/{support}/status -> updateStatus
+        Route::post('/{support}/done', [ProductSupportController::class, 'markAsDone'])->name('done'); // POST /admin/support/{support}/done -> markAsDone
+        Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy'); // DELETE /admin/support/{support} -> destroy
+        Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm'); // /admin/support/{support}/email -> showEmailForm
+        Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail'); // POST /admin/support/{support}/send-email -> sendEmail
+    });
     // Customer Management
     Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');

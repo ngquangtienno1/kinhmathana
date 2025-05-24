@@ -231,47 +231,6 @@
                         </div>
                     </li>
                 @endif
-                @if (canAccess('xem-ticket'))
-                    <!-- Yêu cầu hỗ trợ (Ticket) -->
-                    <li class="nav-item">
-                        <div class="nav-item-wrapper">
-                            <a class="nav-link dropdown-indicator label-1" href="#nv-tickets" role="button"
-                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-tickets">
-                                <div class="d-flex align-items-center">
-                                    <div class="dropdown-indicator-icon-wrapper">
-                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
-                                    </div>
-                                    <span class="nav-link-icon"><span data-feather="help-circle"></span></span>
-                                    <span class="nav-link-text">Yêu cầu hỗ trợ</span>
-                                </div>
-                            </a>
-                            <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-tickets">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.tickets.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách yêu cầu hỗ trợ</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    @if (canAccess('xoa-ticket'))
-                                        <li class="nav-item">
-                                            <a class="nav-link"
-                                                href="{{ route('admin.tickets.index', array_merge(request()->all(), ['status' => 'trashed'])) }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Thùng rác</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                @endif
-
-
 
                 @if (canAccess('xem-danh-sach-danh-gia'))
                     <!-- Đánh giá -->
@@ -321,7 +280,7 @@
                                 <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
                                     id="nv-promotions">
                                     <li class="nav-item">
-                                        <a class="nav-link" href="">
+                                        <a class="nav-link" href="{{ route('admin.promotions.index') }}">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text">Danh sách khuyến mãi</span>
                                             </div>
@@ -456,6 +415,45 @@
                                             </div>
                                         </a>
                                     </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
+                @if (canAccess('xem-ticket'))
+                    <!-- Quản lý Ticket -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1" href="#nv-tickets" role="button"
+                                data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-tickets">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="message-circle"></span></span>
+                                    <span class="nav-link-text">Ticket</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-tickets">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('admin.tickets.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách ticket</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    @if (canAccess('xem-thung-rac-ticket'))
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('admin.tickets.trashed') }}">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="nav-link-text">Thùng rác</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
