@@ -160,7 +160,7 @@ class TicketController extends Controller
             'content' => $request->content,
         ]);
 
-        return back()->with('success', 'Đã thêm ghi chú vào yêu cầu hỗ trợ.');
+        return back()->with('success', 'Đã thêm ghi chú nội bộ.');
     }
 
     // ===== XÓA GHI CHÚ =====
@@ -173,5 +173,18 @@ class TicketController extends Controller
         $note->delete();
 
         return back()->with('success', 'Ghi chú đã được xóa.');
+    }
+    public function storeMessage(Request $request, Ticket $ticket)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $ticket->messages()->create([
+            'user_id' => Auth::id(), // người gửi
+            'message' => $request->message,
+        ]);
+
+        return back()->with('success', 'Đã gửi tin nhắn.');
     }
 }

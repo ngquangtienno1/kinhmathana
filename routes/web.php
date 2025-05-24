@@ -466,6 +466,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->name('toggleVisibility')->middleware('permission:an-hien-ticket');
         Route::post('ticket-notes', [TicketController::class, 'storeNote'])->name('ticket-notes.store');
         Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
+
+        Route::post('/{ticket}/messages', [TicketController::class, 'storeMessage'])->name('messages.store');
+
+
     });
 
     // Support routes

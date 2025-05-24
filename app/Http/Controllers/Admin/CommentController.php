@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Comment;
 use App\Models\News;
+use App\Models\BadWord;
+use App\Models\Comment;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class CommentController extends Controller
 {
@@ -114,5 +115,84 @@ class CommentController extends Controller
 
         // dd($comment->status);
         return redirect()->route('admin.comments.index')->with('success', 'Cập nhật trạng thái bình luận thành công.');
+    }
+    public function badWordsIndex()
+    {
+        $badWords = BadWord::all();
+        return view('admin.comments.badwords', compact('badWords'));
+    }
+
+    // Thêm từ cấm mới
+    public function badWordsStore(Request $request)
+    {
+        $request->validate([
+            'word' => 'required|string|unique:bad_words,word'
+        ]);
+
+        BadWord::create(['word' => $request->word]);
+
+        return redirect()->route('admin.comments.badwords.index')->with('success', 'Thêm từ cấm thành công.');
+    }
+
+    // Xóa từ cấm
+    public function badWordsDestroy(BadWord $badword)
+    {
+        $badword->delete();
+
+        return redirect()->route('admin.comments.badwords.index')->with('success', 'Xóa từ cấm thành công.');
+    }
+    public function updateCommentsStatusAndBanUsers()
+    {
+        $badWords = BadWord::pluck('word')->toArray();
+        $comments = Comment::where('status', '!=', 'trashed')->get();
+        $blockedCount = 0;
+        $pendingCount = 0;
+        $autoApprovedCount = 0;
+        $unblockedCount = 0;
+        $bannedUsersCount = 0;
+
+        foreach ($comments as $comment) {
+            $containsBadWord = false;
+
+            foreach ($badWords as $word) {
+                if (stripos($comment->content, $word) !== false) {
+                    $containsBadWord = true;
+                    break;
+                }
+            }
+
+            if ($containsBadWord) {
+                if ($comment->status !== 'chặn') {
+                    $comment->status = 'chặn';
+                    $comment->save();
+                    $blockedCount++;
+
+                    // Ban user if they have a user account
+                    if ($comment->user) {
+                        // Ban user for 7 days if not already banned
+                        if (!$comment->user->banned_until || now()->gt($comment->user->banned_until)) {
+                            $comment->user->banned_until = now()->addDays(7);
+                            $comment->user->save();
+                            $bannedUsersCount++;
+                        }
+                    }
+                }
+            } else {
+                if ($comment->status === 'chặn') {
+                    // Nếu trước đó bị chặn nhưng giờ không có từ cấm, chuyển về 'chờ duyệt'
+                    $comment->status = 'chờ duyệt';
+                    $comment->save();
+                    $unblockedCount++;
+                } elseif ($comment->status === 'chờ duyệt') {
+                    // Tự động duyệt bình luận sạch ở trạng thái 'chờ duyệt'
+                    $comment->status = 'đã duyệt';
+                    $comment->save();
+                    $autoApprovedCount++;
+                }
+            }
+        }
+
+        return redirect()->route('admin.comments.index', ['status' => 'chặn'])
+            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận, tự động duyệt $autoApprovedCount bình luận sạch và khóa $bannedUsersCount tài khoản người dùng.");
     }
 }
