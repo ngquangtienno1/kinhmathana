@@ -139,7 +139,7 @@ class BrandController extends Controller
         try {
             $brand = Brand::findOrFail($id);
             $brand->delete(); // Soft delete
-            return redirect()->route('admin.brands.index')->with('error', 'Xóa thương hiệu thành công!');
+            return redirect()->route('admin.brands.index')->with('success', 'Xóa thương hiệu thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa thương hiệu: ' . $e->getMessage());
         }

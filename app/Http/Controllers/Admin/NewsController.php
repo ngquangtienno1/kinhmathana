@@ -129,7 +129,7 @@ class NewsController extends Controller
         try {
             $news = News::findOrFail($id);
             $news->delete(); // Soft delete
-            return redirect()->route('admin.news.index')->with('error', 'Xóa tin tức thành công!');
+            return redirect()->route('admin.news.index')->with('success', 'Xóa tin tức thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa tin tức: ' . $e->getMessage());
         }

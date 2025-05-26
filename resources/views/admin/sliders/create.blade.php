@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label" for="url">URL</label>
+                        <label class="form-label" for="url"> Đường dẫn URL</label>
                         <input class="form-control @error('url') is-invalid @enderror" id="url" name="url"
                             type="url" value="{{ old('url') }}" placeholder="https://example.com" />
                         @error('url')

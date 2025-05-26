@@ -40,10 +40,10 @@
                 <div class="col-12">
                     <div class="mb-4">
                         <h4 class="mb-3">Hình ảnh</h4>
-                        <div class="border rounded-3 p-3">
+                        <div>
                             @if ($news->image)
                                 <img src="{{ asset('storage/' . $news->image) }}" alt="{{ $news->title }}"
-                                    class="img-fluid rounded-3" style="max-height: 400px; width: auto;">
+                                    class="img-fluid rounded-3 border" style="max-height: 400px; width: auto;">
                             @else
                                 <span class="text-muted">Không có hình ảnh</span>
                             @endif

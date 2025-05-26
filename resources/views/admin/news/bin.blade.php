@@ -62,9 +62,10 @@
                                 </td>
                                 <td class="align-middle text-center">
                                     @if ($item->image)
-                                        <a class="d-block border border-translucent rounded-2" href="#">
+                                        <a class="d-block" href="#">
                                             <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                                width="48" style="object-fit:cover; border-radius:4px;">
+                                                width="48" style="object-fit:cover;"
+                                                class="border border-translucent rounded-2">
                                         </a>
                                     @endif
                                 </td>

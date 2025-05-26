@@ -96,9 +96,9 @@
                                     <span class="text-body-tertiary">{{ $item->id }}</span>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-0">
-                                    <a class="d-block border border-translucent rounded-2" href="#">
-                                        <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                            width="53" />
+                                    <a class="d-block" href="{{ route('admin.news.show', $item->id) }}">
+                                        <img src="{{ asset('storage/' . $item->image) }}" alt="" width="53"
+                                            class="img-fluid rounded-2 border border-translucent" />
                                     </a>
                                 </td>
                                 <td class="title align-middle ps-4">
