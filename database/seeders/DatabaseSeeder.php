@@ -61,6 +61,7 @@ class DatabaseSeeder extends Seeder
 
             // 8. Seeder cho khuyến mãi
             PromotionSeeder::class, // Tạo khuyến mãi
+            PaymentMethodSeeder::class, // Tạo phương thức thanh toán
         ]);
     }
 
@@ -87,6 +88,7 @@ class DatabaseSeeder extends Seeder
             'promotions',
             'orders',
             'customers',
+            'payment_methods',
         ];
 
         foreach ($tables as $table) {

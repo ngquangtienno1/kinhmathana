@@ -62,6 +62,18 @@
                                         <td>{{ $slider->description ?? 'Không có mô tả' }}</td>
                                     </tr>
                                     <tr>
+                                        <th>URL</th>
+                                        <td>
+                                            @if ($slider->url)
+                                                <a href="{{ $slider->url }}" target="_blank" class="text-primary">
+                                                    {{ $slider->url }}
+                                                </a>
+                                            @else
+                                                <span class="text-body-tertiary">Không có URL</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Thứ tự sắp xếp</th>
                                         <td>{{ $slider->sort_order }}</td>
                                     </tr>

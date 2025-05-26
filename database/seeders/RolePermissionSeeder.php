@@ -81,6 +81,12 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Cập nhật thông tin khách hàng', 'slug' => 'cap-nhat-thong-tin-khach-hang', 'description' => 'Cho phép cập nhật thông tin khách hàng'],
             ['name' => 'Xóa khách hàng', 'slug' => 'xoa-khach-hang', 'description' => 'Cho phép xóa khách hàng'],
 
+            // Quản lý phương thức thanh toán
+            ['name' => 'Xem danh sách phương thức thanh toán', 'slug' => 'xem-danh-sach-phuong-thuc-thanh-toan', 'description' => 'Cho phép xem danh sách phương thức thanh toán'],
+            ['name' => 'Thêm phương thức thanh toán', 'slug' => 'them-phuong-thuc-thanh-toan', 'description' => 'Cho phép thêm phương thức thanh toán'],
+            ['name' => 'Sửa phương thức thanh toán', 'slug' => 'sua-phuong-thuc-thanh-toan', 'description' => 'Cho phép chỉnh sửa phương thức thanh toán'],
+            ['name' => 'Xóa phương thức thanh toán', 'slug' => 'xoa-phuong-thuc-thanh-toan', 'description' => 'Cho phép xóa phương thức thanh toán'],
+            ['name' => 'Xoá nhiều phương thức thanh toán', 'slug' => 'xoa-nhieu-phuong-thuc-thanh-toan', 'description' => 'Cho phép xóa nhiều phương thức thanh toán cùng lúc'],
             // Quản lý ticket
             ['name' => 'Xem danh sách ticket', 'slug' => 'xem-ticket', 'description' => 'Cho phép xem danh sách ticket'],
             ['name' => 'Sửa ticket', 'slug' => 'sua-ticket', 'description' => 'Cho phép chỉnh sửa ticket'],
