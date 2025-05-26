@@ -48,12 +48,20 @@ class PaymentMethodController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'name.required' => 'Vui lòng nhập tên phương thức thanh toán.',
+            'name.max' => 'Tên phương thức thanh toán không được vượt quá 50 ký tự.',
+            'name.unique' => 'Tên phương thức thanh toán đã tồn tại.',
+            'logo_url.image' => 'File phải là hình ảnh.',
+            'logo_url.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'logo_url.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+        ];
         $data = $request->validate([
             'name' => 'required|string|max:50|unique:payment_methods,name',
             'description' => 'nullable|string',
             'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|boolean',
-        ]);
+        ], $messages);
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('logo_url')) {
@@ -87,12 +95,20 @@ class PaymentMethodController extends Controller
     public function update(Request $request, $id)
     {
         $paymentMethod = PaymentMethod::findOrFail($id);
+        $messages = [
+            'name.required' => 'Vui lòng nhập tên phương thức thanh toán.',
+            'name.max' => 'Tên phương thức thanh toán không được vượt quá 50 ký tự.',
+            'name.unique' => 'Tên phương thức thanh toán đã tồn tại.',
+            'logo_url.image' => 'File phải là hình ảnh.',
+            'logo_url.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'logo_url.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+        ];
         $data = $request->validate([
             'name' => 'required|string|max:50|unique:payment_methods,name,' . $paymentMethod->id . ',id,deleted_at,NULL',
             'description' => 'nullable|string',
             'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|boolean',
-        ]);
+        ], $messages);
         $data['is_active'] = $request->boolean('is_active');
         if ($request->hasFile('logo_url')) {
             $imgPath = $request->file('logo_url')->store('images/payment_methods', 'public');
