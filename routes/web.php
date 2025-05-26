@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\SearchController;
 
 // Redirect login
 Route::get('/', function () {
@@ -468,8 +469,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
 
         Route::post('/{ticket}/messages', [TicketController::class, 'storeMessage'])->name('messages.store');
-
-
     });
 
     // Support routes
@@ -495,4 +494,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::patch('/{customer}/type', [CustomerController::class, 'updateType'])->name('update-type')
             ->middleware(['permission:sua-loai-khach-hang']);
     });
+
+    // Global search route
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
+    Route::get('/search/results', [SearchController::class, 'searchResults'])->name('search.results');
 });
