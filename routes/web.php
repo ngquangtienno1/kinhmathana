@@ -489,8 +489,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [CustomerController::class, 'index'])->name('index');
         Route::get('/{customer}', [CustomerController::class, 'show'])->name('show');
         Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')
-            ->middleware(['permission:sua-thong-tin-khach-hang']);
+            ->middleware(['permission:cap-nhat-thong-tin-khach-hang']);
         Route::patch('/{customer}/type', [CustomerController::class, 'updateType'])->name('update-type')
             ->middleware(['permission:sua-loai-khach-hang']);
+    });
+
+    // Payment Methods
+    Route::prefix('payment-methods')->name('payment_methods.')->middleware(['permission:xem-danh-sach-phuong-thuc-thanh-toan'])->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'index'])->name('index');
+        Route::get('/{id}/show',       [\App\Http\Controllers\Admin\PaymentMethodController::class, 'show'])->name('show');
+        Route::get('/create',          [\App\Http\Controllers\Admin\PaymentMethodController::class, 'create'])->name('create')->middleware(['permission:them-phuong-thuc-thanh-toan']);
+        Route::post('/store',          [\App\Http\Controllers\Admin\PaymentMethodController::class, 'store'])->name('store')->middleware(['permission:them-phuong-thuc-thanh-toan']);
+        Route::get('/{id}/edit',       [\App\Http\Controllers\Admin\PaymentMethodController::class, 'edit'])->name('edit')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::put('/{id}/update',     [\App\Http\Controllers\Admin\PaymentMethodController::class, 'update'])->name('update')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::delete('/{id}/destroy', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'destroy'])->name('destroy')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
+        Route::get('/bin',             [\App\Http\Controllers\Admin\PaymentMethodController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore',    [\App\Http\Controllers\Admin\PaymentMethodController::class, 'restore'])->name('restore')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::delete('/{id}/forceDelete',   [\App\Http\Controllers\Admin\PaymentMethodController::class, 'forceDelete'])->name('forceDelete')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
+        Route::delete('/bulk-delete', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'bulkDestroy'])->name('bulkDestroy')->middleware(['permission:xoa-nhieu-phuong-thuc-thanh-toan']);
+        Route::post('/bulk-restore', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'bulkRestore'])->name('bulkRestore')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::delete('/bulk-force-delete', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'bulkForceDelete'])->name('bulkForceDelete')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
     });
 });

@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('logo_url')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
