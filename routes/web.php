@@ -51,8 +51,6 @@ Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallb
 Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
 
-
-
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
 
