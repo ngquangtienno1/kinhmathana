@@ -12,7 +12,7 @@
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Tin tức</h2>
+            <h2 class="mb-0"> Danh sách tin tức</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">

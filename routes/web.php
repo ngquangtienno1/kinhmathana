@@ -468,8 +468,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/notes/{id}', [TicketController::class, 'deleteNote'])->name('ticket-notes.delete');
 
         Route::post('/{ticket}/messages', [TicketController::class, 'storeMessage'])->name('messages.store');
-
-
     });
 
     // Support routes

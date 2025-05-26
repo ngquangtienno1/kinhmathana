@@ -71,7 +71,7 @@
                                     </tr>
                                     <tr>
                                         <th>Nội dung</th>
-                                        <td>{!! nl2br(e($news->content)) !!}</td>
+                                        <td>{!! $news->content !!}</td>
                                     </tr>
                                     <tr>
                                         <th>Trạng thái</th>

@@ -66,13 +66,15 @@ class SliderController extends Controller
                 'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên',
                 'start_date.date' => 'Ngày bắt đầu không hợp lệ',
                 'end_date.date' => 'Ngày kết thúc không hợp lệ',
-                'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu'
+                'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu',
+                'url.url' => 'URL không hợp lệ'
             ];
 
             $dataNew = $request->validate([
                 'title' => 'required|string|max:125',
                 'description' => 'nullable|string',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'url' => 'nullable|url|max:255',
                 'sort_order' => 'nullable|integer',
                 'is_active' => 'nullable|boolean',
                 'start_date' => 'nullable|date',
@@ -114,13 +116,15 @@ class SliderController extends Controller
                 'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên',
                 'start_date.date' => 'Ngày bắt đầu không hợp lệ',
                 'end_date.date' => 'Ngày kết thúc không hợp lệ',
-                'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu'
+                'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu',
+                'url.url' => 'URL không hợp lệ'
             ];
 
             $dataNew = $request->validate([
                 'title' => 'required|string|max:125',
                 'description' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'url' => 'nullable|url|max:255',
                 'sort_order' => 'nullable|integer',
                 'is_active' => 'nullable|boolean',
                 'start_date' => 'nullable|date',

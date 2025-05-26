@@ -41,6 +41,15 @@
                     </div>
 
                     <div class="col-12">
+                        <label class="form-label" for="url">URL</label>
+                        <input class="form-control @error('url') is-invalid @enderror" id="url" name="url"
+                            type="url" value="{{ old('url', $slider->url) }}" placeholder="https://example.com" />
+                        @error('url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12">
                         <label class="form-label" for="image">Hình ảnh</label>
                         <input class="form-control @error('image') is-invalid @enderror" id="image" name="image"
                             type="file" accept="image/*" />

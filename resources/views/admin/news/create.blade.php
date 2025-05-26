@@ -43,8 +43,7 @@
 
                     <div class="col-12">
                         <label class="form-label" for="content">Nội dung <span class="text-danger">*</span></label>
-                        <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="5"
-                            required>{{ old('content') }}</textarea>
+                        <textarea id="content" name="content" class="form-control @error('content') is-invalid @enderror" rows="8">{{ old('content') }}</textarea>
                         @error('content')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -79,5 +78,16 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#content'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+@endpush
 
 @endsection

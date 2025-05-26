@@ -443,6 +443,7 @@
 
         <!-- JavaScript files -->
         @include('admin.components.script')
+        @stack('scripts')
     </body>
 
 
