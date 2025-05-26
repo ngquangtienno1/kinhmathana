@@ -44,7 +44,6 @@
                 @if (canAccess('xem-danh-sach-san-pham') ||
                         canAccess('xem-bien-the-san-pham') ||
                         canAccess('xem-danh-sach-danh-muc') ||
-                        canAccess('xem-danh-sach-thuong-hieu') ||
                         canAccess('xem-danh-sach-mau-sac') ||
                         canAccess('xem-danh-sach-kich-thuoc'))
                     <!-- Product Management -->
@@ -73,7 +72,6 @@
                                 <ul class="nav collapse parent {{ request()->is('admin/products*') ||
                                 request()->is('admin/variations*') ||
                                 request()->is('admin/categories*') ||
-                                request()->is('admin/brands*') ||
                                 request()->is('admin/colors*') ||
                                 request()->is('admin/sizes*')
                                     ? 'show'
