@@ -364,9 +364,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
 
-        // Order Status History Routes (Moved inside admin group)
-        Route::get('/{order}/status-history', [OrderStatusHistoryController::class, 'show'])->name('status.history');
-        Route::patch('/{order}/status-update', [OrderStatusHistoryController::class, 'updateStatus'])->name('status.update'); // Renamed to avoid conflict with OrderController updateStatus
+        // Order Status History Routes
+        Route::get('status/histories', [OrderStatusHistoryController::class, 'index'])->name('status_histories.index');
     });
 
     // Reviews
@@ -421,16 +420,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
     // Support routes (Updated to match desired behavior)
     Route::prefix('support')->name('support.')->group(function () {
-        Route::get('/', [ProductSupportController::class, 'showForm'])->name('create'); // /admin/support -> showForm (Form)
-        Route::post('/', [ProductSupportController::class, 'submitForm'])->name('store'); // POST /admin/support -> submitForm (Store Form Data)
-
-        Route::get('/list', [ProductSupportController::class, 'index'])->name('list'); // /admin/support/list -> index (List)
-
-        Route::get('/{support}', [ProductSupportController::class, 'show'])->name('show'); // /admin/support/{support} -> show (Show Detail)
-        Route::patch('/{support}/status', [ProductSupportController::class, 'updateStatus'])->name('updateStatus'); // PATCH /admin/support/{support}/status -> updateStatus
-        Route::post('/{support}/done', [ProductSupportController::class, 'markAsDone'])->name('done'); // POST /admin/support/{support}/done -> markAsDone
-        Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy'); // DELETE /admin/support/{support} -> destroy
-        Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm'); // /admin/support/{support}/email -> showEmailForm
-        Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail'); // POST /admin/support/{support}/send-email -> sendEmail
+        Route::get('/', [ProductSupportController::class, 'showForm'])->name('index');
+        Route::get('/list', [ProductSupportController::class, 'index'])->name('list');
+        Route::get('/create', [ProductSupportController::class, 'showForm'])->name('create');
+        Route::post('/', [ProductSupportController::class, 'submitForm'])->name('store');
+        Route::get('/{support}', [ProductSupportController::class, 'show'])->name('show');
+        Route::patch('/{support}/status', [ProductSupportController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/{support}/done', [ProductSupportController::class, 'markAsDone'])->name('done');
+        Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy');
+        Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm');
+        Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail');
+        Route::get('/{support}/edit-status', [ProductSupportController::class, 'editStatus'])->name('editStatus');
     });
 });
