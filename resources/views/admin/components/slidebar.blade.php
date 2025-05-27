@@ -353,11 +353,21 @@
                                             </div>
                                         </a>
                                     </li>
+                                    @if (canAccess('xem-danh-muc-tin-tuc'))
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('admin.news.categories.index') }}">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="nav-link-text">Danh mục tin tức</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
                     </li>
                 @endif
+
 
                 @if (canAccess('xem-danh-sach-thuong-hieu'))
                     <!-- Quản lý Brands -->

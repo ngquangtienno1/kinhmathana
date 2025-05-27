@@ -317,27 +317,29 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     //News Categories
-    Route::prefix('news/categories')->name('news.categories.')->middleware(['permission:xem-news'])->group(function () {
+    Route::prefix('news/categories')->name('news.categories.')->middleware(['permission:xem-danh-muc-tin-tuc'])->group(function () {
         Route::get('/', [NewsCategoryController::class, 'index'])->name('index');
         Route::get('/create', [NewsCategoryController::class, 'create'])->name('create')
-            ->middleware(['permission:them-news']);
+            ->middleware(['permission:them-danh-muc-tin-tuc']);
         Route::post('/store', [NewsCategoryController::class, 'store'])->name('store')
-            ->middleware(['permission:them-news']);
+            ->middleware(['permission:them-danh-muc-tin-tuc']);
         Route::get('/{category}/edit', [NewsCategoryController::class, 'edit'])->name('edit')
-            ->middleware(['permission:sua-news']);
+            ->middleware(['permission:sua-danh-muc-tin-tuc']);
         Route::put('/{category}/update', [NewsCategoryController::class, 'update'])->name('update')
-            ->middleware(['permission:sua-news']);
+            ->middleware(['permission:sua-danh-muc-tin-tuc']);
         Route::delete('/{category}/destroy', [NewsCategoryController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-news']);
+            ->middleware(['permission:xoa-danh-muc-tin-tuc']);
         Route::get('/bin', [NewsCategoryController::class, 'bin'])->name('bin');
         Route::put('/{id}/restore', [NewsCategoryController::class, 'restore'])->name('restore')
-            ->middleware(['permission:sua-news']);
+            ->middleware(['permission:khoi-phuc-danh-muc-tin-tuc']);
         Route::delete('/{id}/forceDelete', [NewsCategoryController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:xoa-news']);
+            ->middleware(['permission:xoa-vinh-vien-danh-muc-tin-tuc']);
         Route::delete('/bulk-delete', [NewsCategoryController::class, 'bulkDestroy'])->name('bulkDestroy')
-            ->middleware(['permission:xoa-nhieu-news']);
-        Route::post('/bulk-restore', [NewsCategoryController::class, 'bulkRestore'])->name('bulkRestore');
-        Route::delete('/bulk-force-delete', [NewsCategoryController::class, 'bulkForceDelete'])->name('bulkForceDelete');
+            ->middleware(['permission:xoa-nhieu-danh-muc-tin-tuc']);
+        Route::post('/bulk-restore', [NewsCategoryController::class, 'bulkRestore'])->name('bulkRestore')
+            ->middleware(['permission:khoi-phuc-danh-muc-tin-tuc']);
+        Route::delete('/bulk-force-delete', [NewsCategoryController::class, 'bulkForceDelete'])->name('bulkForceDelete')
+            ->middleware(['permission:xoa-vinh-vien-danh-muc-tin-tuc']);
     });
 
     //Brands

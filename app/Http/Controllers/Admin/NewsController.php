@@ -69,7 +69,7 @@ class NewsController extends Controller
         ]);
 
         $data['slug'] = Str::slug($data['title']);
-        $data['author_id'] = auth()->id();
+        $data['author_id'] = auth()->user()->id;
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('news', 'public');

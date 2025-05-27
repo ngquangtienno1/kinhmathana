@@ -322,6 +322,16 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xóa vĩnh viễn tin tức', 'slug' => 'xoa-vinh-vien-news', 'description' => 'Cho phép xóa vĩnh viễn tin tức'],
             ['name' => 'Xem thùng rác tin tức', 'slug' => 'xem-thung-rac-news', 'description' => 'Cho phép xem thùng rác tin tức'],
 
+            //Quản lý danh mục tin tức
+            ['name' => 'Xem danh mục tin tức', 'slug' => 'xem-danh-muc-tin-tuc', 'description' => 'Cho phép xem danh mục tin tức'],
+            ['name' => 'Thêm danh mục tin tức', 'slug' => 'them-danh-muc-tin-tuc', 'description' => 'Cho phép thêm danh mục tin tức'],
+            ['name' => 'Sửa danh mục tin tức', 'slug' => 'sua-danh-muc-tin-tuc', 'description' => 'Cho phép chỉnh sửa danh mục tin tức'],
+            ['name' => 'Xóa danh mục tin tức', 'slug' => 'xoa-danh-muc-tin-tuc', 'description' => 'Cho phép xóa danh mục tin tức'],
+            ['name' => 'Xóa nhiều danh mục tin tức', 'slug' => 'xoa-nhieu-danh-muc-tin-tuc', 'description' => 'Cho phép xóa nhiều danh mục tin tức cùng lúc'],
+            ['name' => 'Khôi phục danh mục tin tức', 'slug' => 'khoi-phuc-danh-muc-tin-tuc', 'description' => 'Cho phép khôi phục danh mục tin tức đã xóa'],
+            ['name' => 'Xóa vĩnh viễn danh mục tin tức', 'slug' => 'xoa-vinh-vien-danh-muc-tin-tuc', 'description' => 'Cho phép xóa vĩnh viễn danh mục tin tức'],
+            ['name' => 'Xem thùng rác danh mục tin tức', 'slug' => 'xem-thung-rac-danh-muc-tin-tuc', 'description' => 'Cho phép xem thùng rác danh mục tin tức'],
+
             //Quản lý lý do huỷ đơn
             ['name' => 'Xem lý do huỷ đơn', 'slug' => 'xem-ly-do-huy-don', 'description' => 'Cho phép xem danh sách lý do huỷ đơn'],
             ['name' => 'Thêm lý do huỷ đơn', 'slug' => 'them-ly-do-huy-don', 'description' => 'Cho phép thêm lý do huỷ đơn'],
