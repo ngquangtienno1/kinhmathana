@@ -1,18 +1,18 @@
 @extends('admin.layouts')
-@section('title', 'Sửa Slider')
+@section('title', 'Sửa Tin Tức')
 @section('content')
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.sliders.index') }}">Slider</a>
+        <a href="{{ route('admin.news.index') }}">Tin tức</a>
     </li>
-    <li class="breadcrumb-item active">Sửa Slider</li>
+    <li class="breadcrumb-item active">Sửa Tin Tức</li>
 @endsection
 
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Sửa Slider</h2>
+            <h2 class="mb-0">Sửa Tin Tức</h2>
         </div>
     </div>
 
@@ -23,10 +23,36 @@
                 @method('PUT')
                 <div class="row g-3">
                     <div class="col-12">
+                        <label class="form-label" for="category_id">Danh mục <span class="text-danger">*</span></label>
+                        <select class="form-select @error('category_id') is-invalid @enderror" id="category_id"
+                            name="category_id" required>
+                            <option value="">Chọn danh mục</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('category_id', $news->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12">
                         <label class="form-label" for="title">Tiêu đề <span class="text-danger">*</span></label>
                         <input class="form-control @error('title') is-invalid @enderror" id="title" name="title"
                             type="text" value="{{ old('title', $news->title) }}" required />
                         @error('title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="summary">Tóm tắt <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('summary') is-invalid @enderror" id="summary" name="summary" rows="3"
+                            required>{{ old('summary', $news->summary) }}</textarea>
+                        @error('summary')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -56,8 +82,17 @@
                     </div>
 
                     <div class="col-12">
+                        <label class="form-label" for="published_at">Ngày xuất bản</label>
+                        <input class="form-control @error('published_at') is-invalid @enderror" id="published_at"
+                            name="published_at" type="datetime-local"
+                            value="{{ old('published_at', $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : '') }}" />
+                        @error('published_at')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12">
                         <div class="form-check form-switch">
-                            <input type="hidden" name="is_active" value="0">
                             <input class="form-check-input" id="is_active" name="is_active" type="checkbox"
                                 value="1" {{ old('is_active', $news->is_active) ? 'checked' : '' }} />
                             <label class="form-check-label" for="is_active">Hoạt động</label>

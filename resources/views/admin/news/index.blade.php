@@ -38,6 +38,23 @@
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
                 </div>
+                <div class="dropdown">
+                    <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Danh mục:
+                        {{ request('category') ? $categories->firstWhere('id', request('category'))->name : 'Tất cả' }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
+                                href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => null])) }}">Tất
+                                cả</a></li>
+                        @foreach ($categories as $category)
+                            <li><a class="dropdown-item {{ request('category') == $category->id ? 'active' : '' }}"
+                                    href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => $category->id])) }}">{{ $category->name }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
                 <div class="ms-xxl-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
@@ -74,12 +91,11 @@
                                 ẢNH</th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
                                 data-sort="title">TIÊU ĐỀ</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="content" style="width:200px;">
-                                NỘI DUNG</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
-                                TRẠNG THÁI</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="created_at"
-                                style="width:150px;">NGÀY TẠO</th>
+                            <th class="sort" data-sort="category">Danh mục</th>
+                            <th class="sort" data-sort="author">Tác giả</th>
+                            <th class="sort" data-sort="published_at">Ngày xuất bản</th>
+                            <th class="sort" data-sort="status">Trạng thái</th>
+                            <th class="sort" data-sort="created_at">Ngày tạo</th>
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
                         </tr>
                     </thead>
@@ -96,17 +112,21 @@
                                     <span class="text-body-tertiary">{{ $item->id }}</span>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-0">
-                                    <a class="d-block border border-translucent rounded-2" href="#">
+                                    <a class="d-block" href="{{ route('admin.news.show', $item) }}">
                                         <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                            width="53" />
+                                            width="53" class="img-fluid rounded-2 border border-translucent" />
                                     </a>
                                 </td>
                                 <td class="title align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
-                                        href="{{ route('admin.news.show', $item->id) }}">{{ $item->title }}</a>
+                                        href="{{ route('admin.news.show', $item) }}">{{ $item->title }}</a>
                                 </td>
-                                <td class="content align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ Str::limit($item->content, 50) }}</span>
+                                <td class="category align-middle ps-4">
+                                    {{ $item->category ? $item->category->name : 'N/A' }}</td>
+                                <td class="author align-middle ps-4">{{ $item->author ? $item->author->name : 'N/A' }}
+                                </td>
+                                <td class="published_at align-middle ps-4">
+                                    {{ $item->published_at ? $item->published_at->format('d/m/Y H:i') : 'Chưa xuất bản' }}
                                 </td>
                                 <td class="status align-middle ps-4">
                                     <span
@@ -115,7 +135,7 @@
                                     </span>
                                 </td>
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
-                                    {{ $item->created_at->format('d/m/Y H:i') }}
+                                    {{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '' }}
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
@@ -127,12 +147,12 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.news.show', $item->id) }}">Xem</a>
+                                                href="{{ route('admin.news.show', $item) }}">Xem</a>
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.news.edit', $item->id) }}">Sửa</a>
+                                                href="{{ route('admin.news.edit', $item) }}">Sửa</a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.news.destroy', $item->id) }}"
-                                                method="POST" class="d-inline">
+                                            <form action="{{ route('admin.news.destroy', $item) }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"

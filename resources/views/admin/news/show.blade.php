@@ -16,10 +16,10 @@
         </div>
         <div class="col-auto ms-auto">
             <div class="d-flex gap-2">
-                <a href="{{ route('admin.news.edit', $news->id) }}" class="btn btn-phoenix-primary">
+                <a href="{{ route('admin.news.edit', $news) }}" class="btn btn-phoenix-primary">
                     <span class="fas fa-edit me-2"></span>Sửa
                 </a>
-                <form action="{{ route('admin.news.destroy', $news->id) }}" method="POST" class="d-inline">
+                <form action="{{ route('admin.news.destroy', $news) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-phoenix-danger"
@@ -40,10 +40,10 @@
                 <div class="col-12">
                     <div class="mb-4">
                         <h4 class="mb-3">Hình ảnh</h4>
-                        <div class="border rounded-3 p-3">
+                        <div>
                             @if ($news->image)
                                 <img src="{{ asset('storage/' . $news->image) }}" alt="{{ $news->title }}"
-                                    class="img-fluid rounded-3" style="max-height: 400px; width: auto;">
+                                    class="img-fluid rounded-3 border" style="max-height: 400px; width: auto;">
                             @else
                                 <span class="text-muted">Không có hình ảnh</span>
                             @endif
@@ -70,6 +70,18 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th>Danh mục</th>
+                                        <td>{{ $news->category ? $news->category->name : 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tác giả</th>
+                                        <td>{{ $news->author ? $news->author->name : 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tóm tắt</th>
+                                        <td>{{ $news->summary }}</td>
+                                    </tr>
+                                    <tr>
                                         <th>Nội dung</th>
                                         <td>{!! $news->content !!}</td>
                                     </tr>
@@ -80,6 +92,11 @@
                                                 class="badge badge-phoenix fs-10 {{ $news->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
                                                 {{ $news->is_active ? 'Hoạt động' : 'Không hoạt động' }}
                                             </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày xuất bản</th>
+                                        <td>{{ $news->published_at ? $news->published_at->format('d/m/Y H:i') : 'Chưa xuất bản' }}
                                         </td>
                                     </tr>
                                     <tr>

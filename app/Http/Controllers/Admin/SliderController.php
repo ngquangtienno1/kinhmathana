@@ -154,7 +154,7 @@ class SliderController extends Controller
         try {
             $slider = Slider::findOrFail($id);
             $slider->delete(); // Soft delete
-            return redirect()->route('admin.sliders.index')->with('error', 'Xóa slider thành công!');
+            return redirect()->route('admin.sliders.index')->with('success', 'Xóa slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa slider: ' . $e->getMessage());
         }

@@ -30,6 +30,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\NewsCategoryController;
 
 // Redirect login
 Route::get('/', function () {
@@ -289,29 +291,53 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/bulk-force-delete', [SliderController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
-    //News
+    // News routes
     Route::prefix('news')->name('news.')->middleware(['permission:xem-news'])->group(function () {
         Route::get('/', [NewsController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [NewsController::class, 'show'])->name('show');
-        Route::get('/create',          [NewsController::class, 'create'])->name('create')
+        Route::get('/{news}/show', [NewsController::class, 'show'])->name('show');
+        Route::get('/create', [NewsController::class, 'create'])->name('create')
             ->middleware(['permission:them-news']);
-        Route::post('/store',          [NewsController::class, 'store'])->name('store')
+        Route::post('/store', [NewsController::class, 'store'])->name('store')
             ->middleware(['permission:them-news']);
-        Route::get('/{id}/edit',       [NewsController::class, 'edit'])->name('edit')
+        Route::get('/{news}/edit', [NewsController::class, 'edit'])->name('edit')
             ->middleware(['permission:sua-news']);
-        Route::put('/{id}/update',     [NewsController::class, 'update'])->name('update')
+        Route::put('/{news}/update', [NewsController::class, 'update'])->name('update')
             ->middleware(['permission:sua-news']);
-        Route::delete('/{id}/destroy', [NewsController::class, 'destroy'])->name('destroy')
+        Route::delete('/{news}/destroy', [NewsController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-news']);
-        Route::get('/bin',             [NewsController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [NewsController::class, 'restore'])->name('restore')
+        Route::get('/bin', [NewsController::class, 'bin'])->name('bin');
+        Route::put('/{news}/restore', [NewsController::class, 'restore'])->name('restore')
             ->middleware(['permission:sua-news']);
-        Route::delete('/{id}/forceDelete',   [NewsController::class, 'forceDelete'])->name('forceDelete')
+        Route::delete('/{news}/forceDelete', [NewsController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-news']);
         Route::delete('/bulk-delete', [NewsController::class, 'bulkDestroy'])->name('bulkDestroy')
             ->middleware(['permission:xoa-nhieu-news']);
         Route::post('/bulk-restore', [NewsController::class, 'bulkRestore'])->name('bulkRestore');
         Route::delete('/bulk-force-delete', [NewsController::class, 'bulkForceDelete'])->name('bulkForceDelete');
+    });
+
+    //News Categories
+    Route::prefix('news/categories')->name('news.categories.')->middleware(['permission:xem-news'])->group(function () {
+        Route::get('/', [NewsCategoryController::class, 'index'])->name('index');
+        Route::get('/create', [NewsCategoryController::class, 'create'])->name('create')
+            ->middleware(['permission:them-news']);
+        Route::post('/store', [NewsCategoryController::class, 'store'])->name('store')
+            ->middleware(['permission:them-news']);
+        Route::get('/{category}/edit', [NewsCategoryController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-news']);
+        Route::put('/{category}/update', [NewsCategoryController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-news']);
+        Route::delete('/{category}/destroy', [NewsCategoryController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-news']);
+        Route::get('/bin', [NewsCategoryController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [NewsCategoryController::class, 'restore'])->name('restore')
+            ->middleware(['permission:sua-news']);
+        Route::delete('/{id}/forceDelete', [NewsCategoryController::class, 'forceDelete'])->name('forceDelete')
+            ->middleware(['permission:xoa-news']);
+        Route::delete('/bulk-delete', [NewsCategoryController::class, 'bulkDestroy'])->name('bulkDestroy')
+            ->middleware(['permission:xoa-nhieu-news']);
+        Route::post('/bulk-restore', [NewsCategoryController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [NewsCategoryController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     //Brands
@@ -492,6 +518,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-loai-khach-hang']);
     });
 
+    // Global search route
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
+    Route::get('/search/results', [SearchController::class, 'searchResults'])->name('search.results');
     // Payment Methods
     Route::prefix('payment-methods')->name('payment_methods.')->middleware(['permission:xem-danh-sach-phuong-thuc-thanh-toan'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'index'])->name('index');

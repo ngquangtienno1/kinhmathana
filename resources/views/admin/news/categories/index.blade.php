@@ -1,40 +1,40 @@
 @extends('admin.layouts')
-@section('title', 'Sliders')
+@section('title', 'Danh mục tin tức')
 @section('content')
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Slider</a>
+        <a href="#">Tin tức</a>
     </li>
-    <li class="breadcrumb-item active">Danh sách Slider</li>
+    <li class="breadcrumb-item active">Danh mục tin tức</li>
 @endsection
 
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0"> Danh sách Slider</h2>
+            <h2 class="mb-0">Danh mục tin tức</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
-                href="{{ route('admin.sliders.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $sliders->count() }})</span></a></li>
+                href="{{ route('admin.news.categories.index') }}"><span>Tất cả </span><span
+                    class="text-body-tertiary fw-semibold">({{ $categories->count() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
-                href="{{ route('admin.sliders.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
-                    class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
+                href="{{ route('admin.news.categories.index', ['status' => 'active']) }}"><span>Đang hoạt động
+                </span><span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="{{ route('admin.sliders.bin') }}"><span>Thùng rác </span><span
-                    class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span></a>
+        <li class="nav-item"><a class="nav-link" href="{{ route('admin.news.categories.bin') }}"><span>Thùng rác
+                </span><span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span></a>
         </li>
     </ul>
-    <div id="sliders"
-        data-list='{"valueNames":["title","description","sort_order","status","created_at"],"page":10,"pagination":true}'>
+    <div id="news-categories"
+        data-list='{"valueNames":["id","name","description","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.sliders.index') }}" method="GET">
+                    <form class="position-relative" action="{{ route('admin.news.categories.index') }}" method="GET">
                         <input class="form-control search-input search" type="search" name="search"
-                            placeholder="Tìm kiếm slider" value="{{ request('search') }}" aria-label="Search" />
+                            placeholder="Tìm kiếm danh mục" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
                 </div>
@@ -42,8 +42,8 @@
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>
-                    <a href="{{ route('admin.sliders.create') }}" class="btn btn-primary">
-                        <span class="fas fa-plus me-2"></span>Thêm slider
+                    <a href="{{ route('admin.news.categories.create') }}" class="btn btn-primary">
+                        <span class="fas fa-plus me-2"></span>Thêm danh mục
                     </a>
                 </div>
             </div>
@@ -56,12 +56,12 @@
                         <tr>
                             <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
                                 <div class="form-check mb-0 fs-8">
-                                    <input class="form-check-input" id="checkbox-bulk-sliders-select" type="checkbox"
-                                        data-bulk-select='{"body":"sliders-table-body"}' />
+                                    <input class="form-check-input" id="checkbox-bulk-categories-select" type="checkbox"
+                                        data-bulk-select='{"body":"categories-table-body"}' />
                                 </div>
                             </th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
-                                <a href="{{ route('admin.sliders.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                <a href="{{ route('admin.news.categories.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     ID
                                     @if (request('sort') === 'id')
@@ -70,22 +70,11 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle fs-9" scope="col" style="width:70px;">
-                                ẢNH
-                            </th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
-                                data-sort="title">TIÊU ĐỀ</th>
+                                data-sort="name">TÊN DANH MỤC</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="description"
-                                style="width:200px;">MÔ TẢ</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="url" style="width:200px;">
-                                Đường dẫn URL
-                            </th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="sort_order"
-                                style="width:100px;">SẮP XẾP</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="start_date"
-                                style="width:150px;">NGÀY BẮT ĐẦU</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="end_date" style="width:150px;">
-                                NGÀY KẾT THÚC</th>
+                                style="width:200px;">
+                                MÔ TẢ</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
                                 TRẠNG THÁI</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="created_at"
@@ -93,73 +82,34 @@
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
                         </tr>
                     </thead>
-                    <tbody class="list" id="sliders-table-body">
-                        @forelse ($sliders as $slider)
+                    <tbody class="list" id="categories-table-body">
+                        @forelse ($categories as $category)
                             <tr class="position-static">
                                 <td class="fs-9 align-middle">
                                     <div class="form-check mb-0 fs-8">
-                                        <input class="form-check-input slider-checkbox" type="checkbox"
-                                            value="{{ $slider->id }}" />
+                                        <input class="form-check-input category-checkbox" type="checkbox"
+                                            value="{{ $category->id }}" />
                                     </div>
                                 </td>
                                 <td class="id align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ $slider->id }}</span>
+                                    <span class="text-body-tertiary">{{ $category->id }}</span>
                                 </td>
-                                <td class="align-middle white-space-nowrap py-0">
-                                    <a class="d-block border border-translucent rounded-2" href="#">
-                                        <img src="{{ asset('storage/' . $slider->image) }}" alt=""
-                                            width="53" />
-                                    </a>
-                                </td>
-                                <td class="title align-middle ps-4">
+                                <td class="name align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
-                                        href="{{ route('admin.sliders.show', $slider->id) }}">{{ $slider->title }}</a>
+                                        href="{{ route('admin.news.categories.edit', $category) }}">{{ $category->name }}</a>
                                 </td>
                                 <td class="description align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ Str::limit($slider->description, 50) }}</span>
-                                </td>
-                                <td class="url align-middle ps-4">
-                                    @if ($slider->url)
-                                        <a href="{{ $slider->url }}" target="_blank" class="text-primary">
-                                            {{ Str::limit($slider->url, 50) }}
-                                        </a>
-                                    @else
-                                        <span class="text-body-tertiary">-</span>
-                                    @endif
-                                </td>
-                                <td class="sort_order align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ $slider->sort_order }}</span>
-                                </td>
-                                <td class="start_date align-middle white-space-nowrap text-body-tertiary ps-4">
-                                    @if ($slider->start_date)
-                                        @if (is_string($slider->start_date))
-                                            {{ \Carbon\Carbon::parse($slider->start_date)->format('d/m/Y H:i') }}
-                                        @else
-                                            {{ $slider->start_date->format('d/m/Y H:i') }}
-                                        @endif
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="end_date align-middle white-space-nowrap text-body-tertiary ps-4">
-                                    @if ($slider->end_date)
-                                        @if (is_string($slider->end_date))
-                                            {{ \Carbon\Carbon::parse($slider->end_date)->format('d/m/Y H:i') }}
-                                        @else
-                                            {{ $slider->end_date->format('d/m/Y H:i') }}
-                                        @endif
-                                    @else
-                                        -
-                                    @endif
+                                    <span
+                                        class="text-body-tertiary">{{ Str::limit($category->description, 50) }}</span>
                                 </td>
                                 <td class="status align-middle ps-4">
                                     <span
-                                        class="badge badge-phoenix fs-10 {{ $slider->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
-                                        {{ $slider->is_active ? 'Hoạt động' : 'Không hoạt động' }}
+                                        class="badge badge-phoenix fs-10 {{ $category->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
+                                        {{ $category->is_active ? 'Hoạt động' : 'Không hoạt động' }}
                                     </span>
                                 </td>
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
-                                    {{ $slider->created_at->format('d/m/Y H:i') }}
+                                    {{ $category->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
@@ -171,16 +121,14 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.sliders.show', $slider->id) }}">Xem</a>
-                                            <a class="dropdown-item"
-                                                href="{{ route('admin.sliders.edit', $slider->id) }}">Sửa</a>
+                                                href="{{ route('admin.news.categories.edit', $category) }}">Sửa</a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.sliders.destroy', $slider->id) }}"
+                                            <form action="{{ route('admin.news.categories.destroy', $category) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa slider này?')">Xóa</button>
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">Xóa</button>
                                             </form>
                                         </div>
                                     </div>
@@ -188,7 +136,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-4">Không có slider nào</td>
+                                <td colspan="7" class="text-center py-4">Không có danh mục nào</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -216,7 +164,8 @@
     </div>
 </div>
 
-<form id="bulk-delete-form" action="{{ route('admin.sliders.bulkDestroy') }}" method="POST" style="display:none;">
+<form id="bulk-delete-form" action="{{ route('admin.news.categories.bulkDestroy') }}" method="POST"
+    style="display:none;">
     @csrf
     @method('DELETE')
     <input type="hidden" name="ids" id="bulk-delete-ids">
@@ -224,8 +173,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const bulkCheckbox = document.getElementById('checkbox-bulk-sliders-select');
-        const itemCheckboxes = document.querySelectorAll('.slider-checkbox');
+        const bulkCheckbox = document.getElementById('checkbox-bulk-categories-select');
+        const itemCheckboxes = document.querySelectorAll('.category-checkbox');
         const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
         const bulkDeleteForm = document.getElementById('bulk-delete-form');
         const bulkDeleteIds = document.getElementById('bulk-delete-ids');
@@ -264,7 +213,7 @@
                 .filter(cb => cb.checked)
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
-            if (!confirm('Bạn có chắc chắn muốn xóa mềm các slider đã chọn?')) return;
+            if (!confirm('Bạn có chắc chắn muốn xóa mềm các danh mục đã chọn?')) return;
             bulkDeleteIds.value = checkedIds.join(',');
             bulkDeleteForm.submit();
         });

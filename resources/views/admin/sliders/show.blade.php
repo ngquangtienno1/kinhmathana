@@ -40,9 +40,9 @@
                 <div class="col-12">
                     <div class="mb-4">
                         <h4 class="mb-3">Hình ảnh</h4>
-                        <div class="border rounded-3 p-3">
+                        <div>
                             <img src="{{ asset('storage/' . $slider->image) }}" alt="{{ $slider->title }}"
-                                class="img-fluid rounded-3" style="max-height: 400px; width: auto;">
+                                class="img-fluid rounded-3 border" style="max-height: 400px; width: auto;">
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                                         <td>{{ $slider->description ?? 'Không có mô tả' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>URL</th>
+                                        <th> Đường dẫn URL</th>
                                         <td>
                                             @if ($slider->url)
                                                 <a href="{{ $slider->url }}" target="_blank" class="text-primary">
@@ -76,6 +76,34 @@
                                     <tr>
                                         <th>Thứ tự sắp xếp</th>
                                         <td>{{ $slider->sort_order }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày bắt đầu</th>
+                                        <td>
+                                            @if ($slider->start_date)
+                                                @if (is_string($slider->start_date))
+                                                    {{ \Carbon\Carbon::parse($slider->start_date)->format('d/m/Y H:i') }}
+                                                @else
+                                                    {{ $slider->start_date->format('d/m/Y H:i') }}
+                                                @endif
+                                            @else
+                                                Không có
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày kết thúc</th>
+                                        <td>
+                                            @if ($slider->end_date)
+                                                @if (is_string($slider->end_date))
+                                                    {{ \Carbon\Carbon::parse($slider->end_date)->format('d/m/Y H:i') }}
+                                                @else
+                                                    {{ $slider->end_date->format('d/m/Y H:i') }}
+                                                @endif
+                                            @else
+                                                Không có
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Trạng thái</th>
