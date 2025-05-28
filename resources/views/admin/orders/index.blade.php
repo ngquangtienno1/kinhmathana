@@ -134,9 +134,7 @@
                         style="height: 40px;">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </a>
-                    <button class="btn btn-primary d-flex align-items-center" style="height: 40px;">
-                        <span class="fas fa-plus me-2"></span>Add order
-                    </button>
+
                 </div>
             </div>
         </div>
@@ -267,17 +265,6 @@
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.orders.show', $order->id) }}">Chi tiết</a>
-                                            @if ($order->status == 'cancelled')
-                                                <a href="#" class="dropdown-item text-danger"
-                                                    onclick="event.preventDefault(); if(confirm('Bạn có chắc muốn xóa đơn hàng này?')) { document.getElementById('delete-order-{{ $order->id }}').submit(); }">Xóa
-                                                    đơn hàng</a>
-                                                <form id="delete-order-{{ $order->id }}"
-                                                    action="{{ route('admin.orders.destroy', $order->id) }}"
-                                                    method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            @endif
                                         </div>
                                     </div>
                                 </td>

@@ -14,7 +14,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Phoenix</title>
+    <title>{{ getSetting('website_name') }}</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
@@ -82,7 +82,7 @@
                                     <!--/.bg-holder-->
                                     <div
                                         class="position-relative px-4 px-lg-7 pt-7 pb-7 pb-sm-5 text-center text-md-start pb-lg-7 pb-md-7">
-                                        <h3 class="mb-3 text-body-emphasis fs-7">Trang quản trị Hanna</h3>
+                                        <h3 class="mb-3 text-body-emphasis fs-7">Trang quản trị Hana</h3>
                                         <p class="text-body-tertiary">Hãy tự tạo cho mình một quy trình phát triển dễ
                                             dàng với sự độc đáo của Hanna!</p>
                                         <ul class="list-unstyled mb-0 w-max-content w-md-auto">

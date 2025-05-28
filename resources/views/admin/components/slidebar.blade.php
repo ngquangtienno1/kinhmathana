@@ -4,18 +4,45 @@
             <ul class="navbar-nav flex-column" id="navbarVerticalNav">
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <a class="nav-link label-1" href="#">
+                        <a class="nav-link label-1" href="{{ route('admin.home') }}">
                             <div class="d-flex align-items-center">
                                 <span class="nav-link-icon"><span data-feather="home"></span></span>
-                                <span class="nav-link-text">Dashboard</span>
+                                <span class="nav-link-text">Trang chủ</span>
                             </div>
                         </a>
                     </div>
                 </li>
+                @if (canAccess('xem-danh-sach-khach-hang'))
+                <!-- Quản lý Khách hàng -->
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-customers" role="button"
+                            data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-customers">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                </div>
+                                <span class="nav-link-icon"><span data-feather="users"></span></span>
+                                <span class="nav-link-text">Khách hàng</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-customers">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.customers.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách khách hàng</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                @endif
                 @if (canAccess('xem-danh-sach-san-pham') ||
                 canAccess('xem-bien-the-san-pham') ||
                 canAccess('xem-danh-sach-danh-muc') ||
-                canAccess('xem-danh-sach-thuong-hieu') ||
                 canAccess('xem-danh-sach-mau-sac') ||
                 canAccess('xem-danh-sach-kich-thuoc'))
                 <!-- Product Management -->
@@ -42,7 +69,6 @@
                             <ul class="nav collapse parent {{ request()->is('admin/products*') ||
                                 request()->is('admin/variations*') ||
                                 request()->is('admin/categories*') ||
-                                request()->is('admin/brands*') ||
                                 request()->is('admin/colors*') ||
                                 request()->is('admin/sizes*')
                                     ? 'show'
@@ -76,17 +102,6 @@
                                         href="{{ route('admin.categories.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Danh sách danh mục</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                @endif
-
-                                @if (canAccess('xem-danh-sach-thuong-hieu'))
-                                <li class="nav-item">
-                                    <a class="nav-link {{ request()->is('admin/brands*') ? 'active' : '' }}"
-                                        href="{{ route('admin.brands.index') }}">
-                                        <div class="d-flex align-items-center">
-                                            <span class="nav-link-text">Thương hiệu</span>
                                         </div>
                                     </a>
                                 </li>
@@ -208,6 +223,64 @@
                 </li>
                 @endif
 
+                @if (canAccess('xem-danh-sach-danh-gia'))
+                <!-- Đánh giá -->
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-reviews" role="button"
+                            data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-reviews">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                </div>
+                                <span class="nav-link-icon"><span data-feather="star"></span></span>
+                                <span class="nav-link-text">Đánh giá</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-reviews">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.reviews.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách đánh giá</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                @endif
+
+                @if (canAccess('xem-danh-sach-khuyen-mai'))
+                <!-- Khuyến mãi -->
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-promotions" role="button"
+                            data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-promotions">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                </div>
+                                <span class="nav-link-icon"><span data-feather="percent"></span></span>
+                                <span class="nav-link-text">Khuyến mãi</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-promotions">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.promotions.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách khuyến mãi</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                @endif
+
                 @if (canAccess('xem-danh-sach-slider'))
                 <!-- Quản lý Slider -->
                 <li class="nav-item">
@@ -269,11 +342,21 @@
                                         </div>
                                     </a>
                                 </li>
+                                @if (canAccess('xem-danh-muc-tin-tuc'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.news.categories.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh mục tin tức</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @endif
                             </ul>
                         </div>
                     </div>
                 </li>
                 @endif
+
 
                 @if (canAccess('xem-danh-sach-thuong-hieu'))
                 <!-- Quản lý Brands -->
@@ -333,6 +416,44 @@
                 </li>
                 @endif
 
+                @if (canAccess('xem-ticket'))
+                <!-- Quản lý Ticket -->
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-tickets" role="button"
+                            data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-tickets">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                </div>
+                                <span class="nav-link-icon"><span data-feather="message-circle"></span></span>
+                                <span class="nav-link-text">Ticket</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-tickets">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.tickets.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách ticket</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @if (canAccess('xem-thung-rac-ticket'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.tickets.trashed') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Thùng rác</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                @endif
+
                 @if (canAccess('xem-ly-do-huy-don'))
                 <!-- Quản lý Lý do hủy -->
                 <li class="nav-item">
@@ -360,6 +481,45 @@
                                 @if (canAccess('xem-thung-rac-ly-do-huy-don'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.cancellation_reasons.bin') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Thùng rác</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                @endif
+
+                @if (canAccess('xem-danh-sach-phuong-thuc-thanh-toan'))
+                <!-- Quản lý Lý do hủy -->
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-payment-methods" role="button"
+                            data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-payment-methods">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                </div>
+                                <span class="nav-link-icon"><span data-feather="credit-card"></span></span>
+                                <span class="nav-link-text">Phương thức thanh toán</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                id="nv-payment-methods">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.payment_methods.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách phương thức thanh toán</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @if (canAccess('xoa-phuong-thuc-thanh-toan'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.payment_methods.bin') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Thùng rác</span>
                                         </div>
@@ -477,7 +637,6 @@
                     </div>
                 </li>
                 @endif
-
             </ul>
         </div>
     </div>
@@ -486,7 +645,7 @@
             class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center">
             <span class="uil uil-left-arrow-to-left fs-8"></span>
             <span class="uil uil-arrow-from-right fs-8"></span>
-            <span class="navbar-vertical-footer-text ms-2">Collapsed View</span>
+            <span class="navbar-vertical-footer-text ms-2">Chế độ thu gọn</span>
         </button>
     </div>
 </nav>
