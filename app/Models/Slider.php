@@ -14,8 +14,11 @@ class Slider extends Model
         'title',
         'description',
         'image',
+        'url',
         'sort_order',
-        'is_active'
+        'is_active',
+        'start_date',
+        'end_date'
     ];
 
     protected $dates = ['deleted_at'];

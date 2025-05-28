@@ -24,11 +24,11 @@
                     onclick="if(confirm('Bạn có chắc muốn xóa đơn hàng này?')) document.getElementById('delete-order-form').submit();">
                     <i class="fas fa-trash me-2"></i>Xóa đơn hàng
                 </button>
-                <form id="delete-order-form" action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
+                {{-- <form id="delete-order-form" action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
                     style="display: none;">
                     @csrf
                     @method('DELETE')
-                </form>
+                </form> --}}
             @endif
         </div>
     </div>

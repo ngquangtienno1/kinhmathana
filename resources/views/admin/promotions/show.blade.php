@@ -75,6 +75,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th>Giá trị đơn tối đa</th>
+                                        <td>
+                                            {{ $promotion->maximum_purchase ? number_format($promotion->maximum_purchase, 0, ',', '.') . 'đ' : 'Không giới hạn' }}
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Giới hạn lượt dùng</th>
                                         <td>
                                             {{ $promotion->usage_limit ? $promotion->used_count . ' / ' . $promotion->usage_limit : 'Không giới hạn' }}

@@ -16,6 +16,27 @@
                 <h2 class="mb-0">Danh sách khuyến mãi</h2>
             </div>
         </div>
+        <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+            <li class="nav-item"><a class="nav-link {{ !request('status') && !request('discount_type') ? 'active' : '' }}"
+                    aria-current="page" href="{{ route('admin.promotions.index') }}"><span>Tất cả </span><span
+                        class="text-body-tertiary fw-semibold">({{ $promotions->count() }})</span></a></li>
+            <li class="nav-item"><a class="nav-link {{ request('status') === 'active' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
+                        class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link {{ request('status') === 'inactive' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['status' => 'inactive']) }}"><span>Không hoạt động
+                    </span><span class="text-body-tertiary fw-semibold">({{ $inactiveCount }})</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link {{ request('discount_type') === 'percentage' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['discount_type' => 'percentage']) }}"><span>Phần trăm
+                    </span><span class="text-body-tertiary fw-semibold">({{ $percentageCount }})</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link {{ request('discount_type') === 'fixed' ? 'active' : '' }}"
+                    href="{{ route('admin.promotions.index', ['discount_type' => 'fixed']) }}"><span>Số tiền </span><span
+                        class="text-body-tertiary fw-semibold">({{ $fixedCount }})</span></a>
+            </li>
+        </ul>
         <div id="promotions"
             data-list='{"valueNames":["name","code","discount","status","time","usage"],"page":10,"pagination":true}'>
             <div class="mb-4">
@@ -89,7 +110,7 @@
                     </div>
                     <div class="ms-xxl-auto">
                         <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
-                            <span class="fas fa-trash me-2"></span>Xóa
+                            <span class="fas fa-trash me-2"></span>Xóa tất cả
                         </button>
                         <a href="{{ route('admin.promotions.create') }}" class="btn btn-primary" id="addBtn">
                             <span class="fas fa-plus me-2"></span>Thêm khuyến mãi
@@ -97,6 +118,42 @@
                     </div>
                 </div>
             </div>
+
+            @if(request('status') || request('discount_type') || request('search'))
+            <div class="mb-4">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="text-body-tertiary">Bộ lọc đã chọn:</span>
+                    @if(request('status'))
+                        <a href="{{ route('admin.promotions.index', array_merge(request()->except(['status', 'page']), ['discount_type' => request('discount_type')])) }}" 
+                           class="badge bg-phoenix-secondary text-decoration-none">
+                            Trạng thái: {{ request('status') === 'active' ? 'Đang hoạt động' : 'Không hoạt động' }}
+                            <span class="ms-1 fas fa-times"></span>
+                        </a>
+                    @endif
+                    @if(request('discount_type'))
+                        <a href="{{ route('admin.promotions.index', array_merge(request()->except(['discount_type', 'page']), ['status' => request('status')])) }}" 
+                           class="badge bg-phoenix-secondary text-decoration-none">
+                            Loại giảm giá: {{ request('discount_type') === 'percentage' ? 'Phần trăm' : 'Số tiền' }}
+                            <span class="ms-1 fas fa-times"></span>
+                        </a>
+                    @endif
+                    @if(request('search'))
+                        <a href="{{ route('admin.promotions.index', array_merge(request()->except(['search', 'page']), ['status' => request('status'), 'discount_type' => request('discount_type')])) }}" 
+                           class="badge bg-phoenix-secondary text-decoration-none">
+                            Tìm kiếm: {{ request('search') }}
+                            <span class="ms-1 fas fa-times"></span>
+                        </a>
+                    @endif
+                    @if(request('status') || request('discount_type') || request('search'))
+                        <a href="{{ route('admin.promotions.index') }}" class="badge bg-phoenix-secondary text-decoration-none">
+                            Xóa tất cả bộ lọc
+                            <span class="ms-1 fas fa-times"></span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+            @endif
+
             <div
                 class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
                 <div class="table-responsive scrollbar mx-n1 px-1">
@@ -119,7 +176,8 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:350px;">
+                                <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                    style="width:350px;">
                                     <a href="{{ route('admin.promotions.index', ['sort' => 'name', 'direction' => request('sort') === 'name' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                         class="text-body" style="text-decoration:none;">
                                         TÊN KHUYẾN MÃI
@@ -138,6 +196,9 @@
                                                 class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                         @endif
                                     </a>
+                                </th>
+                                <th class="sort align-middle ps-4" scope="col" style="width:200px;">
+                                    DANH MỤC
                                 </th>
                                 <th class="sort align-middle text-end ps-4" scope="col" style="width:150px;">
                                     <a href="{{ route('admin.promotions.index', ['sort' => 'discount_value', 'direction' => request('sort') === 'discount_value' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
@@ -204,6 +265,17 @@
                                     <td class="code align-middle ps-4">
                                         <code>{{ $promotion->code }}</code>
                                     </td>
+                                    <td class="categories align-middle ps-4">
+                                        @if($promotion->categories->count() > 0)
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @foreach($promotion->categories as $category)
+                                                    <span class="badge bg-info">{{ $category->name }}</span>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-body-tertiary">Tất cả danh mục</span>
+                                        @endif
+                                    </td>
                                     <td class="discount align-middle text-end fw-bold text-body-tertiary ps-4">
                                         @if ($promotion->discount_type === 'percentage')
                                             {{ $promotion->discount_value }}%
@@ -269,9 +341,9 @@
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
                     </p>
-                    <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
+                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
-                    <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
+                    <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                 </div>
                 <div class="col-auto d-flex">

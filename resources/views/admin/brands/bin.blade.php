@@ -64,10 +64,11 @@
                                     </div>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <a class="d-block border border-translucent rounded-2" href="#">
+                                    <a class="d-block" href="#">
                                         @if ($brand->image)
                                             <img src="{{ asset('storage/' . $brand->image) }}" alt=""
-                                                width="48" style="object-fit:cover; border-radius:4px;">
+                                                width="48" style="object-fit:cover;"
+                                                class="border border-translucent rounded-2">
                                         @else
                                             <span class="text-muted">Không có ảnh</span>
                                         @endif
