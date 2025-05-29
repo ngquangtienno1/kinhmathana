@@ -13,50 +13,76 @@ use Carbon\Carbon;
 class CommentController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Comment::query();
+{
+    $query = Comment::query();
 
-        // Filter by status
-        if ($request->filled('status')) {
-            if ($request->status === 'active') {
-                // Assuming 'active' means 'đã duyệt' for now, based on previous context.
-                // We'll adjust the view to use specific statuses.
-                $query->where('status', 'đã duyệt');
-            } elseif ($request->status === 'trashed') {
-                $query->onlyTrashed();
-            } else {
-                // Filter by specific status
-                $query->where('status', $request->status);
-            }
+    // Filter theo trạng thái
+    if ($request->filled('status')) {
+        if ($request->status === 'active') {
+            $query->where('status', 'đã duyệt');
+        } elseif ($request->status === 'trashed') {
+            $query->onlyTrashed();
+        } else {
+            $query->where('status', $request->status);
         }
-
-        // Tìm kiếm
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw('LOWER(content) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereHas('user', function ($q) use ($search) {
-                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%'])
-                            ->orWhereRaw('LOWER(email) LIKE ?', ['%' . strtolower($search) . '%']);
-                    });
-            });
-        }
-
-        $comments = $query->get();
-
-        $totalCount = Comment::count();
-        $approvedCount = Comment::where('status', 'đã duyệt')->count();
-        $pendingCount = Comment::where('status', 'chờ duyệt')->count();
-        $spamCount = Comment::where('status', 'spam')->count();
-        $blockedCount = Comment::where('status', 'chặn')->count();
-        $deletedCount = Comment::onlyTrashed()->count();
-
-        // Lấy danh sách bài viết và sản phẩm cho filter
-        $news = News::pluck('title', 'id');
-        $products = Product::pluck('name', 'id');
-
-        return view('admin.comments.index', compact('comments', 'totalCount', 'approvedCount', 'pendingCount', 'spamCount', 'blockedCount', 'deletedCount', 'news', 'products'));
     }
+
+    // Filter theo entity_type nếu có
+    if ($request->filled('entity_type')) {
+        $query->where('entity_type', $request->entity_type);
+    }
+
+    // Filter theo entity_id nếu có
+    if ($request->filled('entity_id')) {
+        $query->where('entity_id', $request->entity_id);
+    }
+
+    // Filter theo khoảng thời gian (created_at)
+    if ($request->filled('from_date')) {
+        $query->whereDate('created_at', '>=', $request->from_date);
+    }
+    if ($request->filled('to_date')) {
+        $query->whereDate('created_at', '<=', $request->to_date);
+    }
+
+    // Tìm kiếm theo nội dung hoặc user name/email
+    if ($request->filled('search')) {
+        $search = strtolower($request->search);
+        $query->where(function ($q) use ($search) {
+            $q->whereRaw('LOWER(content) LIKE ?', ['%' . $search . '%'])
+              ->orWhereHas('user', function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(email) LIKE ?', ['%' . $search . '%']);
+              });
+        });
+    }
+
+    // Phân trang, ví dụ 10 bản ghi 1 trang
+    $comments = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    // Đếm các trạng thái để hiển thị filter
+    $totalCount = Comment::count();
+    $approvedCount = Comment::where('status', 'đã duyệt')->count();
+    $pendingCount = Comment::where('status', 'chờ duyệt')->count();
+    $spamCount = Comment::where('status', 'spam')->count();
+    $blockedCount = Comment::where('status', 'chặn')->count();
+    $deletedCount = Comment::onlyTrashed()->count();
+
+    // Lấy danh sách entity_type để chọn filter (nếu muốn)
+    $entityTypes = Comment::select('entity_type')->distinct()->pluck('entity_type');
+
+    return view('admin.comments.index', compact(
+        'comments',
+        'totalCount',
+        'approvedCount',
+        'pendingCount',
+        'spamCount',
+        'blockedCount',
+        'deletedCount',
+        'entityTypes',
+    ));
+}
+
 
     public function create() {}
 
