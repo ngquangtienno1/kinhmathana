@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Config;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+
+
+
+
     /**
      * Register any application services.
      */
@@ -18,8 +23,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
+
+
     public function boot(): void
-    
+
     {
         // Lấy từ DB hoặc cache qua helper
         Config::set('mail.mailers.smtp.host', getSetting('smtp_host'));
@@ -29,6 +36,6 @@ class AppServiceProvider extends ServiceProvider
         Config::set('mail.mailers.smtp.encryption', getSetting('smtp_encryption'));
 
         Config::set('mail.from.address', getSetting('mail_from_address'));
-        Config::set('mail.from.name', getSetting('mail_from_address'));
+        Config::set('mail.from.name', getSetting('mail_from_name'));
     }
 }

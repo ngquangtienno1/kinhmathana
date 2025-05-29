@@ -75,6 +75,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-nhieu-faq']);
         Route::get('/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit')
             ->middleware(['permission:sua-faq']);
+        Route::get('/{faq}/show', [FaqController::class, 'show'])->name('faqs.show')
+            ->middleware(['permission:xem-danh-sach-faq']);
         Route::put('/{faq}', [FaqController::class, 'update'])->name('faqs.update')
             ->middleware(['permission:sua-faq']);
         Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy')

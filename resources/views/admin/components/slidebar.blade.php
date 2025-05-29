@@ -193,7 +193,7 @@
                                         <a class="nav-link {{ request()->routeIs('admin.orders.status_histories.*') ? 'active' : '' }}"
                                             href="{{ route('admin.orders.status_histories.index') }}">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Lịch sử cập nhật trạng thái</span>
+                                                <span class="nav-link-text">Lịch sử cập nhật</span>
                                             </div>
                                         </a>
                                     </li>
