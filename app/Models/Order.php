@@ -72,6 +72,11 @@ class Order extends Model
         return $this->hasMany(OrderStatusLog::class);
     }
 
+    public function statusHistories()
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
     public function getStatusLabelAttribute()
     {
         return match($this->status) {
