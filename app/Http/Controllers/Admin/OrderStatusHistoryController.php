@@ -69,7 +69,7 @@ class OrderStatusHistoryController extends Controller
 
     public function index()
     {
-        $histories = \App\Models\OrderStatusHistory::with(['order.user', 'user'])->orderByDesc('created_at')->paginate(20);
+        $histories = \App\Models\OrderStatusHistory::with(['order.user', 'updatedBy'])->orderByDesc('created_at')->paginate(20);
         return view('admin.order_status_histories.index', compact('histories'));
     }
 } 
