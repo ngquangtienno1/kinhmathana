@@ -24,22 +24,20 @@ class OrderFactory extends Factory
         $paymentStatuses = [
             'pending',
             'paid',
-            'failed',
+            'cod',
+            'confirmed',
             'refunded',
-            'cancelled',
-            'partially_paid',
-            'disputed'
+            'processing_refund',
+            'failed'
         ];
         $orderStatuses = [
             'pending',
-            'awaiting_payment',
-            'confirmed',
-            'processing',
+            'awaiting_pickup',
             'shipping',
             'delivered',
-            'returned',
-            'processing_return',
-            'refunded'
+            'cancelled',
+            'returned_refunded',
+            'completed'
         ];
 
         return [

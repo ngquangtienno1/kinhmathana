@@ -174,43 +174,31 @@
                             <p class="mb-0 ms-4">
                                 @switch($order->status)
                                     @case('pending')
-                                        <span class="badge bg-warning">Chờ xử lý</span>
+                                        <span class="badge bg-warning">Chờ xác nhận</span>
                                     @break
 
-                                    @case('awaiting_payment')
-                                        <span class="badge bg-warning">Chờ thanh toán</span>
-                                    @break
-
-                                    @case('confirmed')
-                                        <span class="badge bg-info">Đã xác nhận</span>
-                                    @break
-
-                                    @case('processing')
-                                        <span class="badge bg-primary">Đang xử lý</span>
+                                    @case('awaiting_pickup')
+                                        <span class="badge bg-info">Chờ lấy hàng</span>
                                     @break
 
                                     @case('shipping')
-                                        <span class="badge bg-info">Đang vận chuyển</span>
+                                        <span class="badge bg-info">Đang giao</span>
                                     @break
 
                                     @case('delivered')
                                         <span class="badge bg-success">Đã giao hàng</span>
                                     @break
 
-                                    @case('returned')
-                                        <span class="badge bg-warning">Đã trả hàng</span>
-                                    @break
-
-                                    @case('processing_return')
-                                        <span class="badge bg-info">Đang xử lý trả hàng</span>
-                                    @break
-
-                                    @case('refunded')
-                                        <span class="badge bg-success">Đã hoàn tiền</span>
-                                    @break
-
                                     @case('cancelled')
                                         <span class="badge bg-danger">Đã hủy</span>
+                                    @break
+
+                                    @case('returned_refunded')
+                                        <span class="badge bg-warning">Trả hàng / Hoàn tiền</span>
+                                    @break
+
+                                    @case('completed')
+                                        <span class="badge bg-success">Đã hoàn thành</span>
                                     @break
 
                                     @default
@@ -243,7 +231,7 @@
                     </div>
                     @if ($order->discount_amount > 0)
                         <div class="d-flex justify-content-between mb-2">
-                            <p class="text-body fw-semibold mb-0">Giảm giá:</p>
+                            <p class="text-body fw-semibold mb-0">Giảm giá @if($order->discount)({{ $order->discount->code }})@endif:</p>
                             <p class="text-danger fw-semibold mb-0">-{{ number_format($order->discount_amount) }}đ</p>
                         </div>
                     @endif
@@ -269,34 +257,24 @@
                             <label class="form-label">Trạng thái đơn hàng</label>
                             <select name="status" class="form-select"
                                 {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xác nhận
                                 </option>
-                                <option value="awaiting_payment"
-                                    {{ $order->status == 'awaiting_payment' ? 'selected' : '' }}>Chờ thanh toán
+                                <option value="awaiting_pickup"
+                                    {{ $order->status == 'awaiting_pickup' ? 'selected' : '' }}>Chờ lấy hàng
                                 </option>
-                                <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác
-                                    nhận</option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đang
-                                    xử lý</option>
-                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang vận
-                                    chuyển</option>
+                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang giao
+                                </option>
                                 <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã
                                     giao hàng</option>
-                                <option value="returned" {{ $order->status == 'returned' ? 'selected' : '' }}>Đã trả
-                                    hàng</option>
-                                <option value="processing_return"
-                                    {{ $order->status == 'processing_return' ? 'selected' : '' }}>Đang xử lý trả hàng
-                                </option>
-                                <option value="refunded" {{ $order->status == 'refunded' ? 'selected' : '' }}>Đã hoàn
-                                    tiền</option>
                                 <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy
+                                </option>
+                                <option value="returned_refunded" {{ $order->status == 'returned_refunded' ? 'selected' : '' }}>Trả hàng / Hoàn tiền
+                                </option>
+                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Đã hoàn thành
                                 </option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú admin</label>
-                            <textarea name="admin_note" class="form-control" rows="3">{{ $order->admin_note }}</textarea>
-                        </div>
+                     
                         <button type="submit" class="btn btn-primary w-100"
                             {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
                             Cập nhật trạng thái

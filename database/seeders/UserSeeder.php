@@ -61,6 +61,20 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'phone_verified_at' => now(),
         ]);
+        User::create([
+            'name' => 'Quang Tiến',
+            'email' => 'tiennqph51552@gmail.com',
+            'password' => Hash::make('password'),
+            'address' => '789 Customer Street',
+            'phone' => '0123456788',
+            'date_birth' => '2000-01-01',
+            'gender' => 'male',
+            'status_user' => 'active',
+            'avatar_url' => 'https://ui-avatars.com/api/?name=Customer&background=random',
+            'role_id' => 3, // Customer role
+            'email_verified_at' => now(),
+            'phone_verified_at' => now(),
+        ]);
 
         // Tạo thêm 20 tài khoản ngẫu nhiên
         User::factory()->count(20)->create();

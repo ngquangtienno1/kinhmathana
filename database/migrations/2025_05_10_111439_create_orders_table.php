@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('order_number')->unique()->comment('Mã đơn hàng');
             // Thông tin liên kết
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('discount_id')->nullable()->constrained('discounts')->nullOnDelete();
+            $table->foreignId('discount_id')->constrained('discounts')->onDelete('cascade');
 
             // Thông tin người đặt hàng
             $table->string('customer_name');
@@ -38,26 +38,24 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->json('payment_details')->nullable();
             $table->enum('payment_status', [
-                'pending',      // Chờ thanh toán
+                'pending',      // Chưa thanh toán
                 'paid',        // Đã thanh toán
-                'failed',      // Thanh toán thất bại
+                'cod',         // Thanh toán khi nhận hàng (COD)
+                'confirmed',   // Đã xác nhận thanh toán
                 'refunded',    // Đã hoàn tiền
-                'cancelled',   // Đã huỷ
-                'partially_paid', // Thanh toán một phần
-                'disputed'     // Đang tranh chấp
+                'processing_refund', // Đang hoàn tiền
+                'failed'       // Thanh toán không thành công
             ])->default('pending');
 
             // Trạng thái đơn hàng
             $table->enum('status', [
-                'pending',           // Đơn hàng vừa được tạo
-                'awaiting_payment',  // Chờ thanh toán
-                'confirmed',         // Đã xác nhận đơn
-                'processing',        // Đang đóng gói/kiểm hàng
-                'shipping',          // Đang vận chuyển
+                'pending',           // Chờ xác nhận
+                'awaiting_pickup',  // Chờ lấy hàng
+                'shipping',          // Đang giao
                 'delivered',         // Đã giao hàng
-                'returned',          // Khách trả hàng
-                'processing_return', // Đang xử lý trả hàng
-                'refunded',          // Đã hoàn tiền
+                'cancelled',   // Đã hủy
+                'returned_refunded',          // Trả hàng / Hoàn tiền
+                'completed',          // Đã hoàn thành
             ])->default('pending');
 
             // Thông tin bổ sung

@@ -119,7 +119,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user']);
+        $order->load(['user', 'discount']);
         return view('admin.orders.detail', compact('order'));
     }
 
@@ -141,8 +141,8 @@ class OrderController extends Controller
         $data = $request->validate([
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:pending,paid,failed,refunded,cancelled',
-            'status' => 'required|in:pending,confirmed,processing,shipping,delivered,cancelled',
+            'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
+            'status' => 'required|in:pending,awaiting_pickup,shipping,delivered,cancelled,returned_refunded,completed',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -181,7 +181,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,awaiting_payment,confirmed,processing,shipping,delivered,returned,processing_return,refunded,cancelled',
+            'status' => 'required|in:pending,awaiting_pickup,shipping,delivered,cancelled,returned_refunded,completed',
             'comment' => 'nullable|string'
         ]);
 
@@ -204,7 +204,7 @@ class OrderController extends Controller
                 } elseif ($order->customer_email) {
                     Mail::to($order->customer_email)->send(new OrderDelivered($order));
                 }
-            } elseif ($request->status === 'returned' && $oldStatus === 'shipping') {
+            } elseif ($request->status === 'returned_refunded' && $oldStatus === 'shipping') {
                 // Gửi email khi giao hàng thất bại
                 if ($order->user && $order->user->email) {
                     Mail::to($order->user->email)->send(new OrderDeliveryFailed($order));
@@ -230,7 +230,7 @@ class OrderController extends Controller
     public function updatePaymentStatus(Request $request, Order $order)
     {
         $request->validate([
-            'payment_status' => 'required|in:pending,paid,failed,refunded,cancelled,partially_paid,disputed',
+            'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
             'comment' => 'nullable|string'
         ]);
 

@@ -346,6 +346,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
+        Route::delete('/{order}', [OrderController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-don-hang']);
     });
 
     // Reviews
