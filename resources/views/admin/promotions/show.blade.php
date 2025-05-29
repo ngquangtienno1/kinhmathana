@@ -125,12 +125,22 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th style="width: 200px;">Giá trị đơn hàng tối thiểu</th>
+                                        <th style="width: 250px;">Giá trị đơn hàng tối thiểu</th>
                                         <td>
                                             @if ($promotion->minimum_purchase > 0)
                                                 {{ number_format($promotion->minimum_purchase, 0, ',', '.') }}đ
                                             @else
                                                 Không yêu cầu
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Giá trị đơn hàng tối đa</th>
+                                        <td>
+                                            @if ($promotion->maximum_purchase > 0)
+                                                {{ number_format($promotion->maximum_purchase, 0, ',', '.') }}đ
+                                            @else
+                                                Không giới hạn
                                             @endif
                                         </td>
                                     </tr>
