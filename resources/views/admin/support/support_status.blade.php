@@ -24,8 +24,9 @@
     </div>
     <div class="card shadow-sm">
         <div class="card-body p-4">
-            <form method="POST" action="{{ route('admin.support.updateStatus', $support->id) }}">
+            <form action="{{ route('admin.support.updateStatus', $support->id) }}" method="POST">
                 @csrf
+                @method('PATCH')
                 <div class="mb-3">
                     <label for="status" class="form-label"><strong>Trạng thái</strong></label>
                     <select name="status" id="status" class="form-select">

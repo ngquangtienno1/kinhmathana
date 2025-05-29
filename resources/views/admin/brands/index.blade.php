@@ -105,9 +105,9 @@
                                         <span class="text-body-tertiary">{{ $brand->id }}</span>
                                     </td>
                                     <td class="align-middle white-space-nowrap py-0">
-                                        <a class="d-block border border-translucent rounded-2" href="#">
+                                        <a class="d-block" href="#">
                                             <img src="{{ asset('storage/' . $brand->image) }}" alt=""
-                                                width="53" />
+                                                width="53" class="img-fluid rounded-2 border border-translucent" />
                                         </a>
                                     </td>
                                     <td class="name align-middle ps-4">

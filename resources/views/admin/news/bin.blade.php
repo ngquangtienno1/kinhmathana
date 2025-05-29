@@ -45,10 +45,13 @@
                                 </div>
                             </th>
                             <th class="align-middle text-center" style="width:70px;">ẢNH</th>
-                            <th class="align-middle text-center" style="width:220px;">TIÊU ĐỀ</th>
-                            <th class="align-middle text-center" style="width:350px;">NỘI DUNG</th>
-                            <th class="align-middle text-center" style="width:150px;">NGÀY XÓA</th>
-                            <th class="align-middle text-center" style="width:120px;"></th>
+                            <th class="sort" data-sort="title">Tiêu đề</th>
+                            <th class="sort" data-sort="category">Danh mục</th>
+                            <th class="sort" data-sort="author">Tác giả</th>
+                            <th class="sort" data-sort="published_at">Ngày xuất bản</th>
+                            <th class="sort" data-sort="status">Trạng thái</th>
+                            <th class="sort" data-sort="deleted_at">Ngày xóa</th>
+                            <th class="text-end">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,21 +65,27 @@
                                 </td>
                                 <td class="align-middle text-center">
                                     @if ($item->image)
-                                        <a class="d-block border border-translucent rounded-2" href="#">
+                                        <a class="d-block" href="#">
                                             <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                                width="48" style="object-fit:cover; border-radius:4px;">
+                                                width="48" style="object-fit:cover;"
+                                                class="border border-translucent rounded-2">
                                         </a>
                                     @endif
                                 </td>
-                                <td class="align-middle text-center">
-                                    <a class="fw-semibold line-clamp-3 mb-0" href="#">{{ $item->title }}</a>
+                                <td class="title">{{ $item->title }}</td>
+                                <td class="category">{{ $item->category ? $item->category->name : 'N/A' }}</td>
+                                <td class="author">{{ $item->author ? $item->author->name : 'N/A' }}</td>
+                                <td class="published_at">
+                                    {{ $item->published_at ? $item->published_at->format('d/m/Y H:i') : 'Chưa xuất bản' }}
                                 </td>
-                                <td class="align-middle text-center">
-                                    <span class="text-body-tertiary">{{ Str::limit($item->content, 80) }}</span>
+                                <td class="status">
+                                    <span
+                                        class="badge badge-phoenix fs-10 {{ $item->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
+                                        {{ $item->is_active ? 'Hoạt động' : 'Không hoạt động' }}
+                                    </span>
                                 </td>
-                                <td class="align-middle text-center text-body-tertiary">
-                                    {{ $item->deleted_at ? $item->deleted_at->format('d/m/Y H:i') : '' }}
-                                </td>
+                                <td class="deleted_at">
+                                    {{ $item->deleted_at ? $item->deleted_at->format('d/m/Y H:i') : '' }}</td>
                                 <td class="align-middle text-center btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
                                         <button

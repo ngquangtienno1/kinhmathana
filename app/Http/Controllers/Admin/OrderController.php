@@ -219,6 +219,14 @@ class OrderController extends Controller
                 'status_to' => $request->status,
                 'comment' => $request->comment
             ]);
+
+            // Lưu lịch sử trạng thái
+            $order->statusHistories()->create([
+                'old_status' => $oldStatus,
+                'new_status' => $request->status,
+                'note' => $request->comment,
+                'updated_by' => auth()->id()
+            ]);
         });
 
         return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');

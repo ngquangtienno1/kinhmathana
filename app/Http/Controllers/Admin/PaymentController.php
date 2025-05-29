@@ -100,20 +100,20 @@ class PaymentController extends Controller
     }
     public function updateStatus(Request $request, $id)
     {
-       $request->validate([
-        'status' => 'required|in:đã hoàn thành,đã hủy',
-    ]);
+        $request->validate([
+            'status' => 'required|in:đã hoàn thành,đã hủy',
+        ]);
 
-    $payment = Payment::findOrFail($id);
+        $payment = Payment::findOrFail($id);
 
-    if ($payment->status !== 'đang chờ thanh toán') {
-        return back()->with('error', 'Chỉ có thể cập nhật trạng thái khi đơn đang chờ thanh toán.');
-    }
+        if ($payment->status !== 'đang chờ thanh toán') {
+            return back()->with('error', 'Chỉ có thể cập nhật trạng thái khi đơn đang chờ thanh toán.');
+        }
 
-    $payment->status = $request->status;
-    $payment->save();
+        $payment->status = $request->status;
+        $payment->save();
 
-    return back()->with('success', 'Trạng thái thanh toán đã được cập nhật.');
+        return back()->with('success', 'Trạng thái thanh toán đã được cập nhật.');
     }
 
     public function printInvoice($id)
