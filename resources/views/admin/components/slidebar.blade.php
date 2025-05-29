@@ -588,7 +588,7 @@
                     <!-- User Management -->
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
-                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.listUser') || request()->routeIs('admin.roles.*') || request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
+                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*') || request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
                                 href="#nv-users" role="button" data-bs-toggle="collapse" aria-expanded="false"
                                 aria-controls="nv-users">
                                 <div class="d-flex align-items-center">
@@ -604,8 +604,8 @@
                                     id="nv-users">
                                     @if (canAccess('xem-danh-sach-nguoi-dung'))
                                         <li class="nav-item">
-                                            <a class="nav-link {{ request()->routeIs('admin.listUser') ? 'active' : '' }}"
-                                                href="{{ route('admin.listUser') }}">
+                                            <a class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}"
+                                                href="{{ route('admin.users.index') }}">
                                                 <div class="d-flex align-items-center">
                                                     <span class="nav-link-text">Danh sách người dùng</span>
                                                 </div>

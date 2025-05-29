@@ -75,6 +75,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-nhieu-faq']);
         Route::get('/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit')
             ->middleware(['permission:sua-faq']);
+        Route::get('/{faq}/show', [FaqController::class, 'show'])->name('faqs.show')
+            ->middleware(['permission:xem-danh-sach-faq']);
         Route::put('/{faq}', [FaqController::class, 'update'])->name('faqs.update')
             ->middleware(['permission:sua-faq']);
         Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy')
@@ -109,9 +111,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     // User Management
-    Route::get('user', [UserController::class, 'index'])
-        ->name('listUser')
-        ->middleware(['permission:xem-danh-sach-nguoi-dung']);
+    Route::prefix('users')->name('users.')->middleware(['permission:xem-danh-sach-nguoi-dung'])->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [UserController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-nguoi-dung']);
+        Route::put('/{id}/update', [UserController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-nguoi-dung']);
+        Route::delete('/{id}/destroy', [UserController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-nguoi-dung']);
+    });
 
     // Shipping routes
     Route::prefix('shipping')->middleware(['permission:xem-don-vi-van-chuyen'])->group(function () {
@@ -538,4 +547,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::post('/bulk-restore', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'bulkRestore'])->name('bulkRestore')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
         Route::delete('/bulk-force-delete', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'bulkForceDelete'])->name('bulkForceDelete')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
     });
+
+    // User profile routes
+    Route::get('/profile/{id?}', [UserController::class, 'profile'])->name('users.profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('users.updateProfile');
 });
