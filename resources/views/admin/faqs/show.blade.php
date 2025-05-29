@@ -17,7 +17,7 @@
         <div class="col-auto ms-auto">
             <div class="d-flex gap-2">
                 <a href="{{ route('admin.faqs.edit', $faq->id) }}" class="btn btn-phoenix-primary">
-                    <span class="fas fa-edit me-2"></span>Sửa
+                    <span class="fas fa-edit me-2"></span>Sửas
                 </a>
                 <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST" class="d-inline">
                     @csrf
