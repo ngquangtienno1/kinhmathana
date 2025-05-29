@@ -27,7 +27,7 @@ class User extends Authenticatable
         'date_birth',
         'gender',
         'status_user',
-        'avatar_id',
+        'avatar',
         'role_id',
         'email_verified_at',
         'phone_verified_at'
@@ -101,7 +101,7 @@ class User extends Authenticatable
     {
         return $this->banned_until && $this->banned_until->isFuture();
     }
-  
+
     public function customer()
     {
         return $this->hasOne(Customer::class);

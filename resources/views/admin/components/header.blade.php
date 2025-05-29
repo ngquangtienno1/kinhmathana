@@ -426,7 +426,7 @@
                     aria-expanded="false">
                     <div class="avatar avatar-l ">
                         <img class="rounded-circle"
-                            src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('v1/assets/img/team/40x40/57.webp') }}"
+                            src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('v1/assets/img/team/40x40/57.webp') }}"
                             alt="{{ auth()->user()->name }}" />
                     </div>
                 </a>
@@ -437,7 +437,7 @@
                             <div class="text-center pt-4 pb-3">
                                 <div class="avatar avatar-xl">
                                     <img class="rounded-circle"
-                                        src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('v1/assets/img/team/72x72/57.webp') }}"
+                                        src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('v1/assets/img/team/72x72/57.webp') }}"
                                         alt="{{ auth()->user()->name }}" />
                                 </div>
                                 <h6 class="mt-2 text-body-emphasis">{{ auth()->user()->name }}</h6>
@@ -447,7 +447,7 @@
                         <div class="overflow-auto scrollbar" style="height: 10rem;">
                             <ul class="nav d-flex flex-column mb-2 pb-1">
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 d-block" href="#">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.users.profile') }}">
                                         <span class="me-2 text-body align-bottom" data-feather="user"></span>
                                         <span>Thông tin tài khoản</span>
                                     </a>
@@ -465,9 +465,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3 d-block" href="#">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.faqs.index') }}">
                                         <span class="me-2 text-body align-bottom" data-feather="help-circle"></span>
-                                        Hỗ trợ
+                                        FAQS
                                     </a>
                                 </li>
                             </ul>

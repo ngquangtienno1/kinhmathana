@@ -24,7 +24,6 @@ class UserSeeder extends Seeder
             'date_birth' => '1990-01-01',
             'gender' => 'male',
             'status_user' => 'active',
-            'avatar_url' => 'https://ui-avatars.com/api/?name=Admin&background=random',
             'role_id' => 1, // Admin role
             'email_verified_at' => now(),
             'phone_verified_at' => now(),
@@ -40,7 +39,6 @@ class UserSeeder extends Seeder
             'date_birth' => '1995-01-01',
             'gender' => 'female',
             'status_user' => 'active',
-            'avatar_url' => 'https://ui-avatars.com/api/?name=Staff&background=random',
             'role_id' => 2, // Staff role
             'email_verified_at' => now(),
             'phone_verified_at' => now(),
