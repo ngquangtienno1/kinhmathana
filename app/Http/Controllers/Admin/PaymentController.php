@@ -84,11 +84,11 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Payment $payment)
+    public function destroy(Request $request, Payment $payment, $id)
     {
         //
         // Kiểm tra trạng thái của thanh toán
-        if ($payment->status === 'đã hủy' || $payment->status === 'thất bại') {
+        if ($payment->status == 'đã hủy' || $payment->status == 'thất bại') {
             $payment->delete();
 
             // Chuyển hướng với thông báo thành công

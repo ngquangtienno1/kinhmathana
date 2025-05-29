@@ -431,6 +431,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:cap-nhat-trang-thai-thanh-toan']);
         Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
             ->middleware(['permission:in-hoa-don']);
+        Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-thanh-toan']);
     });
 
     // Quản lý bình luận
