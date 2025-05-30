@@ -246,9 +246,10 @@
                                 <td
                                     class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 px-3">
                                     @if ($order->shipping)
-                                        {{ $order->shipping->shipping_provider }}
+                                        {{ $order->shipping->shipping_provider->name }}
                                         ({{ $order->shipping->tracking_code }})
-                                        @elseKhông có thông tin vận chuyển
+                                    @else
+                                        Không có thông tin vận chuyển
                                     @endif
                                 </td>
                                 <td

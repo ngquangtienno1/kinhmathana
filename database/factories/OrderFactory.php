@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Discount;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -15,12 +16,13 @@ class OrderFactory extends Factory
     {
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
         $discount = Discount::inRandomOrder()->first();
+        $paymentMethod = PaymentMethod::where('is_active', true)->inRandomOrder()->first();
+
         $subtotal = $this->faker->randomFloat(2, 100000, 2000000);
         $shippingFee = $this->faker->randomFloat(2, 15000, 50000);
         $discountAmount = $discount ? $this->faker->randomFloat(2, 10000, 200000) : 0;
         $totalAmount = $subtotal + $shippingFee - $discountAmount;
 
-        $paymentMethods = ['cod', 'banking', 'momo', 'vnpay', 'zalopay'];
         $paymentStatuses = [
             'pending',
             'paid',
@@ -46,6 +48,7 @@ class OrderFactory extends Factory
             'order_number'      => 'ORD-' . $this->faker->unique()->numberBetween(10000, 99999),
             'user_id'           => $user->id,
             'discount_id'       => $discount ? $discount->id : null,
+            'payment_method_id' => $paymentMethod ? $paymentMethod->id : null,
             'customer_name'     => $user->name,
             'customer_phone'    => $user->phone ?? $this->faker->phoneNumber(),
             'customer_email'    => $user->email,
@@ -58,7 +61,6 @@ class OrderFactory extends Factory
             'subtotal'          => $subtotal,
             'discount_amount'   => $discountAmount,
             'shipping_fee'      => $shippingFee,
-            'payment_method'    => $this->faker->randomElement($paymentMethods),
             'payment_details'   => null,
             'payment_status'    => $this->faker->randomElement($paymentStatuses),
             'status'            => $this->faker->randomElement($orderStatuses),

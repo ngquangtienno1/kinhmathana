@@ -164,7 +164,14 @@
                                 <i class="fas fa-money-bill me-2"></i>
                                 <h6 class="mb-0">Phương thức thanh toán</h6>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->payment_method }}</p>
+                            <p class="mb-0 ms-4">{{ $order->paymentMethod->name ?? 'Chưa chọn' }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="fas fa-truck me-2"></i>
+                                <h6 class="mb-0">Phương thức vận chuyển</h6>
+                            </div>
+                            <p class="mb-0 ms-4">{{ $order->shippingProvider->name ?? 'Chưa chọn' }}</p>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex align-items-center mb-1">

@@ -43,8 +43,8 @@
                     <div class="mb-4">
                         <h4 class="mb-3">Biểu tượng</h4>
                         <div class="border rounded-3 p-3" style="width:100px; height:100px; overflow:hidden;">
-                            @if ($paymentMethod->logo_url)
-                                <img src="{{ asset('storage/' . $paymentMethod->logo_url) }}"
+                            @if ($paymentMethod->logo)
+                                <img src="{{ asset('storage/' . $paymentMethod->logo) }}"
                                     alt="{{ $paymentMethod->name }}"
                                     style="width:100%; height:100%; object-fit:contain; display:block;" />
                             @else
@@ -64,8 +64,40 @@
                                         <td>{{ $paymentMethod->name }}</td>
                                     </tr>
                                     <tr>
+                                        <th>Mã phương thức</th>
+                                        <td><span
+                                                class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $paymentMethod->code }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Mô tả</th>
                                         <td>{{ $paymentMethod->description ?? 'Không có mô tả' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>API Key</th>
+                                        <td>{{ $paymentMethod->api_key ?? 'Không có' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>API Secret</th>
+                                        <td>{{ $paymentMethod->api_secret ? '********' : 'Không có' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>API Endpoint</th>
+                                        <td>{{ $paymentMethod->api_endpoint ?? 'Không có' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>API Settings</th>
+                                        <td>
+                                            @if ($paymentMethod->api_settings)
+                                                <pre class="mb-0"><code>{{ json_encode(json_decode($paymentMethod->api_settings), JSON_PRETTY_PRINT) }}</code></pre>
+                                            @else
+                                                Không có
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Thứ tự hiển thị</th>
+                                        <td>{{ $paymentMethod->sort_order }}</td>
                                     </tr>
                                     <tr>
                                         <th>Trạng thái</th>

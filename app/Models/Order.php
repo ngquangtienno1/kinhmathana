@@ -77,9 +77,19 @@ class Order extends Model
         return $this->hasMany(OrderStatusHistory::class);
     }
 
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function shippingProvider()
+    {
+        return $this->belongsTo(ShippingProvider::class);
+    }
+
     public function getStatusLabelAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'Chờ xử lý',
             'awaiting_payment' => 'Chờ thanh toán',
             'confirmed' => 'Đã xác nhận',
@@ -95,7 +105,7 @@ class Order extends Model
 
     public function getPaymentStatusLabelAttribute()
     {
-        return match($this->payment_status) {
+        return match ($this->payment_status) {
             'pending' => 'Chờ thanh toán',
             'paid' => 'Đã thanh toán',
             'failed' => 'Thanh toán thất bại',
@@ -109,7 +119,7 @@ class Order extends Model
 
     public function getStatusColorAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'secondary',
             'awaiting_payment' => 'warning',
             'confirmed' => 'info',
@@ -125,7 +135,7 @@ class Order extends Model
 
     public function getPaymentStatusColorAttribute()
     {
-        return match($this->payment_status) {
+        return match ($this->payment_status) {
             'pending' => 'warning',
             'paid' => 'success',
             'failed' => 'danger',

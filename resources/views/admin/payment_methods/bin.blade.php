@@ -49,7 +49,9 @@
                             </th>
                             <th class="align-middle text-center" style="width:70px;">BIỂU TƯỢNG</th>
                             <th class="align-middle text-center" style="width:220px;">TÊN PHƯƠNG THỨC</th>
+                            <th class="align-middle text-center" style="width:100px;">MÃ</th>
                             <th class="align-middle text-center" style="width:250px;">MÔ TẢ</th>
+                            <th class="align-middle text-center" style="width:120px;">TRẠNG THÁI</th>
                             <th class="align-middle text-center" style="width:150px;">NGÀY XÓA</th>
                             <th class="align-middle text-center" style="width:120px;"></th>
                         </tr>
@@ -64,9 +66,9 @@
                                     </div>
                                 </td>
                                 <td class="align-middle text-center">
-                                    @if ($method->logo_url)
+                                    @if ($method->logo)
                                         <a class="d-block border border-translucent rounded-2" href="#">
-                                            <img src="{{ asset('storage/' . $method->logo_url) }}" alt=""
+                                            <img src="{{ asset('storage/' . $method->logo) }}" alt=""
                                                 width="48" style="object-fit:cover; border-radius:4px;">
                                         </a>
                                     @else
@@ -78,7 +80,17 @@
                                 </td>
                                 <td class="align-middle text-center">
                                     <span
+                                        class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $method->code }}</span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <span
                                         class="text-body-tertiary">{{ Str::limit($method->description, 80) ?: 'Không có mô tả' }}</span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <span
+                                        class="badge badge-phoenix fs-10 {{ $method->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
+                                        {{ $method->is_active ? 'Hoạt động' : 'Không hoạt động' }}
+                                    </span>
                                 </td>
                                 <td class="align-middle text-center text-body-tertiary">
                                     {{ $method->deleted_at->format('d/m/Y H:i') }}
