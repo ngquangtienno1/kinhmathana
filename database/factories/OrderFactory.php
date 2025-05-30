@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Discount;
 use App\Models\Order;
 use App\Models\PaymentMethod;
+use App\Models\ShippingProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -17,6 +18,7 @@ class OrderFactory extends Factory
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
         $discount = Discount::inRandomOrder()->first();
         $paymentMethod = PaymentMethod::where('is_active', true)->inRandomOrder()->first();
+        $shippingProvider = ShippingProvider::where('is_active', true)->inRandomOrder()->first();
 
         $subtotal = $this->faker->randomFloat(2, 100000, 2000000);
         $shippingFee = $this->faker->randomFloat(2, 15000, 50000);
@@ -49,6 +51,7 @@ class OrderFactory extends Factory
             'user_id'           => $user->id,
             'discount_id'       => $discount ? $discount->id : null,
             'payment_method_id' => $paymentMethod ? $paymentMethod->id : null,
+            'shipping_provider_id' => $shippingProvider ? $shippingProvider->id : null,
             'customer_name'     => $user->name,
             'customer_phone'    => $user->phone ?? $this->faker->phoneNumber(),
             'customer_email'    => $user->email,

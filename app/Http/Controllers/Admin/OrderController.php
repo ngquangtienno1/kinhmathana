@@ -21,7 +21,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'items']);
+        $query = Order::with(['user', 'items', 'paymentMethod', 'shippingProvider'])
+            ->latest();
 
         // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
         if ($request->has('search')) {
@@ -45,7 +46,7 @@ class OrderController extends Controller
             $query->where('status', $request->status);
         }
 
-        $orders = $query->latest()->get();
+        $orders = $query->get();
         // Đếm số lượng các trạng thái
         $countAll = Order::count();
         $countPending = Order::where('payment_status', 'pending')->count();

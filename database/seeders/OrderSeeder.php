@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\PaymentMethod;
+use App\Models\ShippingProvider;
 use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
@@ -17,6 +18,12 @@ class OrderSeeder extends Seeder
         // Kiểm tra xem có payment methods không
         if (PaymentMethod::count() === 0) {
             $this->command->info('Không có phương thức thanh toán nào. Vui lòng chạy PaymentMethodSeeder trước.');
+            return;
+        }
+
+        // Kiểm tra xem có shipping providers không
+        if (ShippingProvider::count() === 0) {
+            $this->command->info('Không có đơn vị vận chuyển nào. Vui lòng chạy ShippingProviderSeeder trước.');
             return;
         }
 

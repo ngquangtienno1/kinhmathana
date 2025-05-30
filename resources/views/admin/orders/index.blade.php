@@ -245,11 +245,13 @@
                                 </td>
                                 <td
                                     class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 px-3">
-                                    @if ($order->shipping)
-                                        {{ $order->shipping->shipping_provider->name }}
-                                        ({{ $order->shipping->tracking_code }})
+                                    @if ($order->shippingProvider)
+                                        <span
+                                            class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $order->shippingProvider->name }}</span>
                                     @else
-                                        Không có thông tin vận chuyển
+                                        <span class="badge bg-secondary-subtle text-secondary fw-semibold fs-9"
+                                            style="width: 100px;">Chưa
+                                            chọn</span>
                                     @endif
                                 </td>
                                 <td
