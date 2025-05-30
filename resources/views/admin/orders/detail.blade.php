@@ -35,80 +35,88 @@
 
     <div class="row g-5 gy-7">
         <div class="col-12 col-xl-8 col-xxl-9">
-            <div class="table-responsive scrollbar">
-                <table class="table fs-9 mb-0 border-top border-translucent align-middle">
-                    <thead class="bg-light">
-                        <tr>
-                            <th class="white-space-nowrap align-middle fs-10" scope="col"></th>
-                            <th class="white-space-nowrap align-middle" scope="col" style="min-width:300px;">SẢN PHẨM
-                            </th>
-                            <th class="align-middle text-end" scope="col" style="width:130px;">GIÁ</th>
-                            <th class="align-middle text-center" scope="col" style="width:100px;">SỐ LƯỢNG</th>
-                            <th class="align-middle text-end" scope="col" style="width:130px;">TỔNG</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if ($order->items && count($order->items) > 0)
-                            @foreach ($order->items as $item)
-                                <tr class="border-bottom">
-                                    <td class="align-middle white-space-nowrap py-2">
-                                        @if ($item->product && $item->product->thumbnail)
-                                            <img src="{{ asset($item->product->thumbnail) }}" alt=""
-                                                width="53" class="rounded border" style="object-fit:cover;">
-                                        @endif
-                                    </td>
-                                    <td class="align-middle py-0">
-                                        <p class="fw-semibold mb-0">{{ $item->product_name }}</p>
-                                        <small class="text-muted">SKU: {{ $item->product_sku }}</small>
-                                    </td>
-                                    <td class="align-middle text-end text-body-emphasis">
-                                        {{ number_format($item->price) }}đ</td>
-                                    <td class="align-middle text-center">{{ $item->quantity }}</td>
-                                    <td class="align-middle text-end fw-bold text-primary">
-                                        {{ number_format($item->subtotal) }}đ</td>
+            <div class="card mb-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive scrollbar">
+                        <table class="table fs-9 mb-0 border-top border-translucent align-middle text-center">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="white-space-nowrap align-middle fs-10 ps-2 pe-2" scope="col"></th>
+                                    <th class="white-space-nowrap align-middle text-start ps-2 pe-2" scope="col">SẢN
+                                        PHẨM</th>
+                                    <th class="align-middle text-end ps-2 pe-2" scope="col">GIÁ</th>
+                                    <th class="align-middle ps-2 pe-2" scope="col">SỐ LƯỢNG</th>
+                                    <th class="align-middle text-end ps-2 pe-2" scope="col">TỔNG</th>
                                 </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="5" class="text-center">Không có sản phẩm nào trong đơn hàng</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if ($order->items && count($order->items) > 0)
+                                    @foreach ($order->items as $item)
+                                        <tr class="border-bottom">
+                                            <td class="align-middle white-space-nowrap py-2 ps-2 pe-2">
+                                                @if ($item->product && $item->product->thumbnail)
+                                                    <img src="{{ asset($item->product->thumbnail) }}" alt=""
+                                                        width="53" class="rounded border" style="object-fit:cover;">
+                                                @endif
+                                            </td>
+                                            <td class="align-middle py-2 ps-2 pe-2 text-start">
+                                                <p class="fw-semibold mb-0">{{ $item->product_name }}</p>
+                                                <small class="text-muted">SKU: {{ $item->product_sku }}</small>
+                                            </td>
+                                            <td class="align-middle py-2 ps-2 pe-2 text-end">
+                                                {{ number_format($item->price) }}đ</td>
+                                            <td class="align-middle py-2 ps-2 pe-2">
+                                                {{ $item->quantity }}</td>
+                                            <td class="align-middle py-2 ps-2 pe-2 text-end fw-bold text-primary">
+                                                {{ number_format($item->subtotal) }}đ</td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3">Không có sản phẩm nào trong đơn hàng
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="row gx-4 gy-6 g-xl-7 justify-content-sm-center justify-content-xl-start mt-4">
                 <!-- Thông tin người đặt hàng -->
                 <div class="col-12 col-sm-6">
                     <h4 class="mb-3">Thông tin người đặt</h4>
-                    <div class="border rounded p-3">
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-user me-2"></i>
-                                <h6 class="mb-0">Họ tên</h6>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-user me-2"></i>
+                                    <h6 class="mb-0">Họ tên</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->user->name }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->user->name }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-envelope me-2"></i>
-                                <h6 class="mb-0">Email</h6>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <h6 class="mb-0">Email</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->user->email }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->user->email }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-phone me-2"></i>
-                                <h6 class="mb-0">Điện thoại</h6>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-phone me-2"></i>
+                                    <h6 class="mb-0">Điện thoại</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->user->phone ?? 'Chưa cập nhật' }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->user->phone ?? 'Chưa cập nhật' }}</p>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-map-marker-alt me-2"></i>
-                                <h6 class="mb-0">Địa chỉ</h6>
+                            <div>
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <h6 class="mb-0">Địa chỉ</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->user->address ?? 'Chưa cập nhật' }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->user->address ?? 'Chưa cập nhật' }}</p>
                         </div>
                     </div>
                 </div>
@@ -116,34 +124,36 @@
                 <!-- Thông tin người nhận -->
                 <div class="col-12 col-sm-6">
                     <h4 class="mb-3">Thông tin người nhận</h4>
-                    <div class="border rounded p-3">
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-user me-2"></i>
-                                <h6 class="mb-0">Họ tên</h6>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-user me-2"></i>
+                                    <h6 class="mb-0">Họ tên</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->receiver_name }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->receiver_name }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-envelope me-2"></i>
-                                <h6 class="mb-0">Email</h6>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <h6 class="mb-0">Email</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->receiver_email }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->receiver_email }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-phone me-2"></i>
-                                <h6 class="mb-0">Điện thoại</h6>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-phone me-2"></i>
+                                    <h6 class="mb-0">Điện thoại</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->receiver_phone }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->receiver_phone }}</p>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-map-marker-alt me-2"></i>
-                                <h6 class="mb-0">Địa chỉ</h6>
+                            <div>
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <h6 class="mb-0">Địa chỉ</h6>
+                                </div>
+                                <p class="mb-0 ms-4">{{ $order->shipping_address }}</p>
                             </div>
-                            <p class="mb-0 ms-4">{{ $order->shipping_address }}</p>
                         </div>
                     </div>
                 </div>
@@ -151,89 +161,98 @@
                 <!-- Thông tin đơn hàng -->
                 <div class="col-12">
                     <h4 class="mb-3">Chi tiết đơn hàng</h4>
-                    <div class="border rounded p-3">
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-calendar me-2"></i>
-                                <h6 class="mb-0">Ngày đặt hàng</h6>
-                            </div>
-                            <p class="mb-0 ms-4">{{ $order->created_at->format('d/m/Y H:i') }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-money-bill me-2"></i>
-                                <h6 class="mb-0">Phương thức thanh toán</h6>
-                            </div>
-                            <p class="mb-0 ms-4">{{ $order->paymentMethod->name ?? 'Chưa chọn' }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-truck me-2"></i>
-                                <h6 class="mb-0">Phương thức vận chuyển</h6>
-                            </div>
-                            <p class="mb-0 ms-4">{{ $order->shippingProvider->name ?? 'Chưa chọn' }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-1">
-                                <i class="fas fa-truck me-2"></i>
-                                <h6 class="mb-0">Trạng thái đơn hàng</h6>
-                            </div>
-                            <p class="mb-0 ms-4">
-                                @switch($order->status)
-                                    @case('pending')
-                                        <span class="badge bg-warning">Chờ xử lý</span>
-                                    @break
-
-                                    @case('awaiting_payment')
-                                        <span class="badge bg-warning">Chờ thanh toán</span>
-                                    @break
-
-                                    @case('confirmed')
-                                        <span class="badge bg-info">Đã xác nhận</span>
-                                    @break
-
-                                    @case('processing')
-                                        <span class="badge bg-primary">Đang xử lý</span>
-                                    @break
-
-                                    @case('shipping')
-                                        <span class="badge bg-info">Đang vận chuyển</span>
-                                    @break
-
-                                    @case('delivered')
-                                        <span class="badge bg-success">Đã giao hàng</span>
-                                    @break
-
-                                    @case('returned')
-                                        <span class="badge bg-warning">Đã trả hàng</span>
-                                    @break
-
-                                    @case('processing_return')
-                                        <span class="badge bg-info">Đang xử lý trả hàng</span>
-                                    @break
-
-                                    @case('refunded')
-                                        <span class="badge bg-success">Đã hoàn tiền</span>
-                                    @break
-
-                                    @case('cancelled')
-                                        <span class="badge bg-danger">Đã hủy</span>
-                                    @break
-
-                                    @default
-                                        <span class="badge bg-secondary">{{ $order->status }}</span>
-                                @endswitch
-                            </p>
-                        </div>
-                        @if ($order->note)
-                            <div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="mb-3">
                                 <div class="d-flex align-items-center mb-1">
-                                    <i class="fas fa-comment me-2"></i>
-                                    <h6 class="mb-0">Ghi chú</h6>
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <h6 class="mb-0">Ngày đặt hàng</h6>
                                 </div>
-                                <p class="mb-0 ms-4">{{ $order->note }}</p>
+                                <p class="mb-0 ms-4">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                             </div>
-                        @endif
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-money-bill me-2"></i>
+                                    <h6 class="mb-0">Phương thức thanh toán</h6>
+                                </div>
+                                <p class="mb-0 ms-4">
+                                    @php
+                                        $paymentMethodName = $order->paymentMethod->name ?? 'Chưa chọn';
+                                        $paymentMethodColor = match ($paymentMethodName) {
+                                            'Thanh toán khi nhận hàng (COD)' => 'secondary',
+                                            'Chuyển khoản ngân hàng' => 'info',
+                                            'Ví điện tử MoMo' => 'primary',
+                                            'Ví điện tử VNPay' => 'primary',
+                                            'Thẻ tín dụng/ghi nợ' => 'info',
+                                            default => 'secondary',
+                                        };
+                                    @endphp
+                                    <span
+                                        class="badge bg-{{ $paymentMethodColor }}-subtle text-{{ $paymentMethodColor }} fw-semibold">{{ $paymentMethodName }}</span>
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-truck me-2"></i>
+                                    <h6 class="mb-0">Phương thức vận chuyển</h6>
+                                </div>
+                                <p class="mb-0 ms-4">
+                                    @php
+                                        $shippingProviderName = $order->shippingProvider->name ?? 'Chưa chọn';
+                                        $shippingProviderColor = match ($shippingProviderName) {
+                                            'Giao Hàng Nhanh' => 'info',
+                                            'Giao Hàng Tiết Kiệm' => 'success',
+                                            default => 'secondary',
+                                        };
+                                    @endphp
+                                    <span
+                                        class="badge bg-{{ $shippingProviderColor }}-subtle text-{{ $shippingProviderColor }} fw-semibold">{{ $shippingProviderName }}</span>
+                                </p>
+                            </div>
+                            @if ($order->promotion)
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="fas fa-gift me-2"></i>
+                                        <h6 class="mb-0">Mã khuyến mãi</h6>
+                                    </div>
+                                    <p class="mb-0 ms-4">
+                                        @php
+                                            $promotionCode = $order->promotion->code;
+                                            $promotionName = $order->promotion->name;
+                                            $promotionColor = 'warning'; // Màu mặc định cho khuyến mãi
+                                            if (str_contains($promotionName, 'Miễn phí vận chuyển')) {
+                                                $promotionColor = 'success';
+                                            }
+                                        @endphp
+                                        <span
+                                            class="badge bg-{{ $promotionColor }}-subtle text-{{ $promotionColor }} fw-semibold">{{ $promotionCode }}
+                                            ({{ $promotionName }})</span>
+                                    </p>
+                                </div>
+                            @endif
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-box me-2"></i>
+                                    <h6 class="mb-0">Trạng thái đơn hàng</h6>
+                                </div>
+                                <p class="mb-0 ms-4">
+                                    @php
+                                        $orderStatusLabel = $order->getStatusLabelAttribute(); // Sử dụng accessor từ model
+                                        $orderStatusColor = $order->getStatusColorAttribute(); // Sử dụng accessor từ model
+                                    @endphp
+                                    <span class="badge bg-{{ $orderStatusColor }}">{{ $orderStatusLabel }}</span>
+                                </p>
+                            </div>
+                            @if ($order->note)
+                                <div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="fas fa-comment me-2"></i>
+                                        <h6 class="mb-0">Ghi chú</h6>
+                                    </div>
+                                    <p class="mb-0 ms-4">{{ $order->note }}</p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,10 +267,11 @@
                         <p class="text-body fw-semibold mb-0">Tổng tiền hàng:</p>
                         <p class="text-body-emphasis fw-semibold mb-0">{{ number_format($order->subtotal) }}đ</p>
                     </div>
-                    @if ($order->discount_amount > 0)
+                    @if ($order->promotion_amount > 0)
                         <div class="d-flex justify-content-between mb-2">
-                            <p class="text-body fw-semibold mb-0">Giảm giá:</p>
-                            <p class="text-danger fw-semibold mb-0">-{{ number_format($order->discount_amount) }}đ</p>
+                            <p class="text-body fw-semibold mb-0">Giảm giá khuyến mãi:</p>
+                            <p class="text-danger fw-semibold mb-0">-{{ number_format($order->promotion_amount) }}đ
+                            </p>
                         </div>
                     @endif
                     <div class="d-flex justify-content-between mb-2">

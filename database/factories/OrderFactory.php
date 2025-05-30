@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Models\Discount;
+use App\Models\Promotion;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\ShippingProvider;
@@ -16,14 +16,49 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
-        $discount = Discount::inRandomOrder()->first();
+
+        // Lấy promotion còn hạn và đang hoạt động
+        $promotion = Promotion::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
+            })
+            ->inRandomOrder()->first();
+
         $paymentMethod = PaymentMethod::where('is_active', true)->inRandomOrder()->first();
         $shippingProvider = ShippingProvider::where('is_active', true)->inRandomOrder()->first();
 
         $subtotal = $this->faker->randomFloat(2, 100000, 2000000);
         $shippingFee = $this->faker->randomFloat(2, 15000, 50000);
-        $discountAmount = $discount ? $this->faker->randomFloat(2, 10000, 200000) : 0;
-        $totalAmount = $subtotal + $shippingFee - $discountAmount;
+
+        $promotionAmount = 0;
+        if ($promotion) {
+            // Kiểm tra điều kiện mua tối thiểu nếu có
+            if ($promotion->minimum_purchase > 0 && $subtotal < $promotion->minimum_purchase) {
+                $promotion = null; // Không áp dụng nếu không đủ điều kiện
+            } else {
+                // Assume Promotion model has 'discount_type' ('fixed' or 'percentage') and 'discount_value' columns
+                if ($promotion->discount_type === 'fixed') {
+                    $promotionAmount = $promotion->discount_value;
+                } elseif ($promotion->discount_type === 'percentage') {
+                    $promotionAmount = ($subtotal * $promotion->discount_value) / 100;
+                }
+                // Kiểm tra giá trị giảm tối đa nếu có
+                if ($promotion->maximum_purchase !== null && $promotionAmount > $promotion->maximum_purchase) {
+                    $promotionAmount = $promotion->maximum_purchase;
+                }
+                // Ensure promotion amount doesn't exceed subtotal
+                $promotionAmount = min($promotionAmount, $subtotal);
+            }
+        }
+
+        $totalAmount = $subtotal + $shippingFee - $promotionAmount;
+        // Ensure total amount is not negative
+        $totalAmount = max(0, $totalAmount);
 
         $paymentStatuses = [
             'pending',
@@ -49,7 +84,7 @@ class OrderFactory extends Factory
         return [
             'order_number'      => 'ORD-' . $this->faker->unique()->numberBetween(10000, 99999),
             'user_id'           => $user->id,
-            'discount_id'       => $discount ? $discount->id : null,
+            'promotion_id'      => $promotion ? $promotion->id : null,
             'payment_method_id' => $paymentMethod ? $paymentMethod->id : null,
             'shipping_provider_id' => $shippingProvider ? $shippingProvider->id : null,
             'customer_name'     => $user->name,
@@ -62,7 +97,7 @@ class OrderFactory extends Factory
             'shipping_address'  => $this->faker->address(),
             'total_amount'      => $totalAmount,
             'subtotal'          => $subtotal,
-            'discount_amount'   => $discountAmount,
+            'promotion_amount'  => $promotionAmount,
             'shipping_fee'      => $shippingFee,
             'payment_details'   => null,
             'payment_status'    => $this->faker->randomElement($paymentStatuses),

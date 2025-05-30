@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('order_number')->unique()->comment('Mã đơn hàng');
             // Thông tin liên kết
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('discount_id')->nullable()->constrained('discounts')->nullOnDelete();
+            $table->foreignId('promotion_id')->nullable()->constrained('promotions')->nullOnDelete();
             $table->foreignId('shipping_provider_id')->nullable()->constrained('shipping_providers')->nullOnDelete();
 
             // Thông tin người đặt hàng
@@ -34,7 +34,7 @@ return new class extends Migration
             // Thông tin thanh toán
             $table->decimal('total_amount', 10, 2);
             $table->decimal('subtotal', 10, 2)->comment('Tổng tiền hàng trước khi áp dụng giảm giá');
-            $table->decimal('discount_amount', 10, 2)->default(0)->comment('Số tiền được giảm giá');
+            $table->decimal('promotion_amount', 10, 2)->default(0)->comment('Số tiền được giảm giá từ khuyến mãi');
             $table->decimal('shipping_fee', 10, 2)->default(0);
             $table->foreignId('payment_method_id')->nullable()->constrained('payment_methods')->nullOnDelete();
             $table->json('payment_details')->nullable();

@@ -13,7 +13,7 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
-        'discount_id',
+        'promotion_id',
         'customer_name',
         'customer_phone',
         'customer_email',
@@ -24,7 +24,7 @@ class Order extends Model
         'shipping_address',
         'total_amount',
         'subtotal',
-        'discount_amount',
+        'promotion_amount',
         'shipping_fee',
         'payment_method',
         'payment_details',
@@ -52,9 +52,9 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function discount()
+    public function promotion()
     {
-        return $this->belongsTo(Discount::class);
+        return $this->belongsTo(Promotion::class);
     }
 
     public function items()

@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\PaymentMethod;
 use App\Models\ShippingProvider;
+use App\Models\Promotion;
 use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
@@ -24,6 +25,12 @@ class OrderSeeder extends Seeder
         // Kiểm tra xem có shipping providers không
         if (ShippingProvider::count() === 0) {
             $this->command->info('Không có đơn vị vận chuyển nào. Vui lòng chạy ShippingProviderSeeder trước.');
+            return;
+        }
+
+        // Kiểm tra xem có promotions không
+        if (Promotion::count() === 0) {
+            $this->command->info('Không có chương trình khuyến mãi nào. Vui lòng chạy PromotionSeeder trước.');
             return;
         }
 
