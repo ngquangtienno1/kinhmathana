@@ -9,8 +9,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\Admin\ProductImageController;
-use App\Http\Controllers\Admin\VariationImageController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\BrandController;
@@ -21,7 +19,6 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -167,7 +164,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-san-pham']);
         Route::delete('destroy/{id}', [ProductController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-san-pham']);
-        Route::get('bin', [ProductController::class, 'bin'])->name('bin');
+        Route::get('trashed', [ProductController::class, 'trashed'])->name('trashed');
         Route::put('restore/{id}', [ProductController::class, 'restore'])->name('restore')
             ->middleware(['permission:khoi-phuc-san-pham']);
         Route::delete('forceDelete/{id}', [ProductController::class, 'forceDelete'])->name('forceDelete')
@@ -179,56 +176,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/bulk-force-delete', [App\Http\Controllers\Admin\ProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
-    // Product Images
-    Route::prefix('product_images')->name('product_images.')->middleware(['permission:xem-anh-san-pham'])->group(function () {
-        Route::get('/{product}', [ProductImageController::class, 'index'])->name('index');
-        Route::get('/{product}/create', [ProductImageController::class, 'create'])->name('create')
-            ->middleware(['permission:them-anh-san-pham']);
-        Route::post('/{product}', [ProductImageController::class, 'store'])->name('store')
-            ->middleware(['permission:them-anh-san-pham']);
-        Route::get('/{product}/{id}/edit', [ProductImageController::class, 'edit'])->name('edit')
-            ->middleware(['permission:sua-anh-san-pham']);
-        Route::put('/{product}/{id}', [ProductImageController::class, 'update'])->name('update')
-            ->middleware(['permission:sua-anh-san-pham']);
-        Route::delete('/{product}/{id}', [ProductImageController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-anh-san-pham']);
-        Route::post('/{product}/{id}/thumbnail', [ProductImageController::class, 'setThumbnail'])->name('setThumbnail')
-            ->middleware(['permission:dat-anh-dai-dien']);
-    });
-
-    // Variations
-    Route::prefix('variations')->name('variations.')->middleware(['permission:xem-bien-the'])->group(function () {
-        Route::get('/', [VariationController::class, 'index'])->name('index');
-        Route::get('/create', [VariationController::class, 'create'])->name('create')
-            ->middleware(['permission:them-bien-the']);
-        Route::post('/store', [VariationController::class, 'store'])->name('store')
-            ->middleware(['permission:them-bien-the']);
-        Route::get('/{variation}/show', [VariationController::class, 'show'])->name('show');
-        Route::get('/{variation}/edit', [VariationController::class, 'edit'])->name('edit')
-            ->middleware(['permission:sua-bien-the']);
-        Route::put('/{variation}/update', [VariationController::class, 'update'])->name('update')
-            ->middleware(['permission:sua-bien-the']);
-        Route::delete('/{variation}/destroy', [VariationController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-bien-the']);
-        Route::get('/bin', [VariationController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore', [VariationController::class, 'restore'])->name('restore')
-            ->middleware(['permission:khoi-phuc-bien-the']);
-        Route::delete('/{id}/forceDelete', [VariationController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:xoa-vinh-vien-bien-the']);
-    });
-
-    // Variations Images
-    Route::prefix('variation_images')->name('variation_images.')->middleware(['permission:xem-anh-bien-the'])->group(function () {
-        Route::get('/{variation}', [VariationImageController::class, 'index'])->name('index');
-        Route::get('/{variation}/create', [VariationImageController::class, 'create'])->name('create')
-            ->middleware(['permission:them-anh-bien-the']);
-        Route::post('/{variation}', [VariationImageController::class, 'store'])->name('store')
-            ->middleware(['permission:them-anh-bien-the']);
-        Route::delete('/{variation}/{id}', [VariationImageController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-anh-bien-the']);
-        Route::post('/{variation}/{id}/thumbnail', [VariationImageController::class, 'setThumbnail'])->name('setThumbnail')
-            ->middleware(['permission:dat-anh-dai-dien-bien-the']);
-    });
 
     // Color
     Route::prefix('colors')->name('colors.')->middleware(['permission:xem-mau-sac'])->group(function () {

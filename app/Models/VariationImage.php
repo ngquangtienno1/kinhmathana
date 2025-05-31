@@ -11,8 +11,6 @@ class VariationImage extends Model
 
     protected $fillable = ['variation_id', 'image_path'];
 
-    public $timestamps = true; // bảng có created_at
-
     public function variation()
     {
         return $this->belongsTo(Variation::class);

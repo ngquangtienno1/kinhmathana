@@ -92,17 +92,6 @@
                                         </li>
                                     @endif
 
-                                    @if (canAccess('xem-bien-the-san-pham'))
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ request()->routeIs('admin.variations.*') ? 'active' : '' }}"
-                                                href="{{ route('admin.variations.index') }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Biến thể sản phẩm</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
-
                                     @if (canAccess('xem-danh-sach-danh-muc'))
                                         <li class="nav-item">
                                             <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"

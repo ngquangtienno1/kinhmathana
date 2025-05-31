@@ -10,9 +10,14 @@
         @error('name')<div class="text-danger">{{ $message }}</div>@enderror
     </div>
     <div class="mb-3">
+        <label class="form-label">Slug (Để trống để tự động tạo)<span class="text-danger"></span></label>
+        <input type="text" name="slug" class="form-control" value="{{ old('slug') }}">
+        @error('slug')<div class="text-danger">{{ $message }}</div>@enderror
+    </div>
+    <div class="mb-3">
         <label class="form-label">Mô tả<span class="text-danger">*</span></label>
         <textarea name="description" class="form-control">{{ old('description') }}</textarea>
-         @error('description')<div class="text-danger">{{ $message }}</div>@enderror
+        @error('description')<div class="text-danger">{{ $message }}</div>@enderror
     </div>
     <div class="mb-3">
         <label class="form-label">Danh mục cha</label>

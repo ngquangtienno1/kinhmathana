@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name', 125);
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable()->index();
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('set null');
             $table->timestamps();
-            $table->softDeletes(); // <-- Thêm dòng này để hỗ trợ soft delete
-
+            $table->softDeletes();
         });
     }
 
