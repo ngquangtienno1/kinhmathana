@@ -13,6 +13,6 @@ class PaymentSeeder extends Seeder
     public function run(): void
     {
         // Tạo 50 thanh toán ngẫu nhiên
-        Payment::factory()->count(50)->create();
+        Payment::factory()->count(30)->create();
     }
 }
