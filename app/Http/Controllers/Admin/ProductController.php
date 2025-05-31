@@ -21,17 +21,17 @@ class ProductController extends Controller
         $query = Product::query()->with(['categories', 'brand', 'variations']);
 
         if ($request->filled('search')) {
-            $search = mb_strtolower(trim($request->search));
+            $search = trim($request->search);
             $query->where(function ($q) use ($search) {
-                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
-                  ->orWhereHas('categories', function ($subQ) use ($search) {
-                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                  })
-                  ->orWhereHas('brand', function ($subQ) use ($search) {
-                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                  });
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('description_short', 'LIKE', "%{$search}%")
+                    ->orWhere('id', 'LIKE', "%{$search}%")
+                    ->orWhereHas('categories', function ($subQ) use ($search) {
+                        $subQ->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('brand', function ($subQ) use ($search) {
+                        $subQ->where('name', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
@@ -53,10 +53,10 @@ class ProductController extends Controller
 
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from)
-                  ->whereDate('created_at', '<=', now()->toDateString());
+                ->whereDate('created_at', '<=', now()->toDateString());
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+        $products = $query->orderBy('created_at', 'desc')->get();
 
         foreach ($products as $product) {
             if ($product->product_type === 'variable') {
@@ -516,14 +516,14 @@ class ProductController extends Controller
             $search = mb_strtolower(trim($request->search));
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
-                  ->orWhereHas('categories', function ($subQ) use ($search) {
-                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                  })
-                  ->orWhereHas('brand', function ($subQ) use ($search) {
-                      $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
-                  });
+                    ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"])
+                    ->orWhereHas('categories', function ($subQ) use ($search) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    })
+                    ->orWhereHas('brand', function ($subQ) use ($search) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    });
             });
         }
 
