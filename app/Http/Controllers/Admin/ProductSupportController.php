@@ -48,14 +48,14 @@ class ProductSupportController extends Controller
         $support = \App\Models\ProductSupport::findOrFail($id);
         $support->status = 'đã xử lý';
         $support->save();
-        return redirect()->route('admin.products.support.list')->with('success', 'Đã đánh dấu đã xử lý!');
+        return redirect()->route('admin.support.list')->with('success', 'Đã đánh dấu đã xử lý!');
     }
 
     public function destroy($id)
     {
         $support = \App\Models\ProductSupport::findOrFail($id);
         $support->delete();
-        return redirect()->route('admin.products.support.list')->with('success', 'Đã xóa phản hồi!');
+        return redirect()->route('admin.support.list')->with('success', 'Đã xóa phản hồi!');
     }
 
     public function editStatus($id)
@@ -72,7 +72,7 @@ class ProductSupportController extends Controller
         ]);
         $support->status = $request->status;
         $support->save();
-        return redirect()->route('admin.products.support.show', $support->id)->with('success', 'Cập nhật trạng thái thành công!');
+        return redirect()->route('admin.support.show', $support->id)->with('success', 'Cập nhật trạng thái thành công!');
     }
 
     public function showEmailForm($id)
@@ -92,6 +92,6 @@ class ProductSupportController extends Controller
             $message->to($support->email)
                 ->subject($request->subject);
         });
-        return redirect()->route('admin.products.support.show', $support->id)->with('success', 'Đã gửi email cho khách hàng!');
+        return redirect()->route('admin.support.show', $support->id)->with('success', 'Đã gửi email cho khách hàng!');
     }
 } 

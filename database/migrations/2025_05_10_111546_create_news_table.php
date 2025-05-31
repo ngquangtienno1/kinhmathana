@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained('news_categories')->onDelete('cascade');
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('content');
+            $table->text('summary');
+            $table->longText('content');
             $table->string('image')->nullable();
+            $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

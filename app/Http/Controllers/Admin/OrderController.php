@@ -21,7 +21,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'items']);
+        $query = Order::with(['user', 'items', 'paymentMethod', 'shippingProvider'])
+            ->latest();
 
         // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
         if ($request->has('search')) {
@@ -45,7 +46,7 @@ class OrderController extends Controller
             $query->where('status', $request->status);
         }
 
-        $orders = $query->latest()->get();
+        $orders = $query->get();
         // Đếm số lượng các trạng thái
         $countAll = Order::count();
         $countPending = Order::where('payment_status', 'pending')->count();
@@ -119,7 +120,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user']);
+        $order->load(['user', 'promotion', 'paymentMethod', 'shippingProvider']);
         return view('admin.orders.detail', compact('order'));
     }
 
@@ -218,6 +219,14 @@ class OrderController extends Controller
                 'status_from' => $oldStatus,
                 'status_to' => $request->status,
                 'comment' => $request->comment
+            ]);
+
+            // Lưu lịch sử trạng thái
+            $order->statusHistories()->create([
+                'old_status' => $oldStatus,
+                'new_status' => $request->status,
+                'note' => $request->comment,
+                'updated_by' => auth()->id()
             ]);
         });
 

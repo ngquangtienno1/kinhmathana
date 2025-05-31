@@ -21,6 +21,7 @@ class CreatePromotionsTable extends Migration
             $table->enum('discount_type', ['percentage', 'fixed'])->default('percentage');
             $table->decimal('discount_value', 10, 2);
             $table->decimal('minimum_purchase', 10, 2)->default(0);
+            $table->decimal('maximum_purchase', 10, 2)->nullable();
             $table->integer('usage_limit')->nullable();
             $table->integer('used_count')->default(0);
             $table->boolean('is_active')->default(true);

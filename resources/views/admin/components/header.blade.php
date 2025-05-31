@@ -19,169 +19,31 @@
                 </div>
             </a>
         </div>
-        <div class="search-box navbar-top-search-box d-none d-lg-block" data-list='{"valueNames":["title"]}'
-            style="width:25rem;">
-            <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input
-                    class="form-control search-input fuzzy-search rounded-pill form-control-sm" type="search"
-                    placeholder="Search..." aria-label="Search" />
+        <div class="search-box">
+            <form class="position-relative" action="{{ route('admin.search.results') }}" method="GET">
+                <input class="form-control search-input search" type="search" name="q" id="globalSearch"
+                    placeholder="Tìm kiếm..." value="{{ request('q') }}" aria-label="Search" autocomplete="off" />
                 <span class="fas fa-search search-box-icon"></span>
             </form>
-            <div class="btn-close position-absolute end-0 top-50 translate-middle cursor-pointer shadow-none"
-                data-bs-dismiss="search"><button class="btn btn-link p-0" aria-label="Close"></button></div>
-            <div class="dropdown-menu border start-0 py-0 overflow-hidden w-100">
-                <div class="scrollbar-overlay" style="max-height: 30rem;">
-                    <div class="list pb-3">
-                        <h6 class="dropdown-header text-body-highlight fs-10 py-2">24 <span
-                                class="text-body-quaternary">results</span></h6>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Recently Searched </h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-solid fa-clock-rotate-left" data-fa-transform="shrink-2"></span>
-                                        Store Macbook</div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-clock-rotate-left" data-fa-transform="shrink-2"></span>
-                                        MacBook Air - 13″</div>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Products</h6>
-                        <div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="file-thumbnail me-2"><img class="h-100 w-100 object-fit-cover rounded-3"
-                                        src="{{ asset('v1/assets/img/products/60x60/3.png') }} " alt="" /></div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">MacBook Air - 13″</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary"><span
-                                            class="fw-medium text-body-tertiary text-opactity-85">8GB Memory -
-                                            1.6GHz - 128GB Storage</span></p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item py-2 d-flex align-items-center"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="file-thumbnail me-2"><img class="img-fluid"
-                                        src="{{ asset('v1/assets/img/products/60x60/3.png') }} " alt="" /></div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">MacBook Pro - 13″</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary"><span
-                                            class="fw-medium text-body-tertiary text-opactity-85">30 Sep at
-                                            12:30 PM</span></p>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Quick Links</h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-solid fa-link text-body" data-fa-transform="shrink-2"></span>
-                                        Support MacBook House</div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-link text-body" data-fa-transform="shrink-2"></span>
-                                        Store MacBook″</div>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Files</h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-solid fa-file-zipper text-body"
-                                            data-fa-transform="shrink-2"></span>
-                                        Library MacBook folder.rar
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-file-lines text-body"
-                                            data-fa-transform="shrink-2"></span>
-                                        Feature MacBook extensions.txt
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-image text-body" data-fa-transform="shrink-2"></span>
-                                        MacBook Pro_13.jpg</div>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Members</h6>
-                        <div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
-                                href="pages/members.html">
-                                <div class="avatar avatar-l status-online  me-2 text-body">
-                                    <img class="rounded-circle "
-                                        src="{{ asset('v1/assets/img/team/40x40/10.webp') }} " alt="" />
-                                </div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">Carry Anna</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary">anna@technext.it</p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item py-2 d-flex align-items-center" href="pages/members.html">
-                                <div class="avatar avatar-l  me-2 text-body">
-                                    <img class="rounded-circle "
-                                        src="{{ asset('v1/assets/img/team/40x40/12.webp') }} " alt="" />
-                                </div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">John Smith</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary">smith@technext.it</p>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Related Searches</h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-brands fa-firefox-browser text-body"
-                                            data-fa-transform="shrink-2"></span> Search in the Web MacBook</div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-brands fa-chrome text-body" data-fa-transform="shrink-2"></span>
-                                        Store MacBook″</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <p class="fallback fw-bold fs-7 d-none">No Result Found.</p>
+            <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2"
+                id="searchResults" style="width: 25rem; max-height: 24rem; overflow-y: auto;">
+                <div class="list-group list-group-flush" id="searchResultsList">
+                    {{-- Search results will be loaded here --}}
+                </div>
+                <div class="list-group-item px-3 py-2 text-center" id="searchLoading" style="display: none;">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
                     </div>
                 </div>
+                <div class="list-group-item px-3 py-2 text-center text-muted" id="searchNoResults"
+                    style="display: none;">
+                    Không tìm thấy kết quả.
+                </div>
+                <a href="{{ route('admin.search.results', ['q' => request('q')]) }}"
+                    class="list-group-item list-group-item-action px-3 py-2 text-center text-primary"
+                    id="viewAllResults" style="display: none;">
+                    Xem tất cả kết quả
+                </a>
             </div>
         </div>
         <ul class="navbar-nav navbar-nav-icons flex-row">
@@ -191,8 +53,7 @@
                         data-theme-control="phoenixTheme" value="dark" id="themeControlToggle" /><label
                         class="mb-0 theme-control-toggle-label theme-control-toggle-light" for="themeControlToggle"
                         data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Switch theme"
-                        style="height:32px;width:32px;"><span class="icon"
-                            data-feather="moon"></span></label><label
+                        style="height:32px;width:32px;"><span class="icon" data-feather="moon"></span></label><label
                         class="mb-0 theme-control-toggle-label theme-control-toggle-dark" for="themeControlToggle"
                         data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Switch theme"
                         style="height:32px;width:32px;"><span class="icon" data-feather="sun"></span></label></div>
@@ -201,10 +62,10 @@
                     data-bs-target="#searchBoxModal"><span data-feather="search"
                         style="height:19px;width:19px;margin-bottom: 2px;"></span></a></li>
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" style="min-width: 2.25rem" role="button"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    data-bs-auto-close="outside"><span class="d-block" style="height:20px;width:20px;"><span
-                            data-feather="bell" style="height:20px;width:20px;"></span></span></a>
+                <a class="nav-link" href="#" style="min-width: 2.25rem" role="button" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside"><span class="d-block"
+                        style="height:20px;width:20px;"><span data-feather="bell"
+                            style="height:20px;width:20px;"></span></span></a>
                 <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret"
                     id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
                     <div class="card position-relative border-0">
@@ -564,8 +425,9 @@
                     role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true"
                     aria-expanded="false">
                     <div class="avatar avatar-l ">
-                        <img class="rounded-circle " src="{{ asset('v1/assets/img/team/40x40/57.webp') }} "
-                            alt="" />
+                        <img class="rounded-circle"
+                            src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('v1/assets/img/team/40x40/57.webp') }}"
+                            alt="{{ auth()->user()->name }}" />
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border"
@@ -573,48 +435,56 @@
                     <div class="card position-relative border-0">
                         <div class="card-body p-0">
                             <div class="text-center pt-4 pb-3">
-                                <div class="avatar avatar-xl ">
-                                    <img class="rounded-circle "
-                                        src="{{ asset('v1/assets/img/team/72x72/57.webp') }} " alt="" />
+                                <div class="avatar avatar-xl">
+                                    <img class="rounded-circle"
+                                        src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('v1/assets/img/team/72x72/57.webp') }}"
+                                        alt="{{ auth()->user()->name }}" />
                                 </div>
-                                <h6 class="mt-2 text-body-emphasis">Jerry Seinfield</h6>
+                                <h6 class="mt-2 text-body-emphasis">{{ auth()->user()->name }}</h6>
+                                <p class="text-body-tertiary mb-0">{{ auth()->user()->email }}</p>
                             </div>
-                            <div class="mb-3 mx-3"><input class="form-control form-control-sm" id="statusUpdateInput"
-                                    type="text" placeholder="Update your status" /></div>
                         </div>
                         <div class="overflow-auto scrollbar" style="height: 10rem;">
                             <ul class="nav d-flex flex-column mb-2 pb-1">
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="user"></span><span>Thông
-                                            tin tài khoản</span></a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"><span
-                                            class="me-2 text-body align-bottom" data-feather="pie-chart"></span>Thống
-                                        kê</a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="lock"></span>Posts
-                                        &amp; Activity</a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="settings"></span>Cài đặt
-                                        &amp; Bảo mật </a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="help-circle"></span>Hỗ
-                                        trợ</a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom"
-                                            data-feather="globe"></span>Language</a>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.users.profile') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="user"></span>
+                                        <span>Thông tin tài khoản</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.home') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="pie-chart"></span>
+                                        Thống kê
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.settings.index') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="settings"></span>
+                                        Cài đặt & Bảo mật
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.faqs.index') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="help-circle"></span>
+                                        FAQS
+                                    </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="card-footer p-0 border-top border-translucent">
-
-                            <div class="px-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100"
-                                    href="{{ route('logout') }}">
-                                    <span class="me-2" data-feather="log-out"> </span>Đăng xuất</a>
+                            <div class="px-3">
+                                <a href="{{ route('logout') }}"
+                                    class="btn btn-phoenix-secondary d-flex flex-center w-100 mt-2">
+                                    <span class="me-2" data-feather="log-out"></span>
+                                    Đăng xuất
+                                </a>
                             </div>
-                            <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a
-                                    class="text-body-quaternary me-1" href="#!">Privacy policy</a>&bull;<a
-                                    class="text-body-quaternary mx-1" href="#!">Terms</a>&bull;<a
-                                    class="text-body-quaternary ms-1" href="#!">Cookies</a></div>
+                            <div class="my-2 text-center fw-bold fs-10 text-body-quaternary">
+                                <a class="text-body-quaternary me-1" href="#!">Privacy policy</a>&bull;
+                                <a class="text-body-quaternary mx-1" href="#!">Terms</a>&bull;
+                                <a class="text-body-quaternary ms-1" href="#!">Cookies</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -687,3 +557,158 @@
         box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #2d2d2d;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('globalSearch');
+        const searchDropdown = document.getElementById('searchResults');
+        const searchResultsList = document.getElementById('searchResultsList');
+        const searchLoading = document.getElementById('searchLoading');
+        const searchNoResults = document.getElementById('searchNoResults');
+        const viewAllResults = document.getElementById('viewAllResults');
+
+        let searchTimeout;
+        let isSearching = false;
+
+        // Hiển thị/ẩn dropdown
+        function showDropdown() {
+            searchDropdown.classList.add('show');
+        }
+
+        function hideDropdown() {
+            searchDropdown.classList.remove('show');
+        }
+
+        // Xử lý sự kiện input
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+
+            // Ẩn các trạng thái trước đó
+            searchLoading.style.display = 'none';
+            searchNoResults.style.display = 'none';
+            viewAllResults.style.display = 'none';
+            searchResultsList.innerHTML = '';
+
+            if (query.length < 2) {
+                hideDropdown();
+                return;
+            }
+
+            // Hiển thị loading và dropdown
+            searchLoading.style.display = 'block';
+            showDropdown();
+
+            // Debounce search
+            searchTimeout = setTimeout(() => {
+                if (!isSearching) {
+                    isSearching = true;
+                    fetch(`{{ route('admin.search') }}?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            searchLoading.style.display = 'none';
+                            searchResultsList.innerHTML = ''; // Clear previous results
+
+                            if (data.success) {
+                                if (data.results.length > 0) {
+                                    // Nhóm kết quả theo loại
+                                    const groupedResults = data.results.reduce((acc,
+                                        result) => {
+                                        if (!acc[result.type]) {
+                                            acc[result.type] = [];
+                                        }
+                                        acc[result.type].push(result);
+                                        return acc;
+                                    }, {});
+
+                                    // Hiển thị kết quả theo nhóm
+                                    Object.entries(groupedResults)
+                                        .map(([type, results]) => `
+                                            <div class="list-group-item px-3 py-2 bg-light text-body-emphasis">
+                                                <h6 class="mb-0 text-700">${getTypeLabel(type)}</h6>
+                                            </div>
+                                            ${results.map(result => `
+                                                <a href="${result.url}" class="list-group-item list-group-item-action px-3 py-2 d-flex align-items-center">
+                                                    <span class="fas ${result.icon} me-3 text-primary"></span>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0 text-body">${result.title}</h6>
+                                                        ${result.description ? `<small class="text-muted">${result.description}</small>` : ''}
+                                                    </div>
+                                                </a>
+                                            `).join('')}
+                                        `)
+                                        .forEach(html => searchResultsList.innerHTML +=
+                                            html);
+
+                                    // Hiển thị nút xem tất cả nếu có kết quả
+                                    viewAllResults.style.display = 'block';
+                                    viewAllResults.href =
+                                        `{{ route('admin.search.results') }}?q=${encodeURIComponent(query)}`;
+
+                                } else {
+                                    searchNoResults.style.display = 'block';
+                                }
+                            } else {
+                                searchResultsList.innerHTML = `
+                                    <div class="list-group-item px-3 py-2 text-center text-danger">
+                                        ${data.message}
+                                    </div>
+                                `;
+                            }
+                        })
+                        .catch(error => {
+                            searchLoading.style.display = 'none';
+                            searchResultsList.innerHTML = `
+                                <div class="list-group-item px-3 py-2 text-center text-danger">
+                                    Có lỗi xảy ra khi tìm kiếm.
+                                </div>
+                            `;
+                            console.error('Search error:', error);
+                        })
+                        .finally(() => {
+                            isSearching = false;
+                        });
+                }
+            }, 300);
+        });
+
+        // Xử lý sự kiện click outside để đóng dropdown
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+                hideDropdown();
+            }
+        });
+
+        // Xử lý phím Escape để đóng dropdown và xóa nội dung input
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideDropdown();
+                searchInput.value = '';
+            }
+        });
+
+        // Hàm lấy nhãn cho loại kết quả
+        function getTypeLabel(type) {
+            const labels = {
+                'product': 'Sản phẩm',
+                'news': 'Tin tức',
+                'order': 'Đơn hàng',
+                'comment': 'Bình luận',
+                'category': 'Danh mục',
+                'promotion': 'Khuyến mãi'
+            };
+            return labels[type] || type;
+        }
+
+        // Giữ dropdown mở khi click vào nó (ngăn chặn đóng do click outside)
+        searchDropdown.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // Đảm bảo dropdown mở lại nếu input có giá trị khi người dùng quay lại trang
+        if (searchInput.value.trim().length >= 2) {
+            // Tự động kích hoạt tìm kiếm lại khi tải trang nếu có query trong input
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    });
+</script>

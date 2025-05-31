@@ -15,8 +15,7 @@ class OrderStatusHistoryController extends Controller
     public function __construct(OrderStatusHistoryService $orderStatusHistoryService)
     {
         $this->orderStatusHistoryService = $orderStatusHistoryService;
-        $this->middleware('auth');
-        $this->middleware('admin'); // Thêm middleware admin nếu cần
+        // Đã có middleware ở route group, không cần gọi ở đây nữa
     }
 
     /**
@@ -66,5 +65,11 @@ class OrderStatusHistoryController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Trạng thái đơn hàng đã được cập nhật thành công.');
+    }
+
+    public function index()
+    {
+        $histories = \App\Models\OrderStatusHistory::with(['order.user', 'updatedBy'])->orderByDesc('created_at')->paginate(20);
+        return view('admin.order_status_histories.index', compact('histories'));
     }
 } 

@@ -424,7 +424,8 @@
                 </div><a class="bun btn-primary d-grid mb-3 text-white mt-5 btn btn-primary"
                     href="https://www.facebook.com/tuananhh111/" target="_blank">Mua template</a>
             </div>
-        </div><a class="card setting-toggle" href="#settings-offcanvas" data-bs-toggle="offcanvas">
+        </div>
+        <a class="card setting-toggle" href="#settings-offcanvas" data-bs-toggle="offcanvas">
             <div class="card-body d-flex align-items-center px-admin.components.2 py-1">
                 <div class="position-relative rounded-start" style="height:34px;width:28px">
                     <div class="settings-popover"><span class="ripple"><span
@@ -443,6 +444,7 @@
 
         <!-- JavaScript files -->
         @include('admin.components.script')
+        @stack('scripts')
     </body>
 
 

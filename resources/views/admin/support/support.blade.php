@@ -18,9 +18,6 @@
     </div>
     <div class="card shadow-sm">
         <div class="card-body p-5">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
             <form method="POST" action="{{ route('admin.support.store') }}">
                 @csrf
                 <div class="mb-3">

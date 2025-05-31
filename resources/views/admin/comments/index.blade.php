@@ -21,11 +21,22 @@
     <div class="mb-4">
         <div class="d-flex flex-wrap gap-3">
             <div class="search-box">
-                <form class="position-relative" action="{{ route('admin.comments.index') }}" method="GET">
+                <form action="{{ route('admin.comments.index') }}" method="GET"
+                    class="d-flex gap-3 flex-wrap align-items-center">
+
                     <input class="form-control search-input search" type="search" name="search"
-                        placeholder="Tìm kiếm bình luận" value="{{ request('search') }}" aria-label="Search" />
-                    <span class="fas fa-search search-box-icon"></span>
+                        placeholder="Tìm kiếm bình luận" value="{{ request('search') }}" />
+
+
+                    <input type="number" name="entity_id" class="form-control" placeholder="ID đối tượng"
+                        value="{{ request('entity_id') }}" />
+
+                    <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}" />
+                    <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}" />
+
+                    <button type="submit" class="btn btn-primary">Lọc</button>
                 </form>
+
             </div>
 
 
@@ -84,6 +95,29 @@
                                     Thùng rác ({{ $deletedCount }})
                                 </a>
                             </li>
+                        </ul>
+                    </div>
+                </div>
+                {{-- Dropdown lọc entity_type --}}
+                <div class="btn-group position-static" role="group">
+                    <div class="btn-group position-static text-nowrap">
+                        <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
+                            data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"
+                            data-bs-reference="parent">
+                            Loại đối tượng
+                            <span class="fas fa-angle-down ms-2"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item {{ !request('entity_type') ? 'active' : '' }}"
+                                    href="{{ route('admin.comments.index', array_merge(request()->except(['entity_type', 'page']), ['search' => request('search')])) }}">
+                                    Tất cả
+                                </a></li>
+                            @foreach ($entityTypes as $type)
+                                <li><a class="dropdown-item {{ request('entity_type') === $type ? 'active' : '' }}"
+                                        href="{{ route('admin.comments.index', array_merge(request()->except(['entity_type', 'page']), ['entity_type' => $type, 'search' => request('search')])) }}">
+                                        {{ $type }}
+                                    </a></li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

@@ -12,7 +12,7 @@
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Slider</h2>
+            <h2 class="mb-0"> Danh sách Slider</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
@@ -77,8 +77,15 @@
                                 data-sort="title">TIÊU ĐỀ</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="description"
                                 style="width:200px;">MÔ TẢ</th>
+                            <th class="sort align-middle ps-4" scope="col" data-sort="url" style="width:200px;">
+                                Đường dẫn URL
+                            </th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="sort_order"
                                 style="width:100px;">SẮP XẾP</th>
+                            <th class="sort align-middle ps-4" scope="col" data-sort="start_date"
+                                style="width:150px;">NGÀY BẮT ĐẦU</th>
+                            <th class="sort align-middle ps-4" scope="col" data-sort="end_date" style="width:150px;">
+                                NGÀY KẾT THÚC</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
                                 TRẠNG THÁI</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="created_at"
@@ -111,8 +118,39 @@
                                 <td class="description align-middle ps-4">
                                     <span class="text-body-tertiary">{{ Str::limit($slider->description, 50) }}</span>
                                 </td>
+                                <td class="url align-middle ps-4">
+                                    @if ($slider->url)
+                                        <a href="{{ $slider->url }}" target="_blank" class="text-primary">
+                                            {{ Str::limit($slider->url, 50) }}
+                                        </a>
+                                    @else
+                                        <span class="text-body-tertiary">-</span>
+                                    @endif
+                                </td>
                                 <td class="sort_order align-middle ps-4">
                                     <span class="text-body-tertiary">{{ $slider->sort_order }}</span>
+                                </td>
+                                <td class="start_date align-middle white-space-nowrap text-body-tertiary ps-4">
+                                    @if ($slider->start_date)
+                                        @if (is_string($slider->start_date))
+                                            {{ \Carbon\Carbon::parse($slider->start_date)->format('d/m/Y H:i') }}
+                                        @else
+                                            {{ $slider->start_date->format('d/m/Y H:i') }}
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="end_date align-middle white-space-nowrap text-body-tertiary ps-4">
+                                    @if ($slider->end_date)
+                                        @if (is_string($slider->end_date))
+                                            {{ \Carbon\Carbon::parse($slider->end_date)->format('d/m/Y H:i') }}
+                                        @else
+                                            {{ $slider->end_date->format('d/m/Y H:i') }}
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                                 <td class="status align-middle ps-4">
                                     <span

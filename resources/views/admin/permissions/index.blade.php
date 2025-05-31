@@ -18,8 +18,6 @@
         </div>
     </div>
 
-
-
     <div class="mb-4">
         <div class="d-flex flex-wrap gap-3">
             <div class="search-box">

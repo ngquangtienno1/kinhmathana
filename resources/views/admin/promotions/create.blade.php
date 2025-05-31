@@ -129,6 +129,53 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            {{-- Hiển thị các mục đã chọn --}}
+                            @if(old('categories', []) || old('products', []))
+                                <div class="mb-3 p-2" style="background: #d4ffb2; border-radius: 5px;">
+                                    <strong>Đã chọn:</strong>
+                                    @foreach($categories as $category)
+                                        @if(in_array($category->id, old('categories', [])))
+                                            <span class="badge bg-success">
+                                                {{ $category->name }}
+                                                <a href="#" class="text-white ms-1 remove-selected" data-type="category" data-id="{{ $category->id }}">×</a>
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                    @foreach($products as $product)
+                                        @if(in_array($product->id, old('products', [])))
+                                            <span class="badge bg-info">
+                                                {{ $product->name }}
+                                                <a href="#" class="text-white ms-1 remove-selected" data-type="product" data-id="{{ $product->id }}">×</a>
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <div class="mb-4">
+                                <label class="form-label" for="categories">Chọn danh mục</label>
+                                <select name="categories[]" id="categories" class="form-select select2" multiple>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="products">Chọn sản phẩm</label>
+                                <select name="products[]" id="products" class="form-select select2" multiple>
+                                    @foreach ($products as $product)
+                                        <option value="{{ $product->id }}"
+                                            {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>
+                                            {{ $product->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,6 +197,17 @@
                             </div>
 
                             <div class="mb-4">
+                                <label class="form-label" for="maximum_purchase">Giá trị đơn tối đa</label>
+                                <input type="number" name="maximum_purchase" id="maximum_purchase"
+                                    class="form-control @error('maximum_purchase') is-invalid @enderror"
+                                    value="{{ old('maximum_purchase', '0') }}" step="0.01" min="0"
+                                    placeholder="0">
+                                @error('maximum_purchase')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
                                 <label class="form-label" for="usage_limit">Giới hạn lượt dùng</label>
                                 <input type="number" name="usage_limit" id="usage_limit"
                                     class="form-control @error('usage_limit') is-invalid @enderror"
@@ -158,46 +216,6 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            @if ($categories->count() > 0)
-                                <div class="mb-4">
-                                    <label class="form-label" for="categories">Áp dụng cho danh mục</label>
-                                    <select name="categories[]" id="categories"
-                                        class="form-select select2 @error('categories') is-invalid @enderror" multiple>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}"
-                                                {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
-                                                {{ $category->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="form-text text-muted">Nếu không chọn danh mục, khuyến mãi sẽ áp dụng cho
-                                        tất cả danh mục</small>
-                                    @error('categories')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            @endif
-
-                            @if ($products->count() > 0)
-                                <div class="mb-4">
-                                    <label class="form-label" for="products">Áp dụng cho sản phẩm cụ thể</label>
-                                    <select name="products[]" id="products"
-                                        class="form-select select2 @error('products') is-invalid @enderror" multiple>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->id }}"
-                                                {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>
-                                                {{ $product->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="form-text text-muted">Nếu đã chọn danh mục, chỉ cần chọn sản phẩm cụ thể
-                                        nếu muốn giới hạn thêm</small>
-                                    @error('products')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            @endif
 
                             <div class="mb-4">
                                 <label class="form-label" for="is_active">Trạng thái</label>
@@ -222,13 +240,28 @@
 
 @section('scripts')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <style>
+        .badge { font-size: 1em; margin-right: 5px; }
+        .remove-selected { cursor: pointer; }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for both products and categories
             $('.select2').select2({
-                placeholder: 'Chọn danh mục hoặc sản phẩm',
-                width: '100%'
+                width: '100%',
+                placeholder: 'Chọn mục...',
+                allowClear: true
+            });
+            // Xóa mục đã chọn
+            $(document).on('click', '.remove-selected', function(e){
+                e.preventDefault();
+                let type = $(this).data('type');
+                let id = $(this).data('id').toString();
+                let select = (type === 'category') ? '#categories' : '#products';
+                let values = $(select).val() || [];
+                values = values.filter(v => v != id);
+                $(select).val(values).trigger('change');
+                $(this).parent().remove();
             });
 
             // Change discount symbol based on discount type

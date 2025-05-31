@@ -16,6 +16,7 @@ class Promotion extends Model
         'discount_type',
         'discount_value',
         'minimum_purchase',
+        'maximum_purchase',
         'usage_limit',
         'used_count',
         'is_active',
@@ -29,6 +30,7 @@ class Promotion extends Model
         'end_date' => 'datetime',
         'discount_value' => 'decimal:2',
         'minimum_purchase' => 'decimal:2',
+        'maximum_purchase' => 'decimal:2',
     ];
 
     public function products()
