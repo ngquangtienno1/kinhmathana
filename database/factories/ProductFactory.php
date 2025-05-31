@@ -25,7 +25,7 @@ class ProductFactory extends Factory
             'stock_quantity' => $this->faker->numberBetween(0, 100),
             'slug' => Str::slug($name . '-' . time()),
             'brand_id' => $this->faker->numberBetween(1, 5),
-            'status' => $this->faker->randomElement(['in_stock', 'out_of_stock', 'hidden']),
+            'status' => $this->faker->randomElement(['Hoạt động', 'Không hoạt động']),
             'is_featured' => $this->faker->boolean,
             'views' => $this->faker->numberBetween(0, 1000),
         ];

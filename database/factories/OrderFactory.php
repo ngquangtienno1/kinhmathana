@@ -63,22 +63,24 @@ class OrderFactory extends Factory
         $paymentStatuses = [
             'pending',
             'paid',
-            'failed',
+            'cod',
+            'confirmed',
             'refunded',
-            'cancelled',
-            'partially_paid',
-            'disputed'
+            'processing_refund',
+            'failed'
         ];
         $orderStatuses = [
-            'pending',
-            'awaiting_payment',
-            'confirmed',
-            'processing',
-            'shipping',
-            'delivered',
-            'returned',
-            'processing_return',
-            'refunded'
+            'pending',           // Chờ xác nhận
+            'confirmed',         // Đã xác nhận
+            'awaiting_pickup',   // Chờ lấy hàng
+            'shipping',          // Đang giao
+            'delivered',         // Đã giao hàng
+            'returned',          // Khách trả hàng
+            'processing_return', // Đang xử lý trả hàng
+            'cancelled',         // Đã hủy
+            'returned_refunded', // Trả hàng / Hoàn tiền
+            'completed',         // Đã hoàn thành
+            'refunded'           // Đã hoàn tiền
         ];
 
         return [

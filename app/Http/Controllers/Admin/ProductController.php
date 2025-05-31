@@ -515,6 +515,88 @@ class ProductController extends Controller
             ->with('success', 'Xóa sản phẩm thành công.');
     }
 
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để xóa.');
+        }
+
+        try {
+            Product::whereIn('id', $ids)->delete();
+            return redirect()->back()->with('success', 'Đã xóa ' . count($ids) . ' sản phẩm thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để khôi phục.');
+        }
+
+        try {
+            Product::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->back()->with('success', 'Đã khôi phục ' . count($ids) . ' sản phẩm thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục sản phẩm: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để xóa vĩnh viễn.');
+        }
+
+        try {
+            $products = Product::onlyTrashed()->whereIn('id', $ids)->get();
+
+            foreach ($products as $product) {
+                // Xóa các hình ảnh liên quan
+                foreach ($product->images as $image) {
+                    if (Storage::disk('public')->exists($image->image_path)) {
+                        Storage::disk('public')->delete($image->image_path);
+                    }
+                    $image->delete();
+                }
+
+                // Xóa các biến thể và hình ảnh của biến thể
+                foreach ($product->variations as $variation) {
+                    foreach ($variation->images as $image) {
+                        if (Storage::disk('public')->exists($image->image_path)) {
+                            Storage::disk('public')->delete($image->image_path);
+                        }
+                        $image->delete();
+                    }
+                    $variation->delete();
+                }
+
+                // Xóa sản phẩm vĩnh viễn
+                $product->forceDelete();
+            }
+
+            return redirect()->back()->with('success', 'Đã xóa vĩnh viễn ' . count($ids) . ' sản phẩm thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn sản phẩm: ' . $e->getMessage());
+        }
+    }
+
     public function trashed(Request $request)
     {
         $query = Product::onlyTrashed()->with(['categories', 'brand', 'variations']);
@@ -534,7 +616,8 @@ class ProductController extends Controller
             });
         }
 
-        $products = $query->orderBy('deleted_at', 'desc')->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $products = $query->orderBy('deleted_at', 'desc')->paginate($perPage);
 
         foreach ($products as $product) {
             if ($product->product_type === 'variable') {

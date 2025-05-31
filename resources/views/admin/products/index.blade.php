@@ -215,7 +215,7 @@
     style="display:none;">
     @csrf
     @method('DELETE')
-    <input type="hidden" name="ids" id="bulk-delete-ids">
+    <input type="hidden" name="ids[]" id="bulk-delete-ids">
 </form>
 
 <script>
@@ -261,8 +261,34 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa mềm các sản phẩm đã chọn?')) return;
-            bulkDeleteIds.value = checkedIds.join(',');
-            bulkDeleteForm.submit();
+
+            // Tạo các input hidden cho từng ID
+            const form = document.getElementById('bulk-delete-form');
+            form.innerHTML = ''; // Xóa các input cũ
+
+            // Thêm CSRF token và method
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+
+            // Thêm từng ID vào form
+            checkedIds.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            form.submit();
         });
 
         // Tìm kiếm tự động bằng AJAX cho sản phẩm

@@ -21,9 +21,32 @@ class ReviewController extends Controller
         ]);
 
         $userId = Auth::id();
+        $order = Order::findOrFail($request->order_id);
 
-        if (!Review::canReview($userId, $request->product_id, $request->order_id)) {
-            return back()->with('error', 'Bạn không thể đánh giá sản phẩm này. Có thể bạn chưa mua sản phẩm, đơn hàng chưa hoàn thành hoặc đã đánh giá rồi.');
+        // Kiểm tra đơn hàng có thuộc về người dùng không
+        if ($order->user_id !== $userId) {
+            return back()->with('error', 'Bạn không có quyền đánh giá sản phẩm trong đơn hàng này.');
+        }
+
+        // Kiểm tra đơn hàng đã giao thành công chưa
+        if ($order->status !== 'delivered') {
+            return back()->with('error', 'Bạn chỉ có thể đánh giá sản phẩm sau khi đơn hàng được giao thành công.');
+        }
+
+        // Kiểm tra sản phẩm có trong đơn hàng không
+        $productInOrder = $order->items()->where('product_id', $request->product_id)->exists();
+        if (!$productInOrder) {
+            return back()->with('error', 'Sản phẩm này không có trong đơn hàng của bạn.');
+        }
+
+        // Kiểm tra đã đánh giá chưa
+        $existingReview = Review::where('user_id', $userId)
+            ->where('product_id', $request->product_id)
+            ->where('order_id', $request->order_id)
+            ->exists();
+
+        if ($existingReview) {
+            return back()->with('error', 'Bạn đã đánh giá sản phẩm này trong đơn hàng.');
         }
 
         Review::create([

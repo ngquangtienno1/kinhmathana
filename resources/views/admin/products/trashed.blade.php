@@ -22,18 +22,6 @@
             </a>
         </div>
     </div>
-    <form id="bulk-restore-form" action="{{ route('admin.products.bulkRestore') }}" method="POST"
-        style="display:none;">
-        @csrf
-        <input type="hidden" name="ids" id="bulk-restore-ids">
-    </form>
-    <form id="bulk-force-delete-form" action="{{ route('admin.products.bulkForceDelete') }}" method="POST"
-        style="display:none;">
-        @csrf
-        @method('DELETE')
-        <input type="hidden" name="ids" id="bulk-force-delete-ids">
-    </form>
-
     <div class="card">
         <div class="card-body">
             <div class="table-responsive scrollbar">
@@ -130,12 +118,41 @@
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex justify-content-center mt-3">
-                {{ $products->links() }}
+            <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+                <div class="col-auto d-flex">
+                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
+                        {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} Items of
+                        {{ $products->total() }}
+                    </p>
+                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
+                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn <span
+                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                </div>
+                <div class="col-auto d-flex">
+                    <button class="page-link" data-list-pagination="prev"><span
+                            class="fas fa-chevron-left"></span></button>
+                    <ul class="mb-0 pagination"></ul>
+                    <button class="page-link pe-0" data-list-pagination="next">
+                        <span class="fas fa-chevron-right"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<form id="bulk-restore-form" action="{{ route('admin.products.bulkRestore') }}" method="POST"
+    style="display:none;">
+    @csrf
+    <input type="hidden" name="ids[]" id="bulk-restore-ids">
+</form>
+<form id="bulk-force-delete-form" action="{{ route('admin.products.bulkForceDelete') }}" method="POST"
+    style="display:none;">
+    @csrf
+    @method('DELETE')
+    <input type="hidden" name="ids[]" id="bulk-force-delete-ids">
+</form>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -145,8 +162,42 @@
         const bulkForceDeleteBtn = document.getElementById('bulk-force-delete-btn');
         const bulkRestoreForm = document.getElementById('bulk-restore-form');
         const bulkForceDeleteForm = document.getElementById('bulk-force-delete-form');
-        const bulkRestoreIds = document.getElementById('bulk-restore-ids');
-        const bulkForceDeleteIds = document.getElementById('bulk-force-delete-ids');
+        const viewAllLink = document.querySelector('[data-list-view="*"]');
+        const viewLessLink = document.querySelector('[data-list-view="less"]');
+        const listInfo = document.querySelector('[data-list-info]');
+
+        // Xử lý xem tất cả
+        if (viewAllLink) {
+            viewAllLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('per_page', '{{ $products->total() }}');
+                window.location.href = currentUrl.toString();
+            });
+        }
+
+        // Xử lý xem ít hơn
+        if (viewLessLink) {
+            viewLessLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('per_page', '10');
+                window.location.href = currentUrl.toString();
+            });
+        }
+
+        // Hiển thị/ẩn link xem ít hơn
+        if (listInfo) {
+            const totalItems = {{ $products->total() }};
+            const currentItems = {{ $products->count() }};
+            if (currentItems < totalItems) {
+                viewAllLink.classList.remove('d-none');
+                viewLessLink.classList.add('d-none');
+            } else {
+                viewAllLink.classList.add('d-none');
+                viewLessLink.classList.remove('d-none');
+            }
+        }
 
         function updateBulkActionBtns() {
             let checkedCount = 0;
@@ -185,9 +236,30 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn khôi phục các sản phẩm đã chọn?')) return;
-            bulkRestoreIds.value = checkedIds.join(',');
-            bulkRestoreForm.submit();
+
+            // Tạo các input hidden cho từng ID
+            const form = document.getElementById('bulk-restore-form');
+            form.innerHTML = ''; // Xóa các input cũ
+
+            // Thêm CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            // Thêm từng ID vào form
+            checkedIds.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            form.submit();
         });
+
         // Xử lý submit xóa vĩnh viễn
         bulkForceDeleteBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -196,8 +268,34 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa vĩnh viễn các sản phẩm đã chọn?')) return;
-            bulkForceDeleteIds.value = checkedIds.join(',');
-            bulkForceDeleteForm.submit();
+
+            // Tạo các input hidden cho từng ID
+            const form = document.getElementById('bulk-force-delete-form');
+            form.innerHTML = ''; // Xóa các input cũ
+
+            // Thêm CSRF token và method
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+
+            // Thêm từng ID vào form
+            checkedIds.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            form.submit();
         });
     });
 </script>

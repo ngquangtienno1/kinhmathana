@@ -39,26 +39,28 @@ return new class extends Migration
             $table->foreignId('payment_method_id')->nullable()->constrained('payment_methods')->nullOnDelete();
             $table->json('payment_details')->nullable();
             $table->enum('payment_status', [
-                'pending',      // Chờ thanh toán
+                'pending',      // Chưa thanh toán
                 'paid',        // Đã thanh toán
-                'failed',      // Thanh toán thất bại
+                'cod',         // Thanh toán khi nhận hàng (COD)
+                'confirmed',   // Đã xác nhận thanh toán
                 'refunded',    // Đã hoàn tiền
-                'cancelled',   // Đã huỷ
-                'partially_paid', // Thanh toán một phần
-                'disputed'     // Đang tranh chấp
+                'processing_refund', // Đang hoàn tiền
+                'failed'       // Thanh toán không thành công
             ])->default('pending');
 
             // Trạng thái đơn hàng
             $table->enum('status', [
-                'pending',           // Đơn hàng vừa được tạo
-                'awaiting_payment',  // Chờ thanh toán
-                'confirmed',         // Đã xác nhận đơn
-                'processing',        // Đang đóng gói/kiểm hàng
-                'shipping',          // Đang vận chuyển
+                'pending',           // Chờ xác nhận
+                'confirmed',         // Đã xác nhận
+                'awaiting_pickup',   // Chờ lấy hàng
+                'shipping',          // Đang giao
                 'delivered',         // Đã giao hàng
                 'returned',          // Khách trả hàng
                 'processing_return', // Đang xử lý trả hàng
-                'refunded',          // Đã hoàn tiền
+                'cancelled',         // Đã hủy
+                'returned_refunded', // Trả hàng / Hoàn tiền
+                'completed',         // Đã hoàn thành
+                'refunded'           // Đã hoàn tiền
             ])->default('pending');
 
             // Thông tin bổ sung
