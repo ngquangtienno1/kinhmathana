@@ -98,9 +98,6 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'pending'])) }}">Đang
                                         chờ xử lý</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'awaiting_payment'])) }}">Chờ
-                                        thanh toán</a></li>
-                                <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'confirmed'])) }}">Đã
                                         xác nhận</a></li>
                                 <li><a class="dropdown-item"
@@ -118,9 +115,6 @@
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'processing_return'])) }}">Đang
                                         xử lý trả hàng</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'refunded'])) }}">Đã
-                                        hoàn tiền</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}">Đã
                                         huỷ</a></li>

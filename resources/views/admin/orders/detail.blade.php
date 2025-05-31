@@ -321,7 +321,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Ghi chú admin</label>
+                            <label class="form-label">Ghi chú đơn hàng</label>
                             <textarea name="admin_note" class="form-control" rows="3">{{ $order->admin_note }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary w-100"

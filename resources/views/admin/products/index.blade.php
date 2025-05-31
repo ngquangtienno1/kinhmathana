@@ -40,10 +40,11 @@
         data-list='{"valueNames":["name","price","status","created_at","stock","has_variations"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <form action="{{ route('admin.products.list') }}" method="GET"
-                class="d-flex flex-wrap gap-3 align-items-end">
+                class="d-flex flex-wrap gap-3 align-items-end" id="product-search-form">
                 <div class="search-box" style="flex: 1; min-width: 200px;">
                     <input class="form-control search-input search" type="search" name="search"
-                        placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" />
+                        placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" id="product-search-input"
+                        autocomplete="off" />
                     <span class="fas fa-search search-box-icon"></span>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
@@ -79,8 +80,8 @@
                 </div>
             </form>
         </div>
-        <div
-            class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1"
+            id="product-table-wrapper">
             <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table fs-9 mb-0">
                     <thead>
@@ -263,6 +264,37 @@
             bulkDeleteIds.value = checkedIds.join(',');
             bulkDeleteForm.submit();
         });
+
+        // Tìm kiếm tự động bằng AJAX cho sản phẩm
+        const searchInput = document.getElementById('product-search-input');
+        const form = document.getElementById('product-search-form');
+        const tableWrapper = document.getElementById('product-table-wrapper');
+        let timer = null;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData).toString();
+                    fetch(form.action + '?' + params, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            // Lấy phần table từ HTML trả về
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(data.html, 'text/html');
+                            const newTable = doc.getElementById('product-table-wrapper');
+                            if (newTable && tableWrapper) {
+                                tableWrapper.innerHTML = newTable.innerHTML;
+                            }
+                        });
+                }, 350); // debounce 350ms
+            });
+        }
     });
 </script>
 

@@ -74,6 +74,13 @@ class ProductController extends Controller
         $deletedCount = Product::onlyTrashed()->count();
         $categories = Category::all();
 
+        // Nếu là AJAX request, chỉ trả về phần bảng sản phẩm
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'))->render()
+            ]);
+        }
+
         return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
     }
 
