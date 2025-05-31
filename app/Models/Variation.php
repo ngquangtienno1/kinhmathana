@@ -10,23 +10,25 @@ class Variation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'product_id', 'name', 'sku', 'price', 'import_price',
-        'sale_price', 'discount_price', 'stock_quantity'
-    ];
+    protected $fillable = ['product_id', 'sku', 'price', 'sale_price', 'stock_quantity', 'status', 'color_id', 'size_id'];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function variationDetails()
+    public function color()
     {
-        return $this->hasMany(VariationDetail::class);
+        return $this->belongsTo(Color::class);
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class);
     }
 
     public function images()
     {
-        return $this->hasMany(VariationImage::class);
+        return $this->hasMany(VariationImage::class, 'variation_id'); 
     }
 }

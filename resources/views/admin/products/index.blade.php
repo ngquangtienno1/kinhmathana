@@ -1,3 +1,4 @@
+<!-- resources/views/admin/products/index.blade.php -->
 @extends('admin.layouts')
 @section('title', 'Products')
 @section('content')
@@ -19,7 +20,7 @@
         <li class="nav-item">
             <a class="nav-link {{ request('status') == null ? 'active' : '' }}"
                 href="{{ route('admin.products.list') }}">
-                Tất cả <span class="text-body-tertiary fw-semibold">({{ $products->count() }})</span>
+                Tất cả <span class="text-body-tertiary fw-semibold">({{ $products->total() }})</span>
             </a>
         </li>
         <li class="nav-item">
@@ -29,12 +30,12 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ request('bin') === '1' ? 'active' : '' }}" href="{{ route('admin.products.bin') }}">
+            <a class="nav-link {{ request('bin') === '1' ? 'active' : '' }}" href="{{ route('admin.products.trashed') }}">
                 Thùng rác <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>
             </a>
         </li>
     </ul>
-    <div id="products" data-list='{"valueNames":["name","price","status","created_at","stock"],"page":10,"pagination":true}'>
+    <div id="products" data-list='{"valueNames":["name","price","status","created_at","stock","has_variations"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <form action="{{ route('admin.products.list') }}" method="GET" class="d-flex flex-wrap gap-3 align-items-end">
                 <div class="search-box" style="flex: 1; min-width: 200px;">
@@ -43,7 +44,7 @@
                     <span class="fas fa-search search-box-icon"></span>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
-                    <select class="form-select" name="category_id">
+                    <select class="form-select" name="category_id" id="category_id">
                         <option value="">Tất cả danh mục</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -89,12 +90,12 @@
                             <th class="sort white-space-nowrap align-middle ps-4">ID</th>
                             <th class="sort align-middle ps-4">Tên</th>
                             <th class="sort align-middle ps-4">Giá gốc</th>
-                            <th class="sort align-middle ps-4">Giá nhập</th>
                             <th class="sort align-middle ps-4">Giá bán</th>
                             <th class="sort align-middle ps-4">Số lượng</th>
                             <th class="sort align-middle ps-4">Mô tả ngắn</th>
                             <th class="sort align-middle ps-4">Danh mục</th>
                             <th class="sort align-middle ps-4">Thương hiệu</th>
+                            <th class="sort align-middle ps-4">Sp có biến thể</th>
                             <th class="sort align-middle ps-4">Nổi bật</th>
                             <th class="sort align-middle ps-4">Lượt xem</th>
                             <th class="sort align-middle ps-4">Trạng thái</th>
@@ -110,30 +111,41 @@
                                             value="{{ $product->id }}" />
                                     </div>
                                 </td>
-                                <td class="align-middle ps-4">{{ $product->id }}</td>
+                                <td class="align-middle ps-4">{{ $products->firstItem() + $loop->index }}</td>
                                 <td class="align-middle ps-4">{{ $product->name }}</td>
                                 <td class="align-middle ps-4 text-end">
-                                    {{ number_format($product->price, 0, ',', '.') }}đ</td>
-                                <td class="align-middle ps-4 text-end">
-                                    {{ number_format($product->import_price, 0, ',', '.') }}đ</td>
-                                <td class="align-middle ps-4 text-end">
-                                    {{ number_format($product->sale_price, 0, ',', '.') }}đ</td>
-                                <td class="align-middle ps-4 text-center">
-                                    {{ $product->total_stock_quantity }}
+                                    {{ $product->product_type === 'simple' ? number_format($product->price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
-                                <td class="align-middle ps-4">{{ Str::limit($product->description_short, 50) }}</td>
-                                <td class="align-middle ps-4">{{ optional($product->category)->name ?? '-' }}</td>
+                                <td class="align-middle ps-4 text-end">
+                                    {{ $product->product_type === 'simple' ? number_format($product->sale_price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
+                                </td>
+                                <td class="align-middle ps-4 text-center">
+                                    {{ $product->total_stock }}
+                                </td>
+                                <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}</td>
+                                <td class="align-middle ps-4">
+                                    @if($product->categories->count() > 0)
+                                        {{ $product->categories->pluck('name')->join(', ') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
+                                <td class="align-middle text-center has_variations">
+                                    <span class="badge {{ $product->product_type === 'variable' ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ $product->product_type === 'variable' ? 'Có' : 'Không' }}
+                                    </span>
+                                </td>
                                 <td class="align-middle text-center">
                                     <span class="badge {{ $product->is_featured ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $product->is_featured ? 'Có' : 'Không' }}
                                     </span>
                                 </td>
-                                <td class="align-middle text-center">{{ $product->views }}</td>
+                                <td class="align-middle text-center">{{ $product->views ?? 0 }}</td>
                                 <td class="align-middle text-center">
                                     <span
                                         class="badge {{ $product->status === 'Hoạt động' ? 'bg-success' : 'bg-danger' }}">
-                                        {{ $product->status === 'Hoạt động' ? 'Hoạt động' : 'Không hoạt động' }}
+                                        {{ $product->status ?? 'Không hoạt động' }}
                                     </span>
                                 </td>
                                 <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
@@ -172,7 +184,7 @@
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
-                        Tổng: {{ $products->count() }} sản phẩm
+                        Tổng: {{ $products->total() }} sản phẩm
                     </p>
                     <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
