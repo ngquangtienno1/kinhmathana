@@ -38,17 +38,21 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Authentication routes
 Route::get('login', [AuthenticationController::class, 'login'])->name('login');
 Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
 Route::get('logout', [AuthenticationController::class, 'logout'])->name('logout');
 Route::get('register', [AuthenticationController::class, 'register'])->name('register');
 Route::post('postRegister', [AuthenticationController::class, 'postRegister'])->name('postRegister');
 
+// Social login routes
 Route::get('/auth/google', [SocialController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
-
 Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
+
+
+
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
@@ -61,6 +65,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         ->name('settings.update')
         ->middleware(['permission:cap-nhat-cai-dat']);
 
+
+        Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');

@@ -124,9 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="col-md-6">
                     <div class="attribute-values-tags"></div>
-                    <select class="form-select attribute-values" multiple>
-                        <option value="">Chọn giá trị</option>
-                    </select>
+                    <div class="border rounded p-3 attribute-values-container" style="max-height: 200px; overflow-y: auto;"></div>
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
@@ -136,18 +134,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const typeSelect = row.querySelector('.attribute-type');
             const tagsContainer = row.querySelector('.attribute-values-tags');
-            const valuesSelect = row.querySelector('.attribute-values');
+            const valuesContainer = row.querySelector('.attribute-values-container');
 
             typeSelect.addEventListener('change', function () {
                 tagsContainer.innerHTML = '';
-                valuesSelect.innerHTML = '<option value="">Chọn giá trị</option>';
+                valuesContainer.innerHTML = '';
                 const options = this.value === 'color' ? colors : sizes;
                 if (options && options.length > 0) {
                     options.forEach(option => {
-                        const opt = document.createElement('option');
-                        opt.value = option;
-                        opt.text = option;
-                        valuesSelect.appendChild(opt);
+                        const div = document.createElement('div');
+                        div.className = 'form-check';
+                        div.innerHTML = `
+                            <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${index}][values][]" value="${option}" data-index="${index}">
+                            <label class="form-check-label">${option}</label>
+                        `;
+                        valuesContainer.appendChild(div);
                     });
                     console.log(`Loaded ${this.value === 'color' ? colors.length : sizes.length} options for ${this.value}`);
                 } else {
@@ -155,38 +156,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            valuesSelect.addEventListener('change', function () {
-                const selectedValues = Array.from(this.selectedOptions).map(option => option.value).filter(v => v);
-                tagsContainer.innerHTML = '';
-                selectedValues.forEach(value => {
-                    const tag = document.createElement('span');
-                    tag.className = 'tag';
-                    tag.innerHTML = `${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
-                    tagsContainer.appendChild(tag);
-                });
-                Array.from(this.options).forEach(option => {
-                    if (selectedValues.includes(option.value)) {
-                        option.remove();
-                    }
-                });
-                if (!this.querySelector('option[value=""]')) {
-                    const emptyOption = document.createElement('option');
-                    emptyOption.value = '';
-                    emptyOption.text = 'Chọn giá trị';
-                    this.appendChild(emptyOption);
+            valuesContainer.addEventListener('change', function (e) {
+                if (e.target.classList.contains('attribute-value-checkbox')) {
+                    const index = e.target.getAttribute('data-index');
+                    const selectedValues = Array.from(valuesContainer.querySelectorAll('input[name="attributes[' + index + '][values][]"]:checked')).map(checkbox => checkbox.value);
+                    tagsContainer.innerHTML = '';
+                    selectedValues.forEach(value => {
+                        const tag = document.createElement('span');
+                        tag.className = 'tag';
+                        tag.innerHTML = `${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                        tagsContainer.appendChild(tag);
+                    });
+                    checkGenerateButton();
+                    updateAddAttributeBtn();
                 }
-                checkGenerateButton();
-                updateAddAttributeBtn();
             });
 
             tagsContainer.addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-tag')) {
                     const value = e.target.getAttribute('data-value');
+                    const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
+                    if (checkbox) {
+                        checkbox.checked = false;
+                    }
                     e.target.parentElement.remove();
-                    const option = document.createElement('option');
-                    option.value = value;
-                    option.text = value;
-                    valuesSelect.appendChild(option);
                     checkGenerateButton();
                     updateAddAttributeBtn();
                 }
@@ -274,8 +267,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.className = 'variation-row row g-2 mb-2';
                 const skuPrefix = variableSkuInput.value;
                 const comboName = combo.join(' - ');
-                const randomPrice = (Math.floor(Math.random() * (500000 - 100000 + 1)) + 100000) / 100;
-                const randomStock = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
                 row.innerHTML = `
                     <div class="col-md-2">
                         <input type="text" name="variations[${index}][name]" value="${comboName}" class="form-control" placeholder="Tên biến thể" readonly>
@@ -284,26 +275,42 @@ document.addEventListener('DOMContentLoaded', function () {
                         <input type="text" name="variations[${index}][sku]" value="${skuPrefix}-${comboName.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
                     </div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control price-input" name="variations[${index}][price]" value="${randomPrice}" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
+                        <input type="text" class="form-control price-input" name="variations[${index}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
                     </div>
                     <div class="col-md-2">
                         <input type="text" class="form-control price-input" name="variations[${index}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
                     </div>
-                    <div class="col-md-2">
-                        <input type="number" name="variations[${index}][stock_quantity]" value="${randomStock}" class="form-control" placeholder="Tồn kho" min="0">
+                    <div class="col-md-1">
+                        <input type="number" name="variations[${index}][stock_quantity]" value="0" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0">
                     </div>
                     <div class="col-md-1">
-                        <select name="variations[${index}][status]" class="form-select">
+                        <select name="variations[${index}][status]" class="form-select variation-status">
                             <option value="in_stock">Còn hàng</option>
-                            <option value="out_of_stock">Hết hàng</option>
+                            <option value="out_of_stock" selected>Hết hàng</option>
                             <option value="hidden">Ẩn</option>
                         </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Ảnh biến thể</label>
+                        <input type="file" name="variations[${index}][image]" class="form-control variation-image-input" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     </div>
                     <div class="col-md-1">
                         <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
                     </div>
                 `;
                 variationsContainer.appendChild(row);
+
+                // Thêm sự kiện cho stock_quantity để tự động cập nhật trạng thái
+                const stockInput = row.querySelector('.stock-quantity-input');
+                const statusSelect = row.querySelector('.variation-status');
+                stockInput.addEventListener('input', function () {
+                    if (parseInt(this.value) === 0) {
+                        statusSelect.value = 'out_of_stock';
+                    } else if (statusSelect.value === 'out_of_stock') {
+                        statusSelect.value = 'in_stock';
+                    }
+                });
+
                 row.querySelector('.remove-variation').addEventListener('click', function () {
                     row.remove();
                 });
@@ -369,4 +376,53 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     updateAddAttributeBtn();
+
+    // Khởi tạo sự kiện cho các checkbox hiện có
+    document.querySelectorAll('.attribute-value-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const index = this.getAttribute('data-index');
+            const container = this.closest('.attribute-row');
+            const tagsContainer = container.querySelector('.attribute-values-tags');
+            const selectedValues = Array.from(container.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(checkbox => checkbox.value);
+            tagsContainer.innerHTML = '';
+            selectedValues.forEach(value => {
+                const tag = document.createElement('span');
+                tag.className = 'tag';
+                tag.innerHTML = `${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                tagsContainer.appendChild(tag);
+            });
+            checkGenerateButton();
+            updateAddAttributeBtn();
+        });
+    });
+
+    // Khởi tạo sự kiện xóa tag cho các tag hiện có
+    document.querySelectorAll('.attribute-values-tags').forEach(tagsContainer => {
+        tagsContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-tag')) {
+                const value = e.target.getAttribute('data-value');
+                const container = e.target.closest('.attribute-row');
+                const checkbox = container.querySelector(`input[value="${value}"]`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+                e.target.parentElement.remove();
+                checkGenerateButton();
+                updateAddAttributeBtn();
+            }
+        });
+    });
+
+    // Khởi tạo sự kiện cho stock_quantity để tự động cập nhật trạng thái (cho các variation hiện có)
+    document.querySelectorAll('.stock-quantity-input').forEach(input => {
+        input.addEventListener('input', function () {
+            const row = this.closest('.variation-row');
+            const statusSelect = row.querySelector('.variation-status');
+            if (parseInt(this.value) === 0) {
+                statusSelect.value = 'out_of_stock';
+            } else if (statusSelect.value === 'out_of_stock') {
+                statusSelect.value = 'in_stock';
+            }
+        });
+    });
 });

@@ -110,7 +110,7 @@ class ProductController extends Controller
         return view('admin.products.create', compact('categories', 'brands', 'colors', 'sizes'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, VariationService $variationService)
     {
         \Log::info('Request data before validation', $request->all());
 
@@ -145,7 +145,7 @@ class ProductController extends Controller
                 unset($processedData['stock_quantity']);
             }
 
-            // Xử lý price và sale_price cho biến thể
+            // Xử lý price, sale_price và stock_quantity cho biến thể
             if (isset($processedData['variations'])) {
                 foreach ($processedData['variations'] as $index => &$variation) {
                     if (isset($variation['price'])) {
@@ -162,6 +162,10 @@ class ProductController extends Controller
                     }
                     // Đảm bảo stock_quantity của biến thể luôn có giá trị
                     $variation['stock_quantity'] = (int)($variation['stock_quantity'] ?? 0);
+                    // Tự động cập nhật trạng thái biến thể dựa trên stock_quantity
+                    if ($variation['stock_quantity'] === 0) {
+                        $variation['status'] = 'out_of_stock';
+                    }
                 }
                 unset($variation);
             }
@@ -187,13 +191,13 @@ class ProductController extends Controller
                 'sku.required' => 'Mã sản phẩm là bắt buộc.',
                 'sku.string' => 'Mã sản phẩm phải là chuỗi ký tự.',
                 'sku.unique' => 'Mã sản phẩm đã tồn tại.',
-                'stock_quantity.required_if' => 'Số lượng tồn kho là bắt buộc đối với sản phẩm đơn giản.',
-                'stock_quantity.integer' => 'Số lượng tồn kho phải là số nguyên.',
-                'stock_quantity.min' => 'Số lượng tồn kho không được nhỏ hơn 0.',
                 'slug.required' => 'Slug sản phẩm là bắt buộc.',
                 'slug.string' => 'Slug sản phẩm phải là chuỗi ký tự.',
                 'slug.unique' => 'Slug sản phẩm đã tồn tại.',
-                'price.required_if' => 'Giá gốc là bắt buộc đối với sản phẩm đơn giản.',
+                'stock_quantity.required_if' => 'Số lượng tồn kho là bắt buộc cho sản phẩm đơn giản.',
+                'stock_quantity.integer' => 'Số lượng tồn kho phải là số nguyên.',
+                'stock_quantity.min' => 'Số lượng tồn kho không được nhỏ hơn 0.',
+                'price.required_if' => 'Giá gốc là bắt buộc cho sản phẩm đơn giản.',
                 'price.numeric' => 'Giá gốc phải là một số hợp lệ.',
                 'price.min' => 'Giá gốc không được nhỏ hơn 0.',
                 'sale_price.numeric' => 'Giá khuyến mãi phải là một số hợp lệ.',
@@ -217,12 +221,21 @@ class ProductController extends Controller
                 'variations.*.stock_quantity.integer' => 'Số lượng tồn kho của biến thể phải là số nguyên.',
                 'variations.*.stock_quantity.min' => 'Số lượng tồn kho của biến thể không được nhỏ hơn 0.',
                 'variations.*.status.in' => 'Trạng thái biến thể không hợp lệ.',
+                'variations.*.image.image' => 'Ảnh biến thể phải là một tệp hình ảnh.',
+                'variations.*.image.mimes' => 'Ảnh biến thể phải có định dạng jpg, jpeg, png, gif, webp hoặc tiff.',
+                'variations.*.image.max' => 'Ảnh biến thể không được vượt quá 5MB.',
                 'attributes.required_if' => 'Thuộc tính biến thể là bắt buộc đối với sản phẩm có biến thể.',
                 'attributes.array' => 'Dữ liệu thuộc tính phải là một mảng.',
                 'attributes.*.type.required_with' => 'Loại thuộc tính là bắt buộc.',
                 'attributes.*.type.in' => 'Loại thuộc tính phải là "color" hoặc "size".',
                 'attributes.*.values.required_with' => 'Giá trị thuộc tính là bắt buộc.',
                 'attributes.*.values.array' => 'Giá trị thuộc tính phải là một mảng.',
+                'featured_image.image' => 'Ảnh đại diện phải là file ảnh.',
+                'featured_image.mimes' => 'Ảnh đại diện phải có định dạng jpeg, png, jpg, hoặc gif.',
+                'featured_image.max' => 'Ảnh đại diện không được lớn hơn 2MB.',
+                'gallery_images.*.image' => 'Album ảnh phải chứa các file ảnh.',
+                'gallery_images.*.mimes' => 'Album ảnh phải có định dạng jpeg, png, jpg, hoặc gif.',
+                'gallery_images.*.max' => 'Mỗi ảnh trong album không được lớn hơn 2MB.',
             ];
 
             $rules = [
@@ -251,9 +264,12 @@ class ProductController extends Controller
                 'variations.*.sale_price' => 'nullable|numeric|min:0|lte:variations.*.price',
                 'variations.*.stock_quantity' => 'required|integer|min:0',
                 'variations.*.status' => 'nullable|in:in_stock,out_of_stock,hidden',
+                'variations.*.image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
                 'attributes' => 'required_if:product_type,variable|array',
                 'attributes.*.type' => 'required_with:attributes|in:color,size',
                 'attributes.*.values' => 'required_with:attributes|array',
+                'featured_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
+                'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
             ];
 
             // Chỉ thêm validate cho price, sale_price và stock_quantity nếu product_type là simple
@@ -316,16 +332,34 @@ class ProductController extends Controller
             $product->categories()->sync($validated['categories']);
 
             if ($validated['product_type'] === 'variable' && !empty($validated['variations'])) {
-                (new VariationService())->createOrUpdateVariations($product, $validated['variations'], $request, $validated['attributes']);
+                $variationService->createOrUpdateVariations($product, $validated['variations'], $request, $validated['attributes']);
                 // Tính lại stock_quantity dựa trên tổng các biến thể
                 $product->stock_quantity = $product->variations->sum('stock_quantity');
                 $product->save();
             }
 
+            // Xử lý upload ảnh
+            if ($request->hasFile('featured_image')) {
+                $path = $request->file('featured_image')->store('products', 'public');
+                $product->images()->create([
+                    'image_path' => $path,
+                    'is_featured' => true,
+                ]);
+            }
+
+            if ($request->hasFile('gallery_images')) {
+                foreach ($request->file('gallery_images') as $image) {
+                    $path = $image->store('products', 'public');
+                    $product->images()->create([
+                        'image_path' => $path,
+                        'is_featured' => false,
+                    ]);
+                }
+            }
+
             \Log::info('Product created', ['id' => $product->id, 'stock_quantity' => $product->stock_quantity]);
 
-            return redirect()->route('admin.products.edit', $product->id)
-                ->with('success', 'Thêm sản phẩm thành công! Vui lòng thêm ảnh sản phẩm.');
+            return redirect()->route('admin.products.list')->with('success', 'Sản phẩm đã được thêm thành công!');
         } catch (\ValidationException $e) {
             \Log::error('Validation failed', ['errors' => $e->validator->errors()->all(), 'request_data' => $request->all()]);
             return redirect()->back()->withErrors($e->validator->errors())->withInput();
@@ -453,7 +487,15 @@ class ProductController extends Controller
         $product->update($updateData);
 
         if ($product->product_type === 'variable' && !empty($validated['variations'])) {
-            (new VariationService())->createOrUpdateVariations($product, $validated['variations'], $request);
+            $processedVariations = $validated['variations'];
+            foreach ($processedVariations as &$variation) {
+                // Tự động cập nhật trạng thái biến thể dựa trên stock_quantity
+                if (isset($variation['stock_quantity']) && (int)$variation['stock_quantity'] === 0) {
+                    $variation['status'] = 'out_of_stock';
+                }
+            }
+            unset($variation);
+            (new VariationService())->createOrUpdateVariations($product, $processedVariations, $request);
             // Tính lại stock_quantity dựa trên tổng các biến thể
             $product->stock_quantity = $product->variations->sum('stock_quantity');
             $product->save();
@@ -674,5 +716,23 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.trashed')
             ->with('success', 'Xóa vĩnh viễn sản phẩm thành công.');
+    }
+    public function showBySlug($slug)
+    {
+        $product = Product::where('slug', $slug)
+            ->with(['images', 'variations.color', 'variations.size', 'brand', 'categories', 'reviews'])
+            ->firstOrFail();
+
+        if ($product->product_type === 'variable') {
+            $product->total_stock = $product->variations->sum('stock_quantity');
+            $product->default_price = $product->variations->first()->price ?? 0;
+            $product->default_sale_price = $product->variations->first()->sale_price ?? $product->default_price;
+        } else {
+            $product->total_stock = $product->stock_quantity ?? 0;
+            $product->default_price = $product->price ?? 0;
+            $product->default_sale_price = $product->sale_price ?? $product->price ?? 0;
+        }
+
+        return view('admin.products.show', compact('product'));
     }
 }
