@@ -21,10 +21,13 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="product-excerpt-tab" data-bs-toggle="tab" data-bs-target="#product-excerpt" type="button" role="tab" aria-controls="product-excerpt" aria-selected="false">Mô tả ngắn</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="product-images-tab" data-bs-toggle="tab" data-bs-target="#product-images" type="button" role="tab" aria-controls="product-images" aria-selected="false">Ảnh sản phẩm</button>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.products.store') }}" method="POST">
+                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="tab-content" id="productTabsContent">
                         <!-- Tab Thông tin sản phẩm -->
@@ -140,17 +143,23 @@
                                                                 @endforeach
                                                             @endif
                                                         </div>
-                                                        <select class="form-select attribute-values" multiple>
+                                                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
                                                             @if (isset($attribute['type']) && $attribute['type'] == 'color')
                                                                 @foreach ($colors as $color)
-                                                                    <option value="{{ $color->name }}">{{ $color->name }}</option>
+                                                                    <div class="form-check">
+                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $color->name }}" data-index="{{ $index }}" {{ in_array($color->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">{{ $color->name }}</label>
+                                                                    </div>
                                                                 @endforeach
                                                             @elseif (isset($attribute['type']) && $attribute['type'] == 'size')
                                                                 @foreach ($sizes as $size)
-                                                                    <option value="{{ $size->name }}">{{ $size->name }}</option>
+                                                                    <div class="form-check">
+                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $size->name }}" data-index="{{ $index }}" {{ in_array($size->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">{{ $size->name }}</label>
+                                                                    </div>
                                                                 @endforeach
                                                             @endif
-                                                        </select>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
@@ -171,19 +180,38 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control price-input" name="variations[{{ $index }}][price]" value="{{ $variation['price'] ?? '' }}" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
+                                                    @error("variations.$index.price")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control price-input" name="variations[{{ $index }}][sale_price]" value="{{ $variation['sale_price'] ?? '' }}" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="number" name="variations[{{ $index }}][stock_quantity]" value="{{ $variation['stock_quantity'] ?? 0 }}" class="form-control" placeholder="Tồn kho" min="0" required>
+                                                    @error("variations.$index.sale_price")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <select name="variations[{{ $index }}][status]" class="form-select">
+                                                    <input type="number" name="variations[{{ $index }}][stock_quantity]" value="{{ $variation['stock_quantity'] ?? 0 }}" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0" required>
+                                                    @error("variations.$index.stock_quantity")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <select name="variations[{{ $index }}][status]" class="form-select variation-status">
                                                         <option value="in_stock" {{ $variation['status'] ?? 'in_stock' == 'in_stock' ? 'selected' : '' }}>Còn hàng</option>
                                                         <option value="out_of_stock" {{ $variation['status'] ?? 'in_stock' == 'out_of_stock' ? 'selected' : '' }}>Hết hàng</option>
                                                         <option value="hidden" {{ $variation['status'] ?? 'in_stock' == 'hidden' ? 'selected' : '' }}>Ẩn</option>
                                                     </select>
+                                                    @error("variations.$index.status")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Ảnh biến thể</label>
+                                                    <input type="file" name="variations[{{ $index }}][image]" class="form-control variation-image-input" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                    @error("variations.$index.image")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-1">
                                                     <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
@@ -202,6 +230,29 @@
                                     <label class="form-label">Mô tả ngắn <span class="text-danger">*</span></label>
                                     <textarea class="form-control" name="description_short">{{ old('description_short') }}</textarea>
                                     @error('description_short')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Ảnh sản phẩm -->
+                        <div class="tab-pane fade" id="product-images" role="tabpanel" aria-labelledby="product-images-tab">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Ảnh đại diện</label>
+                                    <input type="file" class="form-control" name="featured_image">
+                                    @error('featured_image')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Album ảnh</label>
+                                    <input type="file" class="form-control" name="gallery_images[]" multiple>
+                                    @error('gallery_images')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                    @error('gallery_images.*')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>

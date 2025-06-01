@@ -203,6 +203,7 @@
                 </div>
 
                 <div class="mt-4">
+                    <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-primary">Sửa</a>
                     <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">Quay lại</a>
                 </div>
             </div>
