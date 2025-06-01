@@ -352,6 +352,14 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xem thống kê', 'slug' => 'xem-thong-ke', 'description' => 'Cho phép xem thống kê hệ thống'],
             ['name' => 'Xem biểu đồ', 'slug' => 'xem-bieu-do', 'description' => 'Cho phép xem biểu đồ thống kê'],
             ['name' => 'Xuất báo cáo dashboard', 'slug' => 'xuat-bao-cao-dashboard', 'description' => 'Cho phép xuất báo cáo từ dashboard'],
+
+            // Quản lý hỗ trợ khách hàng
+            ['name' => 'Xem danh sách hỗ trợ khách hàng', 'slug' => 'xem-danh-sach-ho-tro-khach-hang', 'description' => 'Cho phép xem danh sách hỗ trợ khách hàng'],
+            ['name' => 'Thêm hỗ trợ khách hàng', 'slug' => 'them-ho-tro-khach-hang', 'description' => 'Cho phép thêm hỗ trợ khách hàng'],
+            ['name' => 'Sửa hỗ trợ khách hàng', 'slug' => 'sua-ho-tro-khach-hang', 'description' => 'Cho phép sửa hỗ trợ khách hàng'],
+            ['name' => 'Xóa hỗ trợ khách hàng', 'slug' => 'xoa-ho-tro-khach-hang', 'description' => 'Cho phép xóa hỗ trợ khách hàng'],
+            ['name' => 'Khôi phục hỗ trợ khách hàng', 'slug' => 'khoi-phuc-ho-tro-khach-hang', 'description' => 'Cho phép khôi phục hỗ trợ khách hàng đã xóa'],
+            ['name' => 'Xóa vĩnh viễn hỗ trợ khách hàng', 'slug' => 'xoa-vinh-vien-ho-tro-khach-hang', 'description' => 'Cho phép xóa vĩnh viễn hỗ trợ khách hàng'],
         ];
 
         // Thêm timestamps cho mỗi permission

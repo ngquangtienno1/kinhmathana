@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PromotionController;
-use App\Http\Controllers\Admin\ProductSupportController;
+use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
@@ -454,19 +454,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     // Support routes
-    Route::prefix('support')->name('support.')->group(function () {
-        Route::get('/', [ProductSupportController::class, 'showForm'])->name('index');
-        Route::get('/list', [ProductSupportController::class, 'index'])->name('list');
-        Route::get('/create', [ProductSupportController::class, 'showForm'])->name('create');
-        Route::post('/', [ProductSupportController::class, 'submitForm'])->name('store');
-        Route::get('/{support}', [ProductSupportController::class, 'show'])->name('show');
-        Route::patch('/{support}/status', [ProductSupportController::class, 'updateStatus'])->name('updateStatus');
-        Route::post('/{support}/done', [ProductSupportController::class, 'markAsDone'])->name('done');
-        Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy');
-        Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm');
-        Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail');
-        Route::get('/{support}/edit-status', [ProductSupportController::class, 'editStatus'])->name('editStatus');
+    Route::prefix('support')->name('support.')->middleware(['permission:xem-danh-sach-ho-tro-khach-hang'])->group(function () {
+        Route::get('/', [CustomerSupportController::class, 'showForm'])->name('index');
+        Route::get('/list', [CustomerSupportController::class, 'index'])->name('list');
+        Route::get('/create', [CustomerSupportController::class, 'showForm'])->name('create');
+        Route::post('/', [CustomerSupportController::class, 'submitForm'])->name('store');
+        Route::get('/{support}', [CustomerSupportController::class, 'show'])->name('show');
+        Route::patch('/{support}/status', [CustomerSupportController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/{support}/done', [CustomerSupportController::class, 'markAsDone'])->name('done');
+        Route::delete('/{support}', [CustomerSupportController::class, 'destroy'])->name('destroy');
+        Route::get('/{support}/email', [CustomerSupportController::class, 'showEmailForm'])->name('emailForm');
+        Route::post('/{support}/send-email', [CustomerSupportController::class, 'sendEmail'])->name('sendEmail');
+        Route::get('/{support}/edit-status', [CustomerSupportController::class, 'editStatus'])->name('editStatus');
     });
+
     // Customer Management
     Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');

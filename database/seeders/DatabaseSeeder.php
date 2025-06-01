@@ -61,6 +61,7 @@ class DatabaseSeeder extends Seeder
             // 7. Seeder cho lý do huỷ
             CancellationReasonSeeder::class,
             ReviewSeeder::class, // Tạo đánh giá
+            CustomerSupportSeeder::class, // Tạo hỗ trợ khách hàng
 
         ]);
     }
