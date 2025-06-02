@@ -305,20 +305,20 @@
                                         data-bulk-select='{"body":"table-latest-review-body"}' /></div>
                             </th>
                             <th class="sort white-space-nowrap align-middle" scope="col"></th>
-                            <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:360px;"
-                                data-sort="product">PRODUCT</th>
+                            <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:300px;"
+                                data-sort="product">SẢN PHẨM</th>
                             <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:200px;">
-                                CUSTOMER
+                                KHÁCH HÀNG
                             </th>
                             <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">
-                                RATING
+                                ĐÁNH GIÁ
                             </th>
                             <th class="sort align-middle" scope="col" style="max-width:350px;" data-sort="review">
-                                REVIEW
+                                NỘI DUNG
                             </th>
-                            <th class="sort text-start ps-5 align-middle" scope="col" data-sort="status">STATUS
+                            <th class="sort align-middle" scope="col" data-sort="time" style="min-width:110px;">
+                                THỜI GIAN
                             </th>
-                            <th class="sort text-end align-middle" scope="col" data-sort="time">TIME</th>
                             <th class="sort text-end pe-0 align-middle" scope="col"></th>
                         </tr>
                     </thead>
@@ -340,7 +340,8 @@
                                     </a>
                                 </td>
                                 <td class="align-middle product white-space-nowrap">
-                                    <a class="fw-semibold" href="#">{{ $review->product->name ?? 'N/A' }}</a>
+                                    <a class="fw-semibold"
+                                        href="{{ route('admin.products.show', $review->product->id) }}">{{ $review->product->name ?? 'N/A' }}</a>
                                 </td>
                                 <td class="align-middle customer white-space-nowrap">
                                     <a class="d-flex align-items-center text-body" href="#">
@@ -372,17 +373,6 @@
                                 <td class="align-middle review" style="min-width:350px;">
                                     <p class="fs-9 fw-semibold text-body-highlight mb-0">{{ $review->content }}</p>
                                 </td>
-                                <td class="align-middle text-start ps-5 status">
-                                    @if ($review->status === 'approved')
-                                        <span class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                                class="badge-label">Approved</span><span class="ms-1"
-                                                data-feather="check" style="height:12.8px;width:12.8px;"></span></span>
-                                    @else
-                                        <span class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                                class="badge-label">Pending</span><span class="ms-1"
-                                                data-feather="clock" style="height:12.8px;width:12.8px;"></span></span>
-                                    @endif
-                                </td>
                                 <td class="align-middle text-end time white-space-nowrap">
                                     <div class="hover-hide">
                                         <h6 class="text-body-highlight mb-0">{{ $review->created_at->diffForHumans() }}
@@ -391,22 +381,25 @@
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0">
                                     <div class="position-relative">
-                                        <div class="hover-actions"><button
-                                                class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                                    class="fas fa-check"></span></button><button
-                                                class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                                    class="fas fa-trash"></span></button></div>
+                                        <div class="hover-actions">
+                                            <a href="{{ route('admin.products.show', $review->product->id) }}" class="btn btn-sm btn-phoenix-secondary me-1 fs-10" title="Xem chi tiết">
+                                                <span class="fas fa-eye"></span>
+                                            </a>
+                                            <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xoá đánh giá này?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="redirect" value="{{ request()->fullUrl() }}">
+                                                <button type="submit" class="btn btn-sm btn-phoenix-secondary fs-10" title="Xoá">
+                                                    <span class="fas fa-trash"></span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                     <div class="btn-reveal-trigger position-static"><button
                                             class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
                                             type="button" data-bs-toggle="dropdown" data-boundary="window"
                                             aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
                                                 class="fas fa-ellipsis-h fs-10"></span></button>
-                                        <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                                href="#">View</a><a class="dropdown-item" href="#">Export</a>
-                                            <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                                href="#">Remove</a>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -418,9 +411,9 @@
                 <div class="pagination d-none"></div>
                 <div class="col d-flex fs-9">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a
-                        class="fw-semibold" href="#!" data-list-view="*">View all<span
+                        class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a
-                        class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
+                        class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn</a>
                 </div>
                 <div class="col-auto d-flex">
                     <button class="btn btn-link px-1 me-1" type="button" title="Previous"

@@ -106,13 +106,16 @@ class ReviewController extends Controller
         return view('admin.reviews.show', compact('review'));
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $review = Review::findOrFail($id);
         $review->delete();
-
-        return redirect()->route('admin.reviews.index')
-            ->with('success', 'Đã xóa đánh giá thành công');
+    
+        $redirect = $request->input('redirect');
+        if ($redirect) {
+            return redirect($redirect)->with('success', 'Xoá đánh giá thành công!');
+        }
+        return redirect()->route('admin.reviews.index')->with('success', 'Xoá đánh giá thành công!');
     }
 
     public function userCanReview(Request $request)
