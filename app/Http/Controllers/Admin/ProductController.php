@@ -86,7 +86,21 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['images', 'variations.color', 'variations.size', 'brand', 'categories', 'reviews'])->findOrFail($id);
+        $product = Product::with([
+            'images',
+            'variations.color',
+            'variations.size',
+            'brand',
+            'categories',
+            'reviews.user'
+        ])->findOrFail($id);
+
+        // Lấy tất cả bình luận liên quan đến sản phẩm này (entity_type = product, entity_id = $id), kèm user
+        $comments = \App\Models\Comment::where('entity_type', 'product')
+            ->where('entity_id', $id)
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         if ($product->product_type === 'variable') {
             $product->total_stock = $product->variations->sum('stock_quantity');
@@ -98,7 +112,7 @@ class ProductController extends Controller
             $product->default_sale_price = $product->sale_price ?? $product->price ?? 0;
         }
 
-        return view('admin.products.show', compact('product'));
+        return view('admin.products.show', compact('product', 'comments'));
     }
 
     public function create()

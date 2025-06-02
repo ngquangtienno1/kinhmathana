@@ -16,6 +16,12 @@
         </div>
     </div>
 
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item"><a class="nav-link active" aria-current="page"
+                href="{{ route('admin.customers.index') }}"><span>Tất cả </span><span
+                    class="text-body-tertiary fw-semibold">({{ $customers->count() }})</span></a></li>
+    </ul>
+
     <div id="customerTable"
         data-list='{"valueNames":["id","name","email","phone","orders","spent","type","date"],"page":10,"pagination":true}'>
 
@@ -163,6 +169,8 @@
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.customers.show', $customer) }}">Chi tiết</a>
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                data-bs-target="#editTypeModal{{ $customer->id }}">Sửa</a>
                                         </div>
                                     </div>
                                 </td>
@@ -197,5 +205,39 @@
         </div>
     </div>
 </div>
+
+@foreach ($customers as $customer)
+    <!-- Modal sửa loại khách hàng -->
+    <div class="modal fade" id="editTypeModal{{ $customer->id }}" tabindex="-1"
+        aria-labelledby="editTypeModalLabel{{ $customer->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('admin.customers.update-type', $customer) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editTypeModalLabel{{ $customer->id }}">Cập nhật loại khách hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="customer_type{{ $customer->id }}" class="form-label"><strong>Loại khách hàng</strong></label>
+                            <select name="customer_type" id="customer_type{{ $customer->id }}" class="form-select">
+                                <option value="new" {{ $customer->customer_type == 'new' ? 'selected' : '' }}>Mới</option>
+                                <option value="regular" {{ $customer->customer_type == 'regular' ? 'selected' : '' }}>Thường</option>
+                                <option value="vip" {{ $customer->customer_type == 'vip' ? 'selected' : '' }}>VIP</option>
+                                <option value="potential" {{ $customer->customer_type == 'potential' ? 'selected' : '' }}>Tiềm năng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 @endsection

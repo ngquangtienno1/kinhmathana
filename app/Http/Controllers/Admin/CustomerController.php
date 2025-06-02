@@ -43,7 +43,7 @@ class CustomerController extends Controller
             $query->where('customer_type', $request->customer_type);
         }
 
-        $customers = $query->latest()->paginate(10);
+        $customers = $query->get();
 
         return view('admin.customers.index', compact('customers'));
     }

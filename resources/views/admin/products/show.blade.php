@@ -1,7 +1,14 @@
 @extends('admin.layouts')
 @section('title', 'Chi tiết sản phẩm')
-
 @section('content')
+
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.products.list') }}">Sản phẩm</a>
+    </li>
+    <li class="breadcrumb-item active">Chi tiết sản phẩm</li>
+@endsection
+
     <div class="mb-9">
         <div class="row g-3 mb-4">
             <div class="col-auto">
@@ -178,7 +185,7 @@
 
                     <!-- Tab Bình luận và đánh giá -->
                     <div class="tab-pane fade" id="product-reviews" role="tabpanel" aria-labelledby="product-reviews-tab">
-                        <h5>Bình luận và đánh giá</h5>
+                        <h4>Đánh giá</h4>
                         @if ($product->reviews->count() > 0)
                             <div class="reviews-list">
                                 @foreach ($product->reviews as $review)
@@ -192,12 +199,29 @@
                                                 <span class="star {{ $i <= $review->rating ? 'filled' : '' }}">★</span>
                                             @endfor
                                         </div>
-                                        <p class="mt-2">{{ $review->comment }}</p>
+                                        <p class="mt-2">{{ $review->content }}</p>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-muted">Chưa có bình luận hoặc đánh giá nào.</p>
+                            <p class="text-muted">Chưa có đánh giá nào.</p>
+                        @endif
+                        <hr>
+                        <h4>Bình luận</h4>
+                        @if (isset($comments) && $comments->count() > 0)
+                            <div class="comments-list">
+                                @foreach ($comments as $comment)
+                                    <div class="comment-item mb-3 p-3 border rounded">
+                                        <div class="d-flex justify-content-between">
+                                            <strong>{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</strong>
+                                            <span>{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                        </div>
+                                        <p class="mt-2">{{ $comment->content }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-muted">Chưa có bình luận nào.</p>
                         @endif
                     </div>
                 </div>

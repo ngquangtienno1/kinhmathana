@@ -1,7 +1,14 @@
 @extends('admin.layouts')
 @section('title', 'Sửa sản phẩm')
-
 @section('content')
+
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.products.list') }}">Sản phẩm</a>
+    </li>
+    <li class="breadcrumb-item active">Sửa sản phẩm</li>
+@endsection
+
     <div class="mb-9">
         <div class="row g-3 mb-4">
             <div class="col-auto">

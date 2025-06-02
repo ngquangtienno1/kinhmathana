@@ -73,8 +73,8 @@
                     <h2 class="mb-2">Thống kê tổng quan</h2>
                     <h5 class="text-body-tertiary fw-semibold">Tổng quan về hoạt động kinh doanh của bạn</h5>
                 </div>
-                <div class="row align-items-center g-4">
-                    <div class="col-12 col-md-auto">
+                <div class="row align-items-center g-4 row-cols-auto flex-nowrap">
+                    <div class="col-md-auto">
                         <div class="d-flex align-items-center">
                             <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
                                 <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-auto">
+                    <div class="col-md-auto">
                         <div class="d-flex align-items-center">
                             <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
                                 <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light"
@@ -106,7 +106,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-auto">
+                    <div class="col-md-auto">
+                        <div class="d-flex align-items-center">
+                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
+                                <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
+                                    data-fa-transform="down-4 rotate--10 left-4"></span>
+                                <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success"
+                                    data-fa-transform="up-4 right-3 grow-2"></span>
+                                <span class="fa-stack-1x fa-solid fa-check text-success"
+                                    data-fa-transform="shrink-2 up-8 right-6"></span>
+                            </span>
+                            <div class="ms-3">
+                                <h4 class="mb-0">{{ $completedOrders }} đơn hàng</h4>
+                                <p class="text-body-secondary fs-9 mb-0">Đã hoàn thành</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-auto">
                         <div class="d-flex align-items-center">
                             <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
                                 <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light"

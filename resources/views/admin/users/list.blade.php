@@ -57,11 +57,11 @@
                     <form class="row g-2 align-items-end" method="GET" action="">
                         <!-- Search Form -->
                         <div class="col-auto">
-                            <div class="search-box">
+                    <div class="search-box">
                                 <div class="position-relative">
                                     <input class="form-control search-input search" type="search"
-                                        placeholder="Search members" aria-label="Search" />
-                                    <span class="fas fa-search search-box-icon"></span>
+                                placeholder="Search members" aria-label="Search" />
+                            <span class="fas fa-search search-box-icon"></span>
                                 </div>
                             </div>
                         </div>
@@ -99,9 +99,9 @@
                             <button type="submit" class="btn btn-primary">Lọc</button>
                             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Đặt lại</a>
                         </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
 
             <!-- Bảng dữ liệu -->
             <div class="mx-n4 mx-lg-n6 px-4 px-lg-6 mb-9 bg-body-emphasis border-y mt-2 position-relative top-1">
