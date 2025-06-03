@@ -1,132 +1,176 @@
+@php
+    use SimpleSoftwareIO\QrCode\Facades\QrCode;
+@endphp
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>In đơn hàng #{{ $order->order_number }}</title>
+    <title>Vận đơn #{{ $order->order_number }}</title>
     <style>
         body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            background: #f5f6fa;
+            font-family: Arial, 'DejaVu Sans', sans-serif;
+            background: #fff;
             margin: 0;
             padding: 0;
         }
 
-        .print-container {
+        .label-hana {
+            width: 148mm;
+            height: 210mm;
+            min-height: 210mm;
+            margin: 0 auto;
+            border: 2px dashed #222;
             background: #fff;
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 32px 40px 40px 40px;
-            border-radius: 12px;
-            box-shadow: 0 0 16px rgba(0, 0, 0, 0.12);
-            border: 1px solid #e0e0e0;
-            page-break-after: avoid;
-            page-break-inside: avoid;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 32px;
+        .hana-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px dashed #aaa;
+            padding: 8px 8px 4px 8px;
         }
 
-        .header img {
-            max-height: 60px;
-            margin-bottom: 8px;
+        .hana-header img {
+            height: 32px;
         }
 
-        .order-title {
-            font-size: 2.1em;
-            font-weight: bold;
-            color: #2d8cf0;
-            margin-bottom: 0;
+        .hana-barcode {
+            text-align: right;
         }
 
-        .order-meta {
-            color: #888;
-            font-size: 1.1em;
-            margin-bottom: 8px;
+        .hana-barcode img {
+            height: 32px;
         }
 
-        .section-title {
-            font-size: 1.15em;
-            font-weight: bold;
-            color: #2d8cf0;
-            margin-top: 24px;
-            margin-bottom: 8px;
-        }
-
-        .info-table {
-            width: 100%;
-            margin-bottom: 18px;
-        }
-
-        .info-table td {
-            padding: 2px 0;
-        }
-
-        table.product-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
-        }
-
-        table.product-table th,
-        table.product-table td {
-            border: 1px solid #bfc9d1;
-            padding: 8px 6px;
-            font-size: 1em;
-        }
-
-        table.product-table th {
-            background: #eaf4ff;
-            color: #2d8cf0;
-            font-weight: bold;
-        }
-
-        table.product-table td {
-            background: #fff;
-        }
-
-        .summary {
-            margin-top: 18px;
-            font-size: 1.1em;
-        }
-
-        .summary-row {
+        .hana-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 6px;
+            align-items: stretch;
+            margin-top: 2px;
+            font-size: 12px;
         }
 
-        .summary-row.total {
-            font-size: 1.25em;
+        .hana-col-sep {
+            border-left: 1.5px dashed #e67e22;
+            height: 100%;
+            margin: 0 8px;
+        }
+
+        .hana-block {
+            border-bottom: 1px dashed #aaa;
+            padding: 6px 8px 6px 8px;
+        }
+
+        .hana-title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin: 8px 0 4px 0;
+            letter-spacing: 2px;
+        }
+
+        .hana-section-title {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .hana-info-table {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .hana-info-table td {
+            padding: 1px 2px;
+            vertical-align: top;
+        }
+
+        .hana-products-list {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .hana-products-list li {
+            margin-bottom: 2px;
+        }
+
+        .hana-qr {
+            text-align: right;
+        }
+
+        .hana-footer {
+            font-size: 11px;
+            margin-top: 8px;
+            border-top: 1px dashed #aaa;
+            padding: 4px 8px 8px 8px;
+        }
+
+        .hana-highlight {
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .hana-cod {
+            font-size: 16px;
             font-weight: bold;
             color: #e74c3c;
-            border-top: 2px solid #2d8cf0;
-            padding-top: 8px;
-            margin-top: 10px;
         }
 
-        .note {
-            margin-top: 18px;
-            font-style: italic;
-            color: #666;
+        .hana-warning {
+            background: #fff6e5;
+            color: #e67e22;
+            border: 1px solid #f5c16c;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            margin: 6px 8px 0 8px;
+        }
+
+        .hana-hotline {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .hana-label {
+            color: #e67e22;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .hana-barcode-img {
+            margin-top: 2px;
         }
 
         @media print {
+            @page {
+                size: A5 portrait;
+                margin: 0;
+            }
+
             body {
                 background: #fff;
                 margin: 0;
             }
 
-            .print-container {
-                box-shadow: none;
-                border: none;
+            .label-hana {
+                width: 148mm;
+                height: 210mm;
+                min-height: 210mm;
                 margin: 0;
-                padding: 0 16mm;
-                max-width: 210mm;
-                page-break-after: avoid;
-                page-break-inside: avoid;
+                box-shadow: none;
+                border: 2px dashed #222;
+                padding: 0;
             }
 
             button {
@@ -137,101 +181,92 @@
 </head>
 
 <body>
-    <div class="print-container">
-        <div class="header">
-            {{-- Logo nếu có --}}
-            <img src="{{ asset('logo.png') }}" alt="Logo" onerror="this.style.display='none'">
-            <div class="order-title">ĐƠN HÀNG #{{ $order->order_number }}</div>
-            <div class="order-meta">Ngày đặt: {{ $order->created_at->format('d/m/Y H:i') }}</div>
-        </div>
-
-        <div class="section-title">Thông tin khách hàng</div>
-        <table class="info-table">
-            <tr>
-                <td><strong>Họ tên:</strong></td>
-                <td>{{ $order->user->name }}</td>
-                <td><strong>Email:</strong></td>
-                <td>{{ $order->user->email }}</td>
-            </tr>
-            <tr>
-                <td><strong>Điện thoại:</strong></td>
-                <td>{{ $order->user->phone ?? 'Chưa cập nhật' }}</td>
-                <td><strong>Địa chỉ:</strong></td>
-                <td>{{ $order->user->address ?? 'Chưa cập nhật' }}</td>
-            </tr>
-        </table>
-
-        <div class="section-title">Thông tin người nhận</div>
-        <table class="info-table">
-            <tr>
-                <td><strong>Họ tên:</strong></td>
-                <td>{{ $order->receiver_name }}</td>
-                <td><strong>Email:</strong></td>
-                <td>{{ $order->receiver_email }}</td>
-            </tr>
-            <tr>
-                <td><strong>Điện thoại:</strong></td>
-                <td>{{ $order->receiver_phone }}</td>
-                <td><strong>Địa chỉ:</strong></td>
-                <td>{{ $order->shipping_address }}</td>
-            </tr>
-        </table>
-
-        <div class="section-title">Danh sách sản phẩm</div>
-        <table class="product-table">
-            <thead>
-                <tr>
-                    <th>Sản phẩm</th>
-                    <th>SKU</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($order->items as $item)
-                    <tr>
-                        <td>{{ $item->product_name }}</td>
-                        <td>{{ $item->product_sku }}</td>
-                        <td>{{ number_format($item->price) }}đ</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>{{ number_format($item->subtotal) }}đ</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <div class="summary">
-            <div class="summary-row">
-                <span>Tổng tiền hàng:</span>
-                <span>{{ number_format($order->subtotal) }}đ</span>
-            </div>
-            @if ($order->promotion_amount > 0)
-                <div class="summary-row">
-                    <span>Giảm giá khuyến mãi:</span>
-                    <span>-{{ number_format($order->promotion_amount) }}đ</span>
-                </div>
-            @endif
-            <div class="summary-row">
-                <span>Phí vận chuyển:</span>
-                <span>{{ number_format($order->shipping_fee) }}đ</span>
-            </div>
-            <div class="summary-row total">
-                <span>Tổng thanh toán:</span>
-                <span>{{ number_format($order->total_amount) }}đ</span>
+    <div class="label-hana">
+        <div class="hana-header">
+            <img src="{{ getLogoUrl() }}" alt="{{ getSetting('website_name') }}" style="margin-left: 10px;height: 52px;">
+            <div class="hana-barcode">
+                {{-- Barcode mã vận đơn (dùng Google Chart API, bạn có thể thay bằng package barcode nếu muốn) --}}
+                <img class="hana-barcode-img"
+                    src="https://barcode.tec-it.com/barcode.ashx?data={{ $order->order_number }}&code=Code128&translate-esc=false"
+                    alt="Barcode" />
             </div>
         </div>
-
-        @if ($order->note)
-            <div class="note">
-                <strong>Ghi chú:</strong> {{ $order->note }}
+        <div class="hana-block hana-row" style="padding-bottom:2px;">
+            <div style="width: 49%;">
+                <div class="hana-label">Từ:</div>
+                <div><strong>{{ $order->user->name }}</strong></div>
+                <div>Email: {{ $order->user->email }}</div>
+                <div>SDT: {{ $order->user->phone ?? 'Chưa cập nhật' }}</div>
+                <div>Địa chỉ: {{ $order->user->address ?? (getSetting('company_address') ?? 'Chưa cập nhật') }}</div>
+                <div>MST: {{ getSetting('company_taxcode') }}</div>
             </div>
-        @endif
-
+            <div class="hana-col-sep"></div>
+            <div style="width: 49%;">
+                <div class="hana-label">Đến:</div>
+                <div><strong>{{ $order->receiver_name }}</strong></div>
+                <div>Email: {{ $order->receiver_email ?? '---' }}</div>
+                <div>SDT: {{ $order->receiver_phone }}</div>
+                <div>Địa chỉ: {{ $order->shipping_address }}</div>
+            </div>
+        </div>
+        <div class="hana-block" style="padding: 4px 8px 4px 8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>Mã vận đơn: <span class="hana-highlight">{{ $order->order_number }}</span></div>
+                <div>Mã đơn hàng: <span class="hana-highlight">{{ $order->order_number }}</span></div>
+            </div>
+        </div>
+        <div class="hana-title" style="margin-bottom:0;">{{ $order->order_number }}</div>
+        <div class="hana-block hana-row" style="align-items: flex-start;">
+            <div style="width: 65%; border-right: 1.5px dashed #bbb; padding-right: 10px;">
+                <div class="hana-section-title">Nội dung hàng (Tổng SL sản phẩm:
+                    {{ $order->items->sum('quantity') }})</div>
+                <ol class="hana-products-list">
+                    @foreach ($order->items as $item)
+                        <li>{{ $item->product_name }} ({{ $item->product_sku }}) x {{ $item->quantity }}</li>
+                    @endforeach
+                </ol>
+            </div>
+            <div class="hana-qr"
+                style="width: 35%; padding-left: 10px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                {!! QrCode::size(80)->generate($order->order_number) !!}
+                <div style="font-size:11px;text-align:center;margin-top:2px;">{{ $order->order_number }}</div>
+            </div>
+        </div>
+        <div class="hana-block hana-row">
+            <div style="width: 49%;">
+                <div>Ngày đặt hàng:</div>
+                <div class="hana-highlight">{{ $order->created_at->format('d/m/Y H:i') }}</div>
+            </div>
+            <div class="hana-col-sep"></div>
+            <div style="width: 49%;">
+                <div>Khối lượng ước tính:</div>
+                <div class="hana-highlight">{{ $order->weight ?? '---' }}g</div>
+            </div>
+        </div>
+        <div class="hana-block hana-row">
+            <div style="width: 49%;">
+                <div>Tiền thu người nhận:</div>
+                <div class="hana-cod">{{ number_format($order->total_amount) }}đ</div>
+            </div>
+            <div class="hana-col-sep"></div>
+            <div style="width: 49%;">
+                <div>Ghi chú:</div>
+                <div>{{ $order->note ?? '---' }}</div>
+            </div>
+        </div>
+        <div class="hana-warning">
+            Kiểm tra sản phẩm và đối chiếu mã vận đơn/Mã đơn hàng trước khi nhận hàng. Lưu ý: Mở kiện hàng khi có sự
+            đồng ý của người giao hàng.
+        </div>
+        <div class="hana-footer">
+            <div>Chữ ký người nhận: __________________________</div>
+        </div>
+        <div class="hana-hotline">
+            Tuyến dụng Tài xế/Điều phối kho SPX - Thu nhập 8-20 triệu - Gọi 1900 6885
+        </div>
         <button onclick="window.print()"
-            style="margin-top:32px;display:block;width:100%;font-size:1.1em;padding:10px 0;background:#2d8cf0;color:#fff;border:none;border-radius:6px;cursor:pointer;">
-            In đơn hàng
-        </button>
+            style="margin-top:12px;width:100%;font-size:1.1em;padding:8px 0;background:#e67e22;color:#fff;border:none;border-radius:6px;cursor:pointer;">In
+            vận đơn</button>
     </div>
 </body>
 
