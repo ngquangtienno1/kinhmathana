@@ -16,9 +16,10 @@
             Mã khách hàng: <a class="fw-bold" href="#!">{{ $order->user_id }}</a>
         </p>
         <div class="d-flex">
-            <button class="btn btn-link pe-3 ps-0 text-body" onclick="window.print()">
+            <a href="{{ route('admin.orders.print', $order->id) }}" target="_blank"
+                class="btn btn-link pe-3 ps-0 text-body">
                 <i class="fas fa-print me-2"></i>In
-            </button>
+            </a>
             @if ($order->status == 'cancelled')
                 <button class="btn btn-link px-3 text-danger"
                     onclick="if(confirm('Bạn có chắc muốn xóa đơn hàng này?')) document.getElementById('delete-order-form').submit();">

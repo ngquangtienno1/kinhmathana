@@ -281,4 +281,13 @@ class OrderController extends Controller
             return back()->with('error', 'Có lỗi xảy ra khi xóa đơn hàng');
         }
     }
+
+    /**
+     * In đơn hàng (view đẹp cho in)
+     */
+    public function print(Order $order)
+    {
+        $order->load(['user', 'promotion', 'paymentMethod', 'shippingProvider', 'items']);
+        return view('admin.orders.print', compact('order'));
+    }
 }

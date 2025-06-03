@@ -531,7 +531,7 @@
                     </li>
                 @endif
 
-                @if (canAccess('xem-danh-sach-ho-tro-khach-hang'))
+                {{-- @if (canAccess('xem-danh-sach-ho-tro-khach-hang'))
                     <!-- Quản lý Hỗ trợ khách hàng -->
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
@@ -561,7 +561,7 @@
                             </div>
                         </div>
                     </li>
-                @endif
+                @endif --}}
 
                 @if (canAccess('xem-danh-sach-phuong-thuc-thanh-toan'))
                     <!-- Quản lý Lý do hủy -->

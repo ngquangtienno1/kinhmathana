@@ -66,7 +66,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         ->middleware(['permission:cap-nhat-cai-dat']);
 
 
-        Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
+    Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');
@@ -358,6 +358,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::prefix('orders')->name('orders.')->middleware(['permission:xem-danh-sach-don-hang'])->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
+        Route::get('/{order}/print', [OrderController::class, 'print'])->name('print');
         Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
