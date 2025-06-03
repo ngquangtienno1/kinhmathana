@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\Category;
+use App\Models\Size;
 use App\Models\Brand;
 use App\Models\Color;
-use App\Models\Size;
+use App\Models\Product;
+use App\Models\Category;
 use App\Models\Variation;
-use App\Services\VariationService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Services\VariationService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Admin\NotificationController;
 
 class ProductController extends Controller
 {
@@ -372,6 +373,9 @@ class ProductController extends Controller
             }
 
             \Log::info('Product created', ['id' => $product->id, 'stock_quantity' => $product->stock_quantity]);
+
+            // Gửi thông báo cho admin
+            (new NotificationController())->notifyNewProduct($product);
 
             return redirect()->route('admin.products.list')->with('success', 'Sản phẩm đã được thêm thành công!');
         } catch (\ValidationException $e) {

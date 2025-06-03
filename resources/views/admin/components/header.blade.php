@@ -1,3 +1,5 @@
+@stack('styles')
+
 <nav class="navbar navbar-top fixed-top navbar-expand" id="navbarDefault">
     <div class="collapse navbar-collapse justify-content-between">
         <div class="navbar-logo">
@@ -62,228 +64,30 @@
                     data-bs-target="#searchBoxModal"><span data-feather="search"
                         style="height:19px;width:19px;margin-bottom: 2px;"></span></a></li>
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" style="min-width: 2.25rem" role="button" data-bs-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside"><span class="d-block"
-                        style="height:20px;width:20px;"><span data-feather="bell"
-                            style="height:20px;width:20px;"></span></span></a>
+                <a class="nav-link position-relative" href="#" style="min-width: 2.25rem" role="button"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside"
+                    id="notificationDropdownToggle">
+                    <span class="d-block" style="height:20px;width:20px;position:relative;">
+                        <span data-feather="bell" style="height:20px;width:20px;"></span>
+                        <span id="notification-badge"
+                            style="display:none;position:absolute;top:-9px;right:-5px;min-width:20px;height:18px;background:#ff3b3b;color:#fff;font-size:12px;font-weight:bold;line-height:15px;text-align:center;border-radius:50%;border:2px solid #fff;z-index:10;"></span>
+                    </span>
+                </a>
                 <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret"
-                    id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
+                    id="navbarDropdownNotfication" aria-labelledby="notificationDropdownToggle"
+                    style="min-width:350px;max-width:400px;">
                     <div class="card position-relative border-0">
                         <div class="card-header p-2">
                             <div class="d-flex justify-content-between">
-                                <h5 class="text-body-emphasis mb-0">Notifications</h5><button
-                                    class="btn btn-link p-0 fs-9 fw-normal" type="button">Mark all as
-                                    read</button>
+                                <h5 class="text-body-emphasis mb-0">Thông báo</h5>
+                                <a href="{{ route('admin.notifications.index') }}"
+                                    class="btn btn-link p-0 fs-9 fw-normal">Xem tất cả</a>
                             </div>
                         </div>
                         <div class="card-body p-0">
-                            <div class="scrollbar-overlay" style="height: 27rem;">
-                                <div class="px-2 px-sm-3 py-3 notification-card position-relative read border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/30.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Jessie Samson</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>💬</span>Mentioned you in a
-                                                    comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">10m</span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:41
-                                                        AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark
-                                                    as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3">
-                                                <div class="avatar-name rounded-circle"><span>J</span></div>
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Jane Foster</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>📅</span>Created an event.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">20m</span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:20
-                                                        AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark
-                                                    as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle avatar-placeholder"
-                                                    src="{{ asset('v1/assets/img/team/40x40/avatar.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Jessie Samson</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>👍</span>Liked your comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">1h</span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">9:30 AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark
-                                                    as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/57.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Kiera Anderson</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>💬</span>Mentioned you in a
-                                                    comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">9:11 AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark
-                                                    as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="px-2 px-sm-3 py-3 notification-card position-relative unread border-bottom">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/59.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Herman Carter</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>👤</span>Tagged you in a
-                                                    comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:58
-                                                        PM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark
-                                                    as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="px-2 px-sm-3 py-3 notification-card position-relative read ">
-                                    <div class="d-flex align-items-center justify-content-between position-relative">
-                                        <div class="d-flex">
-                                            <div class="avatar avatar-m status-online me-3"><img
-                                                    class="rounded-circle"
-                                                    src="{{ asset('v1/assets/img/team/40x40/58.webp') }} "
-                                                    alt="" />
-                                            </div>
-                                            <div class="flex-1 me-sm-3">
-                                                <h4 class="fs-9 text-body-emphasis">Benjamin Button</h4>
-                                                <p class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal"><span
-                                                        class='me-1 fs-10'>👍</span>Liked your comment.<span
-                                                        class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
-                                                </p>
-                                                <p class="text-body-secondary fs-9 mb-0"><span
-                                                        class="me-1 fas fa-clock"></span><span class="fw-bold">10:18
-                                                        AM
-                                                    </span>August 7,2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="dropdown notification-dropdown"><button
-                                                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none"
-                                                type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                data-bs-reference="parent"><span
-                                                    class="fas fa-ellipsis-h fs-10 text-body"></span></button>
-                                            <div class="dropdown-menu py-2"><a class="dropdown-item"
-                                                    href="#!">Mark
-                                                    as
-                                                    unread</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer p-0 border-top border-translucent border-0">
-                            <div class="my-2 text-center fw-bold fs-10 text-body-tertiary text-opactity-85"><a
-                                    class="fw-bolder" href="pages/notifications.html">Notification history</a>
+                            <div class="scrollbar-overlay" style="max-height: 27rem;"
+                                id="dropdown-notification-list">
+                                <div class="text-center py-4 text-muted">Đang tải...</div>
                             </div>
                         </div>
                     </div>
@@ -311,9 +115,8 @@
                             <div class="row text-center align-items-center gx-0 gy-0">
                                 <div class="col-4"><a
                                         class="d-block bg-body-secondary-hover p-2 rounded-3 text-center text-decoration-none mb-3"
-                                        href="#!"><img
-                                            src="{{ asset('v1/assets/img/nav-icons/behance.webp') }} " alt=""
-                                            width="30" />
+                                        href="#!"><img src="{{ asset('v1/assets/img/nav-icons/behance.webp') }} "
+                                            alt="" width="30" />
                                         <p class="mb-0 text-body-emphasis text-truncate fs-10 mt-1 pt-1">Behance
                                         </p>
                                     </a></div>
@@ -473,17 +276,10 @@
                             </ul>
                         </div>
                         <div class="card-footer p-0 border-top border-translucent">
-                            <div class="px-3">
-                                <a href="{{ route('logout') }}"
-                                    class="btn btn-phoenix-secondary d-flex flex-center w-100 mt-2">
-                                    <span class="me-2" data-feather="log-out"></span>
-                                    Đăng xuất
-                                </a>
-                            </div>
-                            <div class="my-2 text-center fw-bold fs-10 text-body-quaternary">
-                                <a class="text-body-quaternary me-1" href="#!">Privacy policy</a>&bull;
-                                <a class="text-body-quaternary mx-1" href="#!">Terms</a>&bull;
-                                <a class="text-body-quaternary ms-1" href="#!">Cookies</a>
+
+                            <div class="px-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100"
+                                    href="{{ route('logout') }}">
+                                    <span class="me-2" data-feather="log-out"> </span>Đăng xuất</a>
                             </div>
                         </div>
                     </div>
@@ -492,223 +288,132 @@
         </ul>
     </div>
 </nav>
-
-<style>
-    .logo-container {
-        position: relative;
-        padding: 6px 0;
-    }
-
-    .logo-wrapper {
-        position: relative;
-        padding: 6px;
-        border-radius: 10px;
-        background: linear-gradient(145deg, #ffffff, #f0f0f0);
-        box-shadow: 4px 4px 8px #d9d9d9, -4px -4px 8px #ffffff;
-        transition: all 0.3s ease;
-    }
-
-    .logo-wrapper:hover {
-        transform: translateY(-2px);
-        box-shadow: 6px 6px 12px #d9d9d9, -6px -6px 12px #ffffff;
-    }
-
-    .logo-img {
-        transition: all 0.3s ease;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-    }
-
-    .logo-wrapper:hover .logo-img {
-        transform: scale(1.1) rotate(5deg);
-    }
-
-    .gradient-text {
-        background: linear-gradient(45deg, #2c3e50, #3498db, #2980b9);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: shine 3s linear infinite;
-        font-size: 1.25rem;
-        letter-spacing: 0.5px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    @keyframes shine {
-        to {
-            background-position: 200% center;
-        }
-    }
-
-    .navbar-brand {
-        transition: all 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-        opacity: 0.95;
-    }
-
-    /* Dark mode support */
-    [data-bs-theme="dark"] .logo-wrapper {
-        background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-        box-shadow: 4px 4px 8px #1a1a1a, -4px -4px 8px #2d2d2d;
-    }
-
-    [data-bs-theme="dark"] .logo-wrapper:hover {
-        box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #2d2d2d;
-    }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('globalSearch');
-        const searchDropdown = document.getElementById('searchResults');
-        const searchResultsList = document.getElementById('searchResultsList');
-        const searchLoading = document.getElementById('searchLoading');
-        const searchNoResults = document.getElementById('searchNoResults');
-        const viewAllResults = document.getElementById('viewAllResults');
-
-        let searchTimeout;
-        let isSearching = false;
-
-        // Hiển thị/ẩn dropdown
-        function showDropdown() {
-            searchDropdown.classList.add('show');
+@push('styles')
+    <style>
+        .dropdown-notification-dot {
+            position: absolute;
+            left: -4px;
+            top: 2px;
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            z-index: 2;
         }
 
-        function hideDropdown() {
-            searchDropdown.classList.remove('show');
+        .dropdown-menu.dropdown-menu-end.py-2 {
+            min-width: 180px !important;
+            padding: 8px 0;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 9999;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            text-align: left;
         }
 
-        // Xử lý sự kiện input
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            const query = this.value.trim();
-
-            // Ẩn các trạng thái trước đó
-            searchLoading.style.display = 'none';
-            searchNoResults.style.display = 'none';
-            viewAllResults.style.display = 'none';
-            searchResultsList.innerHTML = '';
-
-            if (query.length < 2) {
-                hideDropdown();
-                return;
-            }
-
-            // Hiển thị loading và dropdown
-            searchLoading.style.display = 'block';
-            showDropdown();
-
-            // Debounce search
-            searchTimeout = setTimeout(() => {
-                if (!isSearching) {
-                    isSearching = true;
-                    fetch(`{{ route('admin.search') }}?query=${encodeURIComponent(query)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            searchLoading.style.display = 'none';
-                            searchResultsList.innerHTML = ''; // Clear previous results
-
-                            if (data.success) {
-                                if (data.results.length > 0) {
-                                    // Nhóm kết quả theo loại
-                                    const groupedResults = data.results.reduce((acc,
-                                        result) => {
-                                        if (!acc[result.type]) {
-                                            acc[result.type] = [];
-                                        }
-                                        acc[result.type].push(result);
-                                        return acc;
-                                    }, {});
-
-                                    // Hiển thị kết quả theo nhóm
-                                    Object.entries(groupedResults)
-                                        .map(([type, results]) => `
-                                            <div class="list-group-item px-3 py-2 bg-light text-body-emphasis">
-                                                <h6 class="mb-0 text-700">${getTypeLabel(type)}</h6>
-                                            </div>
-                                            ${results.map(result => `
-                                                <a href="${result.url}" class="list-group-item list-group-item-action px-3 py-2 d-flex align-items-center">
-                                                    <span class="fas ${result.icon} me-3 text-primary"></span>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0 text-body">${result.title}</h6>
-                                                        ${result.description ? `<small class="text-muted">${result.description}</small>` : ''}
-                                                    </div>
-                                                </a>
-                                            `).join('')}
-                                        `)
-                                        .forEach(html => searchResultsList.innerHTML +=
-                                            html);
-
-                                    // Hiển thị nút xem tất cả nếu có kết quả
-                                    viewAllResults.style.display = 'block';
-                                    viewAllResults.href =
-                                        `{{ route('admin.search.results') }}?q=${encodeURIComponent(query)}`;
-
-                                } else {
-                                    searchNoResults.style.display = 'block';
-                                }
-                            } else {
-                                searchResultsList.innerHTML = `
-                                    <div class="list-group-item px-3 py-2 text-center text-danger">
-                                        ${data.message}
-                                    </div>
-                                `;
-                            }
-                        })
-                        .catch(error => {
-                            searchLoading.style.display = 'none';
-                            searchResultsList.innerHTML = `
-                                <div class="list-group-item px-3 py-2 text-center text-danger">
-                                    Có lỗi xảy ra khi tìm kiếm.
-                                </div>
-                            `;
-                            console.error('Search error:', error);
-                        })
-                        .finally(() => {
-                            isSearching = false;
-                        });
+        .dropdown-item.dropdown-mark-as-read {
+            white-space: nowrap;
+            font-size: 15px;
+            padding: 8px 18px;
+            text-align: left !important;
+            direction: ltr;
+        }
+    </style>
+@endpush
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            }, 300);
-        });
+            });
 
-        // Xử lý sự kiện click outside để đóng dropdown
-        document.addEventListener('click', function(event) {
-            if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
-                hideDropdown();
+            function renderDropdownNotifications(data) {
+                let html = '';
+                if (data.notifications.length === 0) {
+                    html = '<div class="text-center py-4 text-muted">Không có thông báo</div>';
+                } else {
+                    data.notifications.forEach(function(n, idx) {
+                        html += `
+                        <div class="d-flex align-items-center px-3 py-2 border-bottom dropdown-notification-item ${n.is_read ? 'read' : 'unread'}"
+                             style="position:relative;${!n.is_read ? 'background:#e9ecef !important;' : 'background:#fff !important;'}"
+                             data-notification-id="${n.id}">
+                            <div class="avatar avatar-m me-3 position-relative" style="width:40px;height:40px;">
+                                ${!n.is_read ? '<span class="dropdown-notification-dot"></span>' : ''}
+                                <span class='avatar-name rounded-circle bg-warning d-flex align-items-center justify-content-center' style='width:40px;height:40px;font-size:20px;'>🔔</span>
+                            </div>
+                            <div class="flex-1 me-sm-3">
+                                <div class="fw-bold mb-1">${n.title || 'Hệ thống'}</div>
+                                <div class="fs-9 text-body-highlight mb-1">${n.content}</div>
+                                <div class="small text-body-secondary"><span class="me-1 fas fa-clock"></span>${n.time_ago || ''}</div>
+                            </div>
+                            ${!n.is_read ? `
+                                                                                            <div class="dropdown ms-2">
+                                                                                                <button class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                                                                                    <span class="fas fa-ellipsis-h fs-10 text-body"></span>
+                                                                                                </button>
+                                                                                                <div class="dropdown-menu dropdown-menu-end py-2" style="min-width:180px;z-index:9999;left:auto;right:0;text-align:left;">
+                                                                                                    <a class="dropdown-item dropdown-mark-as-read" href="#">Đánh dấu đã đọc</a>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            ` : ''}
+                        </div>`;
+                    });
+                }
+                $('#dropdown-notification-list').html(html);
+                if (data.unreadCount > 0) {
+                    $('#notification-badge').show().text(data.unreadCount);
+                } else {
+                    $('#notification-badge').hide();
+                }
+                // Gắn sự kiện đánh dấu đã đọc cho dropdown
+                $('.dropdown-mark-as-read').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    const card = $(this).closest('.dropdown-notification-item');
+                    const id = card.data('notification-id');
+                    $.ajax({
+                        url: `/admin/notifications/${id}/mark-as-read`,
+                        method: 'POST',
+                        success: function() {
+                            card.removeClass('unread').addClass('read');
+                            card.css('background',
+                                '#fff'); // Đổi nền trắng ngay khi đánh dấu đã đọc
+                            card.find('.dropdown-notification-dot').remove();
+                            card.find('.dropdown').remove();
+                            // Reload lại badge
+                            $.get("{{ url('/admin/notifications/dropdown') }}", function(
+                                data) {
+                                if (data.unreadCount > 0) {
+                                    $('#notification-badge').show().text(data
+                                        .unreadCount);
+                                } else {
+                                    $('#notification-badge').hide();
+                                }
+                            });
+                        }
+                    });
+                });
             }
-        });
 
-        // Xử lý phím Escape để đóng dropdown và xóa nội dung input
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                hideDropdown();
-                searchInput.value = '';
+            function loadDropdownNotifications() {
+                $.get("{{ url('/admin/notifications/dropdown') }}", function(data) {
+                    renderDropdownNotifications(data);
+                });
             }
+            // Load khi mở dropdown
+            $('#notificationDropdownToggle').on('click', function() {
+                loadDropdownNotifications();
+            });
+            // Load badge số lượng chưa đọc khi vừa load trang
+            $.get("{{ url('/admin/notifications/dropdown') }}", function(data) {
+                if (data.unreadCount > 0) {
+                    $('#notification-badge').show().text(data.unreadCount);
+                } else {
+                    $('#notification-badge').hide();
+                }
+            });
         });
-
-        // Hàm lấy nhãn cho loại kết quả
-        function getTypeLabel(type) {
-            const labels = {
-                'product': 'Sản phẩm',
-                'news': 'Tin tức',
-                'order': 'Đơn hàng',
-                'comment': 'Bình luận',
-                'category': 'Danh mục',
-                'promotion': 'Khuyến mãi'
-            };
-            return labels[type] || type;
-        }
-
-        // Giữ dropdown mở khi click vào nó (ngăn chặn đóng do click outside)
-        searchDropdown.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-
-        // Đảm bảo dropdown mở lại nếu input có giá trị khi người dùng quay lại trang
-        if (searchInput.value.trim().length >= 2) {
-            // Tự động kích hoạt tìm kiếm lại khi tải trang nếu có query trong input
-            searchInput.dispatchEvent(new Event('input'));
-        }
-    });
-</script>
+    </script>
+@endpush

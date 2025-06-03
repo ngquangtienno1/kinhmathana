@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Admin\NotificationController;
 
 class SliderController extends Controller
 {
@@ -89,7 +90,12 @@ class SliderController extends Controller
                 $dataNew['image'] = $imgPath;
             }
 
-            Slider::create($dataNew);
+            $slider = Slider::create($dataNew);
+
+            // Gửi thông báo cho admin
+            $notificationController = new NotificationController();
+            $notificationController->notifyNewSlider($slider);
+
             return redirect()->route('admin.sliders.index')->with('success', 'Thêm slider thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm slider: ' . $e->getMessage());
