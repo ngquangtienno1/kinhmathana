@@ -33,8 +33,8 @@ class AuthenticationController extends BaseController
         try {
             // Check email
             $user = User::where('email', $request->email)
-                       ->with('role')
-                       ->first();
+                ->with('role')
+                ->first();
 
             if (!$user) {
                 Log::warning('Login attempt failed: Email not found', ['email' => $request->email]);
@@ -82,7 +82,6 @@ class AuthenticationController extends BaseController
                 return redirect()->route('login')
                     ->withErrors(['email' => 'Tài khoản không hợp lệ']);
             }
-
         } catch (\Exception $e) {
             Log::error('Login error', [
                 'email' => $request->email,

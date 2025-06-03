@@ -11,19 +11,24 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PaymentController;
-use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Admin\VariationController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\ProductImageController;
+use App\Http\Controllers\Admin\VariationImageController;
+use App\Http\Controllers\Admin\TestNotificationController;
 use App\Http\Controllers\Admin\CancellationReasonController;
-use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -302,6 +307,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:khoi-phuc-danh-muc-tin-tuc']);
         Route::delete('/bulk-force-delete', [NewsCategoryController::class, 'bulkForceDelete'])->name('bulkForceDelete')
             ->middleware(['permission:xoa-vinh-vien-danh-muc-tin-tuc']);
+    });
+
+    Route::get('/admin/notifications/dropdown', [NotificationController::class, 'getDropdownNotifications'])
+        ->name('admin.notifications.dropdown')
+        ->middleware(['auth', 'checkAdmin']);
+    //Notifications
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+        Route::post('/{id}/mark-as-unread', [NotificationController::class, 'markAsUnread'])->name('mark-as-unread');
+        Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
+        Route::get('/dropdown', [NotificationController::class, 'getDropdownNotifications'])->name('dropdown');
+        // Test routes - Chỉ nên sử dụng trong môi trường development
+        if (app()->environment('local', 'development')) {
+            Route::get('/test/new-order', [NotificationController::class, 'testNewOrder'])->name('test.new-order');
+            Route::get('/test/order-status', [NotificationController::class, 'testOrderStatus'])->name('test.order-status');
+            Route::get('/test/stock-alert', [NotificationController::class, 'testStockAlert'])->name('test.stock-alert');
+            Route::get('/test/promotion', [NotificationController::class, 'testPromotion'])->name('test.promotion');
+            Route::get('/test/order-cancelled', [NotificationController::class, 'testOrderCancelled'])->name('test.order-cancelled');
+            Route::get('/test/monthly-report', [NotificationController::class, 'testMonthlyReport'])->name('test.monthly-report');
+        }
     });
 
     //Brands
