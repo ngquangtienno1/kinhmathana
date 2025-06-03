@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('variation_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('variation_id')->constrained('variations')->onDelete('cascade');
-            $table->string('image_path', 255); // sửa đúng theo thiết kế
-            $table->timestamp('created_at')->nullable();
+            $table->string('image_path', 255); 
+            $table->timestamps();
         });
     }
 

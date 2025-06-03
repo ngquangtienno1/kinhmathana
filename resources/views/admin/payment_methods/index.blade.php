@@ -66,6 +66,8 @@
                                 BIỂU TƯỢNG</th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
                                 data-sort="name">TÊN PHƯƠNG THỨC</th>
+                            <th class="sort align-middle ps-4" scope="col" data-sort="code" style="width:100px;">
+                                MÃ</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="description"
                                 style="width:200px;">MÔ TẢ</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
@@ -88,10 +90,10 @@
                                     <span class="text-body-tertiary">{{ $method->id }}</span>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-0">
-                                    @if ($method->logo_url)
+                                    @if ($method->logo)
                                         <a class="d-block border border-translucent rounded-2" href="#"
                                             style="width:53px; height:53px; overflow:hidden;">
-                                            <img src="{{ asset('storage/' . $method->logo_url) }}" alt=""
+                                            <img src="{{ asset('storage/' . $method->logo) }}" alt=""
                                                 style="width:100%; height:100%; object-fit:contain; display:block;" />
                                         </a>
                                     @else
@@ -101,6 +103,10 @@
                                 <td class="name align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
                                         href="{{ route('admin.payment_methods.show', $method->id) }}">{{ $method->name }}</a>
+                                </td>
+                                <td class="code align-middle ps-4">
+                                    <span
+                                        class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $method->code }}</span>
                                 </td>
                                 <td class="description align-middle ps-4">
                                     <span class="text-body-tertiary">{{ Str::limit($method->description, 50) }}</span>
@@ -114,6 +120,7 @@
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
                                     {{ $method->created_at->format('d/m/Y H:i') }}
                                 </td>
+
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
                                         <button

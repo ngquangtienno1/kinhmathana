@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Models\PaymentMethod;
+use App\Models\ShippingProvider;
+use App\Models\Promotion;
 use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
@@ -13,8 +16,31 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
+        // Kiểm tra xem có payment methods không
+        if (PaymentMethod::count() === 0) {
+            $this->command->info('Không có phương thức thanh toán nào. Vui lòng chạy PaymentMethodSeeder trước.');
+            return;
+        }
+
+        // Kiểm tra xem có shipping providers không
+        if (ShippingProvider::count() === 0) {
+            $this->command->info('Không có đơn vị vận chuyển nào. Vui lòng chạy ShippingProviderSeeder trước.');
+            return;
+        }
+
+        // Kiểm tra xem có promotions không
+        if (Promotion::count() === 0) {
+            $this->command->info('Không có chương trình khuyến mãi nào. Vui lòng chạy PromotionSeeder trước.');
+            return;
+        }
+
         // Get all users with customer role
         $users = User::where('role_id', 3)->get();
+
+        if ($users->isEmpty()) {
+            $this->command->info('Không có người dùng nào với vai trò khách hàng. Vui lòng chạy UserSeeder trước.');
+            return;
+        }
 
         foreach ($users as $user) {
             // Create 1-5 orders for each customer
@@ -43,5 +69,7 @@ class OrderSeeder extends Seeder
                 $customer->updateCustomerType();
             }
         }
+
+        $this->command->info('Đã tạo ' . Order::count() . ' đơn hàng thành công.');
     }
 }

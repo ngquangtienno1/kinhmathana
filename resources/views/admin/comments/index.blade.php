@@ -19,82 +19,33 @@
 <div id="comments"
     data-list='{"valueNames":["userId","userName","entityType","entityId","content","status","createdAt"],"page":10,"pagination":true}'>
     <div class="mb-4">
-        <div class="d-flex flex-wrap gap-3">
-            <div class="search-box">
-                <form class="position-relative" action="{{ route('admin.comments.index') }}" method="GET">
-                    <input class="form-control search-input search" type="search" name="search"
-                        placeholder="Tìm kiếm bình luận" value="{{ request('search') }}" aria-label="Search" />
-                    <span class="fas fa-search search-box-icon"></span>
-                </form>
-            </div>
-
-
-            {{-- Dropdown lọc theo trạng thái --}}
-            <div class="scrollbar overflow-hidden-y">
-                <div class="btn-group position-static" role="group">
-                    <div class="btn-group position-static text-nowrap">
-                        <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
-                            data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false"
-                            data-bs-reference="parent">
-                            Trạng thái
-                            <span class="fas fa-angle-down ms-2"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('admin.comments.badwords.index') }}">Quản lý từ
-                                    cấm</a></li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('admin.comments.scan_badwords') }}"
-                                    onclick="return confirm('Bạn có chắc muốn quét bình luận không?')">
-                                    Quét bình luận từ cấm
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ !request('status') ? 'active' : '' }}"
-                                    href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['search' => request('search')])) }}">
-                                    Tất cả ({{ $totalCount }})
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ request('status') === 'đã duyệt' ? 'active' : '' }}"
-                                    href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'đã duyệt', 'search' => request('search')])) }}">
-                                    Đã duyệt ({{ $approvedCount }})
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ request('status') === 'chờ duyệt' ? 'active' : '' }}"
-                                    href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'chờ duyệt', 'search' => request('search')])) }}">
-                                    Chờ duyệt ({{ $pendingCount }})
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ request('status') === 'spam' ? 'active' : '' }}"
-                                    href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'spam', 'search' => request('search')])) }}">
-                                    Spam ({{ $spamCount }})
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ request('status') === 'chặn' ? 'active' : '' }}"
-                                    href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'chặn', 'search' => request('search')])) }}">
-                                    Bị chặn ({{ $blockedCount }})
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item {{ request('status') === 'trashed' ? 'active' : '' }}"
-                                    href="{{ route('admin.comments.index', array_merge(request()->except(['status', 'page']), ['status' => 'trashed', 'search' => request('search')])) }}">
-                                    Thùng rác ({{ $deletedCount }})
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ms-xxl-auto">
-                <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
-                    <span class="fas fa-trash me-2"></span>Xóa mềm
-                </button>
-            </div>
-        </div>
+        <form action="{{ route('admin.comments.index') }}" method="GET"
+            class="d-flex flex-nowrap gap-2 align-items-end" style="overflow-x:auto;">
+            <input class="form-control w-auto" type="search" name="search" placeholder="Tìm kiếm bình luận"
+                value="{{ request('search') }}" style="width: 180px;" />
+            <input type="number" name="entity_id" class="form-control w-auto" placeholder="ID đối tượng"
+                value="{{ request('entity_id') }}" style="width: 120px;" />
+            <input type="date" name="from_date" class="form-control w-auto" value="{{ request('from_date') }}"
+                style="width: 140px;" />
+            <input type="date" name="to_date" class="form-control w-auto" value="{{ request('to_date') }}"
+                style="width: 140px;" />
+            <select name="status" class="form-select w-auto" style="width: 130px;">
+                <option value="">Trạng thái</option>
+                <option value="đã duyệt" {{ request('status') === 'đã duyệt' ? 'selected' : '' }}>Đã duyệt</option>
+                <option value="chờ duyệt" {{ request('status') === 'chờ duyệt' ? 'selected' : '' }}>Chờ duyệt</option>
+                <option value="spam" {{ request('status') === 'spam' ? 'selected' : '' }}>Spam</option>
+                <option value="chặn" {{ request('status') === 'chặn' ? 'selected' : '' }}>Bị chặn</option>
+                <option value="trashed" {{ request('status') === 'trashed' ? 'selected' : '' }}>Thùng rác</option>
+            </select>
+            <select name="entity_type" class="form-select w-auto" style="width: 130px;">
+                <option value="">Loại đối tượng</option>
+                @foreach ($entityTypes as $type)
+                    <option value="{{ $type }}" {{ request('entity_type') === $type ? 'selected' : '' }}>
+                        {{ $type }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-primary" style="min-width: 70px;">Lọc</button>
+        </form>
     </div>
     <div
         class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">

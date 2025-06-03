@@ -9,18 +9,6 @@
     <li class="breadcrumb-item active">Quản lý thanh toán</li>
 @endsection
 
-
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
 <div class="mb-9">
     <div id="paymentSummary"
         data-list='{"valueNames":["paymentId","customerName","amount","status","paymentDate","action"],"page":6,"pagination":true}'>

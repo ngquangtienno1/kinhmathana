@@ -52,16 +52,17 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,         // Tạo FAQ
 
             // 6. Seeder cho đơn hàng và thanh toán
+            PromotionSeeder::class, // Tạo khuyến mãi
+            PaymentMethodSeeder::class, // Tạo phương thức thanh toán
+            ShippingProviderSeeder::class, // Tạo phương thức vận chuyển
             OrderSeeder::class,     // Tạo đơn hàng
-            // PaymentSeeder::class,   // Tạo thanh toán
+            PaymentSeeder::class,   // Tạo thanh toán
 
             // 7. Seeder cho lý do huỷ
             CancellationReasonSeeder::class,
             ReviewSeeder::class, // Tạo đánh giá
+            CustomerSupportSeeder::class, // Tạo hỗ trợ khách hàng
 
-            // 8. Seeder cho khuyến mãi
-            PromotionSeeder::class, // Tạo khuyến mãi
-            PaymentMethodSeeder::class, // Tạo phương thức thanh toán
         ]);
     }
 

@@ -4,13 +4,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PromotionController;
-use App\Http\Controllers\Admin\ProductSupportController;
+use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\Admin\ProductImageController;
-use App\Http\Controllers\Admin\VariationImageController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\BrandController;
@@ -21,7 +19,6 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -41,17 +38,21 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Authentication routes
 Route::get('login', [AuthenticationController::class, 'login'])->name('login');
 Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
 Route::get('logout', [AuthenticationController::class, 'logout'])->name('logout');
 Route::get('register', [AuthenticationController::class, 'register'])->name('register');
 Route::post('postRegister', [AuthenticationController::class, 'postRegister'])->name('postRegister');
 
+// Social login routes
 Route::get('/auth/google', [SocialController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
-
 Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
+
+
+
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
@@ -64,6 +65,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         ->name('settings.update')
         ->middleware(['permission:cap-nhat-cai-dat']);
 
+
+    Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');
@@ -167,68 +170,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-san-pham']);
         Route::delete('destroy/{id}', [ProductController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-san-pham']);
-        Route::get('bin', [ProductController::class, 'bin'])->name('bin');
+        Route::get('trashed', [ProductController::class, 'trashed'])->name('trashed');
         Route::put('restore/{id}', [ProductController::class, 'restore'])->name('restore')
             ->middleware(['permission:khoi-phuc-san-pham']);
         Route::delete('forceDelete/{id}', [ProductController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-vinh-vien-san-pham']);
         Route::delete('bulk-delete', [ProductController::class, 'bulkDelete'])->name('bulk-delete')
             ->middleware(['permission:xoa-nhieu-san-pham']);
-        Route::delete('/bulk-delete', [App\Http\Controllers\Admin\ProductController::class, 'bulkDestroy'])->name('bulkDestroy');
-        Route::post('/bulk-restore', [App\Http\Controllers\Admin\ProductController::class, 'bulkRestore'])->name('bulkRestore');
-        Route::delete('/bulk-force-delete', [App\Http\Controllers\Admin\ProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
+        Route::delete('/bulk-delete', [ProductController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [ProductController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [ProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
-    // Product Images
-    Route::prefix('product_images')->name('product_images.')->middleware(['permission:xem-anh-san-pham'])->group(function () {
-        Route::get('/{product}', [ProductImageController::class, 'index'])->name('index');
-        Route::get('/{product}/create', [ProductImageController::class, 'create'])->name('create')
-            ->middleware(['permission:them-anh-san-pham']);
-        Route::post('/{product}', [ProductImageController::class, 'store'])->name('store')
-            ->middleware(['permission:them-anh-san-pham']);
-        Route::get('/{product}/{id}/edit', [ProductImageController::class, 'edit'])->name('edit')
-            ->middleware(['permission:sua-anh-san-pham']);
-        Route::put('/{product}/{id}', [ProductImageController::class, 'update'])->name('update')
-            ->middleware(['permission:sua-anh-san-pham']);
-        Route::delete('/{product}/{id}', [ProductImageController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-anh-san-pham']);
-        Route::post('/{product}/{id}/thumbnail', [ProductImageController::class, 'setThumbnail'])->name('setThumbnail')
-            ->middleware(['permission:dat-anh-dai-dien']);
-    });
-
-    // Variations
-    Route::prefix('variations')->name('variations.')->middleware(['permission:xem-bien-the'])->group(function () {
-        Route::get('/', [VariationController::class, 'index'])->name('index');
-        Route::get('/create', [VariationController::class, 'create'])->name('create')
-            ->middleware(['permission:them-bien-the']);
-        Route::post('/store', [VariationController::class, 'store'])->name('store')
-            ->middleware(['permission:them-bien-the']);
-        Route::get('/{variation}/show', [VariationController::class, 'show'])->name('show');
-        Route::get('/{variation}/edit', [VariationController::class, 'edit'])->name('edit')
-            ->middleware(['permission:sua-bien-the']);
-        Route::put('/{variation}/update', [VariationController::class, 'update'])->name('update')
-            ->middleware(['permission:sua-bien-the']);
-        Route::delete('/{variation}/destroy', [VariationController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-bien-the']);
-        Route::get('/bin', [VariationController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore', [VariationController::class, 'restore'])->name('restore')
-            ->middleware(['permission:khoi-phuc-bien-the']);
-        Route::delete('/{id}/forceDelete', [VariationController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:xoa-vinh-vien-bien-the']);
-    });
-
-    // Variations Images
-    Route::prefix('variation_images')->name('variation_images.')->middleware(['permission:xem-anh-bien-the'])->group(function () {
-        Route::get('/{variation}', [VariationImageController::class, 'index'])->name('index');
-        Route::get('/{variation}/create', [VariationImageController::class, 'create'])->name('create')
-            ->middleware(['permission:them-anh-bien-the']);
-        Route::post('/{variation}', [VariationImageController::class, 'store'])->name('store')
-            ->middleware(['permission:them-anh-bien-the']);
-        Route::delete('/{variation}/{id}', [VariationImageController::class, 'destroy'])->name('destroy')
-            ->middleware(['permission:xoa-anh-bien-the']);
-        Route::post('/{variation}/{id}/thumbnail', [VariationImageController::class, 'setThumbnail'])->name('setThumbnail')
-            ->middleware(['permission:dat-anh-dai-dien-bien-the']);
-    });
 
     // Color
     Route::prefix('colors')->name('colors.')->middleware(['permission:xem-mau-sac'])->group(function () {
@@ -405,6 +358,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::prefix('orders')->name('orders.')->middleware(['permission:xem-danh-sach-don-hang'])->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
+        Route::get('/{order}/print', [OrderController::class, 'print'])->name('print');
         Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
@@ -431,6 +385,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:cap-nhat-trang-thai-thanh-toan']);
         Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
             ->middleware(['permission:in-hoa-don']);
+        Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-thanh-toan']);
     });
 
     // Quản lý bình luận
@@ -505,19 +461,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     });
 
     // Support routes
-    Route::prefix('support')->name('support.')->group(function () {
-        Route::get('/', [ProductSupportController::class, 'showForm'])->name('index');
-        Route::get('/list', [ProductSupportController::class, 'index'])->name('list');
-        Route::get('/create', [ProductSupportController::class, 'showForm'])->name('create');
-        Route::post('/', [ProductSupportController::class, 'submitForm'])->name('store');
-        Route::get('/{support}', [ProductSupportController::class, 'show'])->name('show');
-        Route::patch('/{support}/status', [ProductSupportController::class, 'updateStatus'])->name('updateStatus');
-        Route::post('/{support}/done', [ProductSupportController::class, 'markAsDone'])->name('done');
-        Route::delete('/{support}', [ProductSupportController::class, 'destroy'])->name('destroy');
-        Route::get('/{support}/email', [ProductSupportController::class, 'showEmailForm'])->name('emailForm');
-        Route::post('/{support}/send-email', [ProductSupportController::class, 'sendEmail'])->name('sendEmail');
-        Route::get('/{support}/edit-status', [ProductSupportController::class, 'editStatus'])->name('editStatus');
+    Route::prefix('support')->name('support.')->middleware(['permission:xem-danh-sach-ho-tro-khach-hang'])->group(function () {
+        Route::get('/', [CustomerSupportController::class, 'showForm'])->name('index');
+        Route::get('/list', [CustomerSupportController::class, 'index'])->name('list');
+        Route::get('/create', [CustomerSupportController::class, 'showForm'])->name('create');
+        Route::post('/', [CustomerSupportController::class, 'submitForm'])->name('store');
+        Route::get('/{support}', [CustomerSupportController::class, 'show'])->name('show');
+        Route::patch('/{support}/status', [CustomerSupportController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/{support}/done', [CustomerSupportController::class, 'markAsDone'])->name('done');
+        Route::delete('/{support}', [CustomerSupportController::class, 'destroy'])->name('destroy');
+        Route::get('/{support}/email', [CustomerSupportController::class, 'showEmailForm'])->name('emailForm');
+        Route::post('/{support}/send-email', [CustomerSupportController::class, 'sendEmail'])->name('sendEmail');
+        Route::get('/{support}/edit-status', [CustomerSupportController::class, 'editStatus'])->name('editStatus');
     });
+
     // Customer Management
     Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');

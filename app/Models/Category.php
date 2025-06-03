@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'parent_id'];
-
-    public $timestamps = false;
+    protected $fillable = ['name', 'description', 'parent_id', 'slug'];
 
     public function parent()
     {
@@ -23,8 +22,19 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    public function getDepthAttribute()
+    {
+        $depth = 0;
+        $parent = $this->parent;
+        while ($parent) {
+            $depth++;
+            $parent = $parent->parent;
+        }
+        return $depth;
+    }
+
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'category_product');
     }
 }

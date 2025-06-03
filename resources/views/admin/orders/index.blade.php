@@ -19,19 +19,19 @@
                 href="{{ route('admin.orders.index') }}"><span>Tất cả </span><span
                     class="text-body-tertiary fw-semibold">({{ $countAll }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('payment_status') == 'pending' ? ' active' : '' }}"
-                href="?payment_status=pending"><span>Đang chờ thanh toán </span><span
+                href="?payment_status=pending"><span>Chưa thanh toán </span><span
                     class="text-body-tertiary fw-semibold">({{ $countPending }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('status') == 'pending' ? ' active' : '' }}"
-                href="?status=pending"><span>Chưa hoàn thành </span><span
+                href="?status=pending"><span>Chờ xác nhận </span><span
                     class="text-body-tertiary fw-semibold">({{ $countUnfulfilled }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('status') == 'delivered' ? ' active' : '' }}"
-                href="?status=delivered"><span>Đã hoàn thành </span><span
+                href="?status=delivered"><span>Đã giao hàng </span><span
                     class="text-body-tertiary fw-semibold">({{ $countCompleted }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('payment_status') == 'refunded' ? ' active' : '' }}"
-                href="?payment_status=refunded"><span>Đã hoàn lại </span><span
+                href="?payment_status=refunded"><span>Đã hoàn tiền </span><span
                     class="text-body-tertiary fw-semibold">({{ $countRefunded }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('payment_status') == 'failed' ? ' active' : '' }}"
-                href="?payment_status=failed"><span>Thất bại </span><span
+                href="?payment_status=failed"><span>Thanh toán không thành công </span><span
                     class="text-body-tertiary fw-semibold">({{ $countFailed }})</span></a></li>
     </ul>
 
@@ -67,23 +67,23 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'paid'])) }}">Đã
                                         thanh toán</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'pending'])) }}">Đang
-                                        chờ</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'pending'])) }}">Chưa
+                                        thanh toán</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'failed'])) }}">Thất
-                                        bại</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'failed'])) }}">Thanh
+                                        toán không thành công</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'refunded'])) }}">Đã
                                         hoàn tiền</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'cancelled'])) }}">Đã
-                                        hủy</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'cod'])) }}">Thanh
+                                        toán khi nhận hàng (COD)</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'partially_paid'])) }}">Thanh
-                                        toán một phần</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'confirmed'])) }}">Đã
+                                        xác nhận thanh toán</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'disputed'])) }}">Đang
-                                        tranh chấp</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'processing_refund'])) }}">Đang
+                                        hoàn tiền</a></li>
                             </ul>
                         </div>
                         <!-- Order status -->
@@ -95,20 +95,17 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'pending'])) }}">Đang
-                                        chờ xử lý</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'awaiting_payment'])) }}">Chờ
-                                        thanh toán</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'pending'])) }}">Chờ
+                                        xác nhận</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'confirmed'])) }}">Đã
                                         xác nhận</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'processing'])) }}">Đang
-                                        xử lý</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'awaiting_pickup'])) }}">Chờ
+                                        lấy hàng</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'shipping'])) }}">Đang
-                                        vận chuyển</a></li>
+                                        giao</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'delivered'])) }}">Đã
                                         giao hàng</a></li>
@@ -119,11 +116,17 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'processing_return'])) }}">Đang
                                         xử lý trả hàng</a></li>
                                 <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}">Đã
+                                        hủy</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'returned_refunded'])) }}">Trả
+                                        hàng / Hoàn tiền</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'completed'])) }}">Đã
+                                        hoàn thành</a></li>
+                                <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'refunded'])) }}">Đã
                                         hoàn tiền</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}">Đã
-                                        huỷ</a></li>
                             </ul>
                         </div>
                     </div>
@@ -188,17 +191,23 @@
                                     class="payment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
                                     @php
                                         $paymentStatusMap = [
+                                            'pending' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
-                                            'pending' => ['Đang chờ', 'badge-phoenix-warning', 'clock'],
-                                            'failed' => ['Thất bại', 'badge-phoenix-danger', 'x'],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
+                                            'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
+                                            'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
                                             'partially_paid' => [
-                                                'Thanh toán một phần',
-                                                'badge-phoenix-primary',
-                                                'percent',
+                                                'Đã thanh toán một phần',
+                                                'badge-phoenix-info',
+                                                'dollar-sign',
                                             ],
-                                            'disputed' => ['Đang tranh chấp', 'badge-phoenix-dark', 'alert-triangle'],
+                                            'confirmed' => [
+                                                'Đã xác nhận thanh toán',
+                                                'badge-phoenix-primary',
+                                                'check-circle',
+                                            ],
+                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
+                                            'processing_refund' => ['Đang hoàn tiền', 'badge-phoenix-warning', 'clock'],
+                                            'failed' => ['Thanh toán không thành công', 'badge-phoenix-danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -216,20 +225,25 @@
                                     class="fulfilment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
                                     @php
                                         $orderStatusMap = [
-                                            'pending' => ['Đang chờ xử lý', 'badge-phoenix-warning', 'clock'],
-                                            'awaiting_payment' => ['Chờ thanh toán', 'badge-phoenix-info', 'clock'],
-                                            'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check'],
-                                            'processing' => ['Đang xử lý', 'badge-phoenix-secondary', 'refresh-cw'],
-                                            'shipping' => ['Đang vận chuyển', 'badge-phoenix-dark', 'truck'],
+                                            'pending' => ['Chờ xác nhận', 'badge-phoenix-warning', 'clock'],
+                                            'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check-circle'],
+                                            'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
+                                            'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
                                             'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
-                                            'returned' => ['Khách trả hàng', 'badge-phoenix-danger', 'corner-up-left'],
+                                            'returned' => ['Khách trả hàng', 'badge-phoenix-warning', 'corner-up-left'],
                                             'processing_return' => [
                                                 'Đang xử lý trả hàng',
                                                 'badge-phoenix-warning',
                                                 'refresh-cw',
                                             ],
+                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
+                                            'returned_refunded' => [
+                                                'Trả hàng / Hoàn tiền',
+                                                'badge-phoenix-danger',
+                                                'corner-up-left',
+                                            ],
+                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
                                             'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã huỷ', 'badge-phoenix-secondary', 'x'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [
                                             ucfirst($order->status),
@@ -245,10 +259,13 @@
                                 </td>
                                 <td
                                     class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 px-3">
-                                    @if ($order->shipping)
-                                        {{ $order->shipping->shipping_provider }}
-                                        ({{ $order->shipping->tracking_code }})
-                                        @elseKhông có thông tin vận chuyển
+                                    @if ($order->shippingProvider)
+                                        <span
+                                            class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $order->shippingProvider->name }}</span>
+                                    @else
+                                        <span class="badge bg-secondary-subtle text-secondary fw-semibold fs-9"
+                                            style="width: 100px;">Chưa
+                                            chọn</span>
                                     @endif
                                 </td>
                                 <td

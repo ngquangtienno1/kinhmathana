@@ -92,17 +92,6 @@
                                         </li>
                                     @endif
 
-                                    @if (canAccess('xem-bien-the-san-pham'))
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ request()->routeIs('admin.variations.*') ? 'active' : '' }}"
-                                                href="{{ route('admin.variations.index') }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Biến thể sản phẩm</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
-
                                     @if (canAccess('xem-danh-sach-danh-muc'))
                                         <li class="nav-item">
                                             <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
@@ -541,6 +530,38 @@
                         </div>
                     </li>
                 @endif
+
+                {{-- @if (canAccess('xem-danh-sach-ho-tro-khach-hang'))
+                    <!-- Quản lý Hỗ trợ khách hàng -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.support.*') ? 'active' : '' }}"
+                                href="#nv-support" role="button" data-bs-toggle="collapse" aria-expanded="false"
+                                aria-controls="nv-support">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="message-circle"></span></span>
+                                    <span class="nav-link-text">Hỗ trợ khách hàng</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                    id="nv-support">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->routeIs('admin.support.list') ? 'active' : '' }}"
+                                            href="{{ route('admin.support.list') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Danh sách hỗ trợ khách hàng</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif --}}
 
                 @if (canAccess('xem-danh-sach-phuong-thuc-thanh-toan'))
                     <!-- Quản lý Lý do hủy -->

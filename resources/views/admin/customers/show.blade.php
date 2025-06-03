@@ -104,17 +104,23 @@
                                 @forelse ($customer->orders as $order)
                                     @php
                                         $paymentStatusMap = [
+                                            'pending' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
-                                            'pending' => ['Đang chờ', 'badge-phoenix-warning', 'clock'],
-                                            'failed' => ['Thất bại', 'badge-phoenix-danger', 'x'],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
+                                            'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
+                                            'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
                                             'partially_paid' => [
-                                                'Thanh toán một phần',
-                                                'badge-phoenix-primary',
-                                                'percent',
+                                                'Đã thanh toán một phần',
+                                                'badge-phoenix-info',
+                                                'dollar-sign',
                                             ],
-                                            'disputed' => ['Đang tranh chấp', 'badge-phoenix-dark', 'alert-triangle'],
+                                            'confirmed' => [
+                                                'Đã xác nhận thanh toán',
+                                                'badge-phoenix-primary',
+                                                'check-circle',
+                                            ],
+                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
+                                            'processing_refund' => ['Đang hoàn tiền', 'badge-phoenix-warning', 'clock'],
+                                            'failed' => ['Thanh toán không thành công', 'badge-phoenix-danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -123,20 +129,25 @@
                                         ];
 
                                         $orderStatusMap = [
-                                            'pending' => ['Đang chờ xử lý', 'badge-phoenix-warning', 'clock'],
-                                            'awaiting_payment' => ['Chờ thanh toán', 'badge-phoenix-info', 'clock'],
-                                            'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check'],
-                                            'processing' => ['Đang xử lý', 'badge-phoenix-secondary', 'refresh-cw'],
-                                            'shipping' => ['Đang vận chuyển', 'badge-phoenix-dark', 'truck'],
+                                            'pending' => ['Chờ xác nhận', 'badge-phoenix-warning', 'clock'],
+                                            'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check-circle'],
+                                            'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
+                                            'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
                                             'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
-                                            'returned' => ['Khách trả hàng', 'badge-phoenix-danger', 'corner-up-left'],
+                                            'returned' => ['Khách trả hàng', 'badge-phoenix-warning', 'corner-up-left'],
                                             'processing_return' => [
                                                 'Đang xử lý trả hàng',
                                                 'badge-phoenix-warning',
                                                 'refresh-cw',
                                             ],
+                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
+                                            'returned_refunded' => [
+                                                'Trả hàng / Hoàn tiền',
+                                                'badge-phoenix-danger',
+                                                'corner-up-left',
+                                            ],
+                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
                                             'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã huỷ', 'badge-phoenix-secondary', 'x'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [
                                             ucfirst($order->status),
