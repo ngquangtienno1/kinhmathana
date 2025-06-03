@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\Models\NewsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,160 +13,179 @@ class NewsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = News::query();
+        $query = News::with(['category', 'author']);
 
-        // Tìm kiếm theo tiêu đề hoặc nội dung
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('summary', 'like', "%{$search}%");
             });
         }
 
-        // Lọc theo trạng thái
-        if ($request->filled('status')) {
-            if ($request->status === 'active') {
-                $query->where('is_active', true);
-            } elseif ($request->status === 'inactive') {
-                $query->where('is_active', false);
-            }
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
         }
 
-        $sort = $request->get('sort', 'id');
-        $direction = $request->get('direction', 'desc');
-        $query->orderBy($sort, $direction);
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'active');
+        }
 
-        $news = $query->paginate(10);
+        if ($request->filled('author')) {
+            $query->where('author_id', $request->author);
+        }
+
+        $news = $query->latest()->get();
+        $categories = NewsCategory::where('is_active', true)->get();
         $deletedCount = News::onlyTrashed()->count();
         $activeCount = News::where('is_active', true)->count();
 
-        return view('admin.news.index', compact('news', 'deletedCount', 'activeCount'));
+        return view('admin.news.index', compact('news', 'categories', 'deletedCount', 'activeCount'));
     }
 
-    public function show($id)
+    public function show(News $news)
     {
-        $news = News::findOrFail($id);
+        $news->load(['category', 'author']);
         return view('admin.news.show', compact('news'));
     }
 
     public function create()
     {
-        return view('admin.news.create');
+        $categories = NewsCategory::where('is_active', true)->get();
+        return view('admin.news.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        try {
-            $dataNew = $request->validate([
-                'title' => 'required|string|max:125',
-                'content' => 'required|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'required|boolean',
-                'slug' => 'nullable|string|max:125|unique:news,slug'
-            ]);
+        $data = $request->validate([
+            'category_id' => 'required|exists:news_categories,id',
+            'title' => 'required|string|max:255',
+            'summary' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'boolean',
+            'published_at' => 'nullable|date',
+        ]);
 
-            // Tạo slug từ tiêu đề nếu không có slug được nhập
-            if (empty($request->slug)) {
-                $dataNew['slug'] = Str::slug($dataNew['title']);
-            } else {
-                $dataNew['slug'] = Str::slug($request->slug);
-            }
+        $data['slug'] = Str::slug($data['title']);
+        $data['author_id'] = auth()->user()->id;
 
-            // Lưu ảnh
-            if ($request->hasFile('image')) {
-                $imgPath = $request->file('image')->store('images/news', 'public');
-                $dataNew['image'] = $imgPath;
-            }
-
-            News::create($dataNew);
-            return redirect()->route('admin.news.index')->with('success', 'Thêm tin tức thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm tin tức: ' . $e->getMessage());
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('news', 'public');
         }
+
+        News::create($data);
+
+        return redirect()->route('admin.news.index')
+            ->with('success', 'Tin tức đã được tạo thành công!');
     }
 
-    public function edit($id)
+    public function edit(News $news)
     {
-        $news = News::findOrFail($id);
-        return view('admin.news.edit', compact('news'));
+        $categories = NewsCategory::where('is_active', true)->get();
+        return view('admin.news.edit', compact('news', 'categories'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, News $news)
     {
-        try {
-            $news = News::findOrFail($id);
+        $data = $request->validate([
+            'category_id' => 'required|exists:news_categories,id',
+            'title' => 'required|string|max:255',
+            'summary' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'boolean',
+            'published_at' => 'nullable|date',
+        ]);
 
-            $dataNew = $request->validate([
-                'title' => 'required|string|max:125',
-                'content' => 'required|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'required|boolean'
-            ]);
+        $data['slug'] = Str::slug($data['title']);
 
-            // Tạo slug từ tiêu đề
-            $dataNew['slug'] = Str::slug($dataNew['title']);
-
-            if ($request->hasFile('image')) {
-                $imgPath = $request->file('image')->store('images/news', 'public');
-
-                // Xóa ảnh cũ nếu có
-                if ($news->image) {
-                    Storage::disk('public')->delete($news->image);
-                }
-
-                $dataNew['image'] = $imgPath;
+        if ($request->hasFile('image')) {
+            if ($news->image) {
+                Storage::disk('public')->delete($news->image);
             }
-
-            $news->update($dataNew);
-            return redirect()->route('admin.news.index')->with('success', 'Cập nhật tin tức thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật tin tức: ' . $e->getMessage());
+            $data['image'] = $request->file('image')->store('news', 'public');
         }
+
+        $news->update($data);
+
+        return redirect()->route('admin.news.index')
+            ->with('success', 'Tin tức đã được cập nhật thành công!');
     }
 
-    public function destroy($id)
+    public function destroy(News $news)
     {
-        try {
-            $news = News::findOrFail($id);
-            $news->delete(); // Soft delete
-            return redirect()->route('admin.news.index')->with('error', 'Xóa tin tức thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa tin tức: ' . $e->getMessage());
+        if ($news->image) {
+            Storage::disk('public')->delete($news->image);
         }
+        $news->delete();
+        return redirect()->route('admin.news.index')
+            ->with('success', 'Tin tức đã được xóa thành công!');
     }
 
     public function bin()
     {
-        $news = News::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        $news = News::onlyTrashed()->with(['category', 'author'])->latest()->paginate(10);
         return view('admin.news.bin', compact('news'));
     }
 
     public function restore($id)
     {
-        try {
-            $news = News::onlyTrashed()->findOrFail($id);
-            $news->restore();
-            return redirect()->route('admin.news.bin')->with('success', 'Khôi phục tin tức thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục tin tức: ' . $e->getMessage());
-        }
+        $news = News::onlyTrashed()->findOrFail($id);
+        $news->restore();
+        return redirect()->route('admin.news.bin')
+            ->with('success', 'Tin tức đã được khôi phục thành công!');
     }
 
     public function forceDelete($id)
     {
-        try {
-            $news = News::withTrashed()->findOrFail($id);
-
-            // Xóa ảnh nếu có
-            if ($news->image) {
-                Storage::disk('public')->delete($news->image);
-            }
-
-            $news->forceDelete();
-            return redirect()->route('admin.news.bin')->with('error', 'Xóa vĩnh viễn tin tức thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn tin tức: ' . $e->getMessage());
+        $news = News::withTrashed()->findOrFail($id);
+        if ($news->image) {
+            Storage::disk('public')->delete($news->image);
         }
+        $news->forceDelete();
+        return redirect()->route('admin.news.bin')
+            ->with('success', 'Tin tức đã được xóa vĩnh viễn!');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = explode(',', $request->ids);
+        $news = News::whereIn('id', $ids)->get();
+
+        foreach ($news as $item) {
+            // Không xóa ảnh khi xóa mềm
+            $item->delete();
+        }
+
+        return redirect()->route('admin.news.index')
+            ->with('success', 'Các tin tức đã được xóa thành công!');
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = explode(',', $request->ids);
+        News::onlyTrashed()->whereIn('id', $ids)->restore();
+
+        return redirect()->route('admin.news.bin')
+            ->with('success', 'Các tin tức đã được khôi phục thành công!');
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = explode(',', $request->ids);
+        $news = News::withTrashed()->whereIn('id', $ids)->get();
+
+        foreach ($news as $item) {
+            // Chỉ xóa ảnh khi xóa vĩnh viễn
+            if ($item->image) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $item->forceDelete();
+        }
+
+        return redirect()->route('admin.news.bin')
+            ->with('success', 'Các tin tức đã được xóa vĩnh viễn!');
     }
 }

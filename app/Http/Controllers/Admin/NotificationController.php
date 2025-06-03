@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -19,16 +20,31 @@ class NotificationController extends Controller
     const TYPE_ORDER_CANCELLED = 'order_cancelled';
     const TYPE_MONTHLY_REPORT = 'monthly_report';
 
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = Notification::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->groupBy(function ($notification) {
-                return $notification->created_at->format('Y-m-d');
-            });
+        $userId = Auth::id();
+        $type = $request->get('type', 'all');
 
-        return view('admin.notifications.index', compact('notifications'));
+        $query = Notification::where('user_id', $userId);
+
+        // Đếm tổng số
+        $totalCount = $query->count();
+
+        // Đếm theo loại
+        $typeCounts = Notification::where('user_id', $userId)
+            ->select('type', DB::raw('count(*) as count'))
+            ->groupBy('type')
+            ->pluck('count', 'type')
+            ->toArray();
+
+        // Lọc theo loại nếu có
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        $notifications = $query->orderBy('created_at', 'desc')->paginate(20);
+
+        return view('admin.notifications.index', compact('notifications', 'totalCount', 'typeCounts', 'type'));
     }
 
     public function markAsRead($id)
@@ -47,6 +63,13 @@ class NotificationController extends Controller
             return response()->json(['success' => true]);
         }
         return redirect()->back()->with('success', 'Đã đánh dấu tất cả thông báo đã đọc');
+    }
+
+    public function markAsUnread($id)
+    {
+        $notification = Notification::findOrFail($id);
+        $notification->update(['is_read' => false]);
+        return response()->json(['success' => true]);
     }
 
     // Test methods
@@ -221,6 +244,34 @@ class NotificationController extends Controller
             'Báo cáo tháng',
             'Báo cáo doanh số tháng đã được tạo',
             ['report_type' => 'monthly']
+        );
+    }
+
+    /**
+     * Gửi thông báo khi có slider mới
+     */
+    public function notifyNewSlider($slider)
+    {
+        $userName = Auth::user() ? Auth::user()->name : 'Hệ thống';
+        $this->notifyAdmins(
+            'slider',
+            'Slider mới',
+            'Slider "' . $slider->title . '" vừa được thêm thành công bởi ' . $userName,
+            ['slider_id' => $slider->id, 'slider_title' => $slider->title, 'created_by' => $userName]
+        );
+    }
+
+    /**
+     * Gửi thông báo khi có sản phẩm mới
+     */
+    public function notifyNewProduct($product)
+    {
+        $userName = Auth::user() ? Auth::user()->name : 'Hệ thống';
+        $this->notifyAdmins(
+            'product',
+            'Sản phẩm mới',
+            'Sản phẩm "' . $product->name . '" vừa được thêm thành công bởi ' . $userName,
+            ['product_id' => $product->id, 'product_name' => $product->name, 'created_by' => $userName]
         );
     }
 

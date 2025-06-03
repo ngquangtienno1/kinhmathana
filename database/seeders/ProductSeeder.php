@@ -9,6 +9,16 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        Product::factory()->count(10)->create();
+        // Tạo 5 sản phẩm đơn giản
+        Product::factory()
+            ->count(5)
+            ->state(['product_type' => 'simple'])
+            ->create();
+
+        // Tạo 5 sản phẩm có biến thể
+        Product::factory()
+            ->count(5)
+            ->state(['product_type' => 'variable'])
+            ->create();
     }
 }

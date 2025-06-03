@@ -7,176 +7,45 @@
                 data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse"
                 aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span
                         class="toggle-line"></span></span></button>
-            <a class="navbar-brand me-1 me-sm-3" href="index.html">
+            <a class="navbar-brand me-1 me-sm-3" href="{{ route('admin.home') }}">
                 <div class="d-flex align-items-center">
-                    <div class="d-flex align-items-center"><img src="{{ getLogoUrl() }} " alt="phoenix"
-                            width="27" />
-                        <h5 class="logo-text ms-2 d-none d-sm-block">{{ getSetting('website_name') }}</h5>
+                    <div class="d-flex align-items-center logo-container" style="margin-left: 20px;">
+                        <div class="logo-wrapper">
+                            <img src="{{ getLogoUrl() }}" alt="phoenix" width="32" class="logo-img"
+                                style="border-radius: 5px;" />
+                        </div>
+                        <h5 class="logo-text ms-3 d-none d-sm-block fw-bold">
+                            <span class="gradient-text">{{ getSetting('website_name') }}</span>
+                        </h5>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="search-box navbar-top-search-box d-none d-lg-block" data-list='{"valueNames":["title"]}'
-            style="width:25rem;">
-            <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input
-                    class="form-control search-input fuzzy-search rounded-pill form-control-sm" type="search"
-                    placeholder="Search..." aria-label="Search" />
+        <div class="search-box">
+            <form class="position-relative" action="{{ route('admin.search.results') }}" method="GET">
+                <input class="form-control search-input search" type="search" name="q" id="globalSearch"
+                    placeholder="Tìm kiếm..." value="{{ request('q') }}" aria-label="Search" autocomplete="off" />
                 <span class="fas fa-search search-box-icon"></span>
             </form>
-            <div class="btn-close position-absolute end-0 top-50 translate-middle cursor-pointer shadow-none"
-                data-bs-dismiss="search"><button class="btn btn-link p-0" aria-label="Close"></button></div>
-            <div class="dropdown-menu border start-0 py-0 overflow-hidden w-100">
-                <div class="scrollbar-overlay" style="max-height: 30rem;">
-                    <div class="list pb-3">
-                        <h6 class="dropdown-header text-body-highlight fs-10 py-2">24 <span
-                                class="text-body-quaternary">results</span></h6>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Recently Searched </h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-solid fa-clock-rotate-left" data-fa-transform="shrink-2"></span>
-                                        Store Macbook</div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-clock-rotate-left" data-fa-transform="shrink-2"></span>
-                                        MacBook Air - 13″</div>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Products</h6>
-                        <div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="file-thumbnail me-2"><img class="h-100 w-100 object-fit-cover rounded-3"
-                                        src="{{ asset('v1/assets/img/products/60x60/3.png') }} " alt="" /></div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">MacBook Air - 13″</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary"><span
-                                            class="fw-medium text-body-tertiary text-opactity-85">8GB Memory -
-                                            1.6GHz - 128GB Storage</span></p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item py-2 d-flex align-items-center"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="file-thumbnail me-2"><img class="img-fluid"
-                                        src="{{ asset('v1/assets/img/products/60x60/3.png') }} " alt="" /></div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">MacBook Pro - 13″</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary"><span
-                                            class="fw-medium text-body-tertiary text-opactity-85">30 Sep at
-                                            12:30 PM</span></p>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Quick Links</h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-solid fa-link text-body" data-fa-transform="shrink-2"></span>
-                                        Support MacBook House</div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-link text-body" data-fa-transform="shrink-2"></span>
-                                        Store MacBook″</div>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Files</h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-solid fa-file-zipper text-body"
-                                            data-fa-transform="shrink-2"></span> Library MacBook folder.rar
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-file-lines text-body"
-                                            data-fa-transform="shrink-2"></span> Feature MacBook extensions.txt
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-solid fa-image text-body" data-fa-transform="shrink-2"></span>
-                                        MacBook Pro_13.jpg</div>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Members</h6>
-                        <div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
-                                href="pages/members.html">
-                                <div class="avatar avatar-l status-online  me-2 text-body">
-                                    <img class="rounded-circle "
-                                        src="{{ asset('v1/assets/img/team/40x40/10.webp') }} " alt="" />
-                                </div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">Carry Anna</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary">anna@technext.it</p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item py-2 d-flex align-items-center" href="pages/members.html">
-                                <div class="avatar avatar-l  me-2 text-body">
-                                    <img class="rounded-circle "
-                                        src="{{ asset('v1/assets/img/team/40x40/12.webp') }} " alt="" />
-                                </div>
-                                <div class="flex-1">
-                                    <h6 class="mb-0 text-body-highlight title">John Smith</h6>
-                                    <p class="fs-10 mb-0 d-flex text-body-tertiary">smith@technext.it</p>
-                                </div>
-                            </a>
-                        </div>
-                        <hr class="my-0" />
-                        <h6
-                            class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
-                            Related Searches</h6>
-                        <div class="py-2"><a class="dropdown-item"
-                                href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"><span
-                                            class="fa-brands fa-firefox-browser text-body"
-                                            data-fa-transform="shrink-2"></span> Search in the Web MacBook</div>
-                                </div>
-                            </a>
-                            <a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
-                                <div class="d-flex align-items-center">
-                                    <div class="fw-normal text-body-highlight title"> <span
-                                            class="fa-brands fa-chrome text-body" data-fa-transform="shrink-2"></span>
-                                        Store MacBook″</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <p class="fallback fw-bold fs-7 d-none">No Result Found.</p>
+            <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2"
+                id="searchResults" style="width: 25rem; max-height: 24rem; overflow-y: auto;">
+                <div class="list-group list-group-flush" id="searchResultsList">
+                    {{-- Search results will be loaded here --}}
+                </div>
+                <div class="list-group-item px-3 py-2 text-center" id="searchLoading" style="display: none;">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
                     </div>
                 </div>
+                <div class="list-group-item px-3 py-2 text-center text-muted" id="searchNoResults"
+                    style="display: none;">
+                    Không tìm thấy kết quả.
+                </div>
+                <a href="{{ route('admin.search.results', ['q' => request('q')]) }}"
+                    class="list-group-item list-group-item-action px-3 py-2 text-center text-primary"
+                    id="viewAllResults" style="display: none;">
+                    Xem tất cả kết quả
+                </a>
             </div>
         </div>
         <ul class="navbar-nav navbar-nav-icons flex-row">
@@ -186,8 +55,7 @@
                         data-theme-control="phoenixTheme" value="dark" id="themeControlToggle" /><label
                         class="mb-0 theme-control-toggle-label theme-control-toggle-light" for="themeControlToggle"
                         data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Switch theme"
-                        style="height:32px;width:32px;"><span class="icon"
-                            data-feather="moon"></span></label><label
+                        style="height:32px;width:32px;"><span class="icon" data-feather="moon"></span></label><label
                         class="mb-0 theme-control-toggle-label theme-control-toggle-dark" for="themeControlToggle"
                         data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Switch theme"
                         style="height:32px;width:32px;"><span class="icon" data-feather="sun"></span></label></div>
@@ -197,8 +65,8 @@
                         style="height:19px;width:19px;margin-bottom: 2px;"></span></a></li>
             <li class="nav-item dropdown">
                 <a class="nav-link position-relative" href="#" style="min-width: 2.25rem" role="button"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    data-bs-auto-close="outside" id="notificationDropdownToggle">
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside"
+                    id="notificationDropdownToggle">
                     <span class="d-block" style="height:20px;width:20px;position:relative;">
                         <span data-feather="bell" style="height:20px;width:20px;"></span>
                         <span id="notification-badge"
@@ -360,8 +228,9 @@
                     role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true"
                     aria-expanded="false">
                     <div class="avatar avatar-l ">
-                        <img class="rounded-circle " src="{{ asset('v1/assets/img/team/40x40/57.webp') }} "
-                            alt="" />
+                        <img class="rounded-circle"
+                            src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('v1/assets/img/team/40x40/57.webp') }}"
+                            alt="{{ auth()->user()->name }}" />
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border"
@@ -369,35 +238,40 @@
                     <div class="card position-relative border-0">
                         <div class="card-body p-0">
                             <div class="text-center pt-4 pb-3">
-                                <div class="avatar avatar-xl ">
-                                    <img class="rounded-circle "
-                                        src="{{ asset('v1/assets/img/team/72x72/57.webp') }} " alt="" />
+                                <div class="avatar avatar-xl">
+                                    <img class="rounded-circle"
+                                        src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('v1/assets/img/team/72x72/57.webp') }}"
+                                        alt="{{ auth()->user()->name }}" />
                                 </div>
-                                <h6 class="mt-2 text-body-emphasis">Jerry Seinfield</h6>
+                                <h6 class="mt-2 text-body-emphasis">{{ auth()->user()->name }}</h6>
+                                <p class="text-body-tertiary mb-0">{{ auth()->user()->email }}</p>
                             </div>
-                            <div class="mb-3 mx-3"><input class="form-control form-control-sm" id="statusUpdateInput"
-                                    type="text" placeholder="Update your status" /></div>
                         </div>
                         <div class="overflow-auto scrollbar" style="height: 10rem;">
                             <ul class="nav d-flex flex-column mb-2 pb-1">
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="user"></span><span>Thông
-                                            tin tài khoản</span></a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"><span
-                                            class="me-2 text-body align-bottom" data-feather="pie-chart"></span>Thống
-                                        kê</a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="lock"></span>Posts
-                                        &amp; Activity</a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="settings"></span>Cài đặt
-                                        &amp; Bảo mật </a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom" data-feather="help-circle"></span>Hỗ
-                                        trợ</a></li>
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
-                                            class="me-2 text-body align-bottom"
-                                            data-feather="globe"></span>Language</a>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.users.profile') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="user"></span>
+                                        <span>Thông tin tài khoản</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.home') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="pie-chart"></span>
+                                        Thống kê
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.settings.index') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="settings"></span>
+                                        Cài đặt & Bảo mật
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3 d-block" href="{{ route('admin.faqs.index') }}">
+                                        <span class="me-2 text-body align-bottom" data-feather="help-circle"></span>
+                                        FAQS
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -407,10 +281,6 @@
                                     href="{{ route('logout') }}">
                                     <span class="me-2" data-feather="log-out"> </span>Đăng xuất</a>
                             </div>
-                            <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a
-                                    class="text-body-quaternary me-1" href="#!">Privacy policy</a>&bull;<a
-                                    class="text-body-quaternary mx-1" href="#!">Terms</a>&bull;<a
-                                    class="text-body-quaternary ms-1" href="#!">Cookies</a></div>
                         </div>
                     </div>
                 </div>
@@ -472,7 +342,7 @@
                              data-notification-id="${n.id}">
                             <div class="avatar avatar-m me-3 position-relative" style="width:40px;height:40px;">
                                 ${!n.is_read ? '<span class="dropdown-notification-dot"></span>' : ''}
-                                ${n.avatar ? `<img class="rounded-circle" src="${n.avatar}" width="40" height="40" alt="">` : `<span class='avatar-name rounded-circle bg-primary d-flex align-items-center justify-content-center' style='width:40px;height:40px;font-size:20px;'>🔔</span>`}
+                                <span class='avatar-name rounded-circle bg-warning d-flex align-items-center justify-content-center' style='width:40px;height:40px;font-size:20px;'>🔔</span>
                             </div>
                             <div class="flex-1 me-sm-3">
                                 <div class="fw-bold mb-1">${n.title || 'Hệ thống'}</div>
@@ -480,15 +350,15 @@
                                 <div class="small text-body-secondary"><span class="me-1 fas fa-clock"></span>${n.time_ago || ''}</div>
                             </div>
                             ${!n.is_read ? `
-                                                                <div class="dropdown ms-2">
-                                                                    <button class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                                                                        <span class="fas fa-ellipsis-h fs-10 text-body"></span>
-                                                                    </button>
-                                                                    <div class="dropdown-menu dropdown-menu-end py-2" style="min-width:180px;z-index:9999;left:auto;right:0;text-align:left;">
-                                                                        <a class="dropdown-item dropdown-mark-as-read" href="#">Đánh dấu đã đọc</a>
-                                                                    </div>
-                                                                </div>
-                                                                ` : ''}
+                                                                                            <div class="dropdown ms-2">
+                                                                                                <button class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                                                                                    <span class="fas fa-ellipsis-h fs-10 text-body"></span>
+                                                                                                </button>
+                                                                                                <div class="dropdown-menu dropdown-menu-end py-2" style="min-width:180px;z-index:9999;left:auto;right:0;text-align:left;">
+                                                                                                    <a class="dropdown-item dropdown-mark-as-read" href="#">Đánh dấu đã đọc</a>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            ` : ''}
                         </div>`;
                     });
                 }

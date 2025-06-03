@@ -2,78 +2,87 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Comment;
 use App\Models\News;
+use App\Models\BadWord;
+use App\Models\Comment;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class CommentController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Comment::with('user');
+{
+    $query = Comment::query();
 
-        // Xử lý tìm kiếm
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('content', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                    })
-                    ->orWhere('entity_id', 'like', "%{$search}%");
-            });
-        }
-
-        // Xử lý lọc theo loại
-        if ($request->has('entity_type')) {
-            $query->where('entity_type', $request->entity_type);
-        }
-
-        // Xử lý lọc theo bài viết
-        if ($request->has('news_id')) {
-            $query->where('entity_id', $request->news_id)
-                ->where('entity_type', 'news');
-        }
-
-        // Xử lý lọc theo sản phẩm
-        if ($request->has('product_id')) {
-            $query->where('entity_id', $request->product_id)
-                ->where('entity_type', 'product');
-        }
-
-        // Xử lý lọc theo ngày
-        if ($request->has('from_date')) {
-            $query->whereDate('created_at', '>=', $request->from_date);
-        }
-        if ($request->has('to_date')) {
-            $query->whereDate('created_at', '<=', $request->to_date);
-        }
-
-        // Xử lý trạng thái
-        if ($request->has('status')) {
+    // Filter theo trạng thái
+    if ($request->filled('status')) {
+        if ($request->status === 'active') {
+            $query->where('status', 'đã duyệt');
+        } elseif ($request->status === 'trashed') {
+            $query->onlyTrashed();
+        } else {
             $query->where('status', $request->status);
         }
-
-        $comments = $query->latest()->paginate(10);
-        $activeCount = Comment::where('status', 'active')->count();
-        $deletedCount = Comment::onlyTrashed()->count();
-
-        // Lấy danh sách bài viết và sản phẩm cho filter
-        $news = News::pluck('title', 'id');
-        $products = Product::pluck('name', 'id');
-
-        if ($request->ajax()) {
-            return response()->json([
-                'html' => view('admin.comments._table', compact('comments'))->render(),
-                'pagination' => view('admin.comments._pagination', compact('comments'))->render()
-            ]);
-        }
-
-        return view('admin.comments.index', compact('comments', 'activeCount', 'deletedCount', 'news', 'products'));
     }
+
+    // Filter theo entity_type nếu có
+    if ($request->filled('entity_type')) {
+        $query->where('entity_type', $request->entity_type);
+    }
+
+    // Filter theo entity_id nếu có
+    if ($request->filled('entity_id')) {
+        $query->where('entity_id', $request->entity_id);
+    }
+
+    // Filter theo khoảng thời gian (created_at)
+    if ($request->filled('from_date')) {
+        $query->whereDate('created_at', '>=', $request->from_date);
+    }
+    if ($request->filled('to_date')) {
+        $query->whereDate('created_at', '<=', $request->to_date);
+    }
+
+    // Tìm kiếm theo nội dung hoặc user name/email
+    if ($request->filled('search')) {
+        $search = strtolower($request->search);
+        $query->where(function ($q) use ($search) {
+            $q->whereRaw('LOWER(content) LIKE ?', ['%' . $search . '%'])
+              ->orWhereHas('user', function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(email) LIKE ?', ['%' . $search . '%']);
+              });
+        });
+    }
+
+    // Phân trang, ví dụ 10 bản ghi 1 trang
+    $comments = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+    // Đếm các trạng thái để hiển thị filter
+    $totalCount = Comment::count();
+    $approvedCount = Comment::where('status', 'đã duyệt')->count();
+    $pendingCount = Comment::where('status', 'chờ duyệt')->count();
+    $spamCount = Comment::where('status', 'spam')->count();
+    $blockedCount = Comment::where('status', 'chặn')->count();
+    $deletedCount = Comment::onlyTrashed()->count();
+
+    // Lấy danh sách entity_type để chọn filter (nếu muốn)
+    $entityTypes = Comment::select('entity_type')->distinct()->pluck('entity_type');
+
+    return view('admin.comments.index', compact(
+        'comments',
+        'totalCount',
+        'approvedCount',
+        'pendingCount',
+        'spamCount',
+        'blockedCount',
+        'deletedCount',
+        'entityTypes',
+    ));
+}
+
 
     public function create() {}
 
@@ -134,4 +143,90 @@ class CommentController extends Controller
         // dd($comment->status);
         return redirect()->route('admin.comments.index')->with('success', 'Cập nhật trạng thái bình luận thành công.');
     }
+    public function badWordsIndex()
+    {
+        $badWords = BadWord::all();
+        return view('admin.comments.badwords', compact('badWords'));
+    }
+
+    // Thêm từ cấm mới
+    public function badWordsStore(Request $request)
+    {
+        $request->validate([
+            'word' => 'required|string|unique:bad_words,word'
+        ]);
+
+        BadWord::create(['word' => $request->word]);
+
+        return redirect()->route('admin.comments.badwords.index')->with('success', 'Thêm từ cấm thành công.');
+    }
+
+    // Xóa từ cấm
+    public function badWordsDestroy(BadWord $badword)
+    {
+        $badword->delete();
+
+        return redirect()->route('admin.comments.badwords.index')->with('success', 'Xóa từ cấm thành công.');
+    }
+   public function updateCommentsStatusAndBanUsers()
+{
+    $badWords = BadWord::pluck('word')->toArray();
+    $comments = Comment::where('status', '!=', 'trashed')->get();
+
+    $blockedCount = 0;
+    $pendingCount = 0;
+    $autoApprovedCount = 0;
+    $unblockedCount = 0;
+    $bannedUsers = [];
+
+    $usersToBan = [];
+
+    foreach ($comments as $comment) {
+        $containsBadWord = false;
+
+        foreach ($badWords as $word) {
+            if (stripos($comment->content, $word) !== false) {
+                $containsBadWord = true;
+                break;
+            }
+        }
+
+        if ($containsBadWord) {
+            if ($comment->status !== 'chặn') {
+                $comment->status = 'chặn';
+                $comment->save();
+                $blockedCount++;
+            }
+
+            // Gom các user cần khóa (kể cả comment đã bị chặn rồi)
+            if ($comment->user && !in_array($comment->user->id, $bannedUsers)) {
+                $usersToBan[$comment->user->id] = $comment->user;
+            }
+
+        } else {
+            if ($comment->status === 'chặn') {
+                $comment->status = 'chờ duyệt';
+                $comment->save();
+                $unblockedCount++;
+            } elseif ($comment->status === 'chờ duyệt') {
+                $comment->status = 'đã duyệt';
+                $comment->save();
+                $autoApprovedCount++;
+            }
+        }
+    }
+
+    // Khóa tất cả user vi phạm mà chưa bị khóa
+    foreach ($usersToBan as $user) {
+        if (is_null($user->banned_until) || now()->gt($user->banned_until)) {
+            $user->banned_until = now()->addHours(24);
+            $user->save();
+            $bannedUsers[] = $user->id;
+        }
+    }
+
+    return redirect()->route('admin.comments.index', ['status' => 'chặn'])
+        ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch. Đã khóa tạm thời " . count($bannedUsers) . " người dùng.");
+}
+
 }

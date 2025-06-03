@@ -30,8 +30,18 @@ class FaqController extends Controller
             $query->where('category', $request->category);
         }
 
-        $faqs = $query->orderBy('sort_order')->paginate(5)->withQueryString();
-        return view('admin.faqs.index', compact('faqs'));
+        if ($request->has('rating') && $request->rating) {
+            $query->where('rating', '>=', $request->rating);
+        }
+
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('is_active', $request->status);
+        }
+
+        $faqs = $query->orderBy('sort_order')->paginate(10);
+        $activeCount = Faq::where('is_active', true)->count();
+
+        return view('admin.faqs.index', compact('faqs', 'activeCount'));
     }
 
     /**
@@ -50,8 +60,8 @@ class FaqController extends Controller
         $validator = Validator::make($request->all(), [
             'question' => 'required|string|max:255',
             'answer' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category' => 'nullable|string|max:50',
+            'category' => 'required|string|max:100',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
@@ -62,25 +72,45 @@ class FaqController extends Controller
                 ->withInput();
         }
 
-        $data = $validator->validated();
+        try {
+            $faq = new Faq();
+            $faq->question = $request->question;
+            $faq->answer = $request->answer;
+            $faq->category = $request->category;
+            $faq->sort_order = $request->sort_order ?? 0;
+            $faq->is_active = $request->boolean('is_active', true);
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('faqs', $imageName, 'public');
-            $data['image'] = 'storage/faqs/' . $imageName;
+            // Xử lý upload nhiều hình ảnh
+            if ($request->hasFile('images')) {
+                $images = [];
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('faqs', 'public');
+                    if ($path) {
+                        $images[] = $path;
+                    }
+                }
+                if (!empty($images)) {
+                    $faq->images = json_encode($images);
+                }
+            }
+
+            $faq->save();
+
+            return redirect()->route('admin.faqs.index')
+                ->with('success', 'FAQ đã được tạo thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage())
+                ->withInput();
         }
-
-        Faq::create($data);
-        return redirect()->route('admin.faqs.index')->with('success', 'Thêm FAQ thành công');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Faq $faq)
     {
-        //
+        return view('admin.faqs.show', compact('faq'));
     }
 
     /**
@@ -99,8 +129,8 @@ class FaqController extends Controller
         $validator = Validator::make($request->all(), [
             'question' => 'required|string|max:255',
             'answer' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category' => 'nullable|string|max:50',
+            'category' => 'required|string|max:100',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
@@ -111,22 +141,46 @@ class FaqController extends Controller
                 ->withInput();
         }
 
-        $data = $validator->validated();
+        try {
+            $faq->question = $request->question;
+            $faq->answer = $request->answer;
+            $faq->category = $request->category;
+            $faq->sort_order = $request->sort_order ?? 0;
+            $faq->is_active = $request->boolean('is_active', true);
 
-        if ($request->hasFile('image')) {
-            // Xóa ảnh cũ nếu có
-            if ($faq->image) {
-                Storage::disk('public')->delete(str_replace('storage/', '', $faq->image));
+            // Xử lý upload nhiều hình ảnh
+            if ($request->hasFile('images')) {
+                // Xóa hình ảnh cũ
+                if ($faq->images) {
+                    $oldImages = json_decode($faq->images, true);
+                    if (is_array($oldImages)) {
+                        foreach ($oldImages as $oldImage) {
+                            Storage::disk('public')->delete($oldImage);
+                        }
+                    }
+                }
+
+                $images = [];
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('faqs', 'public');
+                    if ($path) {
+                        $images[] = $path;
+                    }
+                }
+                if (!empty($images)) {
+                    $faq->images = json_encode($images);
+                }
             }
 
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('faqs', $imageName, 'public');
-            $data['image'] = 'storage/faqs/' . $imageName;
-        }
+            $faq->save();
 
-        $faq->update($data);
-        return redirect()->route('admin.faqs.index')->with('success', 'Cập nhật FAQ thành công');
+            return redirect()->route('admin.faqs.index')
+                ->with('success', 'FAQ đã được cập nhật thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -134,13 +188,20 @@ class FaqController extends Controller
      */
     public function destroy(Faq $faq)
     {
-        // Xóa ảnh nếu có
-        if ($faq->image) {
-            Storage::disk('public')->delete(str_replace('storage/', '', $faq->image));
+        // Xóa hình ảnh
+        if ($faq->images) {
+            $images = json_decode($faq->images, true);
+            if (is_array($images)) {
+                foreach ($images as $image) {
+                    Storage::disk('public')->delete($image);
+                }
+            }
         }
 
         $faq->delete();
-        return redirect()->route('admin.faqs.index')->with('success', 'Xóa FAQ thành công');
+
+        return redirect()->route('admin.faqs.index')
+            ->with('success', 'FAQ đã được xóa thành công.');
     }
 
     public function updateStatus(Request $request, Faq $faq)
@@ -155,5 +216,35 @@ class FaqController extends Controller
 
         $faq->update($validator->validated());
         return response()->json(['success' => true]);
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một FAQ để xóa.');
+        }
+        try {
+            foreach ($ids as $id) {
+                $faq = Faq::find($id);
+                if ($faq) {
+                    if ($faq->images) {
+                        $images = json_decode($faq->images, true);
+                        if (is_array($images)) {
+                            foreach ($images as $image) {
+                                Storage::disk('public')->delete($image);
+                            }
+                        }
+                    }
+                    $faq->delete();
+                }
+            }
+            return redirect()->route('admin.faqs.index')->with('success', 'Đã xóa mềm các FAQ đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
     }
 }

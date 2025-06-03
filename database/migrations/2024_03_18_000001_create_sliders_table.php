@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title', 125);
             $table->mediumText('description')->nullable();
             $table->string('image')->nullable();
+            $table->string('url')->nullable();
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
             $table->integer('sort_order')->default(0);

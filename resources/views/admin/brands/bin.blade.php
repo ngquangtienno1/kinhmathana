@@ -16,12 +16,24 @@
         <div class="col-auto">
             <h2 class="mb-0">Thùng rác thương hiệu</h2>
         </div>
-        <div class="col-auto ms-auto">
+        <div class="col-auto ms-auto d-flex gap-2">
+            <button id="bulk-restore-btn" class="btn btn-success" style="display:none;">Khôi phục</button>
+            <button id="bulk-force-delete-btn" class="btn btn-danger" style="display:none;">Xóa vĩnh viễn</button>
             <a href="{{ route('admin.brands.index') }}" class="btn btn-phoenix-secondary">
                 <span class="fas fa-arrow-left me-2"></span>Quay lại
             </a>
         </div>
     </div>
+    <form id="bulk-restore-form" action="{{ route('admin.brands.bulkRestore') }}" method="POST" style="display:none;">
+        @csrf
+        <input type="hidden" name="ids" id="bulk-restore-ids">
+    </form>
+    <form id="bulk-force-delete-form" action="{{ route('admin.brands.bulkForceDelete') }}" method="POST"
+        style="display:none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="ids" id="bulk-force-delete-ids">
+    </form>
 
     <div class="card">
         <div class="card-body">
@@ -52,10 +64,11 @@
                                     </div>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <a class="d-block border border-translucent rounded-2" href="#">
+                                    <a class="d-block" href="#">
                                         @if ($brand->image)
                                             <img src="{{ asset('storage/' . $brand->image) }}" alt=""
-                                                width="48" style="object-fit:cover; border-radius:4px;">
+                                                width="48" style="object-fit:cover;"
+                                                class="border border-translucent rounded-2">
                                         @else
                                             <span class="text-muted">Không có ảnh</span>
                                         @endif
@@ -114,5 +127,70 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bulkCheckbox = document.getElementById('checkbox-bulk-brands-select');
+        const itemCheckboxes = document.querySelectorAll('.brand-checkbox');
+        const bulkRestoreBtn = document.getElementById('bulk-restore-btn');
+        const bulkForceDeleteBtn = document.getElementById('bulk-force-delete-btn');
+        const bulkRestoreForm = document.getElementById('bulk-restore-form');
+        const bulkForceDeleteForm = document.getElementById('bulk-force-delete-form');
+        const bulkRestoreIds = document.getElementById('bulk-restore-ids');
+        const bulkForceDeleteIds = document.getElementById('bulk-force-delete-ids');
+
+        function updateBulkActionBtns() {
+            let checkedCount = 0;
+            itemCheckboxes.forEach(function(checkbox) {
+                if (checkbox.checked) checkedCount++;
+            });
+            if (checkedCount > 0) {
+                bulkRestoreBtn.style.display = '';
+                bulkForceDeleteBtn.style.display = '';
+            } else {
+                bulkRestoreBtn.style.display = 'none';
+                bulkForceDeleteBtn.style.display = 'none';
+            }
+        }
+
+        if (bulkCheckbox) {
+            bulkCheckbox.addEventListener('change', function() {
+                itemCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = bulkCheckbox.checked;
+                });
+                updateBulkActionBtns();
+            });
+        }
+        itemCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateBulkActionBtns();
+            });
+        });
+        updateBulkActionBtns(); // Initial state
+
+        // Xử lý submit khôi phục
+        bulkRestoreBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const checkedIds = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            if (checkedIds.length === 0) return;
+            if (!confirm('Bạn có chắc chắn muốn khôi phục các thương hiệu đã chọn?')) return;
+            bulkRestoreIds.value = checkedIds.join(',');
+            bulkRestoreForm.submit();
+        });
+        // Xử lý submit xóa vĩnh viễn
+        bulkForceDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const checkedIds = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            if (checkedIds.length === 0) return;
+            if (!confirm('Bạn có chắc chắn muốn xóa vĩnh viễn các thương hiệu đã chọn?')) return;
+            bulkForceDeleteIds.value = checkedIds.join(',');
+            bulkForceDeleteForm.submit();
+        });
+    });
+</script>
 
 @endsection

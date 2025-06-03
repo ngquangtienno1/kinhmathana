@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'date_birth' => $this->faker->dateTimeBetween('-50 years', '-18 years'),
             'gender' => $gender,
             'status_user' => $status,
-            'avatar_url' => $this->faker->imageUrl(200, 200, 'people'),
+            'avatar' => null,
             'role_id' => $this->faker->numberBetween(1, 3), // Giả sử có 3 role (1: Admin, 2: Nhân viên, 3: Khách hàng)
             'email_verified_at' => $this->faker->optional(0.8)->dateTimeThisYear(),
             'phone_verified_at' => $this->faker->optional(0.7)->dateTimeThisYear(),

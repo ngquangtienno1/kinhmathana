@@ -20,7 +20,7 @@
         <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
             <li class="nav-item"><a class="nav-link active" aria-current="page"
                     href="{{ route('admin.brands.index') }}"><span>Tất cả </span><span
-                        class="text-body-tertiary fw-semibold">({{ $brands->total() }})</span></a></li>
+                        class="text-body-tertiary fw-semibold">({{ $brands->count() }})</span></a></li>
             <li class="nav-item"><a class="nav-link"
                     href="{{ route('admin.brands.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                         class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
@@ -36,7 +36,8 @@
                     <div class="search-box">
                         <form class="position-relative" action="{{ route('admin.brands.index') }}" method="GET">
                             <input class="form-control search-input search" type="search" name="search"
-                                placeholder="Tìm kiếm thương hiệu" value="{{ request('search') }}" aria-label="Search" />
+                                placeholder="Tìm kiếm thương hiệu" value="{{ request('search') }}"
+                                aria-label="Search" />
                             <span class="fas fa-search search-box-icon"></span>
                         </form>
                     </div>
@@ -56,13 +57,15 @@
                     <table class="table fs-9 mb-0">
                         <thead>
                             <tr>
-                                <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
+                                <th class="white-space-nowrap fs-9 align-middle ps-0"
+                                    style="max-width:20px; width:18px;">
                                     <div class="form-check mb-0 fs-8">
                                         <input class="form-check-input" id="checkbox-bulk-brands-select" type="checkbox"
                                             data-bulk-select='{"body":"brands-table-body"}' />
                                     </div>
                                 </th>
-                                <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
+                                <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                    style="width:80px;">
                                     <a href="{{ route('admin.brands.index', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                         class="text-body" style="text-decoration:none;">
                                         ID
@@ -72,18 +75,21 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="sort white-space-nowrap align-middle fs-9" scope="col" style="width:70px;">
+                                <th class="sort white-space-nowrap align-middle fs-9" scope="col"
+                                    style="width:70px;">
                                     ẢNH
                                 </th>
-                                <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
-                                    data-sort="name">TÊN THƯƠNG HIỆU</th>
+                                <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                    style="width:250px;" data-sort="name">TÊN THƯƠNG HIỆU</th>
                                 <th class="sort align-middle ps-4" scope="col" data-sort="description"
                                     style="width:200px;">MÔ TẢ</th>
-                                <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
+                                <th class="sort align-middle ps-4" scope="col" data-sort="status"
+                                    style="width:120px;">
                                     TRẠNG THÁI</th>
                                 <th class="sort align-middle ps-4" scope="col" data-sort="created_at"
                                     style="width:150px;">NGÀY TẠO</th>
-                                <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
+                                <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;">
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="list" id="brands-table-body">
@@ -99,9 +105,9 @@
                                         <span class="text-body-tertiary">{{ $brand->id }}</span>
                                     </td>
                                     <td class="align-middle white-space-nowrap py-0">
-                                        <a class="d-block border border-translucent rounded-2" href="#">
+                                        <a class="d-block" href="#">
                                             <img src="{{ asset('storage/' . $brand->image) }}" alt=""
-                                                width="53" />
+                                                width="53" class="img-fluid rounded-2 border border-translucent" />
                                         </a>
                                     </td>
                                     <td class="name align-middle ps-4">
@@ -109,7 +115,8 @@
                                             href="{{ route('admin.brands.show', $brand->id) }}">{{ $brand->name }}</a>
                                     </td>
                                     <td class="description align-middle ps-4">
-                                        <span class="text-body-tertiary">{{ Str::limit($brand->description, 50) }}</span>
+                                        <span
+                                            class="text-body-tertiary">{{ Str::limit($brand->description, 50) }}</span>
                                     </td>
                                     <td class="status align-middle ps-4">
                                         <span
@@ -125,7 +132,8 @@
                                             <button
                                                 class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
                                                 type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                                aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                                aria-haspopup="true" aria-expanded="false"
+                                                data-bs-reference="parent">
                                                 <span class="fas fa-ellipsis-h fs-10"></span>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end py-2">
@@ -175,4 +183,60 @@
         </div>
     </div>
 
-    @endsection
+    <form id="bulk-delete-form" action="{{ route('admin.brands.bulkDestroy') }}" method="POST"
+        style="display:none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="ids" id="bulk-delete-ids">
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bulkCheckbox = document.getElementById('checkbox-bulk-brands-select');
+            const itemCheckboxes = document.querySelectorAll('.brand-checkbox');
+            const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+            const bulkDeleteForm = document.getElementById('bulk-delete-form');
+            const bulkDeleteIds = document.getElementById('bulk-delete-ids');
+
+            function updateBulkDeleteBtn() {
+                let checkedCount = 0;
+                itemCheckboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) checkedCount++;
+                });
+                if (checkedCount > 0) {
+                    bulkDeleteBtn.style.display = '';
+                } else {
+                    bulkDeleteBtn.style.display = 'none';
+                }
+            }
+
+            if (bulkCheckbox) {
+                bulkCheckbox.addEventListener('change', function() {
+                    itemCheckboxes.forEach(function(checkbox) {
+                        checkbox.checked = bulkCheckbox.checked;
+                    });
+                    updateBulkDeleteBtn();
+                });
+            }
+            itemCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    updateBulkDeleteBtn();
+                });
+            });
+            updateBulkDeleteBtn(); // Initial state
+
+            // Xử lý submit xoá mềm
+            bulkDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const checkedIds = Array.from(itemCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+                if (checkedIds.length === 0) return;
+                if (!confirm('Bạn có chắc chắn muốn xóa mềm các thương hiệu đã chọn?')) return;
+                bulkDeleteIds.value = checkedIds.join(',');
+                bulkDeleteForm.submit();
+            });
+        });
+    </script>
+
+@endsection

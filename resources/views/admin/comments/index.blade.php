@@ -7,165 +7,130 @@
     <li class="breadcrumb-item active">Quản lý bình luận</li>
 @endsection
 
-{{-- @if (session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if (session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-@endif --}}
 
 <div class="mb-9">
-    <div id="comments"
-        data-list='{"valueNames":["userId","userName","entityType","entityId","content","status","createdAt"],"page":10,"pagination":true}'>
-        <div class="row mb-4 gx-6 gy-3 align-items-center">
-            <div class="col-auto">
-                <h2 class="mb-0">Quản lý bình luận</h2>
-            </div>
+    <div class="row g-3 mb-4">
+        <div class="col-auto">
+            <h2 class="mb-0">Quản lý bình luận</h2>
         </div>
+    </div>
+</div>
 
-        <div class="row g-3 justify-content-between align-items-end mb-4">
-            <div class="col-12 col-sm-auto">
-                <div class="search-box me-3">
-                    <div class="position-relative">
-                        <input class="form-control search-input search" type="search"
-                            placeholder="Tìm kiếm theo nội dung, tên, email, ID đối tượng" aria-label="Search" />
-                        <span class="fas fa-search search-box-icon"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-auto d-flex flex-wrap gap-2">
-                <div>
-                    <form method="GET" action="{{ route('admin.comments.index') }}">
-                        <select class="form-select" name="entity_type" onchange="this.form.submit()">
-                            <option value="">Tất cả loại</option>
-                            <option value="news" {{ request('entity_type') == 'news' ? 'selected' : '' }}>Bài viết
-                            </option>
-                            <option value="product" {{ request('entity_type') == 'product' ? 'selected' : '' }}>Sản phẩm
-                            </option>
-                        </select>
-                    </form>
-                </div>
-
-                @if (request('entity_type') == 'news' && count($news))
-                    <div>
-                        <form method="GET" action="{{ route('admin.comments.index') }}">
-                            <select class="form-select" name="news_id" onchange="this.form.submit()">
-                                <option value="">Tất cả bài viết</option>
-                                @foreach ($news as $id => $title)
-                                    <option value="{{ $id }}"
-                                        {{ request('news_id') == $id ? 'selected' : '' }}>{{ $title }}</option>
-                                @endforeach
-                            </select>
-                        </form>
-                    </div>
-                @endif
-
-                @if (request('entity_type') == 'product' && count($products))
-                    <div>
-                        <form method="GET" action="{{ route('admin.comments.index') }}">
-                            <select class="form-select" name="product_id" onchange="this.form.submit()">
-                                <option value="">Tất cả sản phẩm</option>
-                                @foreach ($products as $id => $name)
-                                    <option value="{{ $id }}"
-                                        {{ request('product_id') == $id ? 'selected' : '' }}>{{ $name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </form>
-                    </div>
-                @endif
-
-                <div>
-                    <form method="GET" action="{{ route('admin.comments.index') }}">
-                        <input type="date" class="form-control" name="from_date" value="{{ request('from_date') }}"
-                            onchange="this.form.submit()" placeholder="Từ ngày">
-                    </form>
-                </div>
-                <div>
-                    <form method="GET" action="{{ route('admin.comments.index') }}">
-                        <input type="date" class="form-control" name="to_date" value="{{ request('to_date') }}"
-                            onchange="this.form.submit()" placeholder="Đến ngày">
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-3 d-flex gap-2">
-            <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
-                <li class="nav-item">
-                    <a class="nav-link {{ is_null(request('status')) ? 'active' : '' }}"
-                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => null])) }}">
-                        <span>Tất cả </span>
-                        <span class="text-body-tertiary fw-semibold">({{ $comments->total() }})</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request('status') === 'active' ? 'active' : '' }}"
-                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'active'])) }}">
-                        <span>Đang hoạt động </span>
-                        <span class="text-body-tertiary fw-semibold">({{ $activeCount }})</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request('status') === 'trashed' ? 'active' : '' }}"
-                        href="{{ route('admin.comments.index', array_merge(request()->all(), ['status' => 'trashed'])) }}">
-                        <span>Thùng rác </span>
-                        <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="table-responsive scrollbar">
-            <table class="table fs-9 mb-0 border-top border-translucent">
+<div id="comments"
+    data-list='{"valueNames":["userId","userName","entityType","entityId","content","status","createdAt"],"page":10,"pagination":true}'>
+    <div class="mb-4">
+        <form action="{{ route('admin.comments.index') }}" method="GET"
+            class="d-flex flex-nowrap gap-2 align-items-end" style="overflow-x:auto;">
+            <input class="form-control w-auto" type="search" name="search" placeholder="Tìm kiếm bình luận"
+                value="{{ request('search') }}" style="width: 180px;" />
+            <input type="number" name="entity_id" class="form-control w-auto" placeholder="ID đối tượng"
+                value="{{ request('entity_id') }}" style="width: 120px;" />
+            <input type="date" name="from_date" class="form-control w-auto" value="{{ request('from_date') }}"
+                style="width: 140px;" />
+            <input type="date" name="to_date" class="form-control w-auto" value="{{ request('to_date') }}"
+                style="width: 140px;" />
+            <select name="status" class="form-select w-auto" style="width: 130px;">
+                <option value="">Trạng thái</option>
+                <option value="đã duyệt" {{ request('status') === 'đã duyệt' ? 'selected' : '' }}>Đã duyệt</option>
+                <option value="chờ duyệt" {{ request('status') === 'chờ duyệt' ? 'selected' : '' }}>Chờ duyệt</option>
+                <option value="spam" {{ request('status') === 'spam' ? 'selected' : '' }}>Spam</option>
+                <option value="chặn" {{ request('status') === 'chặn' ? 'selected' : '' }}>Bị chặn</option>
+                <option value="trashed" {{ request('status') === 'trashed' ? 'selected' : '' }}>Thùng rác</option>
+            </select>
+            <select name="entity_type" class="form-select w-auto" style="width: 130px;">
+                <option value="">Loại đối tượng</option>
+                @foreach ($entityTypes as $type)
+                    <option value="{{ $type }}" {{ request('entity_type') === $type ? 'selected' : '' }}>
+                        {{ $type }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-primary" style="min-width: 70px;">Lọc</button>
+        </form>
+    </div>
+    <div
+        class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+        <div class="table-responsive scrollbar mx-n1 px-1">
+            <table class="table fs-9 mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 5%;">ID</th>
-                        <th style="width: 15%;">Người dùng</th>
-                        <th style="width: 10%;">Loại</th>
-                        <th style="width: 10%;">ID Đối tượng</th>
-                        <th style="width: 30%;">Nội dung</th>
-                        <th style="width: 10%;">Trạng thái</th>
-                        <th style="width: 10%;">Ngày tạo</th>
-                        <th></th>
+                        <th class="align-middle text-center px-3" style="width:10px;">
+                            <div class="form-check mb-0 fs-8">
+                                <input class="form-check-input" id="checkbox-bulk-comments-select" type="checkbox"
+                                    data-bulk-select='{"body":"comments-table-body"}' />
+                            </div>
+                        </th>
+                        <th class="align-middle text-center px-3" style="width:50px;">ID</th>
+                        <th class="align-middle text-center px-3" style="width:100px;">Người dùng</th>
+                        <th class="align-middle text-center px-3" style="width:100px;">Loại</th>
+                        <th class="align-middle text-center px-3" style="width:110px;">ID Đối tượng</th>
+                        <th class="align-middle text-start px-4" style="min-width:300px;">Nội dung</th>
+                        <th class="align-middle text-center px-3" style="width:120px;">Trạng thái</th>
+                        <th class="align-middle text-center px-3" style="width:120px;">Trạng thái khóa</th>
+                        <th class="align-middle text-center px-3 white-space-nowrap" style="width:110px;">Ngày tạo
+                        </th>
+                        <th class="align-middle text-center px-3" style="width:90px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="list">
                     @forelse ($comments as $comment)
                         <tr>
-                            <td class="userId">{{ $comment->id }}</td>
-                            <td class="userName">{{ $comment->user->name ?? 'N/A' }} <br>
-                                <small>{{ $comment->user->email ?? '' }}</small>
+                            <td class="align-middle text-center px-3">
+                                <div class="form-check mb-0 fs-8">
+                                    <input class="form-check-input comment-checkbox" type="checkbox"
+                                        value="{{ $comment->id }}" />
+                                </div>
                             </td>
-                            <td class="entityType">{{ $comment->entity_type }}</td>
-                            <td class="entityId">{{ $comment->entity_id }}</td>
-                            <td class="content">{{ $comment->content }}</td>
-                            <td class="status">
-                                @switch($comment->status)
-                                    @case('đã duyệt')
-                                        <span class="badge bg-success">Đã duyệt</span>
-                                    @break
+                            <td class="userId align-middle text-center px-3">{{ $comment->id }}</td>
+                            <td class="userName align-middle text-center px-3">
+                                {{ $comment->user->name ?? 'N/A' }}<br><small>{{ $comment->user->email ?? '' }}</small>
+                            </td>
+                            <td class="entityType align-middle text-center px-3">{{ $comment->entity_type }}</td>
+                            <td class="entityId align-middle text-center px-3">{{ $comment->entity_id }}</td>
+                            <td class="content align-middle text-start px-4">{{ $comment->content }}</td>
+                            <td class="status align-middle text-center px-3">
+                                @if ($comment->trashed())
+                                    <span class="badge bg-secondary">Đã xóa</span>
+                                @else
+                                    @switch($comment->status)
+                                        @case('đã duyệt')
+                                            <span class="badge bg-success">Đã duyệt</span>
+                                        @break
 
-                                    @case('chờ duyệt')
-                                        <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                                    @break
+                                        @case('chờ duyệt')
+                                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                        @break
 
-                                    @case('spam')
-                                        <span class="badge bg-danger">Spam</span>
-                                    @break
+                                        @case('spam')
+                                            <span class="badge bg-danger">Spam</span>
+                                        @break
 
-                                    @case('chặn')
-                                        <span class="badge bg-dark">Bị chặn</span>
-                                    @break
+                                        @case('chặn')
+                                            <span class="badge bg-dark">Bị chặn</span>
+                                        @break
 
-                                    @default
-                                        <span class="badge bg-secondary">Không rõ</span>
-                                @endswitch
+                                        @default
+                                            <span class="badge bg-secondary">Không rõ</span>
+                                    @endswitch
+                                @endif
+                            </td>
+                            <td class="status align-middle text-center px-3">
+                                @if ($comment->user && $comment->user->banned_until && now()->lt($comment->user->banned_until))
+                                    <span class="badge bg-danger">
+                                        User bị khóa còn
+                                        {{ now()->diffForHumans($comment->user->banned_until, ['short' => true, 'parts' => 2]) }}
+                                    </span>
+                                @else
+                                    <span class="badge bg-success">User bình thường</span>
+                                @endif
                             </td>
 
-                            <td class="createdAt">{{ $comment->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
+
+
+
+
+                            <td class="createdAt align-middle text-center px-3 white-space-nowrap">
+                                {{ $comment->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="align-middle text-center px-3 white-space-nowrap pe-0 ps-4 btn-reveal-trigger">
                                 <div class="btn-reveal-trigger position-static">
                                     <button
                                         class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
@@ -175,35 +140,70 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                         <a class="dropdown-item" href="">Xem</a>
-                                        <a class="dropdown-item" href="">Sửa</a>
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.comments.edit', $comment->id) }}">Sửa</a>
                                         <div class="dropdown-divider"></div>
-                                        <form action="{{ route('admin.comments.destroy', $comment->id) }}"
-                                            method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">Xóa</button>
-                                        </form>
+
+
+                                        @if (request('status') === 'trashed' && $comment->trashed())
+                                            <form action="{{ route('admin.comments.restore', $comment->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="dropdown-item text-success"
+                                                    onclick="return confirm('Khôi phục bình luận này?')">Khôi
+                                                    phục</button>
+                                            </form>
+
+                                            <form action="{{ route('admin.comments.forceDelete', $comment->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                    onclick="return confirm('Xóa vĩnh viễn bình luận này?')">Xóa vĩnh
+                                                    viễn</button>
+                                            </form>
+                                        @else
+                                            <form
+                                                action="{{ route('admin.comments.toggle-visibility', $comment->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="is_hidden"
+                                                    value="{{ $comment->is_hidden ? 0 : 1 }}">
+                                                <button type="submit" class="dropdown-item">
+                                                    {{ $comment->is_hidden ? 'Hiện bình luận' : 'Ẩn bình luận' }}
+                                                </button>
+                                            </form>
+
+                                            <form action="{{ route('admin.comments.destroy', $comment->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">Xóa</button>
+                                            </form>
+                                        @endif
+
                                     </div>
                                 </div>
                             </td>
                         </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center">Không có bình luận nào.</td>
+                                <td colspan="9" class="text-center">Không có bình luận nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
                     </p>
-                    <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
+                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
-                    <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
+                    <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn<span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                 </div>
                 <div class="col-auto d-flex">
@@ -217,4 +217,5 @@
             </div>
         </div>
     </div>
+
 @endsection

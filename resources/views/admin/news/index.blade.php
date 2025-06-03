@@ -6,19 +6,19 @@
     <li class="breadcrumb-item">
         <a href="#">Tin tức</a>
     </li>
-    <li class="breadcrumb-item active">Danh sách Tin tức</li>
+    <li class="breadcrumb-item active">Danh sách tin tức</li>
 @endsection
 
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Tin tức</h2>
+            <h2 class="mb-0"> Danh sách tin tức</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item"><a class="nav-link active" aria-current="page"
                 href="{{ route('admin.news.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $news->total() }})</span></a></li>
+                    class="text-body-tertiary fw-semibold">({{ $news->count() }})</span></a></li>
         <li class="nav-item"><a class="nav-link"
                 href="{{ route('admin.news.index', ['status' => 'active']) }}"><span>Đang hoạt động </span><span
                     class="text-body-tertiary fw-semibold">({{ $activeCount }})</span></a>
@@ -28,7 +28,7 @@
         </li>
     </ul>
     <div id="news"
-        data-list='{"valueNames":["title","description","sort_order","status","created_at"],"page":10,"pagination":true}'>
+        data-list='{"valueNames":["title","content","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
@@ -37,6 +37,23 @@
                             placeholder="Tìm kiếm tin tức" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </form>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Danh mục:
+                        {{ request('category') ? $categories->firstWhere('id', request('category'))->name : 'Tất cả' }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
+                                href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => null])) }}">Tất
+                                cả</a></li>
+                        @foreach ($categories as $category)
+                            <li><a class="dropdown-item {{ request('category') == $category->id ? 'active' : '' }}"
+                                    href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => $category->id])) }}">{{ $category->name }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
                 <div class="ms-xxl-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
@@ -56,7 +73,7 @@
                         <tr>
                             <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
                                 <div class="form-check mb-0 fs-8">
-                                    <input class="form-check-input" id="checkbox-bulk-sliders-select" type="checkbox"
+                                    <input class="form-check-input" id="checkbox-bulk-news-select" type="checkbox"
                                         data-bulk-select='{"body":"news-table-body"}' />
                                 </div>
                             </th>
@@ -74,12 +91,11 @@
                                 ẢNH</th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
                                 data-sort="title">TIÊU ĐỀ</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="content" style="width:200px;">
-                                NỘI DUNG</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
-                                TRẠNG THÁI</th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="created_at"
-                                style="width:150px;">NGÀY TẠO</th>
+                            <th class="sort" data-sort="category">Danh mục</th>
+                            <th class="sort" data-sort="author">Tác giả</th>
+                            <th class="sort" data-sort="published_at">Ngày xuất bản</th>
+                            <th class="sort" data-sort="status">Trạng thái</th>
+                            <th class="sort" data-sort="created_at">Ngày tạo</th>
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
                         </tr>
                     </thead>
@@ -96,19 +112,21 @@
                                     <span class="text-body-tertiary">{{ $item->id }}</span>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-0">
-                                    @if ($item->image)
-                                        <a class="d-block border border-translucent rounded-2" href="#">
-                                            <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                                width="53" />
-                                        </a>
-                                    @endif
+                                    <a class="d-block" href="{{ route('admin.news.show', $item) }}">
+                                        <img src="{{ asset('storage/' . $item->image) }}" alt=""
+                                            width="53" class="img-fluid rounded-2 border border-translucent" />
+                                    </a>
                                 </td>
                                 <td class="title align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0"
-                                        href="{{ route('admin.news.show', $item->id) }}">{{ $item->title }}</a>
+                                        href="{{ route('admin.news.show', $item) }}">{{ $item->title }}</a>
                                 </td>
-                                <td class="description align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ Str::limit($item->content, 50) }}</span>
+                                <td class="category align-middle ps-4">
+                                    {{ $item->category ? $item->category->name : 'N/A' }}</td>
+                                <td class="author align-middle ps-4">{{ $item->author ? $item->author->name : 'N/A' }}
+                                </td>
+                                <td class="published_at align-middle ps-4">
+                                    {{ $item->published_at ? $item->published_at->format('d/m/Y H:i') : 'Chưa xuất bản' }}
                                 </td>
                                 <td class="status align-middle ps-4">
                                     <span
@@ -129,12 +147,12 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.news.show', $item->id) }}">Xem</a>
+                                                href="{{ route('admin.news.show', $item) }}">Xem</a>
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.news.edit', $item->id) }}">Sửa</a>
+                                                href="{{ route('admin.news.edit', $item) }}">Sửa</a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.news.destroy', $item->id) }}"
-                                                method="POST" class="d-inline">
+                                            <form action="{{ route('admin.news.destroy', $item) }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"
@@ -146,7 +164,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4">Không có tin tức nào</td>
+                                <td colspan="9" class="text-center py-4">Không có tin tức nào</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -173,5 +191,60 @@
         </div>
     </div>
 </div>
+
+<form id="bulk-delete-form" action="{{ route('admin.news.bulkDestroy') }}" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+    <input type="hidden" name="ids" id="bulk-delete-ids">
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bulkCheckbox = document.getElementById('checkbox-bulk-news-select');
+        const itemCheckboxes = document.querySelectorAll('.news-checkbox');
+        const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+        const bulkDeleteForm = document.getElementById('bulk-delete-form');
+        const bulkDeleteIds = document.getElementById('bulk-delete-ids');
+
+        function updateBulkDeleteBtn() {
+            let checkedCount = 0;
+            itemCheckboxes.forEach(function(checkbox) {
+                if (checkbox.checked) checkedCount++;
+            });
+            if (checkedCount > 0) {
+                bulkDeleteBtn.style.display = '';
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        if (bulkCheckbox) {
+            bulkCheckbox.addEventListener('change', function() {
+                itemCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = bulkCheckbox.checked;
+                });
+                updateBulkDeleteBtn();
+            });
+        }
+        itemCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateBulkDeleteBtn();
+            });
+        });
+        updateBulkDeleteBtn(); // Initial state
+
+        // Xử lý submit xoá mềm
+        bulkDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const checkedIds = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            if (checkedIds.length === 0) return;
+            if (!confirm('Bạn có chắc chắn muốn xóa mềm các tin tức đã chọn?')) return;
+            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteForm.submit();
+        });
+    });
+</script>
 
 @endsection

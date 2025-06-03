@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Review;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Customer;
+use App\Models\Order;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,6 +33,7 @@ class DatabaseSeeder extends Seeder
 
             // 2. Seeder cho người dùng
             UserSeeder::class,        // Tạo users với role_id
+            CustomerSeeder::class,     // Tạo customers
 
             // 3. Seeder cho danh mục và thương hiệu
             CategorySeeder::class,    // Tạo categories
@@ -47,8 +52,17 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,         // Tạo FAQ
 
             // 6. Seeder cho đơn hàng và thanh toán
-            // OrderSeeder::class,     // Tạo đơn hàng
-            // PaymentSeeder::class,   // Tạo thanh toán
+            PromotionSeeder::class, // Tạo khuyến mãi
+            PaymentMethodSeeder::class, // Tạo phương thức thanh toán
+            ShippingProviderSeeder::class, // Tạo phương thức vận chuyển
+            OrderSeeder::class,     // Tạo đơn hàng
+            PaymentSeeder::class,   // Tạo thanh toán
+
+            // 7. Seeder cho lý do huỷ
+            CancellationReasonSeeder::class,
+            ReviewSeeder::class, // Tạo đánh giá
+            CustomerSupportSeeder::class, // Tạo hỗ trợ khách hàng
+
         ]);
     }
 
@@ -72,8 +86,10 @@ class DatabaseSeeder extends Seeder
             'comments',
             'sliders',
             'faqs',
-            // 'orders',
-            // 'payments',
+            'promotions',
+            'orders',
+            'customers',
+            'payment_methods',
         ];
 
         foreach ($tables as $table) {

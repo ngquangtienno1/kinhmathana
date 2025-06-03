@@ -9,6 +9,10 @@ use App\Models\Discount;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderPlaced;
+use App\Mail\OrderDelivered;
+use App\Mail\OrderDeliveryFailed;
 
 class OrderController extends Controller
 {
@@ -17,7 +21,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with(['user', 'items']);
+        $query = Order::with(['user', 'items', 'paymentMethod', 'shippingProvider'])
+            ->latest();
 
         // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
         if ($request->has('search')) {
@@ -32,7 +37,16 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->latest()->paginate(10);
+        // Lọc theo trạng thái thanh toán
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+        // Lọc theo trạng thái đơn hàng
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->get();
         // Đếm số lượng các trạng thái
         $countAll = Order::count();
         $countPending = Order::where('payment_status', 'pending')->count();
@@ -82,6 +96,13 @@ class OrderController extends Controller
                 'note' => 'Đơn hàng được tạo'
             ]);
 
+            // Gửi email xác nhận đơn hàng
+            if ($order->user && $order->user->email) {
+                Mail::to($order->user->email)->send(new OrderPlaced($order));
+            } elseif ($order->customer_email) {
+                Mail::to($order->customer_email)->send(new OrderPlaced($order));
+            }
+
             DB::commit();
             return redirect()
                 ->route('admin.orders.show', $order)
@@ -99,7 +120,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user']);
+        $order->load(['user', 'promotion', 'paymentMethod', 'shippingProvider']);
         return view('admin.orders.detail', compact('order'));
     }
 
@@ -121,8 +142,8 @@ class OrderController extends Controller
         $data = $request->validate([
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:pending,paid,failed,refunded,cancelled',
-            'status' => 'required|in:pending,confirmed,processing,shipping,delivered,cancelled',
+            'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
+            'status' => 'required|in:pending,awaiting_pickup,shipping,delivered,cancelled,returned_refunded,completed',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -161,7 +182,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,awaiting_payment,confirmed,processing,shipping,delivered,returned,processing_return,refunded,cancelled',
+            'status' => 'required|in:pending,awaiting_pickup,shipping,delivered,cancelled,returned_refunded,completed',
             'comment' => 'nullable|string'
         ]);
 
@@ -177,14 +198,35 @@ class OrderController extends Controller
                 $order->update(['confirmed_at' => now()]);
             } elseif ($request->status === 'delivered' && !$order->completed_at) {
                 $order->update(['completed_at' => now()]);
+
+                // Gửi email khi đơn hàng được giao thành công
+                if ($order->user && $order->user->email) {
+                    Mail::to($order->user->email)->send(new OrderDelivered($order));
+                } elseif ($order->customer_email) {
+                    Mail::to($order->customer_email)->send(new OrderDelivered($order));
+                }
+            } elseif ($request->status === 'returned_refunded' && $oldStatus === 'shipping') {
+                // Gửi email khi giao hàng thất bại
+                if ($order->user && $order->user->email) {
+                    Mail::to($order->user->email)->send(new OrderDeliveryFailed($order));
+                } elseif ($order->customer_email) {
+                    Mail::to($order->customer_email)->send(new OrderDeliveryFailed($order));
+                }
             }
 
             // Lưu lịch sử
             $order->histories()->create([
-                // 'user_id' => auth()->id(),
                 'status_from' => $oldStatus,
                 'status_to' => $request->status,
                 'comment' => $request->comment
+            ]);
+
+            // Lưu lịch sử trạng thái
+            $order->statusHistories()->create([
+                'old_status' => $oldStatus,
+                'new_status' => $request->status,
+                'note' => $request->comment,
+                'updated_by' => auth()->id()
             ]);
         });
 
@@ -197,7 +239,7 @@ class OrderController extends Controller
     public function updatePaymentStatus(Request $request, Order $order)
     {
         $request->validate([
-            'payment_status' => 'required|in:pending,paid,failed,refunded,cancelled,partially_paid,disputed',
+            'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
             'comment' => 'nullable|string'
         ]);
 
@@ -238,5 +280,14 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Có lỗi xảy ra khi xóa đơn hàng');
         }
+    }
+
+    /**
+     * In đơn hàng (view đẹp cho in)
+     */
+    public function print(Order $order)
+    {
+        $order->load(['user', 'promotion', 'paymentMethod', 'shippingProvider', 'items']);
+        return view('admin.orders.print', compact('order'));
     }
 }

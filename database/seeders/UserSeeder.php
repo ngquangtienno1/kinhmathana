@@ -24,7 +24,6 @@ class UserSeeder extends Seeder
             'date_birth' => '1990-01-01',
             'gender' => 'male',
             'status_user' => 'active',
-            'avatar_url' => 'https://ui-avatars.com/api/?name=Admin&background=random',
             'role_id' => 1, // Admin role
             'email_verified_at' => now(),
             'phone_verified_at' => now(),
@@ -40,30 +39,15 @@ class UserSeeder extends Seeder
             'date_birth' => '1995-01-01',
             'gender' => 'female',
             'status_user' => 'active',
-            'avatar_url' => 'https://ui-avatars.com/api/?name=Staff&background=random',
             'role_id' => 2, // Staff role
             'email_verified_at' => now(),
             'phone_verified_at' => now(),
         ]);
 
-        // Tạo tài khoản khách hàng mặc định
-        User::create([
-            'name' => 'Customer',
-            'email' => 'customer@example.com',
-            'password' => Hash::make('password'),
-            'address' => '789 Customer Street',
-            'phone' => '0123456788',
-            'date_birth' => '2000-01-01',
-            'gender' => 'male',
-            'status_user' => 'active',
-            'avatar_url' => 'https://ui-avatars.com/api/?name=Customer&background=random',
-            'role_id' => 3, // Customer role
-            'email_verified_at' => now(),
-            'phone_verified_at' => now(),
-        ]);
-
         // Tạo thêm 20 tài khoản ngẫu nhiên
-        User::factory()->count(20)->create();
-        // User::factory(5)->create();
+        User::factory()->count(20)->create([
+            'role_id' => 3, // Customer role
+            'status_user' => 'active',
+        ]);
     }
 }

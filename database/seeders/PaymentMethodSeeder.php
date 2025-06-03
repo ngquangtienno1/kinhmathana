@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PaymentMethod;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class PaymentMethodSeeder extends Seeder
 {
@@ -13,13 +12,50 @@ class PaymentMethodSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        // Fake dữ liệu cho bảng payment_methods
-        DB::table('payment_methods')->insert([
-            ['name' => 'Thẻ tín dụng', 'description' => 'Thanh toán qua thẻ tín dụng'],
-            ['name' => 'Momo', 'description' => 'Thanh toán qua tài khoản MoMo'],
-            ['name' => 'Chuyển khoản ngân hàng', 'description' => 'Chuyển khoản ngân hàng trực tiếp'],
-            ['name' => 'Thanh toán khi nhận hàng', 'description' => 'Thanh toán bằng tiền mặt khi nhận hàng'],
-        ]);
+        // Tạo các phương thức thanh toán mặc định
+        $paymentMethods = [
+            [
+                'name' => 'Thanh toán khi nhận hàng (COD)',
+                'code' => 'cod',
+                'description' => 'Thanh toán bằng tiền mặt khi nhận hàng',
+                'is_active' => true,
+                'sort_order' => 1
+            ],
+            [
+                'name' => 'Chuyển khoản ngân hàng',
+                'code' => 'banking',
+                'description' => 'Chuyển khoản trực tiếp qua ngân hàng',
+                'is_active' => true,
+                'sort_order' => 2
+            ],
+            [
+                'name' => 'Ví điện tử MoMo',
+                'code' => 'momo',
+                'description' => 'Thanh toán qua ví điện tử MoMo',
+                'is_active' => true,
+                'sort_order' => 3
+            ],
+            [
+                'name' => 'Ví điện tử VNPay',
+                'code' => 'vnpay',
+                'description' => 'Thanh toán qua ví điện tử VNPay',
+                'is_active' => true,
+                'sort_order' => 4
+            ],
+            [
+                'name' => 'Thẻ tín dụng/ghi nợ',
+                'code' => 'card',
+                'description' => 'Thanh toán qua thẻ tín dụng hoặc thẻ ghi nợ',
+                'is_active' => true,
+                'sort_order' => 5
+            ]
+        ];
+
+        foreach ($paymentMethods as $method) {
+            PaymentMethod::create($method);
+        }
+
+        // Tạo thêm một số phương thức thanh toán ngẫu nhiên nếu cần
+        // PaymentMethod::factory()->count(3)->create();
     }
 }

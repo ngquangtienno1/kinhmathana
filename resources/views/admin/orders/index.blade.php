@@ -19,19 +19,19 @@
                 href="{{ route('admin.orders.index') }}"><span>Tất cả </span><span
                     class="text-body-tertiary fw-semibold">({{ $countAll }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('payment_status') == 'pending' ? ' active' : '' }}"
-                href="?payment_status=pending"><span>Đang chờ thanh toán </span><span
+                href="?payment_status=pending"><span>Chưa thanh toán </span><span
                     class="text-body-tertiary fw-semibold">({{ $countPending }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('status') == 'pending' ? ' active' : '' }}"
-                href="?status=pending"><span>Chưa hoàn thành </span><span
+                href="?status=pending"><span>Chờ xác nhận </span><span
                     class="text-body-tertiary fw-semibold">({{ $countUnfulfilled }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('status') == 'delivered' ? ' active' : '' }}"
-                href="?status=delivered"><span>Đã hoàn thành </span><span
+                href="?status=delivered"><span>Đã giao hàng </span><span
                     class="text-body-tertiary fw-semibold">({{ $countCompleted }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('payment_status') == 'refunded' ? ' active' : '' }}"
-                href="?payment_status=refunded"><span>Đã hoàn lại </span><span
+                href="?payment_status=refunded"><span>Đã hoàn tiền </span><span
                     class="text-body-tertiary fw-semibold">({{ $countRefunded }})</span></a></li>
         <li class="nav-item"><a class="nav-link{{ request('payment_status') == 'failed' ? ' active' : '' }}"
-                href="?payment_status=failed"><span>Thất bại </span><span
+                href="?payment_status=failed"><span>Thanh toán không thành công </span><span
                     class="text-body-tertiary fw-semibold">({{ $countFailed }})</span></a></li>
     </ul>
 
@@ -45,9 +45,9 @@
                     <div class="search-box">
                         <form class="position-relative">
                             <input class="form-control search-input search" type="search" name="search"
-                                id="order-search-input" placeholder="Enter order code or customer name"
+                                id="order-search-input" placeholder="Nhập mã đơn hàng hoặc tên khách hàng"
                                 value="{{ request('search') }}" aria-label="Search"
-                                style="min-width: 320px; height: 40px;" />
+                                style="min-width: 300px; height: 40px;" />
                             <span class="fas fa-search search-box-icon"></span>
                         </form>
                     </div>
@@ -60,17 +60,30 @@
                             <button class="btn btn-phoenix-secondary px-7 py-2 border-end" type="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                 data-bs-reference="parent" style="border-radius: 8px 0 0 8px; height: 40px;">
-                                Payment status <span class="fas fa-angle-down ms-2"></span>
+                                Trạng thái thanh toán <span class="fas fa-angle-down ms-2"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="?payment_status=paid">Đã thanh toán</a></li>
-                                <li><a class="dropdown-item" href="?payment_status=pending">Đang chờ</a></li>
-                                <li><a class="dropdown-item" href="?payment_status=failed">Thất bại</a></li>
-                                <li><a class="dropdown-item" href="?payment_status=refunded">Đã hoàn tiền</a></li>
-                                <li><a class="dropdown-item" href="?payment_status=cancelled">Đã hủy</a></li>
-                                <li><a class="dropdown-item" href="?payment_status=partially_paid">Thanh toán một
-                                        phần</a></li>
-                                <li><a class="dropdown-item" href="?payment_status=disputed">Đang tranh chấp</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'paid'])) }}">Đã
+                                        thanh toán</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'pending'])) }}">Chưa
+                                        thanh toán</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'failed'])) }}">Thanh
+                                        toán không thành công</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'refunded'])) }}">Đã
+                                        hoàn tiền</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'cod'])) }}">Thanh
+                                        toán khi nhận hàng (COD)</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'confirmed'])) }}">Đã
+                                        xác nhận thanh toán</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'processing_refund'])) }}">Đang
+                                        hoàn tiền</a></li>
                             </ul>
                         </div>
                         <!-- Order status -->
@@ -78,28 +91,43 @@
                             <button class="btn btn-phoenix-secondary px-7 py-2 border-end" type="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                 data-bs-reference="parent" style="height: 40px;">
-                                Order status <span class="fas fa-angle-down ms-2"></span>
+                                Trạng thái đơn hàng <span class="fas fa-angle-down ms-2"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="?status=pending">Đang chờ xử lý</a></li>
-                                <li><a class="dropdown-item" href="?status=awaiting_payment">Chờ thanh toán</a></li>
-                                <li><a class="dropdown-item" href="?status=confirmed">Đã xác nhận</a></li>
-                                <li><a class="dropdown-item" href="?status=processing">Đang xử lý</a></li>
-                                <li><a class="dropdown-item" href="?status=shipping">Đang vận chuyển</a></li>
-                                <li><a class="dropdown-item" href="?status=delivered">Đã giao hàng</a></li>
-                                <li><a class="dropdown-item" href="?status=returned">Khách trả hàng</a></li>
-                                <li><a class="dropdown-item" href="?status=processing_return">Đang xử lý trả hàng</a>
-                                </li>
-                                <li><a class="dropdown-item" href="?status=refunded">Đã hoàn tiền</a></li>
-                                <li><a class="dropdown-item" href="?status=cancelled">Đã huỷ</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'pending'])) }}">Chờ
+                                        xác nhận</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'confirmed'])) }}">Đã
+                                        xác nhận</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'awaiting_pickup'])) }}">Chờ
+                                        lấy hàng</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'shipping'])) }}">Đang
+                                        giao</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'delivered'])) }}">Đã
+                                        giao hàng</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'returned'])) }}">Khách
+                                        trả hàng</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'processing_return'])) }}">Đang
+                                        xử lý trả hàng</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}">Đã
+                                        hủy</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'returned_refunded'])) }}">Trả
+                                        hàng / Hoàn tiền</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'completed'])) }}">Đã
+                                        hoàn thành</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'refunded'])) }}">Đã
+                                        hoàn tiền</a></li>
                             </ul>
-                        </div>
-                        <!-- More filters -->
-                        <div class="btn-group position-static text-nowrap" role="group">
-                            <button class="btn btn-phoenix-secondary px-7 py-2" type="button"
-                                style="border-radius: 0 8px 8px 0; height: 40px;">
-                                More filters
-                        </button>
                         </div>
                     </div>
                 </div>
@@ -109,9 +137,7 @@
                         style="height: 40px;">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </a>
-                    <button class="btn btn-primary d-flex align-items-center" style="height: 40px;">
-                        <span class="fas fa-plus me-2"></span>Add order
-                    </button>
+
                 </div>
             </div>
         </div>
@@ -128,59 +154,60 @@
                                         id="checkbox-bulk-order-select" type="checkbox"
                                         data-bulk-select='{"body":"order-table-body"}' /></div>
                             </th>
-                            <th class="sort white-space-nowrap align-middle pe-3" scope="col" data-sort="order"
-                                style="width:5%;">Mã đơn hàng</th>
-                            <th class="sort align-middle text-end" scope="col" data-sort="total"
-                                style="width:6%;">
-                                Tổng số tiền</th>
-                            <th class="sort align-middle ps-8" scope="col" data-sort="customer"
-                                style="width:28%; min-width: 250px;">Khách hàng</th>
-                            <th class="sort align-middle pe-3" scope="col" data-sort="payment_status"
-                                style="width:10%;">Trạng thái thanh toán</th>
-                            <th class="sort align-middle text-start pe-3" scope="col"
-                                data-sort="fulfilment_status" style="width:12%; min-width: 200px;">Trạng thái đơn hàng
-                            </th>
-                            <th class="sort align-middle text-start" scope="col" data-sort="delivery_type"
-                                style="width:30%;">Phương thức vận chuyển</th>
-                            <th class="sort align-middle text-end pe-0" scope="col" data-sort="date">Ngày đặt hàng
-                            </th>
-                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;">
-                            </th>
+                            <th class="sort align-middle text-center px-3" scope="col" data-sort="order"
+                                style="width:90px;">Mã đơn hàng</th>
+                            <th class="sort align-middle text-end px-3" scope="col" data-sort="total"
+                                style="width:110px;">Tổng số tiền</th>
+                            <th class="sort align-middle text-center px-3" scope="col" data-sort="customer"
+                                style="width:180px;">Khách hàng</th>
+                            <th class="sort align-middle text-center px-3" scope="col" data-sort="payment_status"
+                                style="width:130px;">Trạng thái thanh toán</th>
+                            <th class="sort align-middle text-center px-3" scope="col"
+                                data-sort="fulfilment_status" style="width:150px;">Trạng thái đơn hàng</th>
+                            <th class="sort align-middle text-center px-3" scope="col" data-sort="delivery_type"
+                                style="width:180px;">Phương thức vận chuyển</th>
+                            <th class="sort align-middle text-center px-3 white-space-nowrap" scope="col"
+                                data-sort="date" style="width:120px;">Ngày đặt hàng</th>
+                            <th class="sort text-center align-middle px-3" scope="col" style="width:90px;"></th>
                         </tr>
                     </thead>
                     <tbody class="list" id="order-table-body">
-                        @foreach ($orders as $order)
+                        @forelse ($orders as $order)
                             <tr>
                                 <td class="fs-9 align-middle px-0 py-3">
                                     <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                            type="checkbox" />
-                                    </div>
+                                            type="checkbox" /></div>
                                 </td>
-                                <td class="order align-middle white-space-nowrap py-0"><a class="fw-semibold"
+                                <td class="order align-middle text-center white-space-nowrap py-0"><a
+                                        class="fw-semibold"
                                         href="{{ route('admin.orders.show', $order->id) }}">#{{ $order->order_number }}</a>
                                 </td>
-                                <td class="total align-middle text-end fw-semibold text-body-highlight"
-                                    style="white-space:nowrap;">
-                                    {{ number_format($order->total_amount, 2) }} <span
-                                        class="text-muted ms-1">VND</span>
-                                </td>
-                                <td class="customer align-middle white-space-nowrap ps-8">
+                                <td class="total align-middle text-end fw-semibold text-body-highlight px-3"
+                                    style="white-space:nowrap;">{{ number_format($order->total_amount, 2) }} <span
+                                        class="text-muted ms-1">VND</span></td>
+                                <td class="customer align-middle text-center white-space-nowrap px-3">
                                     {{ $order->user->name ?? 'Khách hàng ẩn danh' }}</td>
                                 <td
-                                    class="payment_status align-middle white-space-nowrap text-start fw-bold text-body-tertiary">
+                                    class="payment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
                                     @php
                                         $paymentStatusMap = [
+                                            'pending' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
-                                            'pending' => ['Đang chờ', 'badge-phoenix-warning', 'clock'],
-                                            'failed' => ['Thất bại', 'badge-phoenix-danger', 'x'],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
+                                            'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
+                                            'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
                                             'partially_paid' => [
-                                                'Thanh toán một phần',
-                                                'badge-phoenix-primary',
-                                                'percent',
+                                                'Đã thanh toán một phần',
+                                                'badge-phoenix-info',
+                                                'dollar-sign',
                                             ],
-                                            'disputed' => ['Đang tranh chấp', 'badge-phoenix-dark', 'alert-triangle'],
+                                            'confirmed' => [
+                                                'Đã xác nhận thanh toán',
+                                                'badge-phoenix-primary',
+                                                'check-circle',
+                                            ],
+                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
+                                            'processing_refund' => ['Đang hoàn tiền', 'badge-phoenix-warning', 'clock'],
+                                            'failed' => ['Thanh toán không thành công', 'badge-phoenix-danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -195,23 +222,28 @@
                                     </span>
                                 </td>
                                 <td
-                                    class="fulfilment_status align-middle white-space-nowrap text-start fw-bold text-body-tertiary">
+                                    class="fulfilment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
                                     @php
                                         $orderStatusMap = [
-                                            'pending' => ['Đang chờ xử lý', 'badge-phoenix-warning', 'clock'],
-                                            'awaiting_payment' => ['Chờ thanh toán', 'badge-phoenix-info', 'clock'],
-                                            'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check'],
-                                            'processing' => ['Đang xử lý', 'badge-phoenix-secondary', 'refresh-cw'],
-                                            'shipping' => ['Đang vận chuyển', 'badge-phoenix-dark', 'truck'],
+                                            'pending' => ['Chờ xác nhận', 'badge-phoenix-warning', 'clock'],
+                                            'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check-circle'],
+                                            'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
+                                            'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
                                             'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
-                                            'returned' => ['Khách trả hàng', 'badge-phoenix-danger', 'corner-up-left'],
+                                            'returned' => ['Khách trả hàng', 'badge-phoenix-warning', 'corner-up-left'],
                                             'processing_return' => [
                                                 'Đang xử lý trả hàng',
                                                 'badge-phoenix-warning',
                                                 'refresh-cw',
                                             ],
+                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
+                                            'returned_refunded' => [
+                                                'Trả hàng / Hoàn tiền',
+                                                'badge-phoenix-danger',
+                                                'corner-up-left',
+                                            ],
+                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
                                             'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã huỷ', 'badge-phoenix-secondary', 'x'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [
                                             ucfirst($order->status),
@@ -225,17 +257,21 @@
                                             style="height:12.8px;width:12.8px;"></span>
                                     </span>
                                 </td>
-                                <td class="delivery_type align-middle white-space-nowrap text-body fs-9 text-start">
-                                    @if ($order->shipping)
-                                        {{ $order->shipping->shipping_provider }}
-                                        ({{ $order->shipping->tracking_code }})
+                                <td
+                                    class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 px-3">
+                                    @if ($order->shippingProvider)
+                                        <span
+                                            class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $order->shippingProvider->name }}</span>
                                     @else
-                                        Không có thông tin vận chuyển
+                                        <span class="badge bg-secondary-subtle text-secondary fw-semibold fs-9"
+                                            style="width: 100px;">Chưa
+                                            chọn</span>
                                     @endif
                                 </td>
-                                <td class="date align-middle white-space-nowrap text-body-tertiary fs-9 ps-4 text-end">
+                                <td
+                                    class="date align-middle text-center white-space-nowrap text-body-tertiary fs-9 px-3">
                                     {{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
+                                <td class="align-middle text-center white-space-nowrap px-3 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
                                         <button
                                             class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
@@ -246,30 +282,22 @@
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.orders.show', $order->id) }}">Chi tiết</a>
-                                            @if ($order->status == 'cancelled')
-                                                <a href="#" class="dropdown-item text-danger"
-                                                    onclick="event.preventDefault(); if(confirm('Bạn có chắc muốn xóa đơn hàng này?')) { document.getElementById('delete-order-{{ $order->id }}').submit(); }">Xóa
-                                                    đơn hàng</a>
-                                                <form id="delete-order-{{ $order->id }}"
-                                                    action="{{ route('admin.orders.destroy', $order->id) }}"
-                                                    method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            @endif
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center py-4">Không có đơn hàng nào</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
-                        {{ $orders->firstItem() }} đến {{ $orders->lastItem() }} <span class="text-body-tertiary">mục
-                            trong tổng số</span> {{ $orders->total() }}
+                        Tổng: {{ $orders->count() }} đơn hàng
                     </p>
                     <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
@@ -277,30 +305,12 @@
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                 </div>
                 <div class="col-auto d-flex">
-                    <nav>
-                    <ul class="mb-0 pagination">
-                            {{-- Phân trang Laravel custom giống Phoenix --}}
-                            @if ($orders->onFirstPage())
-                                <li class="page-item disabled"><span class="page-link"><span
-                                            class="fas fa-chevron-left"></span></span></li>
-                            @else
-                                <li class="page-item"><a class="page-link"
-                                        href="{{ $orders->previousPageUrl() }}"><span
-                                            class="fas fa-chevron-left"></span></a></li>
-                            @endif
-                            @foreach ($orders->getUrlRange(1, $orders->lastPage()) as $page => $url)
-                                <li class="page-item{{ $page == $orders->currentPage() ? ' active' : '' }}"><a
-                                        class="page-link" href="{{ $url }}">{{ $page }}</a></li>
-                            @endforeach
-                            @if ($orders->hasMorePages())
-                                <li class="page-item"><a class="page-link" href="{{ $orders->nextPageUrl() }}"><span
-                                            class="fas fa-chevron-right"></span></a></li>
-                            @else
-                                <li class="page-item disabled"><span class="page-link"><span
-                                            class="fas fa-chevron-right"></span></span></li>
-                            @endif
-                        </ul>
-                    </nav>
+                    <button class="page-link" data-list-pagination="prev"><span
+                            class="fas fa-chevron-left"></span></button>
+                    <ul class="mb-0 pagination"></ul>
+                    <button class="page-link pe-0" data-list-pagination="next">
+                        <span class="fas fa-chevron-right"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -308,36 +318,3 @@
 </div>
 
 @endsection
-
-@push('scripts')
-<script>
-    let timer = null;
-    const input = document.getElementById('order-search-input');
-    const form = document.getElementById('order-search-form');
-    input.addEventListener('input', function() {
-        clearTimeout(timer);
-        timer = setTimeout(function() {
-            const params = new URLSearchParams(new FormData(form)).toString();
-            fetch(form.action + '?' + params, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.text())
-                .then(html => {
-                    // Tìm tbody mới trong response
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newTbody = doc.querySelector('#order-table-body');
-                    const newInfo = doc.querySelector('[data-list-info]');
-                    if (newTbody) {
-                        document.getElementById('order-table-body').innerHTML = newTbody.innerHTML;
-                    }
-                    if (newInfo) {
-                        document.querySelector('[data-list-info]').innerHTML = newInfo.innerHTML;
-                    }
-                });
-        }, 400);
-    });
-</script>
-@endpush
