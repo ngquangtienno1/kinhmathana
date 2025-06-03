@@ -313,7 +313,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         ->name('admin.notifications.dropdown')
         ->middleware(['auth', 'checkAdmin']);
     //Notifications
-    Route::prefix('notifications')->name('notifications.')->group(function () {
+    Route::prefix('notifications')->name('notifications.')->middleware(['permission:xem-danh-sach-thong-bao'])->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
         Route::post('/{id}/mark-as-unread', [NotificationController::class, 'markAsUnread'])->name('mark-as-unread');

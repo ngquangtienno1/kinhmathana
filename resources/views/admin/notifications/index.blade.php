@@ -3,160 +3,176 @@
 @section('content')
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Thông báo</a>
+        <a href="{{ route('admin.notifications.index') }}">Thông báo</a>
     </li>
-    <li class="breadcrumb-item active">Danh sách thông báo</li>
+    <li class="breadcrumb-item active">Danh sách Thông báo</li>
 @endsection
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Thông báo</h2>
-    <div class="d-flex gap-2">
-        <button type="button" class="btn btn-primary btn-sm" id="markAllAsRead">
-            Đánh dấu tất cả đã đọc
-        </button>
-
-        @if (app()->environment('local', 'development'))
-            <div class="dropdown">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    Test Thông báo
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ route('admin.notifications.test.new-order') }}">Test Đơn hàng
-                            mới</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.notifications.test.order-status') }}">Test Cập
-                            nhật trạng thái</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.notifications.test.stock-alert') }}">Test Cảnh
-                            báo kho</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.notifications.test.promotion') }}">Test Khuyến
-                            mãi mới</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.notifications.test.order-cancelled') }}">Test Hủy
-                            đơn hàng</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.notifications.test.monthly-report') }}">Test Báo
-                            cáo tháng</a></li>
-                </ul>
-            </div>
-        @endif
-    </div>
-</div>
-
-{{-- Bộ lọc loại thông báo dạng dropdown --}}
-<div class="mb-3">
-    <div class="dropdown">
-        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="notificationTypeDropdown"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            {{ $type == 'all'
-                ? 'Tất cả'
-                : [
-                        'order_new' => 'Đơn hàng mới',
-                        'order_status' => 'Trạng thái đơn hàng',
-                        'stock_alert' => 'Cảnh báo kho',
-                        'promotion' => 'Khuyến mãi',
-                        'order_cancelled' => 'Đơn hàng bị huỷ',
-                        'monthly_report' => 'Báo cáo tháng',
-                        'slider' => 'Slider',
-                    ][$type] ?? $type }}
-            @if ($type == 'all')
-                ({{ $totalCount }})
-            @elseif(isset($typeCounts[$type]))
-                ({{ $typeCounts[$type] }})
-            @endif
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="notificationTypeDropdown">
-            <li>
-                <a class="dropdown-item {{ $type == 'all' ? 'active' : '' }}"
-                    href="{{ route('admin.notifications.index', ['type' => 'all']) }}">
-                    Tất cả ({{ $totalCount }})
-                </a>
-            </li>
-            @foreach ($typeCounts as $t => $count)
-                <li>
-                    <a class="dropdown-item {{ $type == $t ? 'active' : '' }}"
-                        href="{{ route('admin.notifications.index', ['type' => $t]) }}">
-                        {{ [
-                            'order_new' => 'Đơn hàng mới',
-                            'order_status' => 'Trạng thái đơn hàng',
-                            'stock_alert' => 'Cảnh báo kho',
-                            'promotion' => 'Khuyến mãi',
-                            'order_cancelled' => 'Đơn hàng bị huỷ',
-                            'monthly_report' => 'Báo cáo tháng',
-                            'slider' => 'Slider',
-                        ][$t] ?? $t }}
-                        ({{ $count }})
-                    </a>
-                </li>
-            @endforeach
-        </ul>
-    </div>
-</div>
-
-@forelse($notifications as $notification)
-    <div class="d-flex align-items-center justify-content-between py-3 px-lg-6 px-4 notification-card border-top {{ $notification->is_read ? 'read' : 'unread' }}"
-        data-notification-id="{{ $notification->id }}">
-        <div class="d-flex position-relative">
-            <div class="avatar avatar-xl me-3 position-relative">
-                @if (!$notification->is_read)
-                    <span class="unread-dot"></span>
-                @endif
-                <span class="avatar-name rounded-circle bg-warning d-flex align-items-center justify-content-center"
-                    style="width:48px;height:48px;font-size:28px;">🔔</span>
-            </div>
-            <div class="me-3 flex-1 mt-2">
-                <h4 class="fs-9 text-body-emphasis">{{ $notification->title }}</h4>
-                <p class="fs-9 text-body-highlight">
-                    {!! $notification->content !!}
-                    <span class="ms-2 text-body-tertiary text-opacity-85 fw-bold fs-10">
-                        {{ $notification->created_at ? $notification->created_at->diffForHumans() : '' }}
-                    </span>
-                </p>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button
-                class="btn fs-10 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle"
-                type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                aria-expanded="false" data-bs-reference="parent">
-                <span class="fas fa-ellipsis-h fs-10 text-body"></span>
+<div class="mb-9">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Danh sách Thông báo</h2>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm" id="markAllAsRead">
+                Đánh dấu tất cả đã đọc
             </button>
-            <div class="dropdown-menu dropdown-menu-end py-2">
-                @if (!$notification->is_read)
-                    <a class="dropdown-item mark-as-read" href="#">Đánh dấu đã đọc</a>
-                @else
-                    <a class="dropdown-item mark-as-unread" href="#">Đánh dấu là chưa đọc</a>
-                @endif
+
+            @if (app()->environment('local', 'development'))
+                <div class="dropdown">
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Test Thông báo
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('admin.notifications.test.new-order') }}">Test Đơn
+                                hàng
+                                mới</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin.notifications.test.order-status') }}">Test
+                                Cập
+                                nhật trạng thái</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin.notifications.test.stock-alert') }}">Test
+                                Cảnh
+                                báo kho</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin.notifications.test.promotion') }}">Test
+                                Khuyến
+                                mãi mới</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin.notifications.test.order-cancelled') }}">Test
+                                Hủy
+                                đơn hàng</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin.notifications.test.monthly-report') }}">Test
+                                Báo
+                                cáo tháng</a></li>
+                    </ul>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Bộ lọc loại thông báo dạng dropdown --}}
+    <div class="mb-4">
+        <div class="row g-3 align-items-center">
+            <div class="col">
+                <div class="d-flex align-items-center gap-0">
+                    <div class="btn-group position-static text-nowrap" role="group">
+                        <button class="btn btn-phoenix-secondary px-7 py-2 border-end" type="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-bs-reference="parent" style="border-radius: 8px 0 0 8px; height: 40px;">
+                            Loại thông báo <span class="fas fa-angle-down ms-2"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item {{ $type == 'all' ? 'active' : '' }}"
+                                    href="{{ route('admin.notifications.index', ['type' => 'all']) }}">
+                                    Tất cả ({{ $totalCount }})
+                                </a>
+                            </li>
+                            @foreach ($typeCounts as $t => $count)
+                                <li>
+                                    <a class="dropdown-item {{ $type == $t ? 'active' : '' }}"
+                                        href="{{ route('admin.notifications.index', ['type' => $t]) }}">
+                                        {{ [
+                                            'order_new' => 'Đơn hàng mới',
+                                            'order_status' => 'Trạng thái đơn hàng',
+                                            'stock_alert' => 'Cảnh báo kho',
+                                            'promotion' => 'Khuyến mãi',
+                                            'order_cancelled' => 'Đơn hàng bị huỷ',
+                                            'monthly_report' => 'Báo cáo tháng',
+                                            'slider' => 'Slider',
+                                            'product' => 'Sản phẩm mới',
+                                        ][$t] ?? $t }}
+                                        ({{ $count }})
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-@empty
-    <div class="text-center py-5">
-        <p class="text-muted">Không có thông báo nào</p>
+
+    <div
+        class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+        <div class="table-responsive scrollbar mx-n1 px-1">
+            <table class="table fs-9 mb-0">
+                <thead>
+                    <tr>
+                        <th class="align-middle text-center" style="width:40px;">STT</th>
+                        <th class="align-middle text-center" style="width:56px;">&nbsp;</th>
+                        <th class="align-middle">Tiêu đề</th>
+                        <th class="align-middle">Nội dung</th>
+                        <th class="align-middle">Loại</th>
+                        <th class="align-middle">Thời gian</th>
+                        <th class="align-middle">Trạng thái</th>
+                        <th class="align-middle text-end" style="width:80px;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($notifications as $i => $notification)
+                        <tr class="notification-card {{ $notification->is_read ? 'read' : 'unread' }}"
+                            data-notification-id="{{ $notification->id }}">
+                            <td class="align-middle text-center">{{ $i + 1 }}</td>
+                            <td class="align-middle text-center">
+                                <span
+                                    class="avatar-name rounded-circle bg-warning d-flex align-items-center justify-content-center position-relative"
+                                    style="width:38px;height:38px;font-size:20px;">
+                                    🔔
+                                    @if (!$notification->is_read)
+                                        <span class="unread-dot"
+                                            style="position:absolute;left:-4px;top:-4px;width:12px;height:12px;background:#0866ff;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px #888888;z-index:2;"></span>
+                                    @endif
+                                </span>
+                            </td>
+                            <td class="align-middle fw-semibold">{{ $notification->title }}</td>
+                            <td class="align-middle">{!! Str::limit(strip_tags($notification->content), 60) !!}</td>
+                            <td class="align-middle">
+                                {{ [
+                                    'order_new' => 'Đơn hàng mới',
+                                    'order_status' => 'Trạng thái đơn hàng',
+                                    'stock_alert' => 'Cảnh báo kho',
+                                    'promotion' => 'Khuyến mãi',
+                                    'order_cancelled' => 'Đơn hàng bị huỷ',
+                                    'monthly_report' => 'Báo cáo tháng',
+                                    'slider' => 'Slider',
+                                ][$notification->type] ?? $notification->type }}
+                            </td>
+                            <td class="align-middle">
+                                {{ $notification->created_at ? $notification->created_at->format('d/m/Y H:i') : '' }}
+                            </td>
+                            <td class="align-middle">
+                                @if (!$notification->is_read)
+                                    <span class="badge bg-warning text-dark">Chưa đọc</span>
+                                @else
+                                    <span class="badge bg-success">Đã đọc</span>
+                                @endif
+                            </td>
+                            <td class="align-middle text-end">
+                                <div class="dropdown">
+                                    <button
+                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                        aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                        <span class="fas fa-ellipsis-h fs-10"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end py-2">
+                                        @if (!$notification->is_read)
+                                            <a class="dropdown-item mark-as-read" href="#">Đánh dấu đã đọc</a>
+                                        @else
+                                            <a class="dropdown-item mark-as-unread" href="#">Đánh dấu là chưa
+                                                đọc</a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-4">Không có thông báo nào</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-@endforelse
-
-@push('styles')
-    <style>
-        .notification-card.unread {
-            background-color: #e9ecef !important;
-        }
-
-        .notification-card.read {
-            background-color: #fff;
-            transition: background 0.3s;
-        }
-
-        .unread-dot {
-            position: absolute;
-            left: -2px;
-            top: -2px;
-            width: 15px;
-            height: 15px;
-            background: #0866ff;
-            border-radius: 50%;
-            border: 2.5px solid #fff;
-            box-shadow: 0 0 0 2px #888888;
-            z-index: 2;
-        }
-    </style>
-@endpush
+</div>
 
 @push('scripts')
     <script>
@@ -173,8 +189,12 @@
                     method: 'POST',
                     success: function() {
                         $('.notification-card').removeClass('unread').addClass('read');
-                        $('.mark-as-read').parent().remove();
-                        $('.unread-dot').remove();
+                        $('.notification-card .badge').removeClass('bg-warning text-dark')
+                            .addClass('bg-success').text('Đã đọc');
+                        $('.notification-card .unread-dot').remove();
+                        $('.notification-card .dropdown-menu').html(
+                            '<a class="dropdown-item mark-as-unread" href="#">Đánh dấu là chưa đọc</a>'
+                        );
                     }
                 });
             });
@@ -188,8 +208,9 @@
                     method: 'POST',
                     success: function() {
                         card.removeClass('unread').addClass('read');
+                        card.find('.badge').removeClass('bg-warning text-dark').addClass(
+                            'bg-success').text('Đã đọc');
                         card.find('.unread-dot').remove();
-                        // Thay thế dropdown thành nút mark-as-unread
                         card.find('.dropdown-menu').html(
                             '<a class="dropdown-item mark-as-unread" href="#">Đánh dấu là chưa đọc</a>'
                         );
@@ -206,13 +227,17 @@
                     method: 'POST',
                     success: function() {
                         card.removeClass('read').addClass('unread');
-                        // Thay thế dropdown thành nút mark-as-read
+                        card.find('.badge').removeClass('bg-success').addClass(
+                            'bg-warning text-dark').text('Chưa đọc');
+                        // Thêm lại chấm xanh nếu chưa có
+                        if (card.find('.unread-dot').length === 0) {
+                            card.find('.avatar-name').append(
+                                '<span class="unread-dot" style="position:absolute;left:-4px;top:-4px;width:12px;height:12px;background:#0866ff;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px #888888;z-index:2;"></span>'
+                            );
+                        }
                         card.find('.dropdown-menu').html(
                             '<a class="dropdown-item mark-as-read" href="#">Đánh dấu đã đọc</a>'
                         );
-                        if (card.find('.unread-dot').length === 0) {
-                            card.find('.avatar').prepend('<span class="unread-dot"></span>');
-                        }
                     }
                 });
             });

@@ -361,6 +361,10 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xóa hỗ trợ khách hàng', 'slug' => 'xoa-ho-tro-khach-hang', 'description' => 'Cho phép xóa hỗ trợ khách hàng'],
             ['name' => 'Khôi phục hỗ trợ khách hàng', 'slug' => 'khoi-phuc-ho-tro-khach-hang', 'description' => 'Cho phép khôi phục hỗ trợ khách hàng đã xóa'],
             ['name' => 'Xóa vĩnh viễn hỗ trợ khách hàng', 'slug' => 'xoa-vinh-vien-ho-tro-khach-hang', 'description' => 'Cho phép xóa vĩnh viễn hỗ trợ khách hàng'],
+
+            // Quản lý thông báo
+            ['name' => 'Xem danh sách thông báo', 'slug' => 'xem-danh-sach-thong-bao', 'description' => 'Cho phép xem danh sách thông báo'],
+            ['name' => 'Thêm thông báo', 'slug' => 'them-thong-bao', 'description' => 'Cho phép thêm thông báo'],
         ];
 
         // Thêm timestamps cho mỗi permission
