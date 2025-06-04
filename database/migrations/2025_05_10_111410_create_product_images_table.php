@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->string('image_path');
-            $table->boolean('is_featured')->default(false); 
+            $table->boolean('is_featured')->default(false);
+            $table->boolean('is_video')->default(false);
             $table->timestamps();
         });
     }

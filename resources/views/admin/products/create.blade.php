@@ -161,7 +161,16 @@
                                                             <option value="size"
                                                                 {{ isset($attribute['type']) && $attribute['type'] == 'size' ? 'selected' : '' }}>
                                                                 Kích thước</option>
+                                                            <option value="spherical"
+                                                                {{ isset($attribute['type']) && $attribute['type'] == 'spherical' ? 'selected' : '' }}>
+                                                                Độ cận</option>
+                                                            <option value="cylindrical"
+                                                                {{ isset($attribute['type']) && $attribute['type'] == 'cylindrical' ? 'selected' : '' }}>
+                                                                Độ loạn</option>
                                                         </select>
+                                                        @error("attributes.$index.type")
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="attribute-values-tags">
@@ -178,36 +187,67 @@
                                                                 @endforeach
                                                             @endif
                                                         </div>
-                                                        <div class="border rounded p-3"
+                                                        <div class="border rounded p-3 attribute-values-container"
                                                             style="max-height: 200px; overflow-y: auto;">
-                                                            @if (isset($attribute['type']) && $attribute['type'] == 'color')
-                                                                @foreach ($colors as $color)
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input attribute-value-checkbox"
-                                                                            name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $color->name }}"
-                                                                            data-index="{{ $index }}"
-                                                                            {{ in_array($color->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
-                                                                        <label
-                                                                            class="form-check-label">{{ $color->name }}</label>
-                                                                    </div>
-                                                                @endforeach
-                                                            @elseif (isset($attribute['type']) && $attribute['type'] == 'size')
-                                                                @foreach ($sizes as $size)
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input attribute-value-checkbox"
-                                                                            name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $size->name }}"
-                                                                            data-index="{{ $index }}"
-                                                                            {{ in_array($size->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
-                                                                        <label
-                                                                            class="form-check-label">{{ $size->name }}</label>
-                                                                    </div>
-                                                                @endforeach
+                                                            @if (isset($attribute['type']))
+                                                                @if ($attribute['type'] == 'color')
+                                                                    @foreach ($colors as $color)
+                                                                        <div class="form-check">
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input attribute-value-checkbox"
+                                                                                name="attributes[{{ $index }}][values][]"
+                                                                                value="{{ $color->name }}"
+                                                                                data-index="{{ $index }}"
+                                                                                {{ in_array($color->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                            <label
+                                                                                class="form-check-label">{{ $color->name }}</label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @elseif ($attribute['type'] == 'size')
+                                                                    @foreach ($sizes as $size)
+                                                                        <div class="form-check">
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input attribute-value-checkbox"
+                                                                                name="attributes[{{ $index }}][values][]"
+                                                                                value="{{ $size->name }}"
+                                                                                data-index="{{ $index }}"
+                                                                                {{ in_array($size->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                            <label
+                                                                                class="form-check-label">{{ $size->name }}</label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @elseif ($attribute['type'] == 'spherical')
+                                                                    @foreach ($spherical_values as $value)
+                                                                        <div class="form-check">
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input attribute-value-checkbox"
+                                                                                name="attributes[{{ $index }}][values][]"
+                                                                                value="{{ $value }}"
+                                                                                data-index="{{ $index }}"
+                                                                                {{ in_array($value, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                            <label
+                                                                                class="form-check-label">{{ $value }}</label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @elseif ($attribute['type'] == 'cylindrical')
+                                                                    @foreach ($cylindrical_values as $value)
+                                                                        <div class="form-check">
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input attribute-value-checkbox"
+                                                                                name="attributes[{{ $index }}][values][]"
+                                                                                value="{{ $value }}"
+                                                                                data-index="{{ $index }}"
+                                                                                {{ in_array($value, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                            <label
+                                                                                class="form-check-label">{{ $value }}</label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endif
                                                             @endif
                                                         </div>
+                                                        @error("attributes.$index.values")
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                     <div class="col-md-2">
                                                         <button type="button"
@@ -227,13 +267,19 @@
                                             <div class="variation-row row g-2 mb-2">
                                                 <div class="col-md-2">
                                                     <input type="text" name="variations[{{ $index }}][name]"
-                                                        value="{{ $variation['name'] }}" class="form-control"
+                                                        value="{{ $variation['name'] ?? '' }}" class="form-control"
                                                         placeholder="Tên biến thể" readonly>
+                                                    @error("variations.$index.name")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" name="variations[{{ $index }}][sku]"
-                                                        value="{{ $variation['sku'] }}" class="form-control"
+                                                        value="{{ $variation['sku'] ?? '' }}" class="form-control"
                                                         placeholder="Mã sản phẩm">
+                                                    @error("variations.$index.sku")
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2">
                                                     <input type="text" class="form-control price-input"
@@ -267,13 +313,13 @@
                                                     <select name="variations[{{ $index }}][status]"
                                                         class="form-select variation-status">
                                                         <option value="in_stock"
-                                                            {{ $variation['status'] ?? 'in_stock' == 'in_stock' ? 'selected' : '' }}>
+                                                            {{ ($variation['status'] ?? 'in_stock') == 'in_stock' ? 'selected' : '' }}>
                                                             Còn hàng</option>
                                                         <option value="out_of_stock"
-                                                            {{ $variation['status'] ?? 'in_stock' == 'out_of_stock' ? 'selected' : '' }}>
+                                                            {{ ($variation['status'] ?? 'in_stock') == 'out_of_stock' ? 'selected' : '' }}>
                                                             Hết hàng</option>
                                                         <option value="hidden"
-                                                            {{ $variation['status'] ?? 'in_stock' == 'hidden' ? 'selected' : '' }}>
+                                                            {{ ($variation['status'] ?? 'in_stock') == 'hidden' ? 'selected' : '' }}>
                                                             Ẩn</option>
                                                     </select>
                                                     @error("variations.$index.status")
@@ -293,6 +339,20 @@
                                                     <button type="button"
                                                         class="btn btn-danger btn-sm remove-variation">Xóa</button>
                                                 </div>
+                                                @if (isset($variation['spherical']))
+                                                    <div class="col-md-2">
+                                                        <input type="hidden"
+                                                            name="variations[{{ $index }}][spherical]"
+                                                            value="{{ $variation['spherical'] ?? '' }}">
+                                                    </div>
+                                                @endif
+                                                @if (isset($variation['cylindrical']))
+                                                    <div class="col-md-2">
+                                                        <input type="hidden"
+                                                            name="variations[{{ $index }}][cylindrical]"
+                                                            value="{{ $variation['cylindrical'] ?? '' }}">
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>
@@ -405,6 +465,8 @@
     <script>
         window.colors = @json($colors->pluck('name')); // Lấy danh sách tên màu sắc
         window.sizes = @json($sizes->pluck('name')); // Lấy danh sách tên kích thước
+        window.spherical_values = @json($spherical_values); // Lấy danh sách độ cận
+        window.cylindrical_values = @json($cylindrical_values); // Lấy danh sách độ loạn
     </script>
     @vite(['resources/js/admin/products.js'])
 @endsection

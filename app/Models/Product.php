@@ -54,6 +54,18 @@ class Product extends Model
         return $this->variations->sum('stock_quantity') ?? $this->stock_quantity ?? 0;
     }
 
+    public function getFeaturedMedia()
+    {
+        $featured = $this->images()->where('is_featured', true)->first();
+        if ($featured) {
+            return (object) [
+                'path' => Storage::url($featured->image_path),
+                'is_video' => $featured->is_video,
+            ];
+        }
+        return null;
+    }
+
     protected static function booted()
     {
         static::deleting(function ($product) {

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('status', 50)->nullable()->default('in_stock');
             $table->foreignId('color_id')->nullable()->constrained('colors')->onDelete('set null');
             $table->foreignId('size_id')->nullable()->constrained('sizes')->onDelete('set null');
+            $table->decimal('spherical', 4, 2)->nullable(); // Độ cận: -0.50 đến -8.00
+            $table->decimal('cylindrical', 4, 2)->nullable(); // Độ loạn: -0.25 đến -4.00
             $table->timestamps();
             $table->softDeletes();
         });
