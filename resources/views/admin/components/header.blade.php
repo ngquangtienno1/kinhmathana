@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="card-body p-0">
-                            <div class="scrollbar-overlay" style="max-height: 27rem;"
+                            <div class="scrollbar-overlay" style="max-height: 27rem; padding-bottom: 3.5rem;"
                                 id="dropdown-notification-list">
                                 <div class="text-center py-4 text-muted">Đang tải...</div>
                             </div>
@@ -289,7 +289,7 @@
     </div>
 </nav>
 @push('styles')
-    <style>
+<style>
         .dropdown-notification-dot {
             position: absolute;
             left: -4px;
@@ -300,7 +300,7 @@
             border-radius: 50%;
             border: 2px solid #fff;
             z-index: 2;
-        }
+    }
 
         .dropdown-menu.dropdown-menu-end.py-2 {
             min-width: 180px !important;
@@ -310,7 +310,7 @@
             z-index: 9999;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
             text-align: left;
-        }
+    }
 
         .dropdown-item.dropdown-mark-as-read {
             white-space: nowrap;
@@ -318,11 +318,11 @@
             padding: 8px 18px;
             text-align: left !important;
             direction: ltr;
-        }
-    </style>
+    }
+</style>
 @endpush
 @push('scripts')
-    <script>
+<script>
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -356,8 +356,8 @@
                                                                                                 </button>
                                                                                                 <div class="dropdown-menu dropdown-menu-end py-2" style="min-width:180px;z-index:9999;left:auto;right:0;text-align:left;">
                                                                                                     <a class="dropdown-item dropdown-mark-as-read" href="#">Đánh dấu đã đọc</a>
-                                                                                                </div>
-                                                                                            </div>
+                                            </div>
+                                                    </div>
                                                                                             ` : ''}
                         </div>`;
                     });
@@ -392,7 +392,7 @@
                                     $('#notification-badge').hide();
                                 }
                             });
-                        }
+                            }
                     });
                 });
             }
@@ -412,8 +412,8 @@
                     $('#notification-badge').show().text(data.unreadCount);
                 } else {
                     $('#notification-badge').hide();
-                }
+        }
             });
-        });
-    </script>
+    });
+</script>
 @endpush
