@@ -212,9 +212,6 @@ class UserController extends Controller
         if ($request->filled('address')) {
             $rules['address'] = 'nullable|string|max:255';
         }
-        if ($request->filled('password')) {
-            $rules['password'] = 'required|string|min:8|confirmed';
-        }
         if ($request->hasFile('avatar')) {
             $rules['avatar'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
         }
@@ -238,14 +235,51 @@ class UserController extends Controller
             $validated['avatar'] = 'uploads/avatars/' . $avatarName;
         }
 
-        // Xử lý cập nhật mật khẩu nếu có
-        if ($request->filled('password')) {
-            $validated['password'] = Hash::make($request->password);
-        }
-
         // Cập nhật thông tin người dùng
         $user->update($validated);
 
         return redirect()->route('admin.users.profile')->with('success', 'Cập nhật thông tin thành công');
+    }
+
+    /**
+     * Xác thực mật khẩu hiện tại
+     */
+    public function verifyPassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string'
+        ]);
+
+        $user = Auth::user();
+        if (Hash::check($request->current_password, $user->password)) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false], 422);
+    }
+
+    /**
+     * Cập nhật mật khẩu mới
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed'
+        ]);
+
+        $user = Auth::user();
+
+        // Kiểm tra mật khẩu hiện tại
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng']);
+        }
+
+        // Cập nhật mật khẩu mới
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('admin.users.profile')
+            ->with('success', 'Mật khẩu đã được cập nhật thành công');
     }
 }

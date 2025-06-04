@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="card-body p-0">
-                            <div class="scrollbar-overlay" style="max-height: 27rem; padding-bottom: 3.5rem;"
+                            <div class="scrollbar-overlay" style="max-height: 27rem; padding-bottom: 2rem;"
                                 id="dropdown-notification-list">
                                 <div class="text-center py-4 text-muted">Đang tải...</div>
                             </div>

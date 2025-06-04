@@ -139,14 +139,12 @@
                                     @if ($disableStatus)
                                         <input type="hidden" name="status_user" value="{{ $user->status_user }}">
                                         <div class="form-text text-danger">
-                                            @if ($isStaff && $isEditingAdmin)
+                                            @if ($isEditingSelf)
+                                                Bạn không được phép thay đổi trạng thái hoạt động của chính mình.
+                                            @elseif ($isStaff && $isEditingAdmin)
                                                 Nhân viên không được phép thay đổi trạng thái hoạt động của tài khoản Admin.
                                             @elseif ($isStaff && $isEditingStaff)
-                                                Nhân viên không được phép thay đổi trạng thái hoạt động của tài khoản Nhân
-                                                viên
-                                                khác.
-                                            @else
-                                                Bạn không thể tự khoá tài khoản của mình.
+                                                Nhân viên không được phép thay đổi trạng thái hoạt động của tài khoản Nhân viên khác.
                                             @endif
                                         </div>
                                     @endif

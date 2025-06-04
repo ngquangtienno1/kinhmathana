@@ -156,7 +156,9 @@
                                         {{ $user->created_at->format('M d, h:i A') }}
                                     </td>
                                     <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
-                                        @if ($user->role_id == 1 || $user->role_id == 2)
+                                        @if (($user->role_id == 1 || $user->role_id == 2) && 
+                                            (auth()->user()->role_id == 1 || 
+                                            (auth()->user()->role_id == 2 && $user->id == auth()->id())))
                                             <div class="btn-reveal-trigger position-static">
                                                 <button
                                                     class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"

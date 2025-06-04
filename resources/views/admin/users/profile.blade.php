@@ -55,12 +55,18 @@
                     <div class="card-header d-flex justify-content-between align-items-center bg-body-emphasis border-0">
                         <h5 class="card-title text-body-emphasis mb-0"><span class="fas fa-user me-2"></span>Thông tin cá
                             nhân</h5>
-                        @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
-                            <button type="button" class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#editProfileModal">
-                                <i class="fas fa-edit me-1"></i> Chỉnh sửa
-                            </button>
-                        @endif
+                        <div>
+                            @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
+                                <button type="button" class="btn btn-phoenix-primary btn-sm me-2" data-bs-toggle="modal"
+                                    data-bs-target="#editProfileModal">
+                                    <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                                </button>
+                                <button type="button" class="btn btn-phoenix-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#changePasswordModal">
+                                    <i class="fas fa-key me-1"></i> Đổi mật khẩu
+                                </button>
+                            @endif
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
@@ -260,18 +266,54 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
-                                <label for="password" class="form-label"><span class="fas fa-lock me-1"></span>Mật khẩu
-                                    mới</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-phoenix-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-phoenix-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{{ route('admin.users.updatePassword') }}" method="POST" id="changePasswordForm">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Đổi mật khẩu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">
+                                <span class="fas fa-lock me-1"></span>Mật khẩu hiện tại
+                            </label>
+                            <input type="password" class="form-control @error('current_password') is-invalid @enderror"
+                                id="current_password" name="current_password" required>
+                            @error('current_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3" id="newPasswordFields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <span class="fas fa-lock me-1"></span>Mật khẩu mới
+                                </label>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                    id="password" name="password" autocomplete="new-password">
+                                    id="password" name="password">
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
-                                <label for="password_confirmation" class="form-label"><span
-                                        class="fas fa-lock me-1"></span>Xác nhận mật khẩu</label>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label">
+                                    <span class="fas fa-lock me-1"></span>Xác nhận mật khẩu mới
+                                </label>
                                 <input type="password" class="form-control" id="password_confirmation"
                                     name="password_confirmation">
                             </div>
@@ -279,7 +321,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-phoenix-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-phoenix-primary">Lưu thay đổi</button>
+                        <button type="button" class="btn btn-phoenix-primary" id="verifyCurrentPassword">Xác nhận</button>
+                        <button type="submit" class="btn btn-phoenix-primary" id="submitNewPassword" style="display: none;">Lưu mật khẩu mới</button>
                     </div>
                 </form>
             </div>
@@ -332,21 +375,6 @@
         .btn-phoenix-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
-            color: white;
-        }
-
-        .btn-phoenix-secondary {
-            background: linear-gradient(45deg, #6c757d, #5a6268);
-            border: none;
-            color: white;
-            border-radius: 8px;
-            padding: 0.5rem 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-phoenix-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
             color: white;
         }
 
@@ -493,6 +521,68 @@
                 }
                 reader.readAsDataURL(file);
             }
+        });
+
+        // Handle password change
+        document.getElementById('verifyCurrentPassword').addEventListener('click', function() {
+            const currentPassword = document.getElementById('current_password').value;
+            const currentPasswordInput = document.getElementById('current_password');
+            
+            // Xóa thông báo lỗi cũ nếu có
+            currentPasswordInput.classList.remove('is-invalid');
+            const oldFeedback = currentPasswordInput.parentNode.querySelector('.invalid-feedback');
+            if (oldFeedback) {
+                oldFeedback.remove();
+            }
+            
+            // Gửi request kiểm tra mật khẩu hiện tại
+            fetch('{{ route("admin.users.verifyPassword") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    current_password: currentPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hiển thị form nhập mật khẩu mới
+                    document.getElementById('newPasswordFields').style.display = 'block';
+                    currentPasswordInput.readOnly = true;
+                    document.getElementById('verifyCurrentPassword').style.display = 'none';
+                    document.getElementById('submitNewPassword').style.display = 'block';
+                } else {
+                    // Hiển thị lỗi
+                    const feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback d-block';
+                    feedback.textContent = 'Mật khẩu hiện tại không đúng';
+                    currentPasswordInput.classList.add('is-invalid');
+                    currentPasswordInput.parentNode.appendChild(feedback);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Reset form when modal is closed
+        document.getElementById('changePasswordModal').addEventListener('hidden.bs.modal', function () {
+            const form = document.getElementById('changePasswordForm');
+            const currentPasswordInput = document.getElementById('current_password');
+            
+            form.reset();
+            document.getElementById('newPasswordFields').style.display = 'none';
+            currentPasswordInput.readOnly = false;
+            document.getElementById('verifyCurrentPassword').style.display = 'block';
+            document.getElementById('submitNewPassword').style.display = 'none';
+            
+            // Xóa tất cả thông báo lỗi
+            currentPasswordInput.classList.remove('is-invalid');
+            const feedbacks = form.querySelectorAll('.invalid-feedback');
+            feedbacks.forEach(feedback => feedback.remove());
         });
     </script>
 @endpush

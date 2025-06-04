@@ -534,4 +534,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     // User profile routes
     Route::get('/profile/{id?}', [UserController::class, 'profile'])->name('users.profile');
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('users.updateProfile');
+    Route::post('/verify-password', [UserController::class, 'verifyPassword'])->name('users.verifyPassword');
+    Route::put('/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
 });
