@@ -14,7 +14,7 @@ class Product extends Model
     protected $fillable = [
         'name', 'description_short', 'description_long', 'product_type', 'sku',
         'stock_quantity', 'price', 'sale_price', 'slug', 'brand_id', 'status',
-        'is_featured', 'views',
+        'is_featured', 'views', 'video_path',
     ];
 
     protected $appends = ['total_stock_quantity'];

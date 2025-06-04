@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->string('status', 50)->nullable()->default('Hoạt động');
             $table->boolean('is_featured')->default(false);
             $table->integer('views')->default(0);
+            $table->string('video_path')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

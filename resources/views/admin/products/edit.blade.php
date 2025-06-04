@@ -29,7 +29,7 @@
                         <button class="nav-link" id="product-excerpt-tab" data-bs-toggle="tab" data-bs-target="#product-excerpt" type="button" role="tab" aria-controls="product-excerpt" aria-selected="false">Mô tả ngắn</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="product-images-tab" data-bs-toggle="tab" data-bs-target="#product-images" type="button" role="tab" aria-controls="product-images" aria-selected="false">Ảnh sản phẩm</button>
+                        <button class="nav-link" id="product-images-tab" data-bs-toggle="tab" data-bs-target="#product-images" type="button" role="tab" aria-controls="product-images" aria-selected="false">Ảnh/Video sản phẩm</button>
                     </li>
                 </ul>
             </div>
@@ -69,8 +69,8 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-12">
-                                    <label class="form-label">Mô tả chi tiết</label>
-                                    <textarea class="form-control" name="description_long">{{ old('description_long', $product->description_long) }}</textarea>
+                                    <label class="form-label">Mô tả chi tiết <span class="text-danger">*</span></label>
+                                    <textarea class="form-control @error('description_long') is-invalid @enderror" name="description_long" id="description_long">{{ old('description_long', $product->description_long) }}</textarea>
                                     @error('description_long')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -301,7 +301,7 @@
                             </div>
                         </div>
 
-                        <!-- Tab Ảnh sản phẩm -->
+                        <!-- Tab Ảnh/Video sản phẩm -->
                         <div class="tab-pane fade" id="product-images" role="tabpanel" aria-labelledby="product-images-tab">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -328,6 +328,22 @@
                                             <img src="{{ Storage::url($image->image_path) }}" alt="Gallery Image" style="max-width: 100px; margin-right: 10px; margin-bottom: 10px;">
                                         @endforeach
                                     </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Video sản phẩm</label>
+                                    <input type="file" class="form-control" name="video_path" accept="video/mp4,video/webm,video/ogg">
+                                    <small class="text-muted">Hỗ trợ định dạng: MP4, WebM, Ogg. Kích thước tối đa: 50MB</small>
+                                    @error('video_path')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                    @if ($product->video_path)
+                                        <div class="video-container mt-2">
+                                            <video class="product-video" controls style="max-width: 400px;">
+                                                <source src="{{ asset('storage/' . $product->video_path) }}" type="video/mp4">
+                                                Trình duyệt của bạn không hỗ trợ thẻ video.
+                                            </video>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -388,6 +404,18 @@
         }
         .attribute-values {
             margin-top: 5px;
+        }
+        /* Style cho CKEditor */
+        .ck-editor__editable {
+            min-height: 200px !important;
+            max-height: 400px !important;
+        }
+        .ck.ck-editor {
+            width: 100%;
+        }
+        .ck.ck-content {
+            font-size: 14px;
+            line-height: 1.5;
         }
     </style>
 
@@ -494,6 +522,17 @@
             });
         });
     </script>
+
+@push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description_long'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+@endpush
 
     @vite(['resources/js/admin/products.js'])
 @endsection
