@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\NewsCategoryController;
+use App\Http\Controllers\Admin\ContactController;
 
 // Redirect login
 Route::get('/', function () {
@@ -468,9 +469,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {
         // Danh sách và xem chi tiết
         Route::get('/', [TicketController::class, 'index'])->name('index');
-        Route::get('/{id}', [TicketController::class, 'show'])->name('show');
+        Route::delete('bulk-destroy', [TicketController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::patch('bulk-restore', [TicketController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('bulk-force-delete', [TicketController::class, 'bulkForceDelete'])->name('bulkForceDelete');
         Route::get('/trashed', [TicketController::class, 'trashed'])
             ->name('trashed')->middleware('permission:xem-thung-rac-ticket');
+        Route::get('/{id}', [TicketController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [TicketController::class, 'edit'])
             ->name('edit')->middleware('permission:sua-ticket');
         Route::put('/{id}', [TicketController::class, 'update'])
@@ -514,7 +518,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:cap-nhat-thong-tin-khach-hang']);
         Route::patch('/{customer}/type', [CustomerController::class, 'updateType'])->name('update-type')
             ->middleware(['permission:sua-loai-khach-hang']);
-        
     });
 
     // Global search route
@@ -542,4 +545,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('users.updateProfile');
     Route::post('/verify-password', [UserController::class, 'verifyPassword'])->name('users.verifyPassword');
     Route::put('/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
+
+    // Contact routes
+    Route::prefix('contacts')->name('contacts.')->group(function () {
+        Route::post('/bulk-destroy', [ContactController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [ContactController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::post('/bulk-force-delete', [ContactController::class, 'bulkForceDelete'])->name('bulkForceDelete');
+
+        // Basic routes
+        Route::get('/', [ContactController::class, 'index'])->name('index');
+        Route::get('/create', [ContactController::class, 'create'])->name('create');
+        Route::post('/', [ContactController::class, 'store'])->name('store');
+        Route::get('/bin', [ContactController::class, 'bin'])->name('bin');
+
+        // Contact specific routes
+        Route::get('/{contact}', [ContactController::class, 'show'])->name('show');
+        Route::get('/{contact}/edit', [ContactController::class, 'edit'])->name('edit');
+        Route::put('/{contact}', [ContactController::class, 'update'])->name('update');
+        Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
+        Route::post('/{contact}/restore', [ContactController::class, 'restore'])->name('restore');
+        Route::delete('/{contact}/force', [ContactController::class, 'forceDelete'])->name('forceDelete');
+        Route::get('/{contact}/reply', [ContactController::class, 'reply'])->name('reply');
+        Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('send-reply');
+    });
 });

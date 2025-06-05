@@ -62,7 +62,8 @@ class DatabaseSeeder extends Seeder
             CancellationReasonSeeder::class,
             ReviewSeeder::class, // Tạo đánh giá
             CustomerSupportSeeder::class, // Tạo hỗ trợ khách hàng
-
+            TicketSeeder::class, // Tạo ticket
+            ContactMessageSeeder::class,
         ]);
     }
 
