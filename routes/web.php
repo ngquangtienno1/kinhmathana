@@ -507,11 +507,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     // Customer Management
     Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');
+        // Customers Export Route
+        Route::get('export', [CustomerController::class, 'export'])->name('export');
         Route::get('/{customer}', [CustomerController::class, 'show'])->name('show');
         Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')
             ->middleware(['permission:cap-nhat-thong-tin-khach-hang']);
         Route::patch('/{customer}/type', [CustomerController::class, 'updateType'])->name('update-type')
             ->middleware(['permission:sua-loai-khach-hang']);
+        
     });
 
     // Global search route

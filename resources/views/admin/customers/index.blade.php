@@ -68,7 +68,7 @@
                 </div>
                 <!-- Export -->
                 <div class="col-auto d-flex align-items-center gap-2">
-                    <a href="#" class="btn btn-link text-body px-0 d-flex align-items-center"
+                    <a href="{{ route('admin.customers.export', request()->query()) }}" class="btn btn-link text-body px-0 d-flex align-items-center"
                         style="height: 40px;">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </a>

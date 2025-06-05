@@ -265,10 +265,17 @@
                             <input type="text" class="form-control" value="{{ $customer->user->phone }}"
                                 readonly>
                         </div>
+                        {{-- Địa chỉ mặc định - Chỉ đọc --}}
                         <div class="mb-3">
                             <label class="form-label">Địa chỉ mặc định</label>
-                            <textarea name="default_address" class="form-control" rows="3">{{ $customer->default_address }}</textarea>
+                            <textarea name="default_address" class="form-control" rows="3" readonly>{{ $customer->default_address }}</textarea>
                         </div>
+                    </form>
+                    
+                    {{-- Form cập nhật chỉ Loại khách hàng --}}
+                    <form action="{{ route('admin.customers.update', $customer) }}" method="POST">
+                        @csrf
+                        @method('PUT')
                         <div class="mb-3">
                             <label class="form-label">Loại khách hàng</label>
                             <select name="customer_type" class="form-select">
