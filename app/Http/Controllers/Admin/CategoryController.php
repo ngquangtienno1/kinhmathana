@@ -127,7 +127,7 @@ class CategoryController extends Controller
 
     public function bin()
     {
-        $categories = Category::onlyTrashed()->orderBy('id', 'desc')->paginate(10);
+        $categories = Category::onlyTrashed()->orderBy('id', 'desc')->get();
         return view('admin.categories.bin', compact('categories'));
     }
 
