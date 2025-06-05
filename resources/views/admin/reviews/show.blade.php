@@ -132,6 +132,35 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Admin Reply Section --}}
+                <div class="col-12">
+                    <div class="mb-4">
+                        <h4 class="mb-3">Trả lời đánh giá</h4>
+
+                        @if($review->reply)
+                            <div class="alert alert-secondary" role="alert">
+                                <strong>Admin đã trả lời:</strong>
+                                <p>{!! nl2br(e($review->reply)) !!}</p>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('admin.reviews.reply', $review->id) }}" method="POST">
+                            @csrf
+                            @method('PUT') {{-- Or PATCH --}}
+                            <div class="mb-3">
+                                <label for="adminReply" class="form-label">Nội dung trả lời:</label>
+                                <textarea class="form-control" id="adminReply" name="reply" rows="3">{{ old('reply', $review->reply) }}</textarea>
+                                @error('reply')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary">Gửi trả lời</button>
+                        </form>
+                    </div>
+                </div>
+                {{-- End Admin Reply Section --}}
+
             </div>
         </div>
     </div>
