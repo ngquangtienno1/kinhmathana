@@ -225,7 +225,20 @@
                                                                             class="form-check-label">{{ $size->name }}</label>
                                                                     </div>
                                                                 @endforeach
-                                                            @elseif ($attribute['type'] == 'spherical')
+                                                          @elseif ($attribute['type'] == 'spherical')
+                                                            @foreach ($sphericals as $spherical)
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $spherical->value }}" data-index="{{ $index }}" {{ in_array($spherical->value, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label">{{ $spherical->value }}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        @elseif ($attribute['type'] == 'cylindrical')
+                                                            @foreach ($cylindricals as $cylindrical)
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $cylindrical->value }}" data-index="{{ $index }}" {{ in_array($cylindrical->value, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label">{{ $cylindrical->value }}</label>
+                                                                </div>
+                                                            @endforeach
                                                                 @foreach ($spherical_values as $value)
                                                                     <div class="form-check">
                                                                         <input type="checkbox"
@@ -270,81 +283,57 @@
                                         style="{{ old('attributes') && count(old('attributes', [])) > 0 ? '' : 'display: none' }}">Tạo
                                         biến thể</button>
                                 </div>
-                                <div id="variations-container" class="mt-3"
-                                    style="{{ old('variations') && count(old('variations', [])) > 0 ? '' : 'display: none' }}">
+                                <div id="variations-container" class="mt-3" style="{{ old('variations') && count(old('variations', [])) > 0 ? '' : 'display: none' }}">
                                     @foreach (old('variations', []) as $index => $variation)
                                         <div class="variation-row row g-2 mb-2">
                                             <div class="col-md-2">
-                                                <input type="text" name="variations[{{ $index }}][name]"
-                                                    value="{{ $variation['name'] ?? '' }}" class="form-control"
-                                                    placeholder="Tên biến thể" readonly>
+                                                <input type="text" name="variations[{{ $index }}][name]" value="{{ $variation['name'] ?? '' }}" class="form-control" placeholder="Tên biến thể" readonly>
                                                 @error("variations.$index.name")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-2">
-                                                <input type="text" name="variations[{{ $index }}][sku]"
-                                                    value="{{ $variation['sku'] ?? '' }}" class="form-control"
-                                                    placeholder="Mã sản phẩm">
+                                                <input type="text" name="variations[{{ $index }}][sku]" value="{{ $variation['sku'] ?? '' }}" class="form-control" placeholder="Mã sản phẩm">
                                                 @error("variations.$index.sku")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control price-input"
-                                                    name="variations[{{ $index }}][price]"
-                                                    value="{{ $variation['price'] ?? '' }}"
-                                                    placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
+                                                <input type="text" class="form-control price-input" name="variations[{{ $index }}][price]" value="{{ $variation['price'] ?? '' }}" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
                                                 @error("variations.$index.price")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control price-input"
-                                                    name="variations[{{ $index }}][sale_price]"
-                                                    value="{{ $variation['sale_price'] ?? '' }}"
-                                                    placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
+                                                <input type="text" class="form-control price-input" name="variations[{{ $index }}][sale_price]" value="{{ $variation['sale_price'] ?? '' }}" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
                                                 @error("variations.$index.sale_price")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-1">
-                                                <input type="number"
-                                                    name="variations[{{ $index }}][stock_quantity]"
-                                                    value="{{ $variation['stock_quantity'] ?? 0 }}"
-                                                    class="form-control stock-quantity-input" placeholder="Tồn kho"
-                                                    min="0" required>
+                                                <input type="number" name="variations[{{ $index }}][stock_quantity]" value="{{ $variation['stock_quantity'] ?? 0 }}" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0" required>
                                                 @error("variations.$index.stock_quantity")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-1">
-                                                <select name="variations[{{ $index }}][status]"
-                                                    class="form-select variation-status">
-                                                    <option value="in_stock"
-                                                        {{ ($variation['status'] ?? 'in_stock') == 'in_stock' ? 'selected' : '' }}>
-                                                        Còn hàng</option>
-                                                    <option value="out_of_stock"
-                                                        {{ ($variation['status'] ?? 'in_stock') == 'out_of_stock' ? 'selected' : '' }}>
-                                                        Hết hàng</option>
-                                                    <option value="hidden"
-                                                        {{ ($variation['status'] ?? 'in_stock') == 'hidden' ? 'selected' : '' }}>
-                                                        Ẩn</option>
+                                                <select name="variations[{{ $index }}][status]" class="form-select variation-status">
+                                                    <option value="in_stock" {{ ($variation['status'] ?? 'in_stock') == 'in_stock' ? 'selected' : '' }}>Còn hàng</option>
+                                                    <option value="out_of_stock" {{ ($variation['status'] ?? 'in_stock') == 'out_of_stock' ? 'selected' : '' }}>Hết hàng</option>
+                                                    <option value="hidden" {{ ($variation['status'] ?? 'in_stock') == 'hidden' ? 'selected' : '' }}>Ẩn</option>
                                                 </select>
                                                 @error("variations.$index.status")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-1">
-                                                <input type="file" name="variations[{{ $index }}][image]"
-                                                    class="form-control variation-image-input">
+                                                <input type="file" name="variations[{{ $index }}][image]" class="form-control variation-image-input">
                                                 @error("variations.$index.image")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-1">
-                                                <button type="button"
-                                                    class="btn btn-danger btn-sm remove-variation">Xóa</button>
+                                                <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
                                             </div>
                                         </div>
                                     @endforeach
@@ -475,21 +464,18 @@
 @push('scripts')
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
-        ClassicEditor
-            .create(document.querySelector('#description_long'))
-            .catch(error => {
-                console.error(error);
-            });
-        window.colors = @json($colors->pluck('name')); // Lấy danh sách tên màu sắc
-        window.sizes = @json($sizes->pluck('name')); // Lấy danh sách tên kích thước
-        window.spherical_values = @json($spherical_values); // Lấy danh sách độ cận
-        window.cylindrical_values = @json($cylindrical_values); // Lấy danh sách độ loạn
-    </script>
-@endpush
-
-<script>
+    ClassicEditor
+        .create(document.querySelector('#description_long'))
+        .catch(error => {
+            console.error(error);
+        });
     window.colors = @json($colors->pluck('name')); // Lấy danh sách tên màu sắc
     window.sizes = @json($sizes->pluck('name')); // Lấy danh sách tên kích thước
+    window.spherical_values = @json($sphericals->pluck('value')); // Lấy danh sách độ cận
+    window.cylindrical_values = @json($cylindricals->pluck('value')); // Lấy danh sách độ loạn
 </script>
+@endpush
+
+
 @vite(['resources/js/admin/products.js'])
 @endsection

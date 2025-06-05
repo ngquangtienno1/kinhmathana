@@ -45,23 +45,25 @@
                     </li>
                 @endif
                 @if (canAccess('xem-danh-sach-san-pham') ||
-                        canAccess('xem-bien-the-san-pham') ||
-                        canAccess('xem-danh-sach-danh-muc') ||
-                        canAccess('xem-danh-sach-mau-sac') ||
-                        canAccess('xem-danh-sach-kich-thuoc'))
+                    canAccess('xem-bien-the-san-pham') ||
+                    canAccess('xem-danh-sach-danh-muc') ||
+                    canAccess('xem-danh-sach-mau-sac') ||
+                    canAccess('xem-danh-sach-kich-thuoc') ||
+                    canAccess('xem-do-can') ||
+                    canAccess('xem-do-loan'))
                     <!-- Product Management -->
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
-                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.variations.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'active' : '' }}"
+                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.variations.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') || request()->routeIs('admin.sphericals.*') || request()->routeIs('admin.cylindricals.*') ? 'active' : '' }}"
                                 href="#nv-products" role="button" data-bs-toggle="collapse"
                                 aria-expanded="{{ request()->is('admin/products*') ||
-                                request()->is('admin/variations*') ||
-                                request()->is('admin/categories*') ||
-                                request()->is('admin/brands*') ||
-                                request()->is('admin/colors*') ||
-                                request()->is('admin/sizes*')
-                                    ? 'true'
-                                    : 'false' }}"
+                                                request()->is('admin/variations*') ||
+                                                request()->is('admin/categories*') ||
+                                                request()->is('admin/brands*') ||
+                                                request()->is('admin/colors*') ||
+                                                request()->is('admin/sizes*') ||
+                                                request()->is('admin/sphericals*') ||
+                                                request()->is('admin/cylindricals*') ? 'true' : 'false' }}"
                                 aria-controls="nv-products">
                                 <div class="d-flex align-items-center">
                                     <div class="dropdown-indicator-icon-wrapper">
@@ -73,12 +75,12 @@
                             </a>
                             <div class="parent-wrapper label-1">
                                 <ul class="nav collapse parent {{ request()->is('admin/products*') ||
-                                request()->is('admin/variations*') ||
-                                request()->is('admin/categories*') ||
-                                request()->is('admin/colors*') ||
-                                request()->is('admin/sizes*')
-                                    ? 'show'
-                                    : '' }}"
+                                                                request()->is('admin/variations*') ||
+                                                                request()->is('admin/categories*') ||
+                                                                request()->is('admin/colors*') ||
+                                                                request()->is('admin/sizes*') ||
+                                                                request()->is('admin/sphericals*') ||
+                                                                request()->is('admin/cylindricals*') ? 'show' : '' }}"
                                     data-bs-parent="#navbarVerticalCollapse" id="nv-products">
 
                                     @if (canAccess('xem-danh-sach-san-pham'))
@@ -103,23 +105,22 @@
                                         </li>
                                     @endif
 
-                                    @if (canAccess('xem-mau-sac') || canAccess('xem-kich-thuoc'))
+                                    @if (canAccess('xem-mau-sac') || canAccess('xem-kich-thuoc') || canAccess('xem-do-can') || canAccess('xem-do-loan'))
                                         <li class="nav-item">
                                             <div class="nav-item-wrapper">
-                                                <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'active' : '' }}"
+                                                <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') || request()->routeIs('admin.sphericals.*') || request()->routeIs('admin.cylindricals.*') ? 'active' : '' }}"
                                                     href="#nv-attributes" role="button" data-bs-toggle="collapse"
-                                                    aria-expanded="{{ request()->is('admin/colors*') || request()->is('admin/sizes*') ? 'true' : 'false' }}"
+                                                    aria-expanded="{{ request()->is('admin/colors*') || request()->is('admin/sizes*') || request()->is('admin/sphericals*') || request()->is('admin/cylindricals*') ? 'true' : 'false' }}"
                                                     aria-controls="nv-attributes">
                                                     <div class="d-flex align-items-center">
                                                         <div class="dropdown-indicator-icon-wrapper">
-                                                            <span
-                                                                class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                                            <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                                         </div>
                                                         <span class="nav-link-text">Thuộc tính</span>
                                                     </div>
                                                 </a>
                                                 <div class="parent-wrapper label-1">
-                                                    <ul class="nav collapse parent {{ request()->is('admin/colors*') || request()->is('admin/sizes*') ? 'show' : '' }}"
+                                                    <ul class="nav collapse parent {{ request()->is('admin/colors*') || request()->is('admin/sizes*') || request()->is('admin/sphericals*') || request()->is('admin/cylindricals*') ? 'show' : '' }}"
                                                         data-bs-parent="#nv-products" id="nv-attributes">
                                                         @if (canAccess('xem-mau-sac'))
                                                             <li class="nav-item">
@@ -137,6 +138,26 @@
                                                                     href="{{ route('admin.sizes.index') }}">
                                                                     <div class="d-flex align-items-center">
                                                                         <span class="nav-link-text">Kích thước</span>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (canAccess('xem-do-can'))
+                                                            <li class="nav-item">
+                                                                <a class="nav-link {{ request()->routeIs('admin.sphericals.*') ? 'active' : '' }}"
+                                                                    href="{{ route('admin.sphericals.index') }}">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <span class="nav-link-text">Độ cận</span>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (canAccess('xem-do-loan'))
+                                                            <li class="nav-item">
+                                                                <a class="nav-link {{ request()->routeIs('admin.cylindricals.*') ? 'active' : '' }}"
+                                                                    href="{{ route('admin.cylindricals.index') }}">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <span class="nav-link-text">Độ loạn</span>
                                                                     </div>
                                                                 </a>
                                                             </li>
