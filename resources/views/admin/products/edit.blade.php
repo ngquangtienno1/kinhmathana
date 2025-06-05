@@ -1,14 +1,7 @@
 @extends('admin.layouts')
 @section('title', 'Sửa sản phẩm')
+
 @section('content')
-
-@section('breadcrumbs')
-    <li class="breadcrumb-item">
-        <a href="{{ route('admin.products.list') }}">Sản phẩm</a>
-    </li>
-    <li class="breadcrumb-item active">Sửa sản phẩm</li>
-@endsection
-
     <div class="mb-9">
         <div class="row g-3 mb-4">
             <div class="col-auto">
@@ -133,9 +126,9 @@
 
                                 <!-- Sản phẩm có biến thể -->
                                 <div id="variable-product" class="product-type-content" style="{{ $product->product_type == 'simple' ? 'display:none' : '' }}">
-                                    <div class="col-md-6">
+                                   <div class="col-md-6">
                                         <label class="form-label">Mã sản phẩm</label>
-                                        <input type="text" class="form-control" name="sku" value="{{ old('sku', $product->sku) }}">
+                                        <input type="text" class="form-control" name="sku" value="{{ old('sku', $product->sku) }}" {{ $product->product_type == 'variable' ? 'disabled' : '' }}>
                                         @error('sku')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -160,77 +153,78 @@
                                         <label class="form-label">Thuộc tính biến thể</label>
                                         <div id="attributes-container">
                                             @php
-                                                // Nhóm các thuộc tính theo loại (color/size)
-                                                $attributeGroups = [
-                                                    'color' => [],
-                                                    'size' => [],
-                                                ];
-                                                foreach ($product->variations as $variation) {
-                                                    if ($variation->color) {
-                                                        $attributeGroups['color'][] = $variation->color->name;
-                                                    }
-                                                    if ($variation->size) {
-                                                        $attributeGroups['size'][] = $variation->size->name;
-                                                    }
+                                            // Nhóm các thuộc tính theo loại (color/size/spherical/cylindrical)
+                                            $attributeGroups = [
+                                                'color' => [],
+                                                'size' => [],
+                                                'spherical' => [],
+                                                'cylindrical' => [],
+                                            ];
+                                            foreach ($product->variations as $variation) {
+                                                if ($variation->color && $variation->color->name) {
+                                                    $attributeGroups['color'][] = $variation->color->name;
                                                 }
-                                                $attributeGroups['color'] = array_unique($attributeGroups['color']);
-                                                $attributeGroups['size'] = array_unique($attributeGroups['size']);
-                                                $attributeIndex = 0;
-                                            @endphp
+                                                if ($variation->size && $variation->size->name) {
+                                                    $attributeGroups['size'][] = $variation->size->name;
+                                                }
+                                                if ($variation->spherical) {
+                                                    $attributeGroups['spherical'][] = number_format($variation->spherical, 2);
+                                                }
+                                                if ($variation->cylindrical) {
+                                                    $attributeGroups['cylindrical'][] = number_format($variation->cylindrical, 2);
+                                                }
+                                            }
+                                            $attributeGroups['color'] = array_unique($attributeGroups['color']);
+                                            $attributeGroups['size'] = array_unique($attributeGroups['size']);
+                                            $attributeGroups['spherical'] = array_unique($attributeGroups['spherical']);
+                                            $attributeGroups['cylindrical'] = array_unique($attributeGroups['cylindrical']);
+                                            $attributeIndex = 0;
+                                        @endphp
 
-                                            @if (!empty($attributeGroups['color']))
-                                                <div class="attribute-row row g-2 mb-2" data-index="{{ $attributeIndex }}">
-                                                    <div class="col-md-3">
-                                                        <select name="attributes[{{ $attributeIndex }}][type]" class="form-select attribute-type">
-                                                            <option value="color" selected>Màu sắc</option>
-                                                            <option value="size">Kích thước</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="attribute-values-tags">
-                                                            @foreach ($attributeGroups['color'] as $colorValue)
-                                                                <span class="tag">{{ $colorValue }}<input type="hidden" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $colorValue }}"><button type="button" class="remove-tag" data-value="{{ $colorValue }}">×</button></span>
-                                                            @endforeach
+                                            @foreach (['color', 'size', 'spherical', 'cylindrical'] as $type)
+                                                @if (!empty($attributeGroups[$type]))
+                                                    <div class="attribute-row row g-2 mb-2" data-index="{{ $attributeIndex }}">
+                                                        <div class="col-md-3">
+                                                            <select name="attributes[{{ $attributeIndex }}][type]" class="form-select attribute-type">
+                                                                <option value="color" {{ $type == 'color' ? 'selected' : '' }}>Màu sắc</option>
+                                                                <option value="size" {{ $type == 'size' ? 'selected' : '' }}>Kích thước</option>
+                                                                <option value="spherical" {{ $type == 'spherical' ? 'selected' : '' }}>Độ cận</option>
+                                                                <option value="cylindrical" {{ $type == 'cylindrical' ? 'selected' : '' }}>Độ loạn</option>
+                                                            </select>
                                                         </div>
-                                                        <select class="form-select attribute-values" multiple>
-                                                            @foreach ($colors as $color)
-                                                                <option value="{{ $color->name }}" {{ in_array($color->name, $attributeGroups['color']) ? 'selected' : '' }}>{{ $color->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
-                                                    </div>
-                                                </div>
-                                                @php $attributeIndex++; @endphp
-                                            @endif
-
-                                            @if (!empty($attributeGroups['size']))
-                                                <div class="attribute-row row g-2 mb-2" data-index="{{ $attributeIndex }}">
-                                                    <div class="col-md-3">
-                                                        <select name="attributes[{{ $attributeIndex }}][type]" class="form-select attribute-type">
-                                                            <option value="color">Màu sắc</option>
-                                                            <option value="size" selected>Kích thước</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="attribute-values-tags">
-                                                            @foreach ($attributeGroups['size'] as $sizeValue)
-                                                                <span class="tag">{{ $sizeValue }}<input type="hidden" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $sizeValue }}"><button type="button" class="remove-tag" data-value="{{ $sizeValue }}">×</button></span>
-                                                            @endforeach
+                                                        <div class="col-md-6">
+                                                            <div class="attribute-values-tags">
+                                                                @foreach ($attributeGroups[$type] as $value)
+                                                                    <span class="tag">{{ $value }}<input type="hidden" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $value }}"><button type="button" class="remove-tag" data-value="{{ $value }}">×</button></span>
+                                                                @endforeach
+                                                            </div>
+                                                            <select class="form-select attribute-values" multiple>
+                                                                @if ($type == 'color')
+                                                                    @foreach ($colors as $color)
+                                                                        <option value="{{ $color->name }}" {{ in_array($color->name, $attributeGroups['color']) ? 'selected' : '' }}>{{ $color->name }}</option>
+                                                                    @endforeach
+                                                                @elseif ($type == 'size')
+                                                                    @foreach ($sizes as $size)
+                                                                        <option value="{{ $size->name }}" {{ in_array($size->name, $attributeGroups['size']) ? 'selected' : '' }}>{{ $size->name }}</option>
+                                                                    @endforeach
+                                                                @elseif ($type == 'spherical')
+                                                                    @foreach ($spherical_values as $value)
+                                                                        <option value="{{ $value }}" {{ in_array($value, $attributeGroups['spherical']) ? 'selected' : '' }}>{{ $value }}</option>
+                                                                    @endforeach
+                                                                @elseif ($type == 'cylindrical')
+                                                                    @foreach ($cylindrical_values as $value)
+                                                                        <option value="{{ $value }}" {{ in_array($value, $attributeGroups['cylindrical']) ? 'selected' : '' }}>{{ $value }}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
                                                         </div>
-                                                        <select class="form-select attribute-values" multiple>
-                                                            @foreach ($sizes as $size)
-                                                                <option value="{{ $size->name }}" {{ in_array($size->name, $attributeGroups['size']) ? 'selected' : '' }}>{{ $size->name }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
-                                                    </div>
-                                                </div>
-                                                @php $attributeIndex++; @endphp
-                                            @endif
+                                                    @php $attributeIndex++; @endphp
+                                                @endif
+                                            @endforeach
                                         </div>
                                         <button type="button" class="btn btn-primary btn-sm mt-2" id="add-attribute">Thêm thuộc tính</button>
                                     </div>
@@ -274,8 +268,8 @@
                                                 <div class="col-md-1">
                                                     <label class="form-label">Ảnh biến thể</label>
                                                     <input type="file" name="variations[{{ $index }}][image]" class="form-control">
-                                                    @if (!is_null($variation->images) && $variation->images->isNotEmpty())
-                                                        <img src="{{ Storage::url($variation->images->first()->image_path) }}" alt="Variation Image" style="width: 50px; height: 50px;">
+                                                    @if ($variation->images->isNotEmpty())
+                                                        <img src="{{ Storage::url($variation->images->first()->image_path) }}" alt="Variation Image" style="width: 50px; height: 50px; margin-top: 10px;">
                                                     @endif
                                                     @error("variations.$index.image")
                                                         <div class="text-danger">{{ $message }}</div>
@@ -306,7 +300,7 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Ảnh đại diện</label>
-                                    <input type="file" class="form-control" name="featured_image">
+                                    <input type="file" class="form-control" name="featured_image" accept="image/jpeg,image/png,image/gif,image/webp,image/tiff">
                                     @error('featured_image')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -316,16 +310,20 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Album ảnh</label>
-                                    <input type="file" class="form-control" name="gallery_images[]" multiple>
+                                    <input type="file" class="form-control" name="gallery_images[]" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/tiff">
                                     @error('gallery_images')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                     @error('gallery_images.*')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
-                                    <div class="mt-3">
+                                    <div class="mt-3 d-flex flex-wrap">
                                         @foreach ($product->images->where('is_featured', false) as $image)
-                                            <img src="{{ Storage::url($image->image_path) }}" alt="Gallery Image" style="max-width: 100px; margin-right: 10px; margin-bottom: 10px;">
+                                            <div class="position-relative me-3 mb-3">
+                                                <img src="{{ Storage::url($image->image_path) }}" alt="Gallery Image" style="max-width: 100px;">
+                                                <input type="checkbox" name="delete_gallery_images[]" value="{{ $image->id }}" class="position-absolute top-0 end-0">
+                                                <label class="form-label small">Xóa</label>
+                                            </div>
                                         @endforeach
                                     </div>
                                 </div>
@@ -434,6 +432,8 @@
                         <select name="attributes[${attributeIndex}][type]" class="form-select attribute-type">
                             <option value="color">Màu sắc</option>
                             <option value="size">Kích thước</option>
+                            <option value="spherical">Độ cận</option>
+                            <option value="cylindrical">Độ loạn</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -463,8 +463,14 @@
                 const type = typeSelect.value;
                 const colors = @json($colors->pluck('name'));
                 const sizes = @json($sizes->pluck('name'));
+                const spherical = @json($spherical_values);
+                const cylindrical = @json($cylindrical_values);
                 valuesSelect.innerHTML = '';
-                const options = type === 'color' ? colors : sizes;
+                let options = [];
+                if (type === 'color') options = colors;
+                else if (type === 'size') options = sizes;
+                else if (type === 'spherical') options = spherical;
+                else if (type === 'cylindrical') options = cylindrical;
                 options.forEach(option => {
                     const opt = document.createElement('option');
                     opt.value = option;
@@ -536,3 +542,4 @@
 
     @vite(['resources/js/admin/products.js'])
 @endsection
+

@@ -56,16 +56,16 @@
                         <h5 class="card-title text-body-emphasis mb-0"><span class="fas fa-user me-2"></span>Thông tin cá
                             nhân</h5>
                         <div>
-                            @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
+                        @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
                                 <button type="button" class="btn btn-phoenix-primary btn-sm me-2" data-bs-toggle="modal"
-                                    data-bs-target="#editProfileModal">
-                                    <i class="fas fa-edit me-1"></i> Chỉnh sửa
-                                </button>
+                                data-bs-target="#editProfileModal">
+                                <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                            </button>
                                 <button type="button" class="btn btn-phoenix-warning btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#changePasswordModal">
                                     <i class="fas fa-key me-1"></i> Đổi mật khẩu
                                 </button>
-                            @endif
+                        @endif
                         </div>
                     </div>
                     <div class="card-body">

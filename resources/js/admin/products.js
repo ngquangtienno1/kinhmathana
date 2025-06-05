@@ -14,14 +14,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const generateVariationsBtn = document.getElementById('generate-variations');
     const variationsContainer = document.getElementById('variations-container');
 
-    // Danh sách màu sắc và kích thước từ PHP (chỉ áp dụng cho create)
+    // Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
     const colors = window.colors || [];
     const sizes = window.sizes || [];
+    const spherical_values = window.spherical_values || [];
+    const cylindrical_values = window.cylindrical_values || [];
 
-    console.log('Colors loaded:', colors); // Debug: Kiểm tra dữ liệu colors
-    console.log('Sizes loaded:', sizes);   // Debug: Kiểm tra dữ liệu sizes
+    console.log('Colors loaded:', colors);
+    console.log('Sizes loaded:', sizes);
+    console.log('Spherical values loaded:', spherical_values);
+    console.log('Cylindrical values loaded:', cylindrical_values);
 
-    // Tự động sinh SKU và Slug (chỉ áp dụng cho create)
+    // Tự động sinh SKU và Slug
     function generateSkuAndSlug(name, prefix = '') {
         const timestamp = Date.now();
         const sku = `${prefix}${name.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
@@ -102,24 +106,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Xử lý thêm thuộc tính (chỉ áp dụng cho create)
+    // Xử lý thêm thuộc tính
     if (addAttributeBtn) {
         addAttributeBtn.addEventListener('click', function () {
             const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
-            if (attributeRows.length >= 2) {
+            if (attributeRows.length >= 4) {
                 addAttributeBtn.style.display = 'none';
                 return;
             }
 
-            const existingTypes = Array.from(attributeRows).map(row => row.querySelector('.attribute-type').value);
+            const existingTypes = Array.from(attributeRows).map(row => row.querySelector('.attribute-type')?.value || '');
             const index = attributeRows.length;
+            const availableTypes = ['color', 'size', 'spherical', 'cylindrical'].filter(t => !existingTypes.includes(t));
+            if (availableTypes.length === 0) return;
+
             const row = document.createElement('div');
             row.className = 'attribute-row row g-2 mb-2';
             row.innerHTML = `
                 <div class="col-md-3">
                     <select name="attributes[${index}][type]" class="form-select attribute-type" data-index="${index}">
-                        ${existingTypes.includes('color') ? '<option value="size">Kích thước</option>' : '<option value="color">Màu sắc</option>'}
-                        ${!existingTypes.includes('size') && !existingTypes.includes('color') ? '<option value="size">Kích thước</option>' : ''}
+                        ${availableTypes.map(t => `<option value="${t}">${t === 'color' ? 'Màu sắc' : t === 'size' ? 'Kích thước' : t === 'spherical' ? 'Độ cận' : 'Độ loạn'}</option>`).join('')}
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -136,10 +142,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const tagsContainer = row.querySelector('.attribute-values-tags');
             const valuesContainer = row.querySelector('.attribute-values-container');
 
-            typeSelect.addEventListener('change', function () {
+            function updateValuesContainer(selectedType) {
                 tagsContainer.innerHTML = '';
                 valuesContainer.innerHTML = '';
-                const options = this.value === 'color' ? colors : sizes;
+                const options = selectedType === 'color' ? colors : selectedType === 'size' ? sizes : selectedType === 'spherical' ? spherical_values : cylindrical_values;
+
                 if (options && options.length > 0) {
                     options.forEach(option => {
                         const div = document.createElement('div');
@@ -150,16 +157,36 @@ document.addEventListener('DOMContentLoaded', function () {
                         `;
                         valuesContainer.appendChild(div);
                     });
-                    console.log(`Loaded ${this.value === 'color' ? colors.length : sizes.length} options for ${this.value}`);
+                    console.log(`Loaded ${options.length} options for ${selectedType}`);
                 } else {
-                    console.error(`No data available for ${this.value === 'color' ? 'colors' : 'sizes'}`);
+                    console.error(`No data available for ${selectedType}`);
                 }
+            }
+
+            typeSelect.addEventListener('change', function () {
+                const currentType = this.value;
+                const currentIndex = this.getAttribute('data-index');
+                const otherRows = Array.from(attributesContainer.getElementsByClassName('attribute-row')).filter(r => r.querySelector('.attribute-type').getAttribute('data-index') !== currentIndex);
+                const otherTypes = otherRows.map(r => r.querySelector('.attribute-type').value);
+                const availableTypesForOthers = ['color', 'size', 'spherical', 'cylindrical'].filter(t => t !== currentType && !otherTypes.includes(t));
+
+                updateValuesContainer(currentType);
+
+                // Chỉ cập nhật select của các hàng mới thêm sau, không ảnh hưởng hàng hiện tại hoặc các hàng đã chọn
+                const newRows = Array.from(attributesContainer.getElementsByClassName('attribute-row')).filter(r => !otherRows.includes(r) && r.querySelector('.attribute-type').getAttribute('data-index') !== currentIndex);
+                newRows.forEach(newRow => {
+                    const newTypeSelect = newRow.querySelector('.attribute-type');
+                    if (newTypeSelect && availableTypesForOthers.length > 0) {
+                        newTypeSelect.innerHTML = availableTypesForOthers.map(t => `<option value="${t}">${t === 'color' ? 'Màu sắc' : t === 'size' ? 'Kích thước' : t === 'spherical' ? 'Độ cận' : 'Độ loạn'}</option>`).join('');
+                        updateValuesContainer(newTypeSelect.value);
+                    }
+                });
             });
 
             valuesContainer.addEventListener('change', function (e) {
                 if (e.target.classList.contains('attribute-value-checkbox')) {
                     const index = e.target.getAttribute('data-index');
-                    const selectedValues = Array.from(valuesContainer.querySelectorAll('input[name="attributes[' + index + '][values][]"]:checked')).map(checkbox => checkbox.value);
+                    const selectedValues = Array.from(valuesContainer.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(checkbox => checkbox.value);
                     tagsContainer.innerHTML = '';
                     selectedValues.forEach(value => {
                         const tag = document.createElement('span');
@@ -191,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateAddAttributeBtn();
             });
 
-            typeSelect.dispatchEvent(new Event('change')); // Kích hoạt sự kiện change để load giá trị ngay lập tức
+            updateValuesContainer(typeSelect.value);
             updateAddAttributeBtn();
         });
     }
@@ -199,11 +226,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateAddAttributeBtn() {
         if (!attributesContainer) return;
         const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
-        const types = Array.from(attributeRows).map(row => row.querySelector('.attribute-type').value);
-        if (attributeRows.length >= 2 || (types.includes('color') && types.includes('size'))) {
+        const types = Array.from(attributeRows).map(row => row.querySelector('.attribute-type')?.value || '');
+        if (attributeRows.length >= 4 || types.includes('color') && types.includes('size') && types.includes('spherical') && types.includes('cylindrical')) {
             addAttributeBtn.style.display = 'none';
         } else {
-            addAttributeBtn.style.display = attributeRows.length < 2 ? 'block' : 'none';
+            addAttributeBtn.style.display = 'block';
         }
     }
 
@@ -258,33 +285,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const combinations = generateCombinations(attributes);
+            const existingVariationNames = Array.from(variationsContainer.getElementsByClassName('variation-row')).map(row => row.querySelector('input[name$="[name]"]').value);
+            const combinations = generateCombinations(attributes).filter(combo => !existingVariationNames.includes(combo.join(' - ')));
+
+            if (combinations.length === 0 && existingVariationNames.length > 0) {
+                alert('Tất cả các biến thể đã được tạo.');
+                return;
+            }
 
             variationsContainer.style.display = 'block';
-            variationsContainer.innerHTML = '';
             combinations.forEach((combo, index) => {
+                const globalIndex = variationsContainer.getElementsByClassName('variation-row').length;
                 const row = document.createElement('div');
                 row.className = 'variation-row row g-2 mb-2';
                 const skuPrefix = variableSkuInput.value;
-                const comboName = combo.join(' - ');
+                const comboName = combo.join(' - ') || 'Biến thể ' + (globalIndex + 1);
                 row.innerHTML = `
                     <div class="col-md-2">
-                        <input type="text" name="variations[${index}][name]" value="${comboName}" class="form-control" placeholder="Tên biến thể" readonly>
+                        <input type="text" name="variations[${globalIndex}][name]" value="${comboName}" class="form-control" placeholder="Tên biến thể" readonly>
                     </div>
                     <div class="col-md-2">
-                        <input type="text" name="variations[${index}][sku]" value="${skuPrefix}-${comboName.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
+                        <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${comboName.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
                     </div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control price-input" name="variations[${index}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
+                        <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
                     </div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control price-input" name="variations[${index}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
+                        <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
                     </div>
                     <div class="col-md-1">
-                        <input type="number" name="variations[${index}][stock_quantity]" value="0" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0">
+                        <input type="number" name="variations[${globalIndex}][stock_quantity]" value="0" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0">
                     </div>
                     <div class="col-md-1">
-                        <select name="variations[${index}][status]" class="form-select variation-status">
+                        <select name="variations[${globalIndex}][status]" class="form-select variation-status">
                             <option value="in_stock">Còn hàng</option>
                             <option value="out_of_stock" selected>Hết hàng</option>
                             <option value="hidden">Ẩn</option>
@@ -296,6 +329,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="col-md-1">
                         <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
                     </div>
+                    ${
+                        attributes.some(attr => attr.type === 'spherical') ? `
+                        <div class="col-md-2">
+                            <input type="hidden" name="variations[${globalIndex}][spherical]" value="${combo.find(val => spherical_values.includes(val)) || ''}">
+                        </div>` : ''
+                    }
+                    ${
+                        attributes.some(attr => attr.type === 'cylindrical') ? `
+                        <div class="col-md-2">
+                            <input type="hidden" name="variations[${globalIndex}][cylindrical]" value="${combo.find(val => cylindrical_values.includes(val)) || ''}">
+                        </div>` : ''
+                    }
                 `;
                 variationsContainer.appendChild(row);
 
@@ -330,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (stockQuantityInput && (!stockQuantityInput.value || isNaN(parseInt(stockQuantityInput.value)) || parseInt(stockQuantityInput.value) < 0)) {
                 stockQuantityInput.value = '0';
-                console.log('Set stock_quantity to default on submit: 0');
+                console.log('Set stock_quantity to default: 0');
             } else if (stockQuantityInput) {
                 stockQuantityInput.value = parseInt(stockQuantityInput.value).toString();
                 console.log('Stock quantity after validation:', stockQuantityInput.value);
@@ -374,8 +419,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    updateAddAttributeBtn();
-
     // Khởi tạo sự kiện cho các checkbox hiện có
     document.querySelectorAll('.attribute-value-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function () {
@@ -412,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Khởi tạo sự kiện cho stock_quantity để tự động cập nhật trạng thái (cho các variation hiện có)
+    // Khởi tạo sự kiện cho stock_quantity để tự động cập nhật trạng thái
     document.querySelectorAll('.stock-quantity-input').forEach(input => {
         input.addEventListener('input', function () {
             const row = this.closest('.variation-row');
@@ -424,4 +467,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    updateAddAttributeBtn();
 });
