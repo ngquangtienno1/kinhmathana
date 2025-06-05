@@ -18,7 +18,7 @@ class CategoryController extends Controller
             $search = mb_strtolower(trim($request->search));
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
             });
         }
 
@@ -50,31 +50,39 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:125',
-            'description' => 'required|string',
-            'slug' => 'nullable|string|unique:categories,slug',
-        ], [
-            'name.required' => 'Tên danh mục là bắt buộc.',
-            'description.required' => 'Mô tả là bắt buộc.',
-            'name.max' => 'Tên danh mục không được vượt quá 125 ký tự.',
-            'slug.unique' => 'Slug đã tồn tại, vui lòng chọn slug khác.',
-        ]);
+        try {
+            $messages = [
+                'name.required' => 'Vui lòng nhập tên danh mục',
+                'name.max' => 'Tên danh mục không được vượt quá 125 ký tự',
+                'description.required' => 'Mô tả là bắt buộc',
+                'slug.unique' => 'Slug đã tồn tại, vui lòng chọn slug khác'
+            ];
 
-        $data = $request->all();
-        // Nếu không có slug hoặc để trống, tự động tạo từ name
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($request->input('name'));
+            $dataNew = $request->validate([
+                'name' => 'required|string|max:125',
+                'description' => 'required|string',
+                'slug' => 'nullable|string|unique:categories,slug',
+                'is_active' => 'nullable|boolean'
+            ], $messages);
+
+            $dataNew['is_active'] = $request->boolean('is_active');
+
+            // Nếu không có slug hoặc để trống, tự động tạo từ name
+            if (empty($dataNew['slug'])) {
+                $dataNew['slug'] = Str::slug($request->input('name'));
+            }
+
+            // Đảm bảo slug là duy nhất
+            $slugCount = Category::where('slug', $dataNew['slug'])->count();
+            if ($slugCount > 0) {
+                $dataNew['slug'] = $dataNew['slug'] . '-' . ($slugCount + 1);
+            }
+
+            Category::create($dataNew);
+            return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm danh mục: ' . $e->getMessage());
         }
-
-        // Đảm bảo slug là duy nhất
-        $slugCount = Category::where('slug', $data['slug'])->count();
-        if ($slugCount > 0) {
-            $data['slug'] = $data['slug'] . '-' . ($slugCount + 1);
-        }
-
-        Category::create($data);
-        return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục thành công!');
     }
 
     public function edit($id)
