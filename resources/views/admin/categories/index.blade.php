@@ -3,7 +3,7 @@
 @section('content')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="#">Categories</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.categories.index') }}">Danh mục</a></li>
     <li class="breadcrumb-item active">Danh sách danh mục</li>
 @endsection
 

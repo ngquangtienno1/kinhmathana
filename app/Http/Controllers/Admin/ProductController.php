@@ -55,7 +55,7 @@ class ProductController extends Controller
                   ->whereDate('created_at', '<=', now()->toDateString());
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+        $products = $query->orderBy('created_at', 'desc')->get();
 
         foreach ($products as $product) {
             if ($product->product_type === 'variable') {
@@ -72,6 +72,7 @@ class ProductController extends Controller
         $activeCount = Product::where('status', 'Hoạt động')->count();
         $deletedCount = Product::onlyTrashed()->count();
         $categories = Category::all();
+
 
         return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
     }
