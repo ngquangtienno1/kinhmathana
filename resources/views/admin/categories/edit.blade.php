@@ -31,6 +31,13 @@
             @endforeach
         </select>
     </div>
+    <div class="mb-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" 
+                {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
+            <label class="form-check-label" for="is_active">Trạng thái hoạt động</label>
+        </div>
+    </div>
     <button type="submit" class="btn btn-success">Lưu</button>
     <a href="{{ route('admin.categories.index') }}" class="btn btn-light">Hủy</a>
 </form>

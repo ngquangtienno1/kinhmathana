@@ -16,17 +16,27 @@ class CategoryController extends Controller
 
         if ($request->filled('search')) {
             $search = mb_strtolower(trim($request->search));
-            $query->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
                   ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+            });
         }
 
-        // Ưu tiên danh mục cha (parent_id là null), sau đó sắp xếp theo created_at giảm dần
-        $query->orderByRaw('parent_id IS NULL DESC')
-              ->orderBy('parent_id', 'asc')
-              ->orderBy('created_at', 'desc');
+        // Lọc theo trạng thái
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('is_active', false);
+            }
+        }
 
-        $categories = $query->paginate(10);
-        $activeCount = Category::count();
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
+        $categories = $query->get();
+        $activeCount = Category::where('is_active', true)->count();
         $deletedCount = Category::onlyTrashed()->count();
 
         return view('admin.categories.index', compact('categories', 'activeCount', 'deletedCount'));
@@ -80,6 +90,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:125',
             'description' => 'required|string',
             'slug' => 'nullable|string|unique:categories,slug,' . $id,
+            'is_active' => 'boolean',
         ], [
             'name.required' => 'Tên danh mục là bắt buộc.',
             'description.required' => 'Mô tả là bắt buộc.',
@@ -90,6 +101,9 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $data = $request->all();
+        // Convert checkbox value to boolean
+        $data['is_active'] = $request->has('is_active');
+
         if (empty($data['slug']) || $category->name !== $request->input('name')) {
             $data['slug'] = Str::slug($request->input('name'));
 
@@ -132,6 +146,57 @@ class CategoryController extends Controller
             return redirect()->route('admin.categories.bin')->with('success', 'Xóa vĩnh viễn danh mục thành công.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn danh mục.');
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một danh mục để xóa.');
+        }
+        try {
+            Category::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.categories.index')->with('success', 'Đã xóa mềm các danh mục đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một danh mục để khôi phục.');
+        }
+        try {
+            Category::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->route('admin.categories.bin')->with('success', 'Đã khôi phục các danh mục đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một danh mục để xóa vĩnh viễn.');
+        }
+        try {
+            Category::withTrashed()->whereIn('id', $ids)->forceDelete();
+            return redirect()->route('admin.categories.bin')->with('success', 'Đã xóa vĩnh viễn các danh mục đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }
 }

@@ -229,6 +229,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('bin', [CategoryController::class, 'bin'])->name('bin');
         Route::put('restore/{id}', [CategoryController::class, 'restore'])->name('restore');
         Route::delete('forceDelete/{id}', [CategoryController::class, 'forceDelete'])->name('forceDelete');
+        Route::delete('/bulk-delete', [CategoryController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [CategoryController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [CategoryController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
     //Slider
