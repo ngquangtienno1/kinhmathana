@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable()->index();
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('set null');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -238,10 +238,28 @@
                                 </div>
                                 <p class="mb-0 ms-4">
                                     @php
-                                        $orderStatusLabel = $order->getStatusLabelAttribute(); // Sử dụng accessor từ model
-                                        $orderStatusColor = $order->getStatusColorAttribute(); // Sử dụng accessor từ model
+                                        $orderStatusLabel = $order->getStatusLabelAttribute();
+                                        $orderStatusColor = $order->getStatusColorAttribute();
                                     @endphp
                                     <span class="badge bg-{{ $orderStatusColor }}">{{ $orderStatusLabel }}</span>
+                                    @if ($order->status === 'cancelled')
+                                        <br>
+                                        @if ($order->cancellationReason)
+                                            <span class="text-danger">Lý do huỷ:
+                                                {{ $order->cancellationReason->reason }}</span><br>
+                                        @endif
+                                        @php
+                                            $cancelHistory = $order
+                                                ->statusHistories()
+                                                ->where('new_status', 'cancelled')
+                                                ->latest()
+                                                ->first();
+                                        @endphp
+                                        @if ($cancelHistory && $cancelHistory->updatedBy)
+                                            <span class="text-muted">Huỷ bởi:
+                                                {{ $cancelHistory->updatedBy->name }}</span>
+                                        @endif
+                                    @endif
                                 </p>
                             </div>
                             @if ($order->note)
@@ -290,39 +308,63 @@
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title mb-4">Cập nhật trạng thái</h3>
-                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                    @php
+                        $adminCancellationReasons = \App\Models\CancellationReason::where('type', 'admin')
+                            ->where('is_active', true)
+                            ->get();
+                    @endphp
+                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST"
+                        id="order-status-form">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
                             <label class="form-label">Trạng thái đơn hàng</label>
-                            <select name="status" class="form-select"
-                                {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý
-                                </option>
-                                <option value="awaiting_payment"
-                                    {{ $order->status == 'awaiting_payment' ? 'selected' : '' }}>Chờ thanh toán
-                                </option>
-                                <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác
-                                    nhận</option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đang
-                                    xử lý</option>
-                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang vận
-                                    chuyển</option>
-                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã
-                                    giao hàng</option>
-                                <option value="returned" {{ $order->status == 'returned' ? 'selected' : '' }}>Đã trả
-                                    hàng</option>
-                                <option value="processing_return"
-                                    {{ $order->status == 'processing_return' ? 'selected' : '' }}>Đang xử lý trả hàng
-                                </option>
-                                <option value="refunded" {{ $order->status == 'refunded' ? 'selected' : '' }}>Đã hoàn
-                                    tiền</option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy
-                                </option>
+                            @php
+                                $statusTransitions = [
+                                    'pending' => ['confirmed', 'cancelled'],
+                                    'confirmed' => ['awaiting_pickup', 'cancelled'],
+                                    'awaiting_pickup' => ['shipping', 'cancelled'],
+                                    'shipping' => ['delivered', 'returned'],
+                                    'delivered' => ['completed', 'returned'],
+                                    'completed' => [],
+                                    'returned' => ['processing_return'],
+                                    'processing_return' => ['return_rejected', 'refunded'],
+                                    'return_rejected' => ['refunded'],
+                                    'refunded' => [],
+                                    'cancelled' => [],
+                                ];
+                                $statusLabels = [
+                                    'pending' => 'Chờ xác nhận',
+                                    'confirmed' => 'Đã xác nhận',
+                                    'awaiting_pickup' => 'Chờ lấy hàng',
+                                    'shipping' => 'Đang giao',
+                                    'delivered' => 'Đã giao hàng',
+                                    'completed' => 'Đã hoàn thành',
+                                    'returned' => 'Khách trả hàng',
+                                    'processing_return' => 'Đang xử lý trả hàng',
+                                    'return_rejected' => 'Trả hàng bị từ chối',
+                                    'refunded' => 'Đã hoàn tiền',
+                                    'cancelled' => 'Đã hủy',
+                                ];
+                                $current = $order->status;
+                                $canUpdate = count($statusTransitions[$current]) > 0;
+                            @endphp
+                            <select name="status" class="form-select" id="order-status-select"
+                                {{ !$canUpdate ? 'disabled' : '' }}>
+                                <option value="{{ $current }}">{{ $statusLabels[$current] }}</option>
+                                @foreach ($statusTransitions[$current] as $next)
+                                    <option value="{{ $next }}">{{ $statusLabels[$next] }}</option>
+                                @endforeach
                             </select>
+                            @if (!$canUpdate)
+                                <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật
+                                        nữa.</small></div>
+                            @endif
                         </div>
-                        <button type="submit" class="btn btn-primary w-100"
-                            {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
+                        <input type="hidden" name="cancellation_reason_id" id="cancellation_reason_id"
+                            value="">
+                        <button type="submit" class="btn btn-primary w-100" id="order-status-submit"
+                            {{ !$canUpdate ? 'disabled' : '' }}>
                             Cập nhật trạng thái
                         </button>
                     </form>
@@ -331,5 +373,106 @@
         </div>
     </div>
 </div>
+
+<!-- Modal chọn lý do huỷ -->
+<div class="modal fade" id="cancellationReasonModal" tabindex="-1" aria-labelledby="cancellationReasonModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancellationReasonModalLabel">Chọn lý do huỷ đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="cancellation_reason_select" class="form-label">Lý do huỷ <span
+                            class="text-danger">*</span></label>
+                    <select class="form-select" id="cancellation_reason_select">
+                        <option value="">-- Chọn lý do huỷ --</option>
+                        @foreach ($adminCancellationReasons as $reason)
+                            <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
+                        @endforeach
+                        <option value="other">-- Khác (Nhập lý do mới) --</option>
+                    </select>
+                    <input type="text" class="form-control mt-2 d-none" id="cancellation_reason_other"
+                        placeholder="Nhập lý do huỷ mới">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="confirm-cancellation-reason">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('order-status-select');
+        const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
+        const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
+        const cancellationReasonOther = document.getElementById('cancellation_reason_other');
+        const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
+        const orderStatusForm = document.getElementById('order-status-form');
+        const orderStatusSubmit = document.getElementById('order-status-submit');
+
+        let shouldShowModal = false;
+
+        // Hiện/ẩn input nhập lý do mới
+        cancellationReasonSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                cancellationReasonOther.classList.remove('d-none');
+                cancellationReasonOther.required = true;
+            } else {
+                cancellationReasonOther.classList.add('d-none');
+                cancellationReasonOther.value = '';
+                cancellationReasonOther.required = false;
+            }
+        });
+
+        statusSelect.addEventListener('change', function(e) {
+            if (this.value === 'cancelled') {
+                shouldShowModal = true;
+                cancellationReasonModal.show();
+                orderStatusSubmit.disabled = true;
+            } else {
+                cancellationReasonIdInput.value = '';
+                orderStatusSubmit.disabled = false;
+            }
+        });
+
+        document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
+            const selectedReason = cancellationReasonSelect.value;
+            if (!selectedReason) {
+                cancellationReasonSelect.classList.add('is-invalid');
+                return;
+            }
+            cancellationReasonSelect.classList.remove('is-invalid');
+            if (selectedReason === 'other') {
+                if (!cancellationReasonOther.value.trim()) {
+                    cancellationReasonOther.classList.add('is-invalid');
+                    return;
+                }
+                cancellationReasonOther.classList.remove('is-invalid');
+                // Gửi lý do mới qua hidden input (có thể dùng 1 hidden input hoặc truyền qua cancellation_reason_id)
+                cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
+            } else {
+                cancellationReasonOther.classList.remove('is-invalid');
+                cancellationReasonIdInput.value = selectedReason;
+            }
+            cancellationReasonModal.hide();
+            orderStatusSubmit.disabled = false;
+        });
+
+        // Ngăn submit nếu chọn huỷ mà chưa chọn lý do
+        orderStatusForm.addEventListener('submit', function(e) {
+            if (statusSelect.value === 'cancelled' && !cancellationReasonIdInput.value) {
+                e.preventDefault();
+                cancellationReasonModal.show();
+                orderStatusSubmit.disabled = true;
+            }
+        });
+    });
+</script>
 
 @endsection

@@ -45,7 +45,44 @@ class CustomerController extends Controller
 
         $customers = $query->get();
 
-        return view('admin.customers.index', compact('customers'));
+        // Lấy query builder object để truyền cho export (nếu cần filtering)
+        $exportQuery = clone $query; // Tạo bản sao để không ảnh hưởng đến query hiển thị
+
+        return view('admin.customers.index', compact('customers', 'exportQuery'));
+    }
+
+    public function export(Request $request)
+    {
+        $query = Customer::with('user');
+
+        // Apply the same search and filter logic as index
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
+        }
+
+        if ($request->has('min_orders')) {
+            $query->where('total_orders', '>=', $request->min_orders);
+        }
+
+        if ($request->has('min_spent')) {
+            $query->where('total_spent', '>=', $request->min_spent);
+        }
+
+        if ($request->has('customer_type')) {
+            $query->where('customer_type', $request->customer_type);
+        }
+
+        // Return the Excel file
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CustomerExport($query), 'khach_hang.xlsx');
     }
 
     public function show(Customer $customer)
@@ -71,13 +108,17 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         $validated = $request->validate([
-            'default_address' => 'nullable|string',
             'customer_type' => 'required|in:new,regular,vip,potential'
+        ], [
+            'customer_type.required' => 'Loại khách hàng là bắt buộc.',
+            'customer_type.in' => 'Loại khách hàng không hợp lệ.',
         ]);
 
-        $customer->update($validated);
+        $customer->update([
+            'customer_type' => $validated['customer_type'],
+        ]);
 
-        return redirect()->back()->with('success', 'Cập nhật thông tin khách hàng thành công');
+        return redirect()->back()->with('success', 'Cập nhật loại khách hàng thành công');
     }
 
     public function updateType(Request $request, Customer $customer)

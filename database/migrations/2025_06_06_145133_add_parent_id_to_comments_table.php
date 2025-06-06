@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tickets', function (Blueprint $table) {
+        Schema::table('comments', function (Blueprint $table) {
             //
-              $table->boolean('is_visible')->default(true);
-    $table->softDeletes();
+                 $table->unsignedBigInteger('parent_id')->nullable()->after('id');
+        $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade');
+
         });
     }
 
@@ -23,8 +24,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tickets', function (Blueprint $table) {
+        Schema::table('comments', function (Blueprint $table) {
             //
+                $table->dropForeign(['parent_id']);
+        $table->dropColumn('parent_id');
         });
     }
 };

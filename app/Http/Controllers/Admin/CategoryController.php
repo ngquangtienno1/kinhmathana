@@ -16,17 +16,27 @@ class CategoryController extends Controller
 
         if ($request->filled('search')) {
             $search = mb_strtolower(trim($request->search));
-            $query->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+            });
         }
 
-        // Ưu tiên danh mục cha (parent_id là null), sau đó sắp xếp theo created_at giảm dần
-        $query->orderByRaw('parent_id IS NULL DESC')
-              ->orderBy('parent_id', 'asc')
-              ->orderBy('created_at', 'desc');
+        // Lọc theo trạng thái
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('is_active', false);
+            }
+        }
 
-        $categories = $query->paginate(10);
-        $activeCount = Category::count();
+        $sort = $request->get('sort', 'id');
+        $direction = $request->get('direction', 'desc');
+        $query->orderBy($sort, $direction);
+
+        $categories = $query->get();
+        $activeCount = Category::where('is_active', true)->count();
         $deletedCount = Category::onlyTrashed()->count();
 
         return view('admin.categories.index', compact('categories', 'activeCount', 'deletedCount'));
@@ -40,31 +50,39 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:125',
-            'description' => 'required|string',
-            'slug' => 'nullable|string|unique:categories,slug',
-        ], [
-            'name.required' => 'Tên danh mục là bắt buộc.',
-            'description.required' => 'Mô tả là bắt buộc.',
-            'name.max' => 'Tên danh mục không được vượt quá 125 ký tự.',
-            'slug.unique' => 'Slug đã tồn tại, vui lòng chọn slug khác.',
-        ]);
+        try {
+            $messages = [
+                'name.required' => 'Vui lòng nhập tên danh mục',
+                'name.max' => 'Tên danh mục không được vượt quá 125 ký tự',
+                'description.required' => 'Mô tả là bắt buộc',
+                'slug.unique' => 'Slug đã tồn tại, vui lòng chọn slug khác'
+            ];
 
-        $data = $request->all();
-        // Nếu không có slug hoặc để trống, tự động tạo từ name
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($request->input('name'));
+            $dataNew = $request->validate([
+                'name' => 'required|string|max:125',
+                'description' => 'required|string',
+                'slug' => 'nullable|string|unique:categories,slug',
+                'is_active' => 'nullable|boolean'
+            ], $messages);
+
+            $dataNew['is_active'] = $request->boolean('is_active');
+
+            // Nếu không có slug hoặc để trống, tự động tạo từ name
+            if (empty($dataNew['slug'])) {
+                $dataNew['slug'] = Str::slug($request->input('name'));
+            }
+
+            // Đảm bảo slug là duy nhất
+            $slugCount = Category::where('slug', $dataNew['slug'])->count();
+            if ($slugCount > 0) {
+                $dataNew['slug'] = $dataNew['slug'] . '-' . ($slugCount + 1);
+            }
+
+            Category::create($dataNew);
+            return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm danh mục: ' . $e->getMessage());
         }
-
-        // Đảm bảo slug là duy nhất
-        $slugCount = Category::where('slug', $data['slug'])->count();
-        if ($slugCount > 0) {
-            $data['slug'] = $data['slug'] . '-' . ($slugCount + 1);
-        }
-
-        Category::create($data);
-        return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục thành công!');
     }
 
     public function edit($id)
@@ -80,6 +98,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:125',
             'description' => 'required|string',
             'slug' => 'nullable|string|unique:categories,slug,' . $id,
+            'is_active' => 'boolean',
         ], [
             'name.required' => 'Tên danh mục là bắt buộc.',
             'description.required' => 'Mô tả là bắt buộc.',
@@ -90,6 +109,9 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $data = $request->all();
+        // Convert checkbox value to boolean
+        $data['is_active'] = $request->has('is_active');
+
         if (empty($data['slug']) || $category->name !== $request->input('name')) {
             $data['slug'] = Str::slug($request->input('name'));
 
@@ -113,7 +135,7 @@ class CategoryController extends Controller
 
     public function bin()
     {
-        $categories = Category::onlyTrashed()->orderBy('id', 'desc')->paginate(10);
+        $categories = Category::onlyTrashed()->orderBy('id', 'desc')->get();
         return view('admin.categories.bin', compact('categories'));
     }
 
@@ -132,6 +154,57 @@ class CategoryController extends Controller
             return redirect()->route('admin.categories.bin')->with('success', 'Xóa vĩnh viễn danh mục thành công.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn danh mục.');
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một danh mục để xóa.');
+        }
+        try {
+            Category::whereIn('id', $ids)->delete();
+            return redirect()->route('admin.categories.index')->with('success', 'Đã xóa mềm các danh mục đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkRestore(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một danh mục để khôi phục.');
+        }
+        try {
+            Category::onlyTrashed()->whereIn('id', $ids)->restore();
+            return redirect()->route('admin.categories.bin')->with('success', 'Đã khôi phục các danh mục đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi khôi phục: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        if (empty($ids) || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một danh mục để xóa vĩnh viễn.');
+        }
+        try {
+            Category::withTrashed()->whereIn('id', $ids)->forceDelete();
+            return redirect()->route('admin.categories.bin')->with('success', 'Đã xóa vĩnh viễn các danh mục đã chọn!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }
 }

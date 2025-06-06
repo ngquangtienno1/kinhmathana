@@ -8,6 +8,10 @@ use App\Models\Review;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use App\Models\Product;
+use App\Models\User;
 
 class ReviewController extends Controller
 {
@@ -64,7 +68,7 @@ class ReviewController extends Controller
     {
         $query = Review::query();
 
-        // Tìm kiếm theo nội dung
+        // Tìm kiếm theo nội dung, tên người dùng, email người dùng, tên sản phẩm
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -84,20 +88,48 @@ class ReviewController extends Controller
             $query->where('rating', $request->rating);
         }
 
+        // Filter by reply status
+        if ($request->filled('reply_status')) {
+            if ($request->reply_status === 'replied') {
+                $query->whereNotNull('reply');
+            } elseif ($request->reply_status === 'not_replied') {
+                $query->whereNull('reply');
+            }
+        }
+
+        // Filter by date range (created_at)
+        if ($request->filled('start_date')) {
+            $startDate = Carbon::parse($request->start_date)->startOfDay();
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        if ($request->filled('end_date')) {
+            $endDate = Carbon::parse($request->end_date)->endOfDay();
+            $query->where('created_at', '<=', $endDate);
+        }
+
         $sort = $request->get('sort', 'id');
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
 
         $reviews = $query->get();
 
-        // Count reviews by rating
+        // Count reviews by rating (for filter dropdown)
         $oneStarCount = Review::where('rating', 1)->count();
         $twoStarCount = Review::where('rating', 2)->count();
         $threeStarCount = Review::where('rating', 3)->count();
         $fourStarCount = Review::where('rating', 4)->count();
         $fiveStarCount = Review::where('rating', 5)->count();
 
-        return view('admin.reviews.index', compact('reviews', 'oneStarCount', 'twoStarCount', 'threeStarCount', 'fourStarCount', 'fiveStarCount'));
+        // Count reviews by reply status (for filter dropdown)
+        $repliedCount = Review::whereNotNull('reply')->count();
+        $notRepliedCount = Review::whereNull('reply')->count();
+
+        // Get lists for product and user filters
+        $products = Product::select('id', 'name')->orderBy('name')->get();
+        $users = User::select('id', 'name', 'email')->orderBy('name')->get();
+
+        return view('admin.reviews.index', compact('reviews', 'oneStarCount', 'twoStarCount', 'threeStarCount', 'fourStarCount', 'fiveStarCount', 'repliedCount', 'notRepliedCount', 'products', 'users'));
     }
 
     public function show($id)
@@ -149,5 +181,22 @@ class ReviewController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
         }
+    }
+
+    // Method to handle admin reply to a review
+    public function reply(Request $request, Review $review)
+    {
+        $validator = Validator::make($request->all(), [
+            'reply' => 'required|string|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $review->reply = $request->reply;
+        $review->save();
+
+        return back()->with('success', 'Đã trả lời đánh giá thành công!');
     }
 }

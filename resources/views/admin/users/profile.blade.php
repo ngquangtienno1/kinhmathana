@@ -10,143 +10,141 @@
 @endsection
 
 @section('content')
-    <div class="content py-4">
-        <div class="container-fluid">
-            <!-- Success Alert -->
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <div class="row g-4">
-                <!-- Left Column: Avatar and Basic Info -->
-                <div class="col-lg-4 col-md-12">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="avatar-wrapper mb-4">
-                                <img src="{{ $user->avatar ? asset($user->avatar) : asset('v1/assets/img/team/72x72/57.webp') }}"
-                                    alt="{{ $user->name }}" class="rounded-circle img-fluid"
-                                    style="width: 180px; height: 180px; object-fit: cover;">
+    <div class="container-fluid py-4">
+        <div class="row g-4">
+            <!-- Left Column: Avatar and Basic Info -->
+            <div class="col-lg-4 col-md-12">
+                <div class="card h-100 bg-body-emphasis shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <div class="avatar-wrapper mb-4">
+                            <img src="{{ $user->avatar ? asset($user->avatar) : asset('v1/assets/img/team/72x72/57.webp') }}"
+                                alt="{{ $user->name }}"
+                                class="rounded-circle img-fluid border border-3 border-body-emphasis"
+                                style="width: 180px; height: 180px; object-fit: cover;">
+                        </div>
+                        <button type="button" class="btn btn-phoenix-primary btn-sm mb-4" data-bs-toggle="modal"
+                            data-bs-target="#avatarModal">
+                            <span class="fas fa-camera me-1"></span> Thay đổi ảnh
+                        </button>
+                        <div class="text-start px-3">
+                            <h5 class="text-body-emphasis mb-3"><span class="fas fa-info-circle me-2"></span>Thông tin cơ
+                                bản</h5>
+                            <div class="mb-2">
+                                <span class="text-body-secondary">Vai trò:</span>
+                                <span class="fw-semibold text-body">{{ $user->role->name ?? 'Chưa phân quyền' }}</span>
                             </div>
-                            <button type="button" class="btn btn-phoenix-primary btn-sm mb-4" data-bs-toggle="modal"
-                                data-bs-target="#avatarModal">
-                                <i class="fas fa-camera me-1"></i> Thay đổi ảnh
-                            </button>
-                            <div class="text-start px-3">
-                                <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Thông tin cơ bản</h5>
-                                <div class="info-item">
-                                    <span class="text-muted">Vai trò:</span>
-                                    <span class="fw-bold">{{ $user->role->name ?? 'Chưa phân quyền' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="text-muted">Trạng thái:</span>
-                                    <span
-                                        class="badge bg-{{ $user->status_user == 'active' ? 'success' : ($user->status_user == 'inactive' ? 'warning' : 'danger') }} ms-2">
-                                        {{ $user->status_user == 'active' ? 'Hoạt động' : ($user->status_user == 'inactive' ? 'Không hoạt động' : 'Bị khóa') }}
-                                    </span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="text-muted">Ngày tạo:</span>
-                                    <span class="fw-bold">{{ $user->created_at->format('d/m/Y H:i') }}</span>
-                                </div>
+                            <div class="mb-2">
+                                <span class="text-body-secondary">Trạng thái:</span>
+                                <span
+                                    class="badge badge-phoenix fs-10 ms-2 {{ $user->status_user == 'active' ? 'badge-phoenix-success' : ($user->status_user == 'inactive' ? 'badge-phoenix-warning' : 'badge-phoenix-danger') }}">
+                                    {{ $user->status_user == 'active' ? 'Hoạt động' : ($user->status_user == 'inactive' ? 'Không hoạt động' : 'Bị khóa') }}
+                                </span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-body-secondary">Ngày tạo:</span>
+                                <span class="fw-semibold text-body">{{ $user->created_at->format('d/m/Y H:i') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Right Column: Personal Info -->
-                <div class="col-lg-8 col-md-12">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title text-primary mb-0"><i class="fas fa-user me-2"></i>Thông tin cá nhân</h5>
-                            @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
-                                <button type="button" class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#editProfileModal">
-                                    <i class="fas fa-edit me-1"></i> Chỉnh sửa
+            <!-- Right Column: Personal Info -->
+            <div class="col-lg-8 col-md-12">
+                <div class="card h-100 bg-body-emphasis shadow-sm border-0">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-body-emphasis border-0">
+                        <h5 class="card-title text-body-emphasis mb-0"><span class="fas fa-user me-2"></span>Thông tin cá
+                            nhân</h5>
+                        <div>
+                        @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
+                                <button type="button" class="btn btn-phoenix-primary btn-sm me-2" data-bs-toggle="modal"
+                                data-bs-target="#editProfileModal">
+                                <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                            </button>
+                                <button type="button" class="btn btn-phoenix-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#changePasswordModal">
+                                    <i class="fas fa-key me-1"></i> Đổi mật khẩu
                                 </button>
-                            @endif
+                        @endif
                         </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <!-- Personal Info Items -->
-                                <div class="col-md-6">
-                                    <div class="info-card shadow-sm">
-                                        <div class="info-icon">
-                                            <i class="fas fa-user text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <label class="form-label text-muted">Họ và tên</label>
-                                            <p class="fw-bold mb-0">{{ $user->name }}</p>
-                                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="info-card shadow-sm">
+                                    <div class="info-icon">
+                                        <i class="fas fa-user text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <label class="form-label text-muted">Họ và tên</label>
+                                        <p class="fw-bold mb-0">{{ $user->name }}</p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card shadow-sm">
-                                        <div class="info-icon">
-                                            <i class="fas fa-envelope text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <label class="form-label text-muted">Email</label>
-                                            <p class="fw-bold mb-0">{{ $user->email }}</p>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card shadow-sm">
+                                    <div class="info-icon">
+                                        <i class="fas fa-envelope text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <label class="form-label text-muted">Email</label>
+                                        <p class="fw-bold mb-0">{{ $user->email }}</p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card shadow-sm">
-                                        <div class="info-icon">
-                                            <i class="fas fa-phone text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <label class="form-label text-muted">Số điện thoại</label>
-                                            <p class="fw-bold mb-0">{{ $user->phone ?? 'Chưa cập nhật' }}</p>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card shadow-sm">
+                                    <div class="info-icon">
+                                        <i class="fas fa-phone text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <label class="form-label text-muted">Số điện thoại</label>
+                                        <p class="fw-bold mb-0">{{ $user->phone ?? 'Chưa cập nhật' }}</p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card shadow-sm">
-                                        <div class="info-icon">
-                                            <i class="fas fa-calendar text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <label class="form-label text-muted">Ngày sinh</label>
-                                            <p class="fw-bold mb-0">
-                                                {{ $user->date_birth ? date('d/m/Y', strtotime($user->date_birth)) : 'Chưa cập nhật' }}
-                                            </p>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card shadow-sm">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <label class="form-label text-muted">Ngày sinh</label>
+                                        <p class="fw-bold mb-0">
+                                            {{ $user->date_birth ? date('d/m/Y', strtotime($user->date_birth)) : 'Chưa cập nhật' }}
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card shadow-sm">
-                                        <div class="info-icon">
-                                            <i class="fas fa-venus-mars text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <label class="form-label text-muted">Giới tính</label>
-                                            <p class="fw-bold mb-0">
-                                                @if ($user->gender == 'male')
-                                                    Nam
-                                                @elseif($user->gender == 'female')
-                                                    Nữ
-                                                @elseif($user->gender == 'other')
-                                                    Khác
-                                                @else
-                                                    Chưa cập nhật
-                                                @endif
-                                            </p>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card shadow-sm">
+                                    <div class="info-icon">
+                                        <i class="fas fa-venus-mars text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <label class="form-label text-muted">Giới tính</label>
+                                        <p class="fw-bold mb-0">
+                                            @if ($user->gender == 'male')
+                                                Nam
+                                            @elseif($user->gender == 'female')
+                                                Nữ
+                                            @elseif($user->gender == 'other')
+                                                Khác
+                                            @else
+                                                Chưa cập nhật
+                                            @endif
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card shadow-sm">
-                                        <div class="info-icon">
-                                            <i class="fas fa-map-marker-alt text-primary"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <label class="form-label text-muted">Địa chỉ</label>
-                                            <p class="fw-bold mb-0">{{ $user->address ?? 'Chưa cập nhật' }}</p>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card shadow-sm">
+                                    <div class="info-icon">
+                                        <i class="fas fa-map-marker-alt text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <label class="form-label text-muted">Địa chỉ</label>
+                                        <p class="fw-bold mb-0">{{ $user->address ?? 'Chưa cập nhật' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -206,7 +204,7 @@
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="name" class="form-label"><i class="fas fa-user me-1"></i>Họ và
+                                <label for="name" class="form-label"><span class="fas fa-user me-1"></span>Họ và
                                     tên</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
                                     id="name" name="name" value="{{ old('name', $user->name) }}" required>
@@ -215,8 +213,8 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="email" class="form-label"><i
-                                        class="fas fa-envelope me-1"></i>Email</label>
+                                <label for="email" class="form-label"><span
+                                        class="fas fa-envelope me-1"></span>Email</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
                                     id="email" name="email" value="{{ old('email', $user->email) }}" required>
                                 @error('email')
@@ -224,7 +222,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="phone" class="form-label"><i class="fas fa-phone me-1"></i>Số điện
+                                <label for="phone" class="form-label"><span class="fas fa-phone me-1"></span>Số điện
                                     thoại</label>
                                 <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                     id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
@@ -233,7 +231,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="date_birth" class="form-label"><i class="fas fa-calendar me-1"></i>Ngày
+                                <label for="date_birth" class="form-label"><span class="fas fa-calendar me-1"></span>Ngày
                                     sinh</label>
                                 <input type="date" class="form-control @error('date_birth') is-invalid @enderror"
                                     id="date_birth" name="date_birth"
@@ -243,7 +241,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="gender" class="form-label"><i class="fas fa-venus-mars me-1"></i>Giới
+                                <label for="gender" class="form-label"><span class="fas fa-venus-mars me-1"></span>Giới
                                     tính</label>
                                 <select class="form-select @error('gender') is-invalid @enderror" id="gender"
                                     name="gender">
@@ -260,26 +258,62 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="address" class="form-label"><i class="fas fa-map-marker-alt me-1"></i>Địa
-                                    chỉ</label>
+                                <label for="address" class="form-label"><span
+                                        class="fas fa-map-marker-alt me-1"></span>Địa chỉ</label>
                                 <input type="text" class="form-control @error('address') is-invalid @enderror"
                                     id="address" name="address" value="{{ old('address', $user->address) }}">
                                 @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
-                                <label for="password" class="form-label"><i class="fas fa-lock me-1"></i>Mật khẩu
-                                    mới</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-phoenix-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-phoenix-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{{ route('admin.users.updatePassword') }}" method="POST" id="changePasswordForm">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Đổi mật khẩu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">
+                                <span class="fas fa-lock me-1"></span>Mật khẩu hiện tại
+                            </label>
+                            <input type="password" class="form-control @error('current_password') is-invalid @enderror"
+                                id="current_password" name="current_password" required>
+                            @error('current_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3" id="newPasswordFields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <span class="fas fa-lock me-1"></span>Mật khẩu mới
+                                </label>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                    id="password" name="password" autocomplete="new-password">
+                                    id="password" name="password">
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6">
-                                <label for="password_confirmation" class="form-label"><i class="fas fa-lock me-1"></i>Xác
-                                    nhận mật khẩu</label>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label">
+                                    <span class="fas fa-lock me-1"></span>Xác nhận mật khẩu mới
+                                </label>
                                 <input type="password" class="form-control" id="password_confirmation"
                                     name="password_confirmation">
                             </div>
@@ -287,7 +321,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-phoenix-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-phoenix-primary">Lưu thay đổi</button>
+                        <button type="button" class="btn btn-phoenix-primary" id="verifyCurrentPassword">Xác nhận</button>
+                        <button type="submit" class="btn btn-phoenix-primary" id="submitNewPassword" style="display: none;">Lưu mật khẩu mới</button>
                     </div>
                 </form>
             </div>
@@ -301,11 +336,6 @@
             background-color: #f8f9fa;
             font-family: 'Inter', sans-serif;
         }
-
-        .content {
-            padding-top: 2rem;
-        }
-
         .card {
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -345,21 +375,6 @@
         .btn-phoenix-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
-            color: white;
-        }
-
-        .btn-phoenix-secondary {
-            background: linear-gradient(45deg, #6c757d, #5a6268);
-            border: none;
-            color: white;
-            border-radius: 8px;
-            padding: 0.5rem 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-phoenix-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
             color: white;
         }
 
@@ -506,6 +521,68 @@
                 }
                 reader.readAsDataURL(file);
             }
+        });
+
+        // Handle password change
+        document.getElementById('verifyCurrentPassword').addEventListener('click', function() {
+            const currentPassword = document.getElementById('current_password').value;
+            const currentPasswordInput = document.getElementById('current_password');
+            
+            // Xóa thông báo lỗi cũ nếu có
+            currentPasswordInput.classList.remove('is-invalid');
+            const oldFeedback = currentPasswordInput.parentNode.querySelector('.invalid-feedback');
+            if (oldFeedback) {
+                oldFeedback.remove();
+            }
+            
+            // Gửi request kiểm tra mật khẩu hiện tại
+            fetch('{{ route("admin.users.verifyPassword") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    current_password: currentPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hiển thị form nhập mật khẩu mới
+                    document.getElementById('newPasswordFields').style.display = 'block';
+                    currentPasswordInput.readOnly = true;
+                    document.getElementById('verifyCurrentPassword').style.display = 'none';
+                    document.getElementById('submitNewPassword').style.display = 'block';
+                } else {
+                    // Hiển thị lỗi
+                    const feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback d-block';
+                    feedback.textContent = 'Mật khẩu hiện tại không đúng';
+                    currentPasswordInput.classList.add('is-invalid');
+                    currentPasswordInput.parentNode.appendChild(feedback);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Reset form when modal is closed
+        document.getElementById('changePasswordModal').addEventListener('hidden.bs.modal', function () {
+            const form = document.getElementById('changePasswordForm');
+            const currentPasswordInput = document.getElementById('current_password');
+            
+            form.reset();
+            document.getElementById('newPasswordFields').style.display = 'none';
+            currentPasswordInput.readOnly = false;
+            document.getElementById('verifyCurrentPassword').style.display = 'block';
+            document.getElementById('submitNewPassword').style.display = 'none';
+            
+            // Xóa tất cả thông báo lỗi
+            currentPasswordInput.classList.remove('is-invalid');
+            const feedbacks = form.querySelectorAll('.invalid-feedback');
+            feedbacks.forEach(feedback => feedback.remove());
         });
     </script>
 @endpush

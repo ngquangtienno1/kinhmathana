@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('status', 50)->nullable()->default('in_stock');
             $table->foreignId('color_id')->nullable()->constrained('colors')->onDelete('set null');
             $table->foreignId('size_id')->nullable()->constrained('sizes')->onDelete('set null');
+            $table->foreignId('spherical_id')->nullable()->constrained('sphericals')->onDelete('set null');
+            $table->foreignId('cylindrical_id')->nullable()->constrained('cylindricals')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
         });

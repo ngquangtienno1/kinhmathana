@@ -168,7 +168,7 @@ class SliderController extends Controller
 
     public function bin()
     {
-        $sliders = Slider::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        $sliders = Slider::onlyTrashed()->orderBy('deleted_at', 'desc')->get();
         return view('admin.sliders.bin', compact('sliders'));
     }
 

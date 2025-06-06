@@ -19,6 +19,8 @@ return new class extends Migration
             $table->enum('priority', ['thấp', 'trung bình', 'cao'])->default('trung bình');
             $table->foreignId('user_id')->constrained(); // Người gửi
             $table->foreignId('assigned_to')->nullable()->constrained('users'); // Nhân viên xử lý
+            $table->boolean('is_visible')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

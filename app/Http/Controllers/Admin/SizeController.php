@@ -8,23 +8,23 @@ use App\Models\Size;
 
 class SizeController extends Controller
 {
-   public function index(Request $request)
-{
-    $query = Size::query();
+    public function index(Request $request)
+    {
+        $query = Size::query();
 
-    // Tìm kiếm theo tên size hoặc mô tả (không phân biệt hoa thường)
-    if ($request->filled('search')) {
-        $search = mb_strtolower(trim($request->search));
-        $query->where(function ($q) use ($search) {
-            $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
-        });
+        // Tìm kiếm theo tên size hoặc mô tả (không phân biệt hoa thường)
+        if ($request->filled('search')) {
+            $search = mb_strtolower(trim($request->search));
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+            });
+        }
+
+        $sizes = $query->orderBy('sort_order')->get();
+
+        return view('admin.sizes.index', compact('sizes'));
     }
-
-    $sizes = $query->orderBy('sort_order')->paginate(10);
-
-    return view('admin.sizes.index', compact('sizes'));
-}
 
 
     public function create()

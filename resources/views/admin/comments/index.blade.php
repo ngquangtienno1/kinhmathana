@@ -62,7 +62,7 @@
                         <th class="align-middle text-center px-3" style="width:50px;">ID</th>
                         <th class="align-middle text-center px-3" style="width:100px;">Người dùng</th>
                         <th class="align-middle text-center px-3" style="width:100px;">Loại</th>
-                        <th class="align-middle text-center px-3" style="width:110px;">ID Đối tượng</th>
+                        <th class="align-middle text-center px-3" style="width:110px;">Tên đối tượng</th>
                         <th class="align-middle text-start px-4" style="min-width:300px;">Nội dung</th>
                         <th class="align-middle text-center px-3" style="width:120px;">Trạng thái</th>
                         <th class="align-middle text-center px-3" style="width:120px;">Trạng thái khóa</th>
@@ -85,9 +85,19 @@
                                 {{ $comment->user->name ?? 'N/A' }}<br><small>{{ $comment->user->email ?? '' }}</small>
                             </td>
                             <td class="entityType align-middle text-center px-3">{{ $comment->entity_type }}</td>
-                            <td class="entityId align-middle text-center px-3">{{ $comment->entity_id }}</td>
+                            <td class="entityId align-middle text-center px-3">
+                                @if ($comment->entity_type === 'product' && $comment->product)
+                                    {{ $comment->product->name }}
+                                @elseif ($comment->entity_type === 'news' && $comment->news)
+                                    {{ $comment->news->title }}
+                                @else
+                                    {{ $comment->entity_id }}
+                                @endif
+                            </td>
+
                             <td class="content align-middle text-start px-4">{{ $comment->content }}</td>
                             <td class="status align-middle text-center px-3">
+                                {{-- Hiển thị trạng thái --}}
                                 @if ($comment->trashed())
                                     <span class="badge bg-secondary">Đã xóa</span>
                                 @else
@@ -124,12 +134,9 @@
                                 @endif
                             </td>
 
-
-
-
-
                             <td class="createdAt align-middle text-center px-3 white-space-nowrap">
                                 {{ $comment->created_at->format('d/m/Y H:i') }}</td>
+
                             <td class="align-middle text-center px-3 white-space-nowrap pe-0 ps-4 btn-reveal-trigger">
                                 <div class="btn-reveal-trigger position-static">
                                     <button
@@ -139,11 +146,12 @@
                                         <span class="fas fa-ellipsis-h fs-10"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
-                                        <a class="dropdown-item" href="">Xem</a>
                                         <a class="dropdown-item"
-                                            href="{{ route('admin.comments.edit', $comment->id) }}">Sửa</a>
-                                        <div class="dropdown-divider"></div>
+                                            href="{{ route('admin.comments.show', $comment->id) }}">Xem</a>
 
+                                        <a class="dropdown-item btn-reply-comment" href="#"
+                                            data-comment-id="{{ $comment->id }}" data-bs-toggle="modal"
+                                            data-bs-target="#replyModal">Trả lời</a>
 
                                         @if (request('status') === 'trashed' && $comment->trashed())
                                             <form action="{{ route('admin.comments.restore', $comment->id) }}"
@@ -166,7 +174,7 @@
                                         @else
                                             <form
                                                 action="{{ route('admin.comments.toggle-visibility', $comment->id) }}"
-                                                method="POST">
+                                                method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="is_hidden"
@@ -184,17 +192,18 @@
                                                     onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">Xóa</button>
                                             </form>
                                         @endif
-
                                     </div>
+
                                 </div>
                             </td>
                         </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">Không có bình luận nào.</td>
+                                <td colspan="10" class="text-center">Không có bình luận nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
@@ -217,5 +226,49 @@
             </div>
         </div>
     </div>
+    <!-- Modal Trả lời bình luận -->
+    <div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="" id="replyForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="replyModalLabel">Trả lời bình luận</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="replyContent" class="form-label">Nội dung trả lời</label>
+                            <textarea class="form-control" id="replyContent" name="reply_content" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Gửi trả lời</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const replyModal = document.getElementById('replyModal');
+            const replyForm = document.getElementById('replyForm');
+
+            document.querySelectorAll('.btn-reply-comment').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const commentId = this.getAttribute('data-comment-id');
+                    replyForm.action = `/admin/comments/${commentId}/reply`;
+                    replyForm.reset();
+
+                    // Hiển thị modal (nếu dùng bootstrap 5)
+                    const bsModal = new bootstrap.Modal(replyModal);
+                    bsModal.show();
+                });
+            });
+        });
+    </script>
 
 @endsection

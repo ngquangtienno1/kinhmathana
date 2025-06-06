@@ -23,7 +23,7 @@ return new class extends Migration
                 'processing',        // Đang đóng gói/kiểm hàng
                 'shipping',          // Đang vận chuyển
                 'delivered',         // Đã giao hàng
-                'returned',          // Khách trả hàng
+                'return_rejected',   // Khách trả hàng
                 'processing_return', // Đang xử lý trả hàng
                 'refunded',          // Đã hoàn tiền
             ])->comment('Trạng thái cũ');
@@ -34,7 +34,7 @@ return new class extends Migration
                 'processing',        // Đang đóng gói/kiểm hàng
                 'shipping',          // Đang vận chuyển
                 'delivered',         // Đã giao hàng
-                'returned',          // Khách trả hàng
+                'return_rejected',   // Khách trả hàng
                 'processing_return', // Đang xử lý trả hàng
                 'refunded',          // Đã hoàn tiền
             ])->comment('Trạng thái mới');

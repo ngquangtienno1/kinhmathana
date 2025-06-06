@@ -26,6 +26,9 @@
                         <button class="nav-link" id="product-images-tab" data-bs-toggle="tab" data-bs-target="#product-images" type="button" role="tab" aria-controls="product-images" aria-selected="false">Album ảnh</button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="product-video-tab" data-bs-toggle="tab" data-bs-target="#product-video" type="button" role="tab" aria-controls="product-video" aria-selected="false">Video sản phẩm</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="product-reviews-tab" data-bs-toggle="tab" data-bs-target="#product-reviews" type="button" role="tab" aria-controls="product-reviews" aria-selected="false">Bình luận và đánh giá</button>
                     </li>
                 </ul>
@@ -91,7 +94,11 @@
                                     </tr>
                                     <tr>
                                         <th>Mô tả chi tiết</th>
-                                        <td>{!! $product->description_long !!}</td>
+                                        <td>
+                                            <div class="product-description">
+                                                {!! $product->description_long !!}
+                                            </div>
+                                        </td>
                                     </tr>
                                 </table>
 
@@ -183,6 +190,21 @@
                         @endif
                     </div>
 
+                    <!-- Tab Video sản phẩm -->
+                    <div class="tab-pane fade" id="product-video" role="tabpanel" aria-labelledby="product-video-tab">
+                        <h5>Video sản phẩm</h5>
+                        @if ($product->video_path)
+                            <div class="video-container">
+                                <video class="product-video" controls>
+                                    <source src="{{ asset('storage/' . $product->video_path) }}" type="video/mp4">
+                                    Trình duyệt của bạn không hỗ trợ thẻ video.
+                                </video>
+                            </div>
+                        @else
+                            <p class="text-muted">Chưa có video sản phẩm.</p>
+                        @endif
+                    </div>
+
                     <!-- Tab Bình luận và đánh giá -->
                     <div class="tab-pane fade" id="product-reviews" role="tabpanel" aria-labelledby="product-reviews-tab">
                         <h4>Đánh giá</h4>
@@ -262,6 +284,15 @@
             padding: 2px;
             border-radius: 4px;
         }
+        .video-container {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .product-video {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
         .reviews-list .review-item {
             background-color: #f9f9f9;
         }
@@ -277,6 +308,26 @@
         }
         .accordion-button {
             font-weight: bold;
+        }
+        .product-description {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .product-description img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        .product-description p {
+            margin-bottom: 1rem;
+        }
+        .product-description ul, .product-description ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        th {
+            white-space: nowrap;
+            vertical-align: top;
         }
     </style>
 

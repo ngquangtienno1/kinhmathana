@@ -57,11 +57,14 @@ return new class extends Migration
                 'delivered',         // Đã giao hàng
                 'returned',          // Khách trả hàng
                 'processing_return', // Đang xử lý trả hàng
+                'return_rejected',   // Trả hàng bị từ chối
                 'cancelled',         // Đã hủy
-                'returned_refunded', // Trả hàng / Hoàn tiền
                 'completed',         // Đã hoàn thành
                 'refunded'           // Đã hoàn tiền
             ])->default('pending');
+
+            // Thêm trường cancellation_reason_id
+            $table->foreignId('cancellation_reason_id')->nullable()->constrained('cancellation_reasons')->nullOnDelete();
 
             // Thông tin bổ sung
             $table->text('note')->nullable()->comment('Ghi chú từ khách hàng');
