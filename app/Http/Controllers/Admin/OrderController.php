@@ -49,12 +49,18 @@ class OrderController extends Controller
         $orders = $query->get();
         // Đếm số lượng các trạng thái
         $countAll = Order::count();
-        $countPending = Order::where('payment_status', 'pending')->count();
-        $countUnfulfilled = Order::where('status', 'pending')->count();
-        $countCompleted = Order::where('status', 'delivered')->count();
-        $countRefunded = Order::where('payment_status', 'refunded')->count();
-        $countFailed = Order::where('payment_status', 'failed')->count();
-        return view('admin.orders.index', compact('orders', 'countAll', 'countPending', 'countUnfulfilled', 'countCompleted', 'countRefunded', 'countFailed'));
+        $countPending = Order::where('status', 'pending')->count();
+        $countShipping = Order::where('status', 'shipping')->count();
+        $countDelivered = Order::where('status', 'delivered')->count();
+        $countCancelled = Order::where('status', 'cancelled')->count();
+        return view('admin.orders.index', compact(
+            'orders',
+            'countAll',
+            'countPending',
+            'countShipping',
+            'countDelivered',
+            'countCancelled'
+        ));
     }
 
     /**
@@ -184,7 +190,7 @@ class OrderController extends Controller
         $request->validate([
             'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,returned,processing_return,return_rejected,completed,refunded,cancelled',
             'comment' => 'nullable|string',
-            'cancellation_reason_id' => 'nullable|exists:cancellation_reasons,id',
+            'cancellation_reason_id' => 'nullable',
         ]);
 
         DB::transaction(function () use ($order, $request) {
@@ -197,7 +203,17 @@ class OrderController extends Controller
                 if (!$request->cancellation_reason_id) {
                     throw new \Exception('Vui lòng chọn lý do huỷ đơn hàng!');
                 }
-                $updateData['cancellation_reason_id'] = $request->cancellation_reason_id;
+                if (str_starts_with($request->cancellation_reason_id, 'other:')) {
+                    $newReason = trim(substr($request->cancellation_reason_id, 6));
+                    $reason = \App\Models\CancellationReason::create([
+                        'reason' => $newReason,
+                        'type' => 'admin',
+                        'is_active' => true,
+                    ]);
+                    $updateData['cancellation_reason_id'] = $reason->id;
+                } else {
+                    $updateData['cancellation_reason_id'] = $request->cancellation_reason_id;
+                }
                 $updateData['cancelled_at'] = now();
             } else {
                 $updateData['cancellation_reason_id'] = null;

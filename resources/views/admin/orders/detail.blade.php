@@ -242,16 +242,22 @@
                                         $orderStatusColor = $order->getStatusColorAttribute();
                                     @endphp
                                     <span class="badge bg-{{ $orderStatusColor }}">{{ $orderStatusLabel }}</span>
-                                    @if($order->status === 'cancelled')
+                                    @if ($order->status === 'cancelled')
                                         <br>
-                                        @if($order->cancellationReason)
-                                            <span class="text-danger">Lý do huỷ: {{ $order->cancellationReason->reason }}</span><br>
+                                        @if ($order->cancellationReason)
+                                            <span class="text-danger">Lý do huỷ:
+                                                {{ $order->cancellationReason->reason }}</span><br>
                                         @endif
                                         @php
-                                            $cancelHistory = $order->statusHistories()->where('new_status', 'cancelled')->latest()->first();
+                                            $cancelHistory = $order
+                                                ->statusHistories()
+                                                ->where('new_status', 'cancelled')
+                                                ->latest()
+                                                ->first();
                                         @endphp
-                                        @if($cancelHistory && $cancelHistory->updatedBy)
-                                            <span class="text-muted">Huỷ bởi: {{ $cancelHistory->updatedBy->name }}</span>
+                                        @if ($cancelHistory && $cancelHistory->updatedBy)
+                                            <span class="text-muted">Huỷ bởi:
+                                                {{ $cancelHistory->updatedBy->name }}</span>
                                         @endif
                                     @endif
                                 </p>
@@ -303,9 +309,12 @@
                 <div class="card-body">
                     <h3 class="card-title mb-4">Cập nhật trạng thái</h3>
                     @php
-                        $adminCancellationReasons = \App\Models\CancellationReason::where('type', 'admin')->where('is_active', true)->get();
+                        $adminCancellationReasons = \App\Models\CancellationReason::where('type', 'admin')
+                            ->where('is_active', true)
+                            ->get();
                     @endphp
-                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" id="order-status-form">
+                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST"
+                        id="order-status-form">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
@@ -340,18 +349,22 @@
                                 $current = $order->status;
                                 $canUpdate = count($statusTransitions[$current]) > 0;
                             @endphp
-                            <select name="status" class="form-select" id="order-status-select" {{ !$canUpdate ? 'disabled' : '' }}>
+                            <select name="status" class="form-select" id="order-status-select"
+                                {{ !$canUpdate ? 'disabled' : '' }}>
                                 <option value="{{ $current }}">{{ $statusLabels[$current] }}</option>
-                                @foreach($statusTransitions[$current] as $next)
+                                @foreach ($statusTransitions[$current] as $next)
                                     <option value="{{ $next }}">{{ $statusLabels[$next] }}</option>
                                 @endforeach
                             </select>
-                            @if(!$canUpdate)
-                                <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật nữa.</small></div>
+                            @if (!$canUpdate)
+                                <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật
+                                        nữa.</small></div>
                             @endif
                         </div>
-                        <input type="hidden" name="cancellation_reason_id" id="cancellation_reason_id" value="">
-                        <button type="submit" class="btn btn-primary w-100" id="order-status-submit" {{ !$canUpdate ? 'disabled' : '' }}>
+                        <input type="hidden" name="cancellation_reason_id" id="cancellation_reason_id"
+                            value="">
+                        <button type="submit" class="btn btn-primary w-100" id="order-status-submit"
+                            {{ !$canUpdate ? 'disabled' : '' }}>
                             Cập nhật trạng thái
                         </button>
                     </form>
@@ -362,7 +375,8 @@
 </div>
 
 <!-- Modal chọn lý do huỷ -->
-<div class="modal fade" id="cancellationReasonModal" tabindex="-1" aria-labelledby="cancellationReasonModalLabel" aria-hidden="true">
+<div class="modal fade" id="cancellationReasonModal" tabindex="-1" aria-labelledby="cancellationReasonModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -371,13 +385,17 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="cancellation_reason_select" class="form-label">Lý do huỷ <span class="text-danger">*</span></label>
+                    <label for="cancellation_reason_select" class="form-label">Lý do huỷ <span
+                            class="text-danger">*</span></label>
                     <select class="form-select" id="cancellation_reason_select">
                         <option value="">-- Chọn lý do huỷ --</option>
-                        @foreach($adminCancellationReasons as $reason)
+                        @foreach ($adminCancellationReasons as $reason)
                             <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
                         @endforeach
+                        <option value="other">-- Khác (Nhập lý do mới) --</option>
                     </select>
+                    <input type="text" class="form-control mt-2 d-none" id="cancellation_reason_other"
+                        placeholder="Nhập lý do huỷ mới">
                 </div>
             </div>
             <div class="modal-footer">
@@ -393,11 +411,24 @@
         const statusSelect = document.getElementById('order-status-select');
         const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
         const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
+        const cancellationReasonOther = document.getElementById('cancellation_reason_other');
         const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
         const orderStatusForm = document.getElementById('order-status-form');
         const orderStatusSubmit = document.getElementById('order-status-submit');
 
         let shouldShowModal = false;
+
+        // Hiện/ẩn input nhập lý do mới
+        cancellationReasonSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                cancellationReasonOther.classList.remove('d-none');
+                cancellationReasonOther.required = true;
+            } else {
+                cancellationReasonOther.classList.add('d-none');
+                cancellationReasonOther.value = '';
+                cancellationReasonOther.required = false;
+            }
+        });
 
         statusSelect.addEventListener('change', function(e) {
             if (this.value === 'cancelled') {
@@ -417,7 +448,18 @@
                 return;
             }
             cancellationReasonSelect.classList.remove('is-invalid');
-            cancellationReasonIdInput.value = selectedReason;
+            if (selectedReason === 'other') {
+                if (!cancellationReasonOther.value.trim()) {
+                    cancellationReasonOther.classList.add('is-invalid');
+                    return;
+                }
+                cancellationReasonOther.classList.remove('is-invalid');
+                // Gửi lý do mới qua hidden input (có thể dùng 1 hidden input hoặc truyền qua cancellation_reason_id)
+                cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
+            } else {
+                cancellationReasonOther.classList.remove('is-invalid');
+                cancellationReasonIdInput.value = selectedReason;
+            }
             cancellationReasonModal.hide();
             orderStatusSubmit.disabled = false;
         });

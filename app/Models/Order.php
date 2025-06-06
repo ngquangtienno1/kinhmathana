@@ -96,16 +96,18 @@ class Order extends Model
     public function getStatusLabelAttribute()
     {
         return match ($this->status) {
-            'pending' => 'Chờ xử lý',
-            'awaiting_payment' => 'Chờ thanh toán',
+            'pending' => 'Chờ xác nhận',
             'confirmed' => 'Đã xác nhận',
-            'processing' => 'Đang xử lý',
-            'shipping' => 'Đang giao hàng',
+            'awaiting_pickup' => 'Chờ lấy hàng',
+            'shipping' => 'Đang giao',
             'delivered' => 'Đã giao hàng',
-            'returned' => 'Đã trả hàng',
+            'completed' => 'Đã hoàn thành',
+            'cancelled' => 'Đã huỷ',
+            'returned' => 'Khách trả hàng',
             'processing_return' => 'Đang xử lý trả hàng',
+            'return_rejected' => 'Trả hàng bị từ chối',
             'refunded' => 'Đã hoàn tiền',
-            default => 'Không xác định'
+            default => 'Không xác định',
         };
     }
 
@@ -127,15 +129,17 @@ class Order extends Model
     {
         return match ($this->status) {
             'pending' => 'secondary',
-            'awaiting_payment' => 'warning',
             'confirmed' => 'info',
-            'processing' => 'primary',
-            'shipping' => 'primary',
+            'awaiting_pickup' => 'primary',
+            'shipping' => 'warning',
             'delivered' => 'success',
+            'completed' => 'success',
+            'cancelled' => 'danger',
             'returned' => 'danger',
             'processing_return' => 'warning',
+            'return_rejected' => 'danger',
             'refunded' => 'info',
-            default => 'secondary'
+            default => 'secondary',
         };
     }
 
