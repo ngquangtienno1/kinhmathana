@@ -262,7 +262,7 @@
             <div>Chữ ký người nhận: __________________________</div>
         </div>
         <div class="hana-hotline">
-            Tuyến dụng Tài xế/Điều phối kho SPX - Thu nhập 8-20 triệu - Gọi 1900 6885
+            Tuyến dụng Tài xế/Điều phối kho Hana - Thu nhập 8-20 triệu - Gọi 1900 6677
         </div>
         <button onclick="window.print()"
             style="margin-top:12px;width:100%;font-size:1.1em;padding:8px 0;background:#e67e22;color:#fff;border:none;border-radius:6px;cursor:pointer;">In

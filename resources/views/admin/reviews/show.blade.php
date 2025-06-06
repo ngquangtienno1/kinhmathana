@@ -111,14 +111,29 @@
                                             </a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Trạng thái đơn hàng</th>
-                                        <td>
-                                            <span class="badge badge-phoenix fs-10 badge-phoenix-success">
-                                                {{ $review->order->status }}
+                                    @php
+                                    $orderStatusMap = [
+                                        'delivered' => ['Đã giao hàng thành công', 'badge-phoenix-success', 'check'],
+                                        'completed' => ['Đơn hàng đã hoàn tất', 'badge-phoenix-primary', 'award'],
+                                    ];
+                                    $status = $review->order->status;
+                                    $os = $orderStatusMap[$status] ?? null;
+                                @endphp
+                                <tr>
+                                    <th>Trạng thái đơn hàng</th>
+                                    <td>
+                                        @if($os)
+                                            <span class="badge badge-phoenix fs-10 {{ $os[1] }}">
+                                                {{ $os[0] }}
+                                                <span class="ms-1" data-feather="{{ $os[2] }}" style="height:12.8px;width:12.8px;"></span>
                                             </span>
-                                        </td>
-                                    </tr>
+                                        @else
+                                            <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
+                                                Không cho phép đánh giá với trạng thái này
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
                                     <tr>
                                         <th>Ngày đặt hàng</th>
                                         <td>{{ $review->order->created_at->format('d/m/Y H:i') }}</td>
@@ -132,6 +147,35 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Admin Reply Section --}}
+                <div class="col-12">
+                    <div class="mb-4">
+                        <h4 class="mb-3">Trả lời đánh giá</h4>
+
+                        @if($review->reply)
+                            <div class="alert alert-secondary" role="alert">
+                                <strong>Admin đã trả lời:</strong>
+                                <p>{!! nl2br(e($review->reply)) !!}</p>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('admin.reviews.reply', $review->id) }}" method="POST">
+                            @csrf
+                            @method('PUT') {{-- Or PATCH --}}
+                            <div class="mb-3">
+                                <label for="adminReply" class="form-label">Nội dung trả lời:</label>
+                                <textarea class="form-control" id="adminReply" name="reply" rows="3">{{ old('reply', $review->reply) }}</textarea>
+                                @error('reply')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary">Gửi trả lời</button>
+                        </form>
+                    </div>
+                </div>
+                {{-- End Admin Reply Section --}}
+
             </div>
         </div>
     </div>

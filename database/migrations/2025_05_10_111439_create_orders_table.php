@@ -57,8 +57,8 @@ return new class extends Migration
                 'delivered',         // Đã giao hàng
                 'returned',          // Khách trả hàng
                 'processing_return', // Đang xử lý trả hàng
+                'return_rejected',   // Trả hàng bị từ chối
                 'cancelled',         // Đã hủy
-                'returned_refunded', // Trả hàng / Hoàn tiền
                 'completed',         // Đã hoàn thành
                 'refunded'           // Đã hoàn tiền
             ])->default('pending');

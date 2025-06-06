@@ -11,7 +11,7 @@
                 <div class="d-flex align-items-center">
                     <div class="d-flex align-items-center logo-container" style="margin-left: 20px;">
                         <div class="logo-wrapper">
-                            <img src="{{ getLogoUrl() }}" alt="phoenix" width="32" class="logo-img"
+                            <img src="{{ getLogoUrl() }}" alt="Hana Eyewear" width="32" class="logo-img"
                                 style="border-radius: 5px;" />
                         </div>
                         <h5 class="logo-text ms-3 d-none d-sm-block fw-bold">

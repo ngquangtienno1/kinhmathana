@@ -29,6 +29,11 @@ class Review extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(ReviewImage::class);
+    }
+
     public static function canReview($userId, $productId, $orderId)
     {
         // Kiểm tra đơn hàng có tồn tại và thuộc về người dùng không

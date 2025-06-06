@@ -78,7 +78,7 @@ class OrderFactory extends Factory
             'returned',          // Khách trả hàng
             'processing_return', // Đang xử lý trả hàng
             'cancelled',         // Đã hủy
-            'returned_refunded', // Trả hàng / Hoàn tiền
+            'return_rejected',   // Trả hàng bị từ chối
             'completed',         // Đã hoàn thành
             'refunded'           // Đã hoàn tiền
         ];

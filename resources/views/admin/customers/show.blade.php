@@ -141,8 +141,8 @@
                                                 'refresh-cw',
                                             ],
                                             'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
-                                            'returned_refunded' => [
-                                                'Trả hàng / Hoàn tiền',
+                                            'return_rejected' => [
+                                                'Trả hàng bị từ chối',
                                                 'badge-phoenix-danger',
                                                 'corner-up-left',
                                             ],

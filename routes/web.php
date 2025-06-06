@@ -404,6 +404,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-nhieu-danh-gia']);
         Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy')->middleware(['permission:xoa-danh-gia']);
+        Route::delete('/bulk-delete', [ReviewController::class, 'bulkDelete'])->name('bulk-delete');
+
+        // Add route for admin reply
+        Route::put('/{review}/reply', [ReviewController::class, 'reply'])->name('reply');
     });
 
     //Quản lý thanh toán

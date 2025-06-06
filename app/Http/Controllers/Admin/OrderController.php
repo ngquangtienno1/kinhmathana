@@ -143,7 +143,7 @@ class OrderController extends Controller
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
             'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
-            'status' => 'required|in:pending,awaiting_pickup,shipping,delivered,cancelled,returned_refunded,completed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,returned,processing_return,return_rejected,completed,refunded,cancelled',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -182,7 +182,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,awaiting_pickup,shipping,delivered,cancelled,returned_refunded,completed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,returned,processing_return,return_rejected,completed,refunded,cancelled',
             'comment' => 'nullable|string'
         ]);
 

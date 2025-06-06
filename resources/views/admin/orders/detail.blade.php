@@ -295,34 +295,48 @@
                         @method('PUT')
                         <div class="mb-3">
                             <label class="form-label">Trạng thái đơn hàng</label>
-                            <select name="status" class="form-select"
-                                {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý
-                                </option>
-                                <option value="awaiting_payment"
-                                    {{ $order->status == 'awaiting_payment' ? 'selected' : '' }}>Chờ thanh toán
-                                </option>
-                                <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác
-                                    nhận</option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đang
-                                    xử lý</option>
-                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang vận
-                                    chuyển</option>
-                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã
-                                    giao hàng</option>
-                                <option value="returned" {{ $order->status == 'returned' ? 'selected' : '' }}>Đã trả
-                                    hàng</option>
-                                <option value="processing_return"
-                                    {{ $order->status == 'processing_return' ? 'selected' : '' }}>Đang xử lý trả hàng
-                                </option>
-                                <option value="refunded" {{ $order->status == 'refunded' ? 'selected' : '' }}>Đã hoàn
-                                    tiền</option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy
-                                </option>
+                            @php
+                                $statusTransitions = [
+                                    'pending' => ['confirmed', 'cancelled'],
+                                    'confirmed' => ['awaiting_pickup', 'cancelled'],
+                                    'awaiting_pickup' => ['shipping', 'cancelled'],
+                                    'shipping' => ['delivered', 'returned'],
+                                    'delivered' => ['completed', 'returned'],
+                                    'completed' => [],
+                                    'returned' => ['processing_return'],
+                                    'processing_return' => ['return_rejected', 'refunded'],
+                                    'return_rejected' => ['refunded'],
+                                    'refunded' => [],
+                                    'cancelled' => [],
+                                ];
+                                $statusLabels = [
+                                    'pending' => 'Chờ xác nhận',
+                                    'confirmed' => 'Đã xác nhận',
+                                    'awaiting_pickup' => 'Chờ lấy hàng',
+                                    'shipping' => 'Đang giao',
+                                    'delivered' => 'Đã giao hàng',
+                                    'completed' => 'Đã hoàn thành',
+                                    'returned' => 'Khách trả hàng',
+                                    'processing_return' => 'Đang xử lý trả hàng',
+                                    'return_rejected' => 'Trả hàng bị từ chối',
+                                    'refunded' => 'Đã hoàn tiền',
+                                    'cancelled' => 'Đã hủy',
+                                ];
+                                $current = $order->status;
+                                $canUpdate = count($statusTransitions[$current]) > 0;
+                            @endphp
+                            <select name="status" class="form-select" {{ !$canUpdate ? 'disabled' : '' }}>
+                                <option value="{{ $current }}">{{ $statusLabels[$current] }}</option>
+                                @foreach($statusTransitions[$current] as $next)
+                                    <option value="{{ $next }}">{{ $statusLabels[$next] }}</option>
+                                @endforeach
                             </select>
+                            @if(!$canUpdate)
+                                <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật nữa.</small></div>
+                            @endif
                         </div>
                         <button type="submit" class="btn btn-primary w-100"
-                            {{ $order->status == 'cancelled' ? 'disabled' : '' }}>
+                            {{ !$canUpdate ? 'disabled' : '' }}>
                             Cập nhật trạng thái
                         </button>
                     </form>

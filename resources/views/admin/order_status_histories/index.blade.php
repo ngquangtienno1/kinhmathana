@@ -80,16 +80,17 @@
                                 <td class="old_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
                                     @php
                                         $orderStatusMap = [
-                                            'pending' => ['Đang chờ xử lý', 'badge-phoenix-warning', 'clock'],
-                                            'awaiting_payment' => ['Chờ thanh toán', 'badge-phoenix-info', 'clock'],
+                                            'pending' => ['Chờ xác nhận', 'badge-phoenix-warning', 'clock'],
                                             'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check'],
-                                            'processing' => ['Đang xử lý', 'badge-phoenix-secondary', 'refresh-cw'],
-                                            'shipping' => ['Đang vận chuyển', 'badge-phoenix-dark', 'truck'],
+                                            'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
+                                            'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
                                             'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
                                             'returned' => ['Khách trả hàng', 'badge-phoenix-danger', 'corner-up-left'],
                                             'processing_return' => ['Đang xử lý trả hàng', 'badge-phoenix-warning', 'refresh-cw'],
+                                            'return_rejected' => ['Trả hàng bị từ chối', 'badge-phoenix-danger', 'corner-up-left'],
+                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
                                             'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'cancelled' => ['Đã huỷ', 'badge-phoenix-secondary', 'x'],
+                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
                                         ];
                                         $os = $orderStatusMap[$history->old_status] ?? [
                                             ucfirst($history->old_status),
