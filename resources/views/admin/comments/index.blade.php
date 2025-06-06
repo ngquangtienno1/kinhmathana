@@ -19,6 +19,8 @@
 <div id="comments"
     data-list='{"valueNames":["userId","userName","entityType","entityId","content","status","createdAt"],"page":10,"pagination":true}'>
     <div class="mb-4">
+<a href="{{ route('admin.comments.badwords.index') }}">Quản lý từ cấm</a>
+
         <form action="{{ route('admin.comments.index') }}" method="GET"
             class="d-flex flex-nowrap gap-2 align-items-end" style="overflow-x:auto;">
             <input class="form-control w-auto" type="search" name="search" placeholder="Tìm kiếm bình luận"

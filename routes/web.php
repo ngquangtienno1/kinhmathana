@@ -20,14 +20,12 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SphericalController;
+use App\Http\Controllers\Admin\CylindricalController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\ProductImageController;
-use App\Http\Controllers\Admin\VariationImageController;
-use App\Http\Controllers\Admin\TestNotificationController;
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\TicketController;
@@ -217,6 +215,36 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-kich-thuoc']);
         Route::delete('/{id}/destroy', [SizeController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-kich-thuoc']);
+    });
+
+    // Sphericals
+    Route::prefix('sphericals')->name('sphericals.')->middleware(['permission:xem-do-can'])->group(function () {
+        Route::get('/', [SphericalController::class, 'index'])->name('index');
+        Route::get('/create', [SphericalController::class, 'create'])->name('create')
+            ->middleware(['permission:them-do-can']);
+        Route::post('/', [SphericalController::class, 'store'])->name('store')
+            ->middleware(['permission:them-do-can']);
+        Route::get('/edit/{id}', [SphericalController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-do-can']);
+        Route::put('/update/{id}', [SphericalController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-do-can']);
+        Route::delete('/destroy/{id}', [SphericalController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-do-can']);
+    });
+
+    // Cylindricals
+    Route::prefix('cylindricals')->name('cylindricals.')->middleware(['permission:xem-do-loan'])->group(function () {
+        Route::get('/', [CylindricalController::class, 'index'])->name('index');
+        Route::get('/create', [CylindricalController::class, 'create'])->name('create')
+            ->middleware(['permission:them-do-loan']);
+        Route::post('/', [CylindricalController::class, 'store'])->name('store')
+            ->middleware(['permission:them-do-loan']);
+        Route::get('/edit/{id}', [CylindricalController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-do-loan']);
+        Route::put('/update/{id}', [CylindricalController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-do-loan']);
+        Route::delete('/destroy/{id}', [CylindricalController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-do-loan']);
     });
 
     // Category
@@ -417,8 +445,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/{id}', [PaymentController::class, 'show'])->name('show');
         Route::patch('/{id}/status', [PaymentController::class, 'updateStatus'])->name('updateStatus')
             ->middleware(['permission:cap-nhat-trang-thai-thanh-toan']);
-        Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
-            ->middleware(['permission:in-hoa-don']);
+        // Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
+        //     ->middleware(['permission:in-hoa-don']);
         Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-thanh-toan']);
     });
@@ -445,6 +473,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->name('toggle-visibility')
             ->middleware(['permission:an-hien-binh-luan']);
         Route::post('/{comment}/reply', [CommentController::class, 'reply'])->name('reply');
+        // Quản lý bad words trong CommentController luôn
+        Route::get('badwords', [CommentController::class, 'badWordsIndex'])->name('badwords.index');
+        Route::post('badwords', [CommentController::class, 'badWordsStore'])->name('badwords.store');
+        Route::delete('badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('badwords.destroy');
+
+        Route::middleware(['auth'])->group(function () {
+            Route::get('scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('scan_badwords');
+        });
     });
 
     // Khuyến mãi
@@ -461,14 +497,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
     });
 
-    Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.updateStatus');
-    // Quản lý bad words trong CommentController luôn
-    Route::get('comments/badwords', [CommentController::class, 'badWordsIndex'])->name('comments.badwords.index');
-    Route::post('comments/badwords', [CommentController::class, 'badWordsStore'])->name('comments.badwords.store');
-    Route::delete('comments/badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('comments.badwords.destroy');
-    Route::middleware(['auth'])->group(function () {
-        Route::get('comments/scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('comments.scan_badwords');
-    });
+   
+
 
     // Quản lý ticket
     Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {

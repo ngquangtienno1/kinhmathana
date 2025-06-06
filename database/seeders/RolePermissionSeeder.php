@@ -87,7 +87,8 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm phương thức thanh toán', 'slug' => 'them-phuong-thuc-thanh-toan', 'description' => 'Cho phép thêm phương thức thanh toán'],
             ['name' => 'Sửa phương thức thanh toán', 'slug' => 'sua-phuong-thuc-thanh-toan', 'description' => 'Cho phép chỉnh sửa phương thức thanh toán'],
             ['name' => 'Xóa phương thức thanh toán', 'slug' => 'xoa-phuong-thuc-thanh-toan', 'description' => 'Cho phép xóa phương thức thanh toán'],
-            ['name' => 'Xoá nhiều phương thức thanh toán', 'slug' => 'xoa-nhieu-phuong-thuc-thanh-toan', 'description' => 'Cho phép xóa nhiều phương thức thanh toán cùng lúc'],
+            ['name' => 'Xóa nhiều phương thức thanh toán', 'slug' => 'xoa-nhieu-phuong-thuc-thanh-toan', 'description' => 'Cho phép xóa nhiều phương thức thanh toán cùng lúc'],
+
             // Quản lý ticket
             ['name' => 'Xem danh sách ticket', 'slug' => 'xem-ticket', 'description' => 'Cho phép xem danh sách ticket'],
             ['name' => 'Sửa ticket', 'slug' => 'sua-ticket', 'description' => 'Cho phép chỉnh sửa ticket'],
@@ -279,7 +280,7 @@ class RolePermissionSeeder extends Seeder
             // Quản lý màu sắc
             ['name' => 'Xem màu sắc', 'slug' => 'xem-mau-sac', 'description' => 'Cho phép xem danh sách màu sắc'],
             ['name' => 'Thêm màu sắc', 'slug' => 'them-mau-sac', 'description' => 'Cho phép thêm màu sắc mới'],
-            ['name' => 'Sửa màu sắc', 'slug' => 'sua-mau-sac', 'description' => 'Cho phép sửa màu sắc'],
+            ['name' => 'Sửa màu sắc', 'slug' => 'sua-mau-sac', 'description' => 'Cho phép chỉnh sửa màu sắc'],
             ['name' => 'Xóa màu sắc', 'slug' => 'xoa-mau-sac', 'description' => 'Cho phép xóa màu sắc'],
             ['name' => 'Khôi phục màu sắc', 'slug' => 'khoi-phuc-mau-sac', 'description' => 'Cho phép khôi phục màu sắc đã xóa'],
             ['name' => 'Xóa vĩnh viễn màu sắc', 'slug' => 'xoa-vinh-vien-mau-sac', 'description' => 'Cho phép xóa vĩnh viễn màu sắc'],
@@ -288,38 +289,38 @@ class RolePermissionSeeder extends Seeder
             // Quản lý kích thước
             ['name' => 'Xem kích thước', 'slug' => 'xem-kich-thuoc', 'description' => 'Cho phép xem danh sách kích thước'],
             ['name' => 'Thêm kích thước', 'slug' => 'them-kich-thuoc', 'description' => 'Cho phép thêm kích thước mới'],
-            ['name' => 'Sửa kích thước', 'slug' => 'sua-kich-thuoc', 'description' => 'Cho phép sửa kích thước'],
+            ['name' => 'Sửa kích thước', 'slug' => 'sua-kich-thuoc', 'description' => 'Cho phép chỉnh sửa kích thước'],
             ['name' => 'Xóa kích thước', 'slug' => 'xoa-kich-thuoc', 'description' => 'Cho phép xóa kích thước'],
             ['name' => 'Khôi phục kích thước', 'slug' => 'khoi-phuc-kich-thuoc', 'description' => 'Cho phép khôi phục kích thước đã xóa'],
             ['name' => 'Xóa vĩnh viễn kích thước', 'slug' => 'xoa-vinh-vien-kich-thuoc', 'description' => 'Cho phép xóa vĩnh viễn kích thước'],
             ['name' => 'Xem thùng rác kích thước', 'slug' => 'xem-thung-rac-kich-thuoc', 'description' => 'Cho phép xem thùng rác kích thước'],
 
             // Quản lý thanh toán
-            ['name' => 'Xem thanh toán', 'slug' => 'xem-thanh-toan', 'description' => 'Cho phép xem danh sách thanh toán'],
+            ['name' => 'Xem thanh toán', 'slug' => 'xem-thanh-toan', 'description' => 'Cho phép xem thanh toán'],
             ['name' => 'Cập nhật trạng thái thanh toán', 'slug' => 'cap-nhat-trang-thai-thanh-toan', 'description' => 'Cho phép cập nhật trạng thái thanh toán'],
-            ['name' => 'In hóa đơn', 'slug' => 'in-hoa-don', 'description' => 'Cho phép in hóa đơn thanh toán'],
+            ['name' => 'In hóa đơn', 'slug' => 'in-hoa-don', 'description' => 'Cho phép in hóa đơn'],
             ['name' => 'Xóa thanh toán', 'slug' => 'xoa-thanh-toan', 'description' => 'Cho phép xóa thanh toán'],
             ['name' => 'Khôi phục thanh toán', 'slug' => 'khoi-phuc-thanh-toan', 'description' => 'Cho phép khôi phục thanh toán đã xóa'],
             ['name' => 'Xóa vĩnh viễn thanh toán', 'slug' => 'xoa-vinh-vien-thanh-toan', 'description' => 'Cho phép xóa vĩnh viễn thanh toán'],
             ['name' => 'Xem thùng rác thanh toán', 'slug' => 'xem-thung-rac-thanh-toan', 'description' => 'Cho phép xem thùng rác thanh toán'],
 
             // Quản lý bình luận
-            ['name' => 'Xem bình luận', 'slug' => 'xem-binh-luan', 'description' => 'Cho phép xem danh sách bình luận'],
-            ['name' => 'Thêm bình luận', 'slug' => 'them-binh-luan', 'description' => 'Cho phép thêm bình luận mới'],
+            ['name' => 'Xem bình luận', 'slug' => 'xem-binh-luan', 'description' => 'Cho phép xem bình luận'],
+            ['name' => 'Thêm bình luận', 'slug' => 'them-binh-luan', 'description' => 'Cho phép thêm bình luận'],
             ['name' => 'Sửa bình luận', 'slug' => 'sua-binh-luan', 'description' => 'Cho phép sửa bình luận'],
             ['name' => 'Xóa bình luận', 'slug' => 'xoa-binh-luan', 'description' => 'Cho phép xóa bình luận'],
-            ['name' => 'Khôi phục bình luận', 'slug' => 'khoi-phuc-binh-luan', 'description' => 'Cho phép khôi phục bình luận đã xóa'],
+            ['name' => 'Khôi phục bình luận', 'slug' => 'khoi-phuc-binh-luan', 'description' => 'Cho phép khôi phục bình luận'],
             ['name' => 'Xóa vĩnh viễn bình luận', 'slug' => 'xoa-vinh-vien-binh-luan', 'description' => 'Cho phép xóa vĩnh viễn bình luận'],
-            ['name' => 'Ẩn/Hiện bình luận', 'slug' => 'an-hien-binh-luan', 'description' => 'Cho phép ẩn/hiện bình luận'],
+            ['name' => 'Ẩn hiện bình luận', 'slug' => 'an-hien-binh-luan', 'description' => 'Cho phép ẩn hiện bình luận'],
             ['name' => 'Xem thùng rác bình luận', 'slug' => 'xem-thung-rac-binh-luan', 'description' => 'Cho phép xem thùng rác bình luận'],
 
             // Quản lý tin tức
-            ['name' => 'Xem tin tức', 'slug' => 'xem-news', 'description' => 'Cho phép xem danh sách tin tức'],
-            ['name' => 'Thêm tin tức', 'slug' => 'them-news', 'description' => 'Cho phép thêm tin tức mới'],
+            ['name' => 'Xem tin tức', 'slug' => 'xem-news', 'description' => 'Cho phép xem tin tức'],
+            ['name' => 'Thêm tin tức', 'slug' => 'them-news', 'description' => 'Cho phép thêm tin tức'],
             ['name' => 'Sửa tin tức', 'slug' => 'sua-news', 'description' => 'Cho phép chỉnh sửa tin tức'],
             ['name' => 'Xóa tin tức', 'slug' => 'xoa-news', 'description' => 'Cho phép xóa tin tức'],
-            ['name' => 'Xóa nhiều tin tức', 'slug' => 'xoa-nhieu-news', 'description' => 'Cho phép xóa nhiều tin tức cùng lúc'],
-            ['name' => 'Khôi phục tin tức', 'slug' => 'khoi-phuc-news', 'description' => 'Cho phép khôi phục tin tức đã xóa'],
+            ['name' => 'Xóa nhiều tin tức', 'slug' => 'xoa-nhieu-news', 'description' => 'Cho phép xóa nhiều tin tức'],
+            ['name' => 'Khôi phục tin tức', 'slug' => 'khoi-phuc-news', 'description' => 'Cho phép khôi phục tin tức'],
             ['name' => 'Xóa vĩnh viễn tin tức', 'slug' => 'xoa-vinh-vien-news', 'description' => 'Cho phép xóa vĩnh viễn tin tức'],
             ['name' => 'Xem thùng rác tin tức', 'slug' => 'xem-thung-rac-news', 'description' => 'Cho phép xem thùng rác tin tức'],
 
@@ -328,8 +329,8 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm danh mục tin tức', 'slug' => 'them-danh-muc-tin-tuc', 'description' => 'Cho phép thêm danh mục tin tức'],
             ['name' => 'Sửa danh mục tin tức', 'slug' => 'sua-danh-muc-tin-tuc', 'description' => 'Cho phép chỉnh sửa danh mục tin tức'],
             ['name' => 'Xóa danh mục tin tức', 'slug' => 'xoa-danh-muc-tin-tuc', 'description' => 'Cho phép xóa danh mục tin tức'],
-            ['name' => 'Xóa nhiều danh mục tin tức', 'slug' => 'xoa-nhieu-danh-muc-tin-tuc', 'description' => 'Cho phép xóa nhiều danh mục tin tức cùng lúc'],
-            ['name' => 'Khôi phục danh mục tin tức', 'slug' => 'khoi-phuc-danh-muc-tin-tuc', 'description' => 'Cho phép khôi phục danh mục tin tức đã xóa'],
+            ['name' => 'Xóa nhiều danh mục tin tức', 'slug' => 'xoa-nhieu-danh-muc-tin-tuc', 'description' => 'Cho phép xóa nhiều danh mục tin tức'],
+            ['name' => 'Khôi phục danh mục tin tức', 'slug' => 'khoi-phuc-danh-muc-tin-tuc', 'description' => 'Cho phép khôi phục danh mục tin tức'],
             ['name' => 'Xóa vĩnh viễn danh mục tin tức', 'slug' => 'xoa-vinh-vien-danh-muc-tin-tuc', 'description' => 'Cho phép xóa vĩnh viễn danh mục tin tức'],
             ['name' => 'Xem thùng rác danh mục tin tức', 'slug' => 'xem-thung-rac-danh-muc-tin-tuc', 'description' => 'Cho phép xem thùng rác danh mục tin tức'],
 
@@ -338,15 +339,15 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm lý do huỷ đơn', 'slug' => 'them-ly-do-huy-don', 'description' => 'Cho phép thêm lý do huỷ đơn'],
             ['name' => 'Sửa lý do huỷ đơn', 'slug' => 'sua-ly-do-huy-don', 'description' => 'Cho phép chỉnh sửa lý do huỷ đơn'],
             ['name' => 'Xóa lý do huỷ đơn', 'slug' => 'xoa-ly-do-huy-don', 'description' => 'Cho phép xóa lý do huỷ đơn'],
-            ['name' => 'Xóa nhiều lý do huỷ đơn', 'slug' => 'xoa-nhieu-ly-do-huy-don', 'description' => 'Cho phép xóa nhiều lý do huỷ đơn cùng lúc'],
-            ['name' => 'Khôi phục lý do huỷ đơn', 'slug' => 'khoi-phuc-ly-do-huy-don', 'description' => 'Cho phép khôi phục lý do huỷ đơn đã xóa'],
+            ['name' => 'Xóa nhiều lý do huỷ đơn', 'slug' => 'xoa-nhieu-ly-do-huy-don', 'description' => 'Cho phép xóa nhiều lý do huỷ đơn'],
+            ['name' => 'Khôi phục lý do huỷ đơn', 'slug' => 'khoi-phuc-ly-do-huy-don', 'description' => 'Cho phép khôi phục lý do huỷ đơn'],
             ['name' => 'Xóa vĩnh viễn lý do huỷ đơn', 'slug' => 'xoa-vinh-vien-ly-do-huy-don', 'description' => 'Cho phép xóa vĩnh viễn lý do huỷ đơn'],
-            ['name' => 'Xem thùng rác lý do huỷ đơn', 'slug' => 'xem-thung-rac-ly-do-huy-don', 'description' => 'Cho phép xem thùng rác tin tức'],
+            ['name' => 'Xem thùng rác lý do huỷ đơn', 'slug' => 'xem-thung-rac-ly-do-huy-don', 'description' => 'Cho phép xem thùng rác lý do huỷ đơn'],
 
             //Quản lý đánh giá
             ['name' => 'Xem danh sách đánh giá', 'slug' => 'xem-danh-sach-danh-gia', 'description' => 'Cho phép xem danh sách đánh giá'],
             ['name' => 'Xóa đánh giá', 'slug' => 'xoa-danh-gia', 'description' => 'Cho phép xóa đánh giá'],
-            ['name' => 'Xóa nhiều đánh giá', 'slug' => 'xoa-nhieu-danh-gia', 'description' => 'Cho phép xóa nhiều đánh giá cùng lúc'],
+            ['name' => 'Xóa nhiều đánh giá', 'slug' => 'xoa-nhieu-danh-gia', 'description' => 'Cho phép xóa nhiều đánh giá'],
 
             // Quản lý dashboard
             ['name' => 'Xem dashboard', 'slug' => 'xem-dashboard', 'description' => 'Cho phép xem trang dashboard'],
@@ -359,8 +360,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm hỗ trợ khách hàng', 'slug' => 'them-ho-tro-khach-hang', 'description' => 'Cho phép thêm hỗ trợ khách hàng'],
             ['name' => 'Sửa hỗ trợ khách hàng', 'slug' => 'sua-ho-tro-khach-hang', 'description' => 'Cho phép sửa hỗ trợ khách hàng'],
             ['name' => 'Xóa hỗ trợ khách hàng', 'slug' => 'xoa-ho-tro-khach-hang', 'description' => 'Cho phép xóa hỗ trợ khách hàng'],
-            ['name' => 'Khôi phục hỗ trợ khách hàng', 'slug' => 'khoi-phuc-ho-tro-khach-hang', 'description' => 'Cho phép khôi phục hỗ trợ khách hàng đã xóa'],
-            ['name' => 'Xóa vĩnh viễn hỗ trợ khách hàng', 'slug' => 'xoa-vinh-vien-ho-tro-khach-hang', 'description' => 'Cho phép xóa vĩnh viễn hỗ trợ khách hàng'],
+            ['name' => 'Cập nhật trạng thái hỗ trợ khách hàng', 'slug' => 'cap-nhat-trang-thai-ho-tro-khach-hang', 'description' => 'Cho phép cập nhật trạng thái hỗ trợ khách hàng'],
 
             // Quản lý thông báo
             ['name' => 'Xem danh sách thông báo', 'slug' => 'xem-danh-sach-thong-bao', 'description' => 'Cho phép xem danh sách thông báo'],
@@ -369,13 +369,24 @@ class RolePermissionSeeder extends Seeder
             // Quản lý liên hệ
             ['name' => 'Xem danh sách liên hệ', 'slug' => 'xem-danh-sach-lien-he', 'description' => 'Cho phép xem danh sách liên hệ'],
             ['name' => 'Xem chi tiết liên hệ', 'slug' => 'xem-chi-tiet-lien-he', 'description' => 'Cho phép xem chi tiết liên hệ'],
+            ['name' => 'Xem thùng rác liên hệ', 'slug' => 'xem-thung-rac-lien-he', 'description' => 'Cho phép xem thùng rác liên hệ'],
             ['name' => 'Sửa liên hệ', 'slug' => 'sua-lien-he', 'description' => 'Cho phép sửa liên hệ'],
             ['name' => 'Xóa liên hệ', 'slug' => 'xoa-lien-he', 'description' => 'Cho phép xóa liên hệ'],
-            ['name' => 'Xóa nhiều liên hệ', 'slug' => 'xoa-nhieu-lien-he', 'description' => 'Cho phép xóa nhiều liên hệ cùng lúc'],
-            ['name' => 'Khôi phục liên hệ', 'slug' => 'khoi-phuc-lien-he', 'description' => 'Cho phép khôi phục liên hệ đã xóa'],
+            ['name' => 'Xóa nhiều liên hệ', 'slug' => 'xoa-nhieu-lien-he', 'description' => 'Cho phép xóa nhiều liên hệ'],
+            ['name' => 'Khôi phục liên hệ', 'slug' => 'khoi-phuc-lien-he', 'description' => 'Cho phép khôi phục liên hệ'],
             ['name' => 'Xóa vĩnh viễn liên hệ', 'slug' => 'xoa-vinh-vien-lien-he', 'description' => 'Cho phép xóa vĩnh viễn liên hệ'],
-            ['name' => 'Xem thùng rác liên hệ', 'slug' => 'xem-thung-rac-lien-he', 'description' => 'Cho phép xem thùng rác liên hệ'],
-            ['name' => 'Xem liên hệ', 'slug' => 'xem-lien-he', 'description' => 'Cho phép xem liên hệ'],
+
+            // Quản lý độ cận
+            ['name' => 'Xem độ cận', 'slug' => 'xem-do-can', 'description' => 'Cho phép xem danh sách độ cận'],
+            ['name' => 'Thêm độ cận', 'slug' => 'them-do-can', 'description' => 'Cho phép thêm độ cận mới'],
+            ['name' => 'Sửa độ cận', 'slug' => 'sua-do-can', 'description' => 'Cho phép chỉnh sửa độ cận'],
+            ['name' => 'Xóa độ cận', 'slug' => 'xoa-do-can', 'description' => 'Cho phép xóa độ cận'],
+
+            // Quản lý độ loạn
+            ['name' => 'Xem độ loạn', 'slug' => 'xem-do-loan', 'description' => 'Cho phép xem danh sách độ loạn'],
+            ['name' => 'Thêm độ loạn', 'slug' => 'them-do-loan', 'description' => 'Cho phép thêm độ loạn mới'],
+            ['name' => 'Sửa độ loạn', 'slug' => 'sua-do-loan', 'description' => 'Cho phép chỉnh sửa độ loạn'],
+            ['name' => 'Xóa độ loạn', 'slug' => 'xoa-do-loan', 'description' => 'Cho phép xóa độ loạn'],
         ];
 
         // Thêm timestamps cho mỗi permission

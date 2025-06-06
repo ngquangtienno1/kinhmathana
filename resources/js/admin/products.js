@@ -268,99 +268,87 @@ document.addEventListener('DOMContentLoaded', function () {
         return result;
     }
 
-    if (generateVariationsBtn) {
-        generateVariationsBtn.addEventListener('click', function () {
-            const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
-            const attributes = [];
-            for (let row of attributeRows) {
-                const type = row.querySelector('.attribute-type').value;
-                const tags = row.querySelectorAll('.tag');
-                const values = Array.from(tags).map(tag => tag.querySelector('input').value);
-                if (values.length === 0) continue;
-                attributes.push({ type, values });
-            }
+if (generateVariationsBtn) {
+    generateVariationsBtn.addEventListener('click', function () {
+        const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
+        const attributes = [];
+        for (let row of attributeRows) {
+            const type = row.querySelector('.attribute-type').value;
+            const tags = row.querySelectorAll('.tag');
+            const values = Array.from(tags).map(tag => tag.querySelector('input').value);
+            if (values.length === 0) continue;
+            attributes.push({ type, values });
+        }
 
-            if (attributes.length === 0) {
-                alert('Vui lòng chọn ít nhất một giá trị cho một thuộc tính.');
-                return;
-            }
+        if (attributes.length === 0) {
+            alert('Vui lòng chọn ít nhất một giá trị cho một thuộc tính.');
+            return;
+        }
 
-            const existingVariationNames = Array.from(variationsContainer.getElementsByClassName('variation-row')).map(row => row.querySelector('input[name$="[name]"]').value);
-            const combinations = generateCombinations(attributes).filter(combo => !existingVariationNames.includes(combo.join(' - ')));
+        const existingVariationNames = Array.from(variationsContainer.getElementsByClassName('variation-row')).map(row => row.querySelector('input[name$="[name]"]').value);
+        const combinations = generateCombinations(attributes).filter(combo => !existingVariationNames.includes(combo.join(' - ')));
 
-            if (combinations.length === 0 && existingVariationNames.length > 0) {
-                alert('Tất cả các biến thể đã được tạo.');
-                return;
-            }
+        if (combinations.length === 0 && existingVariationNames.length > 0) {
+            alert('Tất cả các biến thể đã được tạo.');
+            return;
+        }
 
-            variationsContainer.style.display = 'block';
-            combinations.forEach((combo, index) => {
-                const globalIndex = variationsContainer.getElementsByClassName('variation-row').length;
-                const row = document.createElement('div');
-                row.className = 'variation-row row g-2 mb-2';
-                const skuPrefix = variableSkuInput.value;
-                const comboName = combo.join(' - ') || 'Biến thể ' + (globalIndex + 1);
-                row.innerHTML = `
-                    <div class="col-md-2">
-                        <input type="text" name="variations[${globalIndex}][name]" value="${comboName}" class="form-control" placeholder="Tên biến thể" readonly>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${comboName.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="number" name="variations[${globalIndex}][stock_quantity]" value="0" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0">
-                    </div>
-                    <div class="col-md-1">
-                        <select name="variations[${globalIndex}][status]" class="form-select variation-status">
-                            <option value="in_stock">Còn hàng</option>
-                            <option value="out_of_stock" selected>Hết hàng</option>
-                            <option value="hidden">Ẩn</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
-                        <input type="file" name="variations[${index}][image]" class="form-control variation-image-input" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
-                    </div>
-                    ${
-                        attributes.some(attr => attr.type === 'spherical') ? `
-                        <div class="col-md-2">
-                            <input type="hidden" name="variations[${globalIndex}][spherical]" value="${combo.find(val => spherical_values.includes(val)) || ''}">
-                        </div>` : ''
-                    }
-                    ${
-                        attributes.some(attr => attr.type === 'cylindrical') ? `
-                        <div class="col-md-2">
-                            <input type="hidden" name="variations[${globalIndex}][cylindrical]" value="${combo.find(val => cylindrical_values.includes(val)) || ''}">
-                        </div>` : ''
-                    }
-                `;
-                variationsContainer.appendChild(row);
+        variationsContainer.style.display = 'block';
+        combinations.forEach((combo, index) => {
+            const globalIndex = variationsContainer.getElementsByClassName('variation-row').length;
+            const skuPrefix = variableSkuInput.value;
+            const comboName = combo.join(' - ') || 'Biến thể ' + (globalIndex + 1);
+            const row = document.createElement('div');
+            row.className = 'variation-row row g-2 mb-2';
+            row.innerHTML = `
+                <div class="col-md-2">
+                    <input type="text" name="variations[${globalIndex}][name]" value="${comboName}" class="form-control" placeholder="Tên biến thể" readonly>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${comboName.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
+                </div>
+                <div class="col-md-1">
+                    <input type="number" name="variations[${globalIndex}][stock_quantity]" value="0" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0">
+                </div>
+                <div class="col-md-1">
+                    <select name="variations[${globalIndex}][status]" class="form-select variation-status">
+                        <option value="in_stock">Còn hàng</option>
+                        <option value="out_of_stock" selected>Hết hàng</option>
+                        <option value="hidden">Ẩn</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <input type="file" name="variations[${globalIndex}][image]" class="form-control variation-image-input" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
+                </div>
+            `;
+            variationsContainer.appendChild(row);
 
-                // Thêm sự kiện cho stock_quantity để tự động cập nhật trạng thái
-                const stockInput = row.querySelector('.stock-quantity-input');
-                const statusSelect = row.querySelector('.variation-status');
-                stockInput.addEventListener('input', function () {
-                    if (parseInt(this.value) === 0) {
-                        statusSelect.value = 'out_of_stock';
-                    } else if (statusSelect.value === 'out_of_stock') {
-                        statusSelect.value = 'in_stock';
-                    }
-                });
+            // Thêm sự kiện cho stock_quantity để tự động cập nhật trạng thái
+            const stockInput = row.querySelector('.stock-quantity-input');
+            const statusSelect = row.querySelector('.variation-status');
+            stockInput.addEventListener('input', function () {
+                if (parseInt(this.value) === 0) {
+                    statusSelect.value = 'out_of_stock';
+                } else if (statusSelect.value === 'out_of_stock') {
+                    statusSelect.value = 'in_stock';
+                }
+            });
 
-                row.querySelector('.remove-variation').addEventListener('click', function () {
-                    row.remove();
-                });
+            row.querySelector('.remove-variation').addEventListener('click', function () {
+                row.remove();
             });
         });
-    }
+    });
+}
 
     // Xử lý submit form
     document.querySelectorAll('form').forEach(form => {

@@ -92,6 +92,11 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\CancellationReason::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id', 'id');
+    }
+
 
     public function getStatusLabelAttribute()
     {
