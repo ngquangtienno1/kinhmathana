@@ -21,7 +21,7 @@ class PaymentFactory extends Factory
         return [
             'order_id' => Order::factory(),
             'payment_method_id' => PaymentMethod::where('is_active', true)->inRandomOrder()->first()->id,
-            'status' => $this->faker->randomElement(['pending', 'completed', 'failed', 'cancelled']),
+            'status' => $this->faker->randomElement(['đã hoàn thành', 'đang chờ thanh toán', 'thất bại', 'đã hủy']),
             'transaction_code' => $this->faker->unique()->uuid,
             'amount' => $this->faker->randomFloat(2, 100000, 10000000), // Số tiền từ 100k đến 10tr
             'note' => $this->faker->optional()->sentence,

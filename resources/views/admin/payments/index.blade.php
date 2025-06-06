@@ -108,32 +108,36 @@
                                     href="#">{{ $payment->id }}</a></td>
                             <td class="align-middle time white-space-nowrap ps-0 paymentId py-4"><a class="fw-bold fs-8"
                                     href="#">{{ $payment->transaction_code }}</a></td>
-                            <td>{{ $payment->order_id }}</td>
-                            {{-- <td>
+
+                            <td>
                                 @if ($payment->order)
-                                    <a
-                                        href="{{  $payment->order->id }}">{{ $payment->order->code }}</a>
+                                    <a href="{{ route('admin.orders.show', $payment->order->id) }}">
+                                        {{ $payment->order->order_number ?? 'Không có số đơn' }}
+                                    </a>
                                 @else
                                     Không có
                                 @endif
-                            </td> --}}
+                            </td>
+
+
                             <td class="align-middle white-space-nowrap amount ps-3 py-4">
                                 {{ number_format($payment->amount, 0, ',', '.') }} VND</td>
                             <td
                                 class="payment_status align-middle white-space-nowrap text-start fw-bold text-body-tertiary">
                                 <span
-                                    class="badge badge-{{ $payment->status == 'đã hoàn thành'
+                                    class="{{ $payment->status == 'đã hoàn thành'
                                         ? 'badge badge-phoenix fs-10 badge-phoenix-success'
                                         : ($payment->status == 'đang chờ thanh toán'
-                                            ? 'badge badge-phoenix fs-10 badge-phoenix-success'
+                                            ? 'badge badge-phoenix fs-10 badge-phoenix-warning'
                                             : ($payment->status == 'đã hủy'
                                                 ? 'badge badge-phoenix fs-10 badge-phoenix-secondary'
                                                 : ($payment->status == 'thất bại'
                                                     ? 'badge badge-phoenix fs-10 badge-phoenix-danger'
-                                                    : ''))) }}"
+                                                    : 'badge'))) }}"
                                     style="font-size: 20px;">
                                     {{ $payment->status }}
                                 </span>
+
                             </td>
 
                             <td class="align-middle white-space-nowrap paymentDate ps-3 py-4">

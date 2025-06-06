@@ -456,8 +456,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [CommentController::class, 'index'])->name('index');
         Route::post('/', [CommentController::class, 'store'])->name('store')
             ->middleware(['permission:them-binh-luan']);
-        Route::get('/{id}/edit', [CommentController::class, 'edit'])->name('edit')
-            ->middleware(['permission:sua-binh-luan']);
+        Route::get('/{comment}', [CommentController::class, 'show'])->name('show');
+
         Route::put('/{id}', [CommentController::class, 'update'])->name('update')
             ->middleware(['permission:sua-binh-luan']);
         Route::delete('/{id}', [CommentController::class, 'destroy'])->name('destroy')
@@ -472,6 +472,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::patch('/{id}/toggle-visibility', [CommentController::class, 'toggleVisibility'])
             ->name('toggle-visibility')
             ->middleware(['permission:an-hien-binh-luan']);
+        Route::post('/{comment}/reply', [CommentController::class, 'reply'])->name('reply');
     });
 
     // Khuyến mãi
