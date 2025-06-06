@@ -96,7 +96,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Số lượng tồn kho <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" name="stock_quantity" id="simple_stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) ?? 0 }}" min="0" required>
+                                        <input type="number" class="form-control" name="stock_quantity" id="simple_stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) ?? 0 }}" min="0" step="1" required>
                                         @error('stock_quantity')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -230,21 +230,17 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
-                                                    </div>
                                                 </div>
                                                 @php $attributeIndex++; @endphp
                                             @endif
                                         @endforeach
                                         </div>
-                                        <button type="button" class="btn btn-primary btn-sm mt-2" id="add-attribute">Thêm thuộc tính</button>
                                     </div>
 
                                     <!-- Biến thể -->
                                     <div id="variations-container" class="mt-3">
-                                       @foreach ($product->variations as $index => $variation)
-                                            <div class="variation-row row g-2 mb-2">
+                                        @foreach ($product->variations as $index => $variation)
+                                            <div class="variation-row row g-2 mb-2" data-variation-id="{{ $variation->id }}">
                                                 <input type="hidden" name="variations[{{ $index }}][id]" value="{{ $variation->id }}">
                                                 <div class="col-md-2">
                                                     <input type="text" name="variations[{{ $index }}][name]" value="{{ $variation->name }}" class="form-control" placeholder="Tên biến thể" readonly>
@@ -286,6 +282,9 @@
                                                     @error("variations.$index.image")
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-variation" data-variation-id="{{ $variation->id }}">Xóa</button>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -429,118 +428,83 @@
         }
     </style>
 
-   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let attributeIndex = {{ $attributeIndex }};
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let attributeIndex = {{ $attributeIndex }};
 
-        // Thêm thuộc tính mới
-        document.getElementById('add-attribute').addEventListener('click', function () {
-            const container = document.getElementById('attributes-container');
-            const row = document.createElement('div');
-            row.className = 'attribute-row row g-2 mb-2';
-            row.setAttribute('data-index', attributeIndex);
-            row.innerHTML = `
-                <div class="col-md-3">
-                    <select name="attributes[${attributeIndex}][type]" class="form-select attribute-type">
-                        <option value="color">Màu sắc</option>
-                        <option value="size">Kích thước</option>
-                        <option value="spherical">Độ cận</option>
-                        <option value="cylindrical">Độ loạn</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <div class="attribute-values-tags"></div>
-                    <div class="border rounded p-3 attribute-values-container" style="max-height: 200px; overflow-y: auto;"></div>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
-                </div>
+    // Cập nhật giá trị của container dựa trên loại thuộc tính
+    function updateAttributeValues(typeSelect, valuesContainer) {
+        const type = typeSelect.value;
+        const colors = @json($colors->pluck('name'));
+        const sizes = @json($sizes->pluck('name'));
+        const spherical = @json($sphericals->pluck('value'));
+        const cylindrical = @json($cylindricals->pluck('value'));
+        valuesContainer.innerHTML = '';
+        let options = [];
+        if (type === 'color') options = colors;
+        else if (type === 'size') options = sizes;
+        else if (type === 'spherical') options = spherical;
+        else if (type === 'cylindrical') options = cylindrical;
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.className = 'form-check';
+            div.innerHTML = `
+                <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${typeSelect.closest('.attribute-row').getAttribute('data-index')}][values][]" value="${option}" data-index="${typeSelect.closest('.attribute-row').getAttribute('data-index')}">
+                <label class="form-check-label">${option}</label>
             `;
-            container.appendChild(row);
-            updateAttributeValues(row.querySelector('.attribute-type'), row.querySelector('.attribute-values-container'));
-            attributeIndex++;
+            valuesContainer.appendChild(div);
         });
+    }
 
-        // Xóa thuộc tính
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-attribute')) {
-                e.target.closest('.attribute-row').remove();
-            }
-        });
+    // Xử lý thay đổi loại thuộc tính
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('attribute-type')) {
+            const row = e.target.closest('.attribute-row');
+            const valuesContainer = row.querySelector('.attribute-values-container');
+            const tagsContainer = row.querySelector('.attribute-values-tags');
+            tagsContainer.innerHTML = '';
+            updateAttributeValues(e.target, valuesContainer);
+        }
+    });
 
-        // Cập nhật giá trị của container dựa trên loại thuộc tính
-        function updateAttributeValues(typeSelect, valuesContainer) {
-            const type = typeSelect.value;
-            const colors = @json($colors->pluck('name'));
-            const sizes = @json($sizes->pluck('name'));
-            const spherical = @json($sphericals->pluck('value'));
-            const cylindrical = @json($cylindricals->pluck('value'));
-            valuesContainer.innerHTML = '';
-            let options = [];
-            if (type === 'color') options = colors;
-            else if (type === 'size') options = sizes;
-            else if (type === 'spherical') options = spherical;
-            else if (type === 'cylindrical') options = cylindrical;
-            options.forEach(option => {
-                const div = document.createElement('div');
-                div.className = 'form-check';
-                div.innerHTML = `
-                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${typeSelect.closest('.attribute-row').getAttribute('data-index')}][values][]" value="${option}" data-index="${typeSelect.closest('.attribute-row').getAttribute('data-index')}">
-                    <label class="form-check-label">${option}</label>
-                `;
-                valuesContainer.appendChild(div);
+    // Xử lý thêm/xóa tag khi chọn giá trị checkbox
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('attribute-value-checkbox')) {
+            const row = e.target.closest('.attribute-row');
+            const tagsContainer = row.querySelector('.attribute-values-tags');
+            const index = row.getAttribute('data-index');
+            const selectedValues = Array.from(row.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(checkbox => checkbox.value);
+            tagsContainer.innerHTML = '';
+            selectedValues.forEach(value => {
+                if (value) {
+                    tagsContainer.innerHTML += `
+                        <span class="tag">${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button></span>
+                    `;
+                }
             });
         }
-
-        // Xử lý thay đổi loại thuộc tính
-        document.addEventListener('change', function (e) {
-            if (e.target.classList.contains('attribute-type')) {
-                const row = e.target.closest('.attribute-row');
-                const valuesContainer = row.querySelector('.attribute-values-container');
-                const tagsContainer = row.querySelector('.attribute-values-tags');
-                tagsContainer.innerHTML = '';
-                updateAttributeValues(e.target, valuesContainer);
-            }
-        });
-
-        // Xử lý thêm/xóa tag khi chọn giá trị checkbox
-        document.addEventListener('change', function (e) {
-            if (e.target.classList.contains('attribute-value-checkbox')) {
-                const row = e.target.closest('.attribute-row');
-                const tagsContainer = row.querySelector('.attribute-values-tags');
-                const index = row.getAttribute('data-index');
-                const selectedValues = Array.from(row.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(checkbox => checkbox.value);
-                tagsContainer.innerHTML = '';
-                selectedValues.forEach(value => {
-                    if (value) {
-                        tagsContainer.innerHTML += `
-                            <span class="tag">${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button></span>
-                        `;
-                    }
-                });
-            }
-        });
-
-        // Xóa tag
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-tag')) {
-                const tag = e.target.closest('.tag');
-                const value = e.target.getAttribute('data-value');
-                const row = e.target.closest('.attribute-row');
-                const valuesContainer = row.querySelector('.attribute-values-container');
-                const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
-                if (checkbox) checkbox.checked = false;
-                tag.remove();
-            }
-        });
-
-        // Khởi tạo giá trị ban đầu cho các container
-        document.querySelectorAll('.attribute-type').forEach(typeSelect => {
-            const row = typeSelect.closest('.attribute-row');
-            const valuesContainer = row.querySelector('.attribute-values-container');
-            updateAttributeValues(typeSelect, valuesContainer);
-        });
     });
+
+    // Xóa tag
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-tag')) {
+            const tag = e.target.closest('.tag');
+            const value = e.target.getAttribute('data-value');
+            const row = e.target.closest('.attribute-row');
+            const valuesContainer = row.querySelector('.attribute-values-container');
+            const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
+            if (checkbox) checkbox.checked = false;
+            tag.remove();
+        }
+    });
+
+    // Khởi tạo giá trị ban đầu cho các container
+    document.querySelectorAll('.attribute-type').forEach(typeSelect => {
+        const row = typeSelect.closest('.attribute-row');
+        const valuesContainer = row.querySelector('.attribute-values-container');
+        updateAttributeValues(typeSelect, valuesContainer);
+    });
+});
 </script>
 
 @push('scripts')
