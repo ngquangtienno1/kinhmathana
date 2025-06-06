@@ -112,7 +112,7 @@ class TicketController extends Controller
 
     public function trashed()
     {
-        $tickets = Ticket::onlyTrashed()->paginate(10);
+        $tickets = Ticket::onlyTrashed()->get();
         return view('admin.tickets.trashed', compact('tickets'));
     }
 
@@ -120,14 +120,14 @@ class TicketController extends Controller
     {
         $ticket = Ticket::onlyTrashed()->findOrFail($id);
         $ticket->restore();
-        return redirect()->route('admin.tickets.index')->with('success', 'Khôi phục ticket thành công');
+        return redirect()->route('admin.tickets.trashed')->with('success', 'Khôi phục ticket thành công');
     }
 
     public function forceDelete($id)
     {
         $ticket = Ticket::onlyTrashed()->findOrFail($id);
         $ticket->forceDelete();
-        return redirect()->route('admin.tickets.index')->with('success', 'Xoá vĩnh viễn ticket');
+        return redirect()->route('admin.tickets.trashed')->with('success', 'Xoá vĩnh viễn ticket thành công');
     }
 
     public function updateStatus(Request $request, $id)
@@ -186,5 +186,35 @@ class TicketController extends Controller
         ]);
 
         return back()->with('success', 'Đã gửi tin nhắn.');
+    }
+
+    /**
+     * Xóa mềm nhiều ticket
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = explode(',', $request->input('ids'));
+        Ticket::whereIn('id', $ids)->delete();
+        return back()->with('success', 'Đã xóa mềm các ticket đã chọn.');
+    }
+
+    /**
+     * Khôi phục nhiều ticket
+     */
+    public function bulkRestore(Request $request)
+    {
+        $ids = explode(',', $request->input('ids'));
+        Ticket::onlyTrashed()->whereIn('id', $ids)->restore();
+        return back()->with('success', 'Đã khôi phục các ticket đã chọn.');
+    }
+
+    /**
+     * Xóa vĩnh viễn nhiều ticket
+     */
+    public function bulkForceDelete(Request $request)
+    {
+        $ids = explode(',', $request->input('ids'));
+        Ticket::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+        return back()->with('success', 'Đã xóa vĩnh viễn các ticket đã chọn.');
     }
 }

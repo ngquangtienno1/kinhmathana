@@ -55,7 +55,8 @@
             </div>
         </div>
 
-        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+        <div
+            class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
             <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table fs-9 mb-0">
                     <thead>
@@ -71,14 +72,17 @@
                                     class="text-body" style="text-decoration:none;">
                                     ID
                                     @if (request('sort') === 'id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;" data-sort="name">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;"
+                                data-sort="name">
                                 TÊN DANH MỤC
                             </th>
-                            <th class="sort align-middle ps-4" scope="col" data-sort="description" style="width:200px;">
+                            <th class="sort align-middle ps-4" scope="col" data-sort="description"
+                                style="width:200px;">
                                 MÔ TẢ
                             </th>
                             <th class="sort align-middle ps-4" scope="col" style="width:150px;">
@@ -111,24 +115,28 @@
                                         href="{{ route('admin.categories.edit', $category->id) }}">{{ $category->name }}</a>
                                 </td>
                                 <td class="description align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ Str::limit($category->description, 50) }}</span>
+                                    <span
+                                        class="text-body-tertiary">{{ Str::limit($category->description, 50) }}</span>
                                 </td>
                                 <td class="align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ optional($category->parent)->name ?? '-' }}</span>
+                                    <span
+                                        class="text-body-tertiary">{{ optional($category->parent)->name ?? '-' }}</span>
                                 </td>
                                 <td class="align-middle ps-4">
                                     <span class="text-body-tertiary">{{ $category->products_count ?? 0 }}</span>
                                 </td>
-                                <td class="align-middle ps-4">
-                                    <span class="badge badge-phoenix fs-10 {{ $category->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
-                                        {{ $category->is_active ? 'Đang hoạt động' : 'Không hoạt động' }}
+                                <td class="status align-middle ps-4">
+                                    <span
+                                        class="badge badge-phoenix fs-10 {{ $category->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
+                                        {{ $category->is_active ? 'Hoạt động' : 'Không hoạt động' }}
                                     </span>
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
-                                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                            type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                                            aria-expanded="false" data-bs-reference="parent">
+                                        <button
+                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                            type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                            aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                             <span class="fas fa-ellipsis-h fs-10"></span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
@@ -183,7 +191,8 @@
     </div>
 </div>
 
-<form id="bulk-delete-form" action="{{ route('admin.categories.bulkDestroy') }}" method="POST" style="display:none;">
+<form id="bulk-delete-form" action="{{ route('admin.categories.bulkDestroy') }}" method="POST"
+    style="display:none;">
     @csrf
     @method('DELETE')
     <input type="hidden" name="ids" id="bulk-delete-ids">
