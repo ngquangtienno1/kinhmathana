@@ -17,7 +17,7 @@ class SphericalController extends Controller
             $query->whereRaw('LOWER(value) LIKE ?', ["%{$search}%"]);
         }
 
-        $sphericals = $query->orderBy('sort_order')->paginate(15);
+        $sphericals = $query->orderBy('sort_order')->get();
 
         return view('admin.sphericals.index', compact('sphericals'));
     }

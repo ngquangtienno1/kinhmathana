@@ -3,10 +3,10 @@
 @section('content')
 
 @section('breadcrumbs')
-<li class="breadcrumb-item">
-    <a href="{{ route('admin.cylindricals.index') }}">Thuộc tính</a>
-</li>
-<li class="breadcrumb-item active">Chỉnh sửa Độ loạn</li>
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.cylindricals.index') }}">Thuộc tính</a>
+    </li>
+    <li class="breadcrumb-item active">Chỉnh sửa Độ loạn</li>
 @endsection
 
 <div class="container mt-4">
@@ -18,7 +18,8 @@
 
         <div class="mb-3">
             <label for="value" class="form-label">Giá trị Độ loạn</label>
-            <input type="number" step="0.01" name="value" id="value" class="form-control" value="{{ old('value', $cylindrical->value) }}" required>
+            <input type="number" step="0.01" name="value" id="value" class="form-control"
+                value="{{ old('value', $cylindrical->value) }}" required>
             @error('value')
                 <small class="text-danger">{{ $message }}</small>
             @enderror
@@ -26,7 +27,8 @@
 
         <div class="mb-3">
             <label for="sort_order" class="form-label">Thứ tự hiển thị</label>
-            <input type="number" name="sort_order" id="sort_order" class="form-control" value="{{ old('sort_order', $cylindrical->sort_order) }}">
+            <input type="number" name="sort_order" id="sort_order" class="form-control"
+                value="{{ old('sort_order', $cylindrical->sort_order) }}">
             @error('sort_order')
                 <small class="text-danger">{{ $message }}</small>
             @enderror

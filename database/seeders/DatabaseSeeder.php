@@ -44,6 +44,8 @@ class DatabaseSeeder extends Seeder
             ProductImageSeeder::class, // Tạo product images
             VariationSeeder::class,   // Tạo variations
             VariationImageSeeder::class, // Tạo variation images
+            SphericalSeeder::class, // Tạo spherical
+            CylindricalSeeder::class, // Tạo cylindrical
 
             // 5. Seeder cho nội dung
             NewsSeeder::class,        // Tạo tin tức
@@ -64,6 +66,7 @@ class DatabaseSeeder extends Seeder
             CustomerSupportSeeder::class, // Tạo hỗ trợ khách hàng
             TicketSeeder::class, // Tạo ticket
             ContactMessageSeeder::class,
+
         ]);
     }
 

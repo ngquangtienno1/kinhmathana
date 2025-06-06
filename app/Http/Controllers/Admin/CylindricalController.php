@@ -17,7 +17,7 @@ class CylindricalController extends Controller
             $query->whereRaw('LOWER(value) LIKE ?', ["%{$search}%"]);
         }
 
-        $cylindricals = $query->orderBy('sort_order')->paginate(15);
+        $cylindricals = $query->orderBy('sort_order')->get();
 
         return view('admin.cylindricals.index', compact('cylindricals'));
     }

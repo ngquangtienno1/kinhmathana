@@ -2,6 +2,13 @@
 @section('title', 'Thêm Độ cận mới')
 @section('content')
 
+@section('breadcrumbs')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.sphericals.index') }}">Thuộc tính</a>
+    </li>
+    <li class="breadcrumb-item active">Thêm Độ cận mới</li>
+@endsection
+
 <div class="mb-4">
     <h4>Thêm Độ cận mới</h4>
 </div>
@@ -11,7 +18,8 @@
 
     <div class="mb-3">
         <label for="value" class="form-label">Giá trị Độ cận</label>
-        <input type="number" step="0.01" class="form-control" id="value" name="value" value="{{ old('value') }}" required>
+        <input type="number" step="0.01" class="form-control" id="value" name="value"
+            value="{{ old('value') }}" required>
         @error('value')
             <small class="text-danger">{{ $message }}</small>
         @enderror
