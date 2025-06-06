@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactReply;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
@@ -53,45 +54,6 @@ class ContactController extends Controller
         return view('admin.contacts.show', compact('contact'));
     }
 
-    public function create()
-    {
-        return view('admin.contacts.create');
-    }
-
-    public function store(Request $request)
-    {
-        try {
-            $messages = [
-                'name.required' => 'Vui lòng nhập họ tên',
-                'name.max' => 'Họ tên không được vượt quá 255 ký tự',
-                'email.required' => 'Vui lòng nhập email',
-                'email.email' => 'Email không hợp lệ',
-                'email.max' => 'Email không được vượt quá 255 ký tự',
-                'phone.max' => 'Số điện thoại không được vượt quá 20 ký tự',
-                'message.required' => 'Vui lòng nhập nội dung tin nhắn'
-            ];
-
-            $dataNew = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
-                'phone' => 'nullable|string|max:20',
-                'message' => 'required|string',
-                'status' => 'required|in:mới,đã đọc,đã trả lời,đã bỏ qua',
-                'note' => 'nullable|string',
-                'is_spam' => 'nullable|boolean'
-            ], $messages);
-
-            $dataNew['is_spam'] = $request->boolean('is_spam');
-            $dataNew['ip_address'] = $request->ip();
-            $dataNew['user_agent'] = $request->userAgent();
-
-            ContactMessage::create($dataNew);
-            return redirect()->route('admin.contacts.index')->with('success', 'Thêm liên hệ thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm liên hệ: ' . $e->getMessage());
-        }
-    }
-
     public function edit($id)
     {
         $contact = ContactMessage::find($id);
@@ -109,37 +71,35 @@ class ContactController extends Controller
                 return redirect()->route('admin.contacts.index')->with('error', 'Không tìm thấy liên hệ này.');
             }
 
-            $messages = [
-                'name.required' => 'Vui lòng nhập họ tên',
-                'name.max' => 'Họ tên không được vượt quá 255 ký tự',
-                'email.required' => 'Vui lòng nhập email',
-                'email.email' => 'Email không hợp lệ',
-                'email.max' => 'Email không được vượt quá 255 ký tự',
-                'phone.max' => 'Số điện thoại không được vượt quá 20 ký tự',
-                'message.required' => 'Vui lòng nhập nội dung tin nhắn',
-                'status.required' => 'Vui lòng chọn trạng thái',
-                'status.in' => 'Trạng thái không hợp lệ'
-            ];
-
+            // Chỉ cập nhật trạng thái và ghi chú từ modal
             $dataNew = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
-                'phone' => 'nullable|string|max:20',
-                'message' => 'required|string',
                 'status' => 'required|in:mới,đã đọc,đã trả lời,đã bỏ qua',
                 'note' => 'nullable|string',
-                'is_spam' => 'nullable|boolean'
-            ], $messages);
+            ]);
 
-            $dataNew['is_spam'] = $request->boolean('is_spam');
-
+            // Không cho phép cập nhật thành 'đã trả lời' nếu chưa gửi mail
             if ($dataNew['status'] === 'đã trả lời' && !$contact->reply_at) {
-                $dataNew['reply_at'] = now();
-                $dataNew['replied_by'] = auth()->id();
+                return redirect()->back()->with('error', 'Không thể cập nhật trạng thái thành Đã trả lời khi chưa gửi mail phản hồi.');
+            }
+
+            // Kiểm tra các trường hợp không được quay lại trạng thái cũ
+            if ($contact->status === 'đã trả lời' && in_array($dataNew['status'], ['đã đọc', 'mới'])) {
+                return redirect()->back()->with('error', 'Không thể quay lại trạng thái Đã đọc hoặc Mới khi đã trả lời.');
+            }
+            if ($contact->status === 'đã bỏ qua' && $dataNew['status'] === 'mới') {
+                return redirect()->back()->with('error', 'Không thể quay lại trạng thái Mới khi đã bỏ qua.');
+            }
+            if ($contact->status === 'đã đọc' && $dataNew['status'] === 'mới') {
+                return redirect()->back()->with('error', 'Không thể quay lại trạng thái Mới khi đã đọc.');
+            }
+
+            // Không cho phép chuyển từ 'đã trả lời' sang 'đã bỏ qua'
+            if ($contact->status === 'đã trả lời' && $dataNew['status'] === 'đã bỏ qua') {
+                return redirect()->back()->with('error', 'Không thể chuyển trạng thái từ Đã trả lời sang Đã bỏ qua.');
             }
 
             $contact->update($dataNew);
-            return redirect()->route('admin.contacts.index')->with('success', 'Cập nhật liên hệ thành công!');
+            return redirect()->route('admin.contacts.show', $contact->id)->with('success', 'Cập nhật trạng thái liên hệ thành công!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật liên hệ: ' . $e->getMessage());
         }
@@ -284,7 +244,7 @@ class ContactController extends Controller
             $contact->update([
                 'status' => 'đã trả lời',
                 'reply_at' => now(),
-                'replied_by' => auth()->id(),
+                'replied_by' => Auth::check() ? Auth::id() : null,
                 'note' => $request->boolean('save_as_note') ? $data['reply_message'] : $contact->note
             ]);
 

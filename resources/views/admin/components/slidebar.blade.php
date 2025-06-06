@@ -447,7 +447,7 @@
                     </li>
                 @endif
 
-                @if (canAccess('xem-ticket'))
+                {{-- @if (canAccess('xem-ticket'))
                     <!-- Quản lý Ticket -->
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
@@ -487,7 +487,49 @@
                             </div>
                         </div>
                     </li>
-                @endif
+                @endif --}}
+
+                @if (canAccess('xem-danh-sach-lien-he'))
+                <!-- Quản lý Liên hệ -->
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}"
+                            href="#nv-contacts" role="button" data-bs-toggle="collapse" aria-expanded="false"
+                            aria-controls="nv-contacts">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                </div>
+                                <span class="nav-link-icon"><span data-feather="message-circle"></span></span>
+                                <span class="nav-link-text">Liên hệ</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
+                                id="nv-contacts">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('admin.contacts.index') ? 'active' : '' }}"
+                                        href="{{ route('admin.contacts.index') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Danh sách liên hệ</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @if (canAccess('xem-thung-rac-lien-he'))
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ request()->routeIs('admin.contacts.bin') ? 'active' : '' }}"
+                                            href="{{ route('admin.contacts.bin') }}">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text">Thùng rác</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            @endif
 
                 @if (canAccess('xem-ly-do-huy-don'))
                     <!-- Quản lý Lý do hủy -->

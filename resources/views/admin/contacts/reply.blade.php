@@ -55,13 +55,11 @@
 
             <form action="{{ route('admin.contacts.sendReply', $contact->id) }}" method="POST">
                 @csrf
-                @method('PUT')
-
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label" for="subject">Tiêu đề email</label>
                         <input class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject"
-                            type="text" value="{{ old('subject', 'Phản hồi từ ' . config('app.name')) }}" required />
+                            type="text" value="{{ old('subject', 'Phản hồi từ ' . getSetting('website_name')) }}" required />
                         @error('subject')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -70,9 +68,9 @@
                     <div class="col-12">
                         <label class="form-label" for="reply_message">Nội dung phản hồi</label>
                         <textarea class="form-control @error('reply_message') is-invalid @enderror" id="reply_message" name="reply_message"
-                            rows="10" required>{{ old('reply_message') }}</textarea>
+                            rows="10">{{ old('reply_message') }}</textarea>
                         @error('reply_message')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $messsage }}</div>
                         @enderror
                     </div>
 
@@ -98,5 +96,23 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        let replyEditor = null;
+        ClassicEditor
+            .create(document.querySelector('#reply_message'))
+            .then(editor => { replyEditor = editor; })
+            .catch(error => { console.error(error); });
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (replyEditor && !replyEditor.getData().trim()) {
+                alert('Vui lòng nhập nội dung phản hồi!');
+                e.preventDefault();
+            }
+        });
+    </script>
+@endpush
 
 @endsection

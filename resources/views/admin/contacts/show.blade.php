@@ -18,6 +18,12 @@
         </div>
         <div class="col-auto ms-auto">
             <div class="d-flex gap-2">
+                <a href="#" class="btn btn-phoenix-primary" data-bs-toggle="modal" data-bs-target="#editStatusModal{{ $contact->id }}">
+                    <span class="fas fa-edit me-2"></span>Sửa trạng thái
+                </a>
+                <a href="{{ route('admin.contacts.reply', $contact->id) }}" class="btn btn-phoenix-warning">
+                    <span class="fas fa-paper-plane me-2"></span>Gửi mail phản hồi
+                </a>
                 <form action="{{ route('admin.contacts.destroy', $contact->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
@@ -117,6 +123,50 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa trạng thái liên hệ -->
+<div class="modal fade" id="editStatusModal{{ $contact->id }}" tabindex="-1"
+    aria-labelledby="editStatusModalLabel{{ $contact->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content"></div>
+            <form action="{{ route('admin.contacts.update', $contact->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStatusModalLabel{{ $contact->id }}">Cập nhật trạng thái liên hệ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="status{{ $contact->id }}" class="form-label"><strong>Trạng thái</strong></label>
+                        <select name="status" id="status{{ $contact->id }}" class="form-select">
+                            @if(!in_array($contact->status, ['đã đọc', 'đã bỏ qua', 'đã trả lời']))
+                                <option value="mới" {{ $contact->status == 'mới' ? 'selected' : '' }}>Mới</option>
+                            @endif
+                            @if($contact->status != 'đã trả lời')
+                                <option value="đã đọc" {{ $contact->status == 'đã đọc' ? 'selected' : '' }}>Đã đọc</option>
+                            @endif
+                            @if($contact->reply_at)
+                                <option value="đã trả lời" {{ $contact->status == 'đã trả lời' ? 'selected' : '' }}>Đã trả lời</option>
+                            @endif
+                            @if($contact->status != 'đã trả lời')
+                                <option value="đã bỏ qua" {{ $contact->status == 'đã bỏ qua' ? 'selected' : '' }}>Đã bỏ qua</option>
+                            @endif
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="note{{ $contact->id }}" class="form-label">Ghi chú</label>
+                        <textarea name="note" id="note{{ $contact->id }}" class="form-control" rows="2">{{ $contact->note }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

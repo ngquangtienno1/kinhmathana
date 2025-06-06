@@ -35,23 +35,32 @@
         <input type="hidden" name="ids" id="bulk-force-delete-ids">
     </form>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive scrollbar">
+    <div id="brands" data-list='{"valueNames":["id","name","description","deleted_at"],"page":10,"pagination":true}'>
+        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+            <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table fs-9 mb-0">
                     <thead>
                         <tr>
-                            <th class="align-middle text-center" style="width:40px;">
+                            <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;" scope="col">
                                 <div class="form-check mb-0 fs-8">
                                     <input class="form-check-input" id="checkbox-bulk-brands-select" type="checkbox"
                                         data-bulk-select='{"body":"brands-table-body"}' />
                                 </div>
                             </th>
-                            <th class="align-middle text-center" style="width:70px;">ẢNH</th>
-                            <th class="align-middle text-center" style="width:220px;">TÊN THƯƠNG HIỆU</th>
-                            <th class="align-middle text-center" style="width:250px;">MÔ TẢ</th>
-                            <th class="align-middle text-center" style="width:150px;">NGÀY XÓA</th>
-                            <th class="align-middle text-center" style="width:120px;"></th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
+                                <a href="{{ route('admin.brands.bin', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                    class="text-body" style="text-decoration:none;">
+                                    ID
+                                    @if (request('sort') === 'id')
+                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:70px;">ẢNH</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:220px;" data-sort="name">TÊN THƯƠNG HIỆU</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;" data-sort="description">MÔ TẢ</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:150px;" data-sort="deleted_at">NGÀY XÓA</th>
+                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:120px;"></th>
                         </tr>
                     </thead>
                     <tbody class="list" id="brands-table-body">
@@ -63,31 +72,32 @@
                                             value="{{ $brand->id }}" />
                                     </div>
                                 </td>
-                                <td class="align-middle text-center">
-                                    <a class="d-block" href="#">
-                                        @if ($brand->image)
+                                <td class="id align-middle ps-4">
+                                    <span class="text-body-tertiary">{{ $brand->id }}</span>
+                                </td>
+                                <td class="align-middle white-space-nowrap py-0">
+                                    @if ($brand->image)
+                                        <a class="d-block" href="#">
                                             <img src="{{ asset('storage/' . $brand->image) }}" alt=""
                                                 width="48" style="object-fit:cover;"
                                                 class="border border-translucent rounded-2">
-                                        @else
-                                            <span class="text-muted">Không có ảnh</span>
-                                        @endif
-                                    </a>
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Không có ảnh</span>
+                                    @endif
                                 </td>
-                                <td class="align-middle text-center">
+                                <td class="name align-middle ps-4">
                                     <a class="fw-semibold line-clamp-3 mb-0" href="#">{{ $brand->name }}</a>
                                 </td>
-                                <td class="align-middle text-center">
-                                    <span
-                                        class="text-body-tertiary">{{ Str::limit($brand->description, 80) ?: 'Không có mô tả' }}</span>
+                                <td class="description align-middle ps-4">
+                                    <span class="text-body-tertiary">{{ Str::limit($brand->description, 80) ?: 'Không có mô tả' }}</span>
                                 </td>
-                                <td class="align-middle text-center text-body-tertiary">
+                                <td class="deleted_at align-middle white-space-nowrap text-body-tertiary ps-4">
                                     {{ $brand->deleted_at->format('d/m/Y H:i') }}
                                 </td>
-                                <td class="align-middle text-center btn-reveal-trigger">
+                                <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
-                                        <button
-                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
                                             type="button" data-bs-toggle="dropdown" data-boundary="window"
                                             aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                             <span class="fas fa-ellipsis-h fs-10"></span>
@@ -114,15 +124,23 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">Không có thương hiệu nào trong thùng rác
-                                </td>
+                                <td colspan="7" class="text-center py-4">Không có thương hiệu nào trong thùng rác</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex justify-content-center mt-3">
-                {{ $brands->links() }}
+            <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+                <div class="col-auto d-flex">
+                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p>
+                    <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                </div>
+                <div class="col-auto d-flex">
+                    <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                    <ul class="mb-0 pagination"></ul>
+                    <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                </div>
             </div>
         </div>
     </div>
@@ -179,6 +197,7 @@
             bulkRestoreIds.value = checkedIds.join(',');
             bulkRestoreForm.submit();
         });
+
         // Xử lý submit xóa vĩnh viễn
         bulkForceDeleteBtn.addEventListener('click', function(e) {
             e.preventDefault();

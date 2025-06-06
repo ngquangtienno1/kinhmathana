@@ -551,25 +551,32 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::put('/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
 
     // Contact routes
-    Route::prefix('contacts')->name('contacts.')->group(function () {
-        Route::post('/bulk-destroy', [ContactController::class, 'bulkDestroy'])->name('bulkDestroy');
-        Route::post('/bulk-restore', [ContactController::class, 'bulkRestore'])->name('bulkRestore');
-        Route::post('/bulk-force-delete', [ContactController::class, 'bulkForceDelete'])->name('bulkForceDelete');
-
-        // Basic routes
-        Route::get('/', [ContactController::class, 'index'])->name('index');
-        Route::get('/create', [ContactController::class, 'create'])->name('create');
-        Route::post('/', [ContactController::class, 'store'])->name('store');
-        Route::get('/bin', [ContactController::class, 'bin'])->name('bin');
-
-        // Contact specific routes
-        Route::get('/{contact}', [ContactController::class, 'show'])->name('show');
-        Route::get('/{contact}/edit', [ContactController::class, 'edit'])->name('edit');
-        Route::put('/{contact}', [ContactController::class, 'update'])->name('update');
-        Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
-        Route::post('/{contact}/restore', [ContactController::class, 'restore'])->name('restore');
-        Route::delete('/{contact}/force', [ContactController::class, 'forceDelete'])->name('forceDelete');
-        Route::get('/{contact}/reply', [ContactController::class, 'reply'])->name('reply');
-        Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('send-reply');
+    Route::prefix('contacts')->name('contacts.')->middleware(['permission:xem-danh-sach-lien-he'])->group(function () {
+        Route::post('/bulk-destroy', [ContactController::class, 'bulkDestroy'])->name('bulkDestroy')
+            ->middleware(['permission:xoa-nhieu-lien-he']);
+        Route::post('/bulk-restore', [ContactController::class, 'bulkRestore'])->name('bulkRestore')
+            ->middleware(['permission:khoi-phuc-lien-he']);
+        Route::post('/bulk-force-delete', [ContactController::class, 'bulkForceDelete'])->name('bulkForceDelete')
+            ->middleware(['permission:xoa-vinh-vien-lien-he']);
+        Route::get('/', [ContactController::class, 'index'])->name('index')
+            ->middleware(['permission:xem-danh-sach-lien-he']);
+        Route::get('/bin', [ContactController::class, 'bin'])->name('bin')
+            ->middleware(['permission:xem-thung-rac-lien-he']);
+        Route::get('/{contact}', [ContactController::class, 'show'])->name('show')
+            ->middleware(['permission:xem-chi-tiet-lien-he']);
+        Route::get('/{contact}/edit', [ContactController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-lien-he']);
+        Route::put('/{contact}', [ContactController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-lien-he']);
+        Route::delete('/{contact}', action: [ContactController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-lien-he']);
+        Route::post('/{contact}/restore', [ContactController::class, 'restore'])->name('restore')
+            ->middleware(['permission:khoi-phuc-lien-he']);
+        Route::delete('/{contact}/force', [ContactController::class, 'forceDelete'])->name('forceDelete')
+            ->middleware(['permission:xoa-vinh-vien-lien-he']);
+        Route::get('/{contact}/reply', [ContactController::class, 'reply'])->name('reply')
+            ->middleware(['permission:xem-lien-he']);
+        Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
+            ->middleware(['permission:xem-lien-he']);
     });
 });

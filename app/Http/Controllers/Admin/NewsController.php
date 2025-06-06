@@ -126,7 +126,7 @@ class NewsController extends Controller
 
     public function bin()
     {
-        $news = News::onlyTrashed()->with(['category', 'author'])->latest()->paginate(10);
+        $news = News::onlyTrashed()->with(['category', 'author'])->latest()->get();
         return view('admin.news.bin', compact('news'));
     }
 

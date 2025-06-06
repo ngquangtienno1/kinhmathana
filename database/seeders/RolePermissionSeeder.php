@@ -365,6 +365,17 @@ class RolePermissionSeeder extends Seeder
             // Quản lý thông báo
             ['name' => 'Xem danh sách thông báo', 'slug' => 'xem-danh-sach-thong-bao', 'description' => 'Cho phép xem danh sách thông báo'],
             ['name' => 'Thêm thông báo', 'slug' => 'them-thong-bao', 'description' => 'Cho phép thêm thông báo'],
+
+            // Quản lý liên hệ
+            ['name' => 'Xem danh sách liên hệ', 'slug' => 'xem-danh-sach-lien-he', 'description' => 'Cho phép xem danh sách liên hệ'],
+            ['name' => 'Xem chi tiết liên hệ', 'slug' => 'xem-chi-tiet-lien-he', 'description' => 'Cho phép xem chi tiết liên hệ'],
+            ['name' => 'Sửa liên hệ', 'slug' => 'sua-lien-he', 'description' => 'Cho phép sửa liên hệ'],
+            ['name' => 'Xóa liên hệ', 'slug' => 'xoa-lien-he', 'description' => 'Cho phép xóa liên hệ'],
+            ['name' => 'Xóa nhiều liên hệ', 'slug' => 'xoa-nhieu-lien-he', 'description' => 'Cho phép xóa nhiều liên hệ cùng lúc'],
+            ['name' => 'Khôi phục liên hệ', 'slug' => 'khoi-phuc-lien-he', 'description' => 'Cho phép khôi phục liên hệ đã xóa'],
+            ['name' => 'Xóa vĩnh viễn liên hệ', 'slug' => 'xoa-vinh-vien-lien-he', 'description' => 'Cho phép xóa vĩnh viễn liên hệ'],
+            ['name' => 'Xem thùng rác liên hệ', 'slug' => 'xem-thung-rac-lien-he', 'description' => 'Cho phép xem thùng rác liên hệ'],
+            ['name' => 'Xem liên hệ', 'slug' => 'xem-lien-he', 'description' => 'Cho phép xem liên hệ'],
         ];
 
         // Thêm timestamps cho mỗi permission

@@ -10,7 +10,7 @@ class ContactMessageSeeder extends Seeder
     public function run()
     {
         // Tạo 50 tin nhắn thông thường
-        ContactMessage::factory()->count(50)->create();
+        ContactMessage::factory()->count(10)->create();
 
         // Tạo 10 tin nhắn spam
         ContactMessage::factory()->count(10)->spam()->create();
