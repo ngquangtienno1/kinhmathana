@@ -20,14 +20,12 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SphericalController;
+use App\Http\Controllers\Admin\CylindricalController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\ProductImageController;
-use App\Http\Controllers\Admin\VariationImageController;
-use App\Http\Controllers\Admin\TestNotificationController;
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\TicketController;
@@ -217,6 +215,36 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-kich-thuoc']);
         Route::delete('/{id}/destroy', [SizeController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-kich-thuoc']);
+    });
+
+    // Sphericals
+    Route::prefix('sphericals')->name('sphericals.')->middleware(['permission:xem-do-can'])->group(function () {
+        Route::get('/', [SphericalController::class, 'index'])->name('index');
+        Route::get('/create', [SphericalController::class, 'create'])->name('create')
+            ->middleware(['permission:them-do-can']);
+        Route::post('/', [SphericalController::class, 'store'])->name('store')
+            ->middleware(['permission:them-do-can']);
+        Route::get('/edit/{id}', [SphericalController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-do-can']);
+        Route::put('/update/{id}', [SphericalController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-do-can']);
+        Route::delete('/destroy/{id}', [SphericalController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-do-can']);
+    });
+
+    // Cylindricals
+    Route::prefix('cylindricals')->name('cylindricals.')->middleware(['permission:xem-do-loan'])->group(function () {
+        Route::get('/', [CylindricalController::class, 'index'])->name('index');
+        Route::get('/create', [CylindricalController::class, 'create'])->name('create')
+            ->middleware(['permission:them-do-loan']);
+        Route::post('/', [CylindricalController::class, 'store'])->name('store')
+            ->middleware(['permission:them-do-loan']);
+        Route::get('/edit/{id}', [CylindricalController::class, 'edit'])->name('edit')
+            ->middleware(['permission:sua-do-loan']);
+        Route::put('/update/{id}', [CylindricalController::class, 'update'])->name('update')
+            ->middleware(['permission:sua-do-loan']);
+        Route::delete('/destroy/{id}', [CylindricalController::class, 'destroy'])->name('destroy')
+            ->middleware(['permission:xoa-do-loan']);
     });
 
     // Category
