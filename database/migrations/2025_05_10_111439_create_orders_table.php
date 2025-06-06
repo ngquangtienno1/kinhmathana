@@ -63,6 +63,9 @@ return new class extends Migration
                 'refunded'           // Đã hoàn tiền
             ])->default('pending');
 
+            // Thêm trường cancellation_reason_id
+            $table->foreignId('cancellation_reason_id')->nullable()->constrained('cancellation_reasons')->nullOnDelete();
+
             // Thông tin bổ sung
             $table->text('note')->nullable()->comment('Ghi chú từ khách hàng');
             $table->text('admin_note')->nullable()->comment('Ghi chú của admin');

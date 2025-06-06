@@ -238,10 +238,22 @@
                                 </div>
                                 <p class="mb-0 ms-4">
                                     @php
-                                        $orderStatusLabel = $order->getStatusLabelAttribute(); // Sử dụng accessor từ model
-                                        $orderStatusColor = $order->getStatusColorAttribute(); // Sử dụng accessor từ model
+                                        $orderStatusLabel = $order->getStatusLabelAttribute();
+                                        $orderStatusColor = $order->getStatusColorAttribute();
                                     @endphp
                                     <span class="badge bg-{{ $orderStatusColor }}">{{ $orderStatusLabel }}</span>
+                                    @if($order->status === 'cancelled')
+                                        <br>
+                                        @if($order->cancellationReason)
+                                            <span class="text-danger">Lý do huỷ: {{ $order->cancellationReason->reason }}</span><br>
+                                        @endif
+                                        @php
+                                            $cancelHistory = $order->statusHistories()->where('new_status', 'cancelled')->latest()->first();
+                                        @endphp
+                                        @if($cancelHistory && $cancelHistory->updatedBy)
+                                            <span class="text-muted">Huỷ bởi: {{ $cancelHistory->updatedBy->name }}</span>
+                                        @endif
+                                    @endif
                                 </p>
                             </div>
                             @if ($order->note)
@@ -290,7 +302,10 @@
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title mb-4">Cập nhật trạng thái</h3>
-                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                    @php
+                        $adminCancellationReasons = \App\Models\CancellationReason::where('type', 'admin')->where('is_active', true)->get();
+                    @endphp
+                    <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" id="order-status-form">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
@@ -325,7 +340,7 @@
                                 $current = $order->status;
                                 $canUpdate = count($statusTransitions[$current]) > 0;
                             @endphp
-                            <select name="status" class="form-select" {{ !$canUpdate ? 'disabled' : '' }}>
+                            <select name="status" class="form-select" id="order-status-select" {{ !$canUpdate ? 'disabled' : '' }}>
                                 <option value="{{ $current }}">{{ $statusLabels[$current] }}</option>
                                 @foreach($statusTransitions[$current] as $next)
                                     <option value="{{ $next }}">{{ $statusLabels[$next] }}</option>
@@ -335,8 +350,8 @@
                                 <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật nữa.</small></div>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-primary w-100"
-                            {{ !$canUpdate ? 'disabled' : '' }}>
+                        <input type="hidden" name="cancellation_reason_id" id="cancellation_reason_id" value="">
+                        <button type="submit" class="btn btn-primary w-100" id="order-status-submit" {{ !$canUpdate ? 'disabled' : '' }}>
                             Cập nhật trạng thái
                         </button>
                     </form>
@@ -345,5 +360,77 @@
         </div>
     </div>
 </div>
+
+<!-- Modal chọn lý do huỷ -->
+<div class="modal fade" id="cancellationReasonModal" tabindex="-1" aria-labelledby="cancellationReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancellationReasonModalLabel">Chọn lý do huỷ đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="cancellation_reason_select" class="form-label">Lý do huỷ <span class="text-danger">*</span></label>
+                    <select class="form-select" id="cancellation_reason_select">
+                        <option value="">-- Chọn lý do huỷ --</option>
+                        @foreach($adminCancellationReasons as $reason)
+                            <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="confirm-cancellation-reason">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('order-status-select');
+        const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
+        const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
+        const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
+        const orderStatusForm = document.getElementById('order-status-form');
+        const orderStatusSubmit = document.getElementById('order-status-submit');
+
+        let shouldShowModal = false;
+
+        statusSelect.addEventListener('change', function(e) {
+            if (this.value === 'cancelled') {
+                shouldShowModal = true;
+                cancellationReasonModal.show();
+                orderStatusSubmit.disabled = true;
+            } else {
+                cancellationReasonIdInput.value = '';
+                orderStatusSubmit.disabled = false;
+            }
+        });
+
+        document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
+            const selectedReason = cancellationReasonSelect.value;
+            if (!selectedReason) {
+                cancellationReasonSelect.classList.add('is-invalid');
+                return;
+            }
+            cancellationReasonSelect.classList.remove('is-invalid');
+            cancellationReasonIdInput.value = selectedReason;
+            cancellationReasonModal.hide();
+            orderStatusSubmit.disabled = false;
+        });
+
+        // Ngăn submit nếu chọn huỷ mà chưa chọn lý do
+        orderStatusForm.addEventListener('submit', function(e) {
+            if (statusSelect.value === 'cancelled' && !cancellationReasonIdInput.value) {
+                e.preventDefault();
+                cancellationReasonModal.show();
+                orderStatusSubmit.disabled = true;
+            }
+        });
+    });
+</script>
 
 @endsection

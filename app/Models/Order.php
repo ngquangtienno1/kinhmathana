@@ -34,7 +34,8 @@ class Order extends Model
         'admin_note',
         'confirmed_at',
         'completed_at',
-        'cancelled_at'
+        'cancelled_at',
+        'cancellation_reason_id',
     ];
 
     protected $casts = [
@@ -85,6 +86,11 @@ class Order extends Model
     public function shippingProvider()
     {
         return $this->belongsTo(ShippingProvider::class);
+    }
+
+    public function cancellationReason()
+    {
+        return $this->belongsTo(\App\Models\CancellationReason::class);
     }
 
     public function getStatusLabelAttribute()

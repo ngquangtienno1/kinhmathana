@@ -183,15 +183,26 @@ class OrderController extends Controller
     {
         $request->validate([
             'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,returned,processing_return,return_rejected,completed,refunded,cancelled',
-            'comment' => 'nullable|string'
+            'comment' => 'nullable|string',
+            'cancellation_reason_id' => 'nullable|exists:cancellation_reasons,id',
         ]);
 
         DB::transaction(function () use ($order, $request) {
             $oldStatus = $order->status;
-            $order->update([
+            $updateData = [
                 'status' => $request->status,
-                'admin_note' => $request->comment
-            ]);
+                'admin_note' => $request->comment,
+            ];
+            if ($request->status === 'cancelled') {
+                if (!$request->cancellation_reason_id) {
+                    throw new \Exception('Vui lòng chọn lý do huỷ đơn hàng!');
+                }
+                $updateData['cancellation_reason_id'] = $request->cancellation_reason_id;
+                $updateData['cancelled_at'] = now();
+            } else {
+                $updateData['cancellation_reason_id'] = null;
+            }
+            $order->update($updateData);
 
             // Cập nhật thời gian tương ứng với trạng thái
             if ($request->status === 'confirmed' && !$order->confirmed_at) {

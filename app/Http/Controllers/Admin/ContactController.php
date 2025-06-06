@@ -82,7 +82,6 @@ class ContactController extends Controller
                 return redirect()->back()->with('error', 'Không thể cập nhật trạng thái thành Đã trả lời khi chưa gửi mail phản hồi.');
             }
 
-            // Kiểm tra các trường hợp không được quay lại trạng thái cũ
             if ($contact->status === 'đã trả lời' && in_array($dataNew['status'], ['đã đọc', 'mới'])) {
                 return redirect()->back()->with('error', 'Không thể quay lại trạng thái Đã đọc hoặc Mới khi đã trả lời.');
             }

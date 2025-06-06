@@ -83,6 +83,12 @@ class OrderFactory extends Factory
             'refunded'           // Đã hoàn tiền
         ];
 
+        $status = $this->faker->randomElement($orderStatuses);
+        $cancellationReasonId = null;
+        if ($status === 'cancelled' && \App\Models\CancellationReason::where('type', 'admin')->count() > 0) {
+            $cancellationReasonId = \App\Models\CancellationReason::where('type', 'admin')->inRandomOrder()->first()->id;
+        }
+
         return [
             'order_number'      => 'ORD-' . $this->faker->unique()->numberBetween(10000, 99999),
             'user_id'           => $user->id,
@@ -103,7 +109,8 @@ class OrderFactory extends Factory
             'shipping_fee'      => $shippingFee,
             'payment_details'   => null,
             'payment_status'    => $this->faker->randomElement($paymentStatuses),
-            'status'            => $this->faker->randomElement($orderStatuses),
+            'status'            => $status,
+            'cancellation_reason_id' => $cancellationReasonId,
             'note'              => $this->faker->boolean(30) ? $this->faker->sentence() : null,
             'admin_note'        => $this->faker->boolean(10) ? $this->faker->sentence() : null,
             'confirmed_at'      => $this->faker->optional()->dateTimeBetween('-6 months', 'now'),
