@@ -456,6 +456,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [CommentController::class, 'index'])->name('index');
         Route::post('/', [CommentController::class, 'store'])->name('store')
             ->middleware(['permission:them-binh-luan']);
+
+        // Quản lý bad words trong CommentController luôn
+        Route::get('badwords', [CommentController::class, 'badWordsIndex'])->name('badwords.index');
+        Route::post('badwords', [CommentController::class, 'badWordsStore'])->name('badwords.store');
+        Route::delete('badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('badwords.destroy');
+
+        Route::middleware(['auth'])->group(function () {
+            Route::get('scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('scan_badwords');
+        });
+
         Route::get('/{comment}', [CommentController::class, 'show'])->name('show');
 
         Route::put('/{id}', [CommentController::class, 'update'])->name('update')
@@ -473,14 +483,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->name('toggle-visibility')
             ->middleware(['permission:an-hien-binh-luan']);
         Route::post('/{comment}/reply', [CommentController::class, 'reply'])->name('reply');
-        // Quản lý bad words trong CommentController luôn
-        Route::get('badwords', [CommentController::class, 'badWordsIndex'])->name('badwords.index');
-        Route::post('badwords', [CommentController::class, 'badWordsStore'])->name('badwords.store');
-        Route::delete('badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('badwords.destroy');
-
-        Route::middleware(['auth'])->group(function () {
-            Route::get('scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('scan_badwords');
-        });
     });
 
     // Khuyến mãi
@@ -497,7 +499,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
     });
 
-   
+
 
 
     // Quản lý ticket
