@@ -15,28 +15,36 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete()
-                  ->comment('User thực hiện thay đổi trạng thái');
+                ->comment('User thực hiện thay đổi trạng thái');
             $table->enum('old_status', [
-                'pending',           // Đơn hàng vừa được tạo
-                'awaiting_payment',  // Chờ thanh toán
-                'confirmed',         // Đã xác nhận đơn
-                'processing',        // Đang đóng gói/kiểm hàng
-                'shipping',          // Đang vận chuyển
-                'delivered',         // Đã giao hàng
-                'return_rejected',   // Khách trả hàng
-                'processing_return', // Đang xử lý trả hàng
-                'refunded',          // Đã hoàn tiền
+                'pending',              // Chờ xác nhận
+                'confirmed',            // Đã xác nhận
+                'awaiting_pickup',      // Chờ lấy hàng
+                'shipping',             // Đang giao
+                'delivered',            // Đã giao hàng
+                'completed',            // Đã hoàn thành
+                'cancelled_by_customer', // Khách hủy đơn
+                'cancelled_by_admin',    // Admin hủy đơn
+                'delivery_failed',       // Giao thất bại
+                'returned_requested',    // Khách trả hàng
+                'processing_return',     // Đang xử lý trả hàng
+                'return_rejected',       // Trả hàng bị từ chối
+                'refunded'              // Đã hoàn tiền
             ])->comment('Trạng thái cũ');
             $table->enum('new_status', [
-                'pending',           // Đơn hàng vừa được tạo
-                'awaiting_payment',  // Chờ thanh toán
-                'confirmed',         // Đã xác nhận đơn
-                'processing',        // Đang đóng gói/kiểm hàng
-                'shipping',          // Đang vận chuyển
-                'delivered',         // Đã giao hàng
-                'return_rejected',   // Khách trả hàng
-                'processing_return', // Đang xử lý trả hàng
-                'refunded',          // Đã hoàn tiền
+                'pending',              // Chờ xác nhận
+                'confirmed',            // Đã xác nhận
+                'awaiting_pickup',      // Chờ lấy hàng
+                'shipping',             // Đang giao
+                'delivered',            // Đã giao hàng
+                'completed',            // Đã hoàn thành
+                'cancelled_by_customer', // Khách hủy đơn
+                'cancelled_by_admin',    // Admin hủy đơn
+                'delivery_failed',       // Giao thất bại
+                'returned_requested',    // Khách trả hàng
+                'processing_return',     // Đang xử lý trả hàng
+                'return_rejected',       // Trả hàng bị từ chối
+                'refunded'              // Đã hoàn tiền
             ])->comment('Trạng thái mới');
             $table->text('note')->nullable()->comment('Ghi chú về việc thay đổi trạng thái');
             $table->json('metadata')->nullable()->comment('Dữ liệu bổ sung (VD: thông tin vận chuyển, lý do huỷ...)');

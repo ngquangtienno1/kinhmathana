@@ -4,14 +4,14 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Đơn hàng</a>
+        <a href="{{ route('admin.orders.index') }}">Đơn hàng</a>
     </li>
     <li class="breadcrumb-item active">Tất cả đơn hàng</li>
 @endsection
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Đơn hàng</h2>
+            <h2 class="mb-0">Danh sách đơn hàng</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
@@ -27,9 +27,12 @@
         <li class="nav-item"><a class="nav-link{{ request('status') == 'delivered' ? ' active' : '' }}"
                 href="?status=delivered"><span>Đã giao hàng </span><span
                     class="text-body-tertiary fw-semibold">({{ $countDelivered }})</span></a></li>
-        <li class="nav-item"><a class="nav-link{{ request('status') == 'cancelled' ? ' active' : '' }}"
-                href="?status=cancelled"><span>Đã hủy </span><span
-                    class="text-body-tertiary fw-semibold">({{ $countCancelled }})</span></a></li>
+        <li class="nav-item"><a class="nav-link{{ request('status') == 'cancelled_by_customer' ? ' active' : '' }}"
+                href="?status=cancelled_by_customer"><span>Khách hủy đơn </span><span
+                    class="text-body-tertiary fw-semibold">({{ $countCancelledByCustomer ?? 0 }})</span></a></li>
+        <li class="nav-item"><a class="nav-link{{ request('status') == 'cancelled_by_admin' ? ' active' : '' }}"
+                href="?status=cancelled_by_admin"><span>Admin hủy đơn </span><span
+                    class="text-body-tertiary fw-semibold">({{ $countCancelledByAdmin ?? 0 }})</span></a></li>
     </ul>
 
     <div id="orderTable"
@@ -61,7 +64,7 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'pending'])) }}">Chưa
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'unpaid'])) }}">Chưa
                                         thanh toán</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'paid'])) }}">Đã
@@ -110,7 +113,7 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}">Đã
                                         hủy</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'returned'])) }}">Khách
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'returned_requested'])) }}">Khách
                                         trả hàng</a></li>
                                 <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'processing_return'])) }}">Đang
@@ -185,7 +188,7 @@
                                     class="payment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
                                     @php
                                         $paymentStatusMap = [
-                                            'pending' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
+                                            'unpaid' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
                                             'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
                                             'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
@@ -224,19 +227,25 @@
                                             'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
                                             'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
                                             'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
-                                            'returned' => ['Khách trả hàng', 'badge-phoenix-warning', 'corner-up-left'],
+                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
+                                            'cancelled_by_customer' => ['Khách hủy đơn', 'badge-phoenix-danger', 'x'],
+                                            'cancelled_by_admin' => ['Admin hủy đơn', 'badge-phoenix-danger', 'x'],
+                                            'delivery_failed' => ['Giao thất bại', 'badge-phoenix-danger', 'x'],
+                                            'returned_requested' => [
+                                                'Khách trả hàng',
+                                                'badge-phoenix-warning',
+                                                'corner-up-left',
+                                            ],
                                             'processing_return' => [
                                                 'Đang xử lý trả hàng',
                                                 'badge-phoenix-warning',
                                                 'refresh-cw',
                                             ],
-                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
                                             'return_rejected' => [
                                                 'Trả hàng bị từ chối',
                                                 'badge-phoenix-danger',
                                                 'corner-up-left',
                                             ],
-                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
                                             'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [

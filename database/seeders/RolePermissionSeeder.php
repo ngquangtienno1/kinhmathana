@@ -375,6 +375,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xóa nhiều liên hệ', 'slug' => 'xoa-nhieu-lien-he', 'description' => 'Cho phép xóa nhiều liên hệ'],
             ['name' => 'Khôi phục liên hệ', 'slug' => 'khoi-phuc-lien-he', 'description' => 'Cho phép khôi phục liên hệ'],
             ['name' => 'Xóa vĩnh viễn liên hệ', 'slug' => 'xoa-vinh-vien-lien-he', 'description' => 'Cho phép xóa vĩnh viễn liên hệ'],
+            ['name' => 'Gửi email liên hệ', 'slug' => 'gui-email-lien-he', 'description' => 'Cho phép gửi email liên hệ'],
 
             // Quản lý độ cận
             ['name' => 'Xem độ cận', 'slug' => 'xem-do-can', 'description' => 'Cho phép xem danh sách độ cận'],

@@ -162,7 +162,7 @@ class NotificationController extends Controller
     }
 
     // Helper method to notify admins
-    protected function notifyAdmins($type, $title, $content, $data = [])
+    public static function notifyAdmins($type, $title, $content, $data = [])
     {
         // Get admin role ID
         $adminRole = Role::where('name', 'admin')->first();
@@ -227,13 +227,13 @@ class NotificationController extends Controller
         );
     }
 
-    public function notifyOrderCancelled($orderId, $reason = '')
+    public function notifyOrderCancelled($orderId, $reason = '', $cancelledBy = 'Hệ thống')
     {
         $this->notifyAdmins(
             self::TYPE_ORDER_CANCELLED,
             'Đơn hàng bị hủy',
-            "Đơn hàng #{$orderId} đã bị hủy" . ($reason ? " - Lý do: {$reason}" : ''),
-            ['order_id' => $orderId, 'reason' => $reason]
+            "Đơn hàng #{$orderId} đã bị hủy bởi {$cancelledBy}" . ($reason ? " - Lý do: {$reason}" : ''),
+            ['order_id' => $orderId, 'reason' => $reason, 'cancelled_by' => $cancelledBy]
         );
     }
 

@@ -445,8 +445,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/{id}', [PaymentController::class, 'show'])->name('show');
         Route::patch('/{id}/status', [PaymentController::class, 'updateStatus'])->name('updateStatus')
             ->middleware(['permission:cap-nhat-trang-thai-thanh-toan']);
-        Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
-            ->middleware(['permission:in-hoa-don']);
+        // Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
+        //     ->middleware(['permission:in-hoa-don']);
         Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-thanh-toan']);
     });
@@ -456,6 +456,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [CommentController::class, 'index'])->name('index');
         Route::post('/', [CommentController::class, 'store'])->name('store')
             ->middleware(['permission:them-binh-luan']);
+
+        // Quản lý bad words trong CommentController luôn
+        Route::get('badwords', [CommentController::class, 'badWordsIndex'])->name('badwords.index');
+        Route::post('badwords', [CommentController::class, 'badWordsStore'])->name('badwords.store');
+        Route::delete('badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('badwords.destroy');
+
+        Route::middleware(['auth'])->group(function () {
+            Route::post('scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('scan_badwords');
+        });
+
         Route::get('/{comment}', [CommentController::class, 'show'])->name('show');
 
         Route::put('/{id}', [CommentController::class, 'update'])->name('update')
@@ -489,14 +499,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
     });
 
-    Route::patch('/comments/{comment}/status', [CommentController::class, 'updateStatus'])->name('comments.updateStatus');
-    // Quản lý bad words trong CommentController luôn
-    Route::get('comments/badwords', [CommentController::class, 'badWordsIndex'])->name('comments.badwords.index');
-    Route::post('comments/badwords', [CommentController::class, 'badWordsStore'])->name('comments.badwords.store');
-    Route::delete('comments/badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('comments.badwords.destroy');
-    Route::middleware(['auth'])->group(function () {
-        Route::get('comments/scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('comments.scan_badwords');
-    });
+
+
 
     // Quản lý ticket
     Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {
@@ -604,8 +608,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{contact}/force', [ContactController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-vinh-vien-lien-he']);
         Route::get('/{contact}/reply', [ContactController::class, 'reply'])->name('reply')
-            ->middleware(['permission:xem-lien-he']);
+            ->middleware(['permission:gui-email-lien-he']);
         Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
-            ->middleware(['permission:xem-lien-he']);
+            ->middleware(['permission:gui-email-lien-he']);
     });
 });

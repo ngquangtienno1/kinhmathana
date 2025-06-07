@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('restrict');
             $table->decimal('amount', 10, 2); // số tiền thanh toán
             $table->text('note')->nullable(); // mô tả chi tiết hoặc lỗi thanh toán
+            $table->timestamp('paid_at')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

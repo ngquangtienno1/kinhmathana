@@ -18,10 +18,12 @@
         </div>
         <div class="col-auto ms-auto">
             <div class="d-flex gap-2">
-                <a href="#" class="btn btn-phoenix-primary" data-bs-toggle="modal"
-                    data-bs-target="#editStatusModal{{ $contact->id }}">
-                    <span class="fas fa-edit me-2"></span>Sửa trạng thái
-                </a>
+                @if ($contact->status != 'đã trả lời')
+                    <a href="#" class="btn btn-phoenix-primary" data-bs-toggle="modal"
+                        data-bs-target="#editStatusModal{{ $contact->id }}">
+                        <span class="fas fa-edit me-2"></span>Sửa trạng thái
+                    </a>
+                @endif
                 <a href="{{ route('admin.contacts.reply', $contact->id) }}" class="btn btn-phoenix-warning">
                     <span class="fas fa-paper-plane me-2"></span>Gửi mail phản hồi
                 </a>
@@ -115,7 +117,7 @@
                                     @if ($contact->note)
                                         <tr>
                                             <th>Ghi chú</th>
-                                            <td>{{ $contact->note }}</td>
+                                            <td>{{ strip_tags($contact->note) }}</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -151,10 +153,6 @@
                             @if ($contact->status != 'đã trả lời')
                                 <option value="đã đọc" {{ $contact->status == 'đã đọc' ? 'selected' : '' }}>Đã đọc
                                 </option>
-                            @endif
-                            @if ($contact->reply_at)
-                                <option value="đã trả lời" {{ $contact->status == 'đã trả lời' ? 'selected' : '' }}>Đã
-                                    trả lời</option>
                             @endif
                             @if ($contact->status != 'đã trả lời')
                                 <option value="đã bỏ qua" {{ $contact->status == 'đã bỏ qua' ? 'selected' : '' }}>Đã bỏ

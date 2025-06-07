@@ -61,7 +61,7 @@ class OrderFactory extends Factory
         $totalAmount = max(0, $totalAmount);
 
         $paymentStatuses = [
-            'pending',
+            'unpaid',
             'paid',
             'cod',
             'confirmed',
@@ -70,22 +70,24 @@ class OrderFactory extends Factory
             'failed'
         ];
         $orderStatuses = [
-            'pending',           // Chờ xác nhận
-            'confirmed',         // Đã xác nhận
-            'awaiting_pickup',   // Chờ lấy hàng
-            'shipping',          // Đang giao
-            'delivered',         // Đã giao hàng
-            'returned',          // Khách trả hàng
-            'processing_return', // Đang xử lý trả hàng
-            'cancelled',         // Đã hủy
-            'return_rejected',   // Trả hàng bị từ chối
-            'completed',         // Đã hoàn thành
-            'refunded'           // Đã hoàn tiền
+            'pending',              // Chờ xác nhận
+            'confirmed',            // Đã xác nhận
+            'awaiting_pickup',      // Chờ lấy hàng
+            'shipping',             // Đang giao
+            'delivered',            // Đã giao hàng
+            'completed',            // Đã hoàn thành
+            'cancelled_by_customer', // Khách hủy đơn
+            'cancelled_by_admin',    // Admin hủy đơn
+            'delivery_failed',       // Giao thất bại
+            'returned_requested',    // Khách trả hàng
+            'processing_return',     // Đang xử lý trả hàng
+            'return_rejected',       // Trả hàng bị từ chối
+            'refunded'              // Đã hoàn tiền
         ];
 
         $status = $this->faker->randomElement($orderStatuses);
         $cancellationReasonId = null;
-        if ($status === 'cancelled' && \App\Models\CancellationReason::where('type', 'admin')->count() > 0) {
+        if (in_array($status, ['cancelled_by_customer', 'cancelled_by_admin']) && \App\Models\CancellationReason::where('type', 'admin')->count() > 0) {
             $cancellationReasonId = \App\Models\CancellationReason::where('type', 'admin')->inRandomOrder()->first()->id;
         }
 

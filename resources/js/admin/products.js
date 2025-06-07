@@ -268,43 +268,43 @@ document.addEventListener('DOMContentLoaded', function () {
         return result;
     }
 
-if (generateVariationsBtn) {
-    generateVariationsBtn.addEventListener('click', function () {
-        const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
-        const attributes = [];
-        for (let row of attributeRows) {
-            const type = row.querySelector('.attribute-type').value;
-            const tags = row.querySelectorAll('.tag');
-            const values = Array.from(tags).map(tag => tag.querySelector('input').value);
-            if (values.length === 0) continue;
-            attributes.push({ type, values });
-        }
+    if (generateVariationsBtn) {
+        generateVariationsBtn.addEventListener('click', function () {
+            const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
+            const attributes = [];
+            for (let row of attributeRows) {
+                const type = row.querySelector('.attribute-type').value;
+                const tags = row.querySelectorAll('.tag');
+                const values = Array.from(tags).map(tag => tag.querySelector('input').value);
+                if (values.length === 0) continue;
+                attributes.push({ type, values });
+            }
 
-        if (attributes.length === 0) {
-            alert('Vui lòng chọn ít nhất một giá trị cho một thuộc tính.');
-            return;
-        }
+            if (attributes.length === 0) {
+                alert('Vui lòng chọn ít nhất một giá trị cho một thuộc tính.');
+                return;
+            }
 
-        const existingVariationNames = Array.from(variationsContainer.getElementsByClassName('variation-row')).map(row => row.querySelector('input[name$="[name]"]').value);
-        const combinations = generateCombinations(attributes).filter(combo => !existingVariationNames.includes(combo.join(' - ')));
+            const existingVariationNames = Array.from(variationsContainer.getElementsByClassName('variation-row')).map(row => row.querySelector('input[name$="[name]"]').value);
+            const combinations = generateCombinations(attributes).filter(combo => !existingVariationNames.includes(combo.join(' - ')));
 
-        if (combinations.length === 0 && existingVariationNames.length > 0) {
-            alert('Tất cả các biến thể đã được tạo.');
-            return;
-        }
+            if (combinations.length === 0 && existingVariationNames.length > 0) {
+                alert('Tất cả các biến thể đã được tạo.');
+                return;
+            }
 
-        variationsContainer.style.display = 'block';
-        combinations.forEach((combo, index) => {
-            const globalIndex = variationsContainer.getElementsByClassName('variation-row').length;
-            const skuPrefix = variableSkuInput.value;
-            const comboName = combo.join(' - ') || 'Biến thể ' + (globalIndex + 1);
-            const row = document.createElement('div');
-            row.className = 'variation-row row g-2 mb-2';
-            row.innerHTML = `
+            variationsContainer.style.display = 'block';
+            combinations.forEach((combo, index) => {
+                const globalIndex = variationsContainer.getElementsByClassName('variation-row').length;
+                const skuPrefix = variableSkuInput.value;
+                const comboName = combo.join(' - ') || 'Biến thể ' + (globalIndex + 1);
+                const row = document.createElement('div');
+                row.className = 'variation-row row g-2 mb-2';
+                row.innerHTML = `
                 <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][name]" value="${comboName}" class="form-control" placeholder="Tên biến thể" readonly>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${comboName.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
                 </div>
                 <div class="col-md-2">
@@ -323,101 +323,101 @@ if (generateVariationsBtn) {
                         <option value="hidden">Ẩn</option>
                     </select>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <input type="file" name="variations[${globalIndex}][image]" class="form-control variation-image-input" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-danger btn-sm remove-variation">Xóa</button>
                 </div>
             `;
-            variationsContainer.appendChild(row);
+                variationsContainer.appendChild(row);
 
-            // Thêm sự kiện cho stock_quantity để tự động cập nhật trạng thái
-            const stockInput = row.querySelector('.stock-quantity-input');
-            const statusSelect = row.querySelector('.variation-status');
-            stockInput.addEventListener('input', function () {
-                if (parseInt(this.value) === 0) {
-                    statusSelect.value = 'out_of_stock';
-                } else if (statusSelect.value === 'out_of_stock') {
-                    statusSelect.value = 'in_stock';
-                }
+                // Thêm sự kiện cho stock_quantity để tự động cập nhật trạng thái
+                const stockInput = row.querySelector('.stock-quantity-input');
+                const statusSelect = row.querySelector('.variation-status');
+                stockInput.addEventListener('input', function () {
+                    if (parseInt(this.value) === 0) {
+                        statusSelect.value = 'out_of_stock';
+                    } else if (statusSelect.value === 'out_of_stock') {
+                        statusSelect.value = 'in_stock';
+                    }
+                });
             });
         });
-    });
-}
-
-// Thêm đoạn code sau ngay trước dòng `updateAddAttributeBtn();` (dòng cuối cùng trong file)
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-variation')) {
-        const variationRows = variationsContainer.getElementsByClassName('variation-row');
-        if (variationRows.length <= 1) {
-            alert('Bạn không thể xóa biến thể này vì sản phẩm phải có ít nhất một biến thể để đảm bảo tính toàn vẹn của dữ liệu.');
-            return;
-        }
-        if (confirm('Bạn có chắc muốn xóa biến thể này?')) {
-            e.target.closest('.variation-row').remove();
-        }
     }
-});
+
+    // Thêm đoạn code sau ngay trước dòng `updateAddAttributeBtn();` (dòng cuối cùng trong file)
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-variation')) {
+            const variationRows = variationsContainer.getElementsByClassName('variation-row');
+            if (variationRows.length <= 1) {
+                alert('Bạn không thể xóa biến thể này vì sản phẩm phải có ít nhất một biến thể để đảm bảo tính toàn vẹn của dữ liệu.');
+                return;
+            }
+            if (confirm('Bạn có chắc muốn xóa biến thể này?')) {
+                e.target.closest('.variation-row').remove();
+            }
+        }
+    });
 
     // Xử lý submit form
-document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function (e) {
-        const priceInput = form.querySelector('input[name="price"]');
-        const salePriceInput = form.querySelector('input[name="sale_price"]');
-        const variationPriceInputs = form.querySelectorAll('input[name^="variations"][name$="[price]"]');
-        const variationSalePriceInputs = form.querySelectorAll('input[name^="variations"][name$="[sale_price]"]');
-        const stockQuantityInput = productType?.value === 'simple' ? simpleStockQuantityInput : variableStockQuantityInput;
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            const priceInput = form.querySelector('input[name="price"]');
+            const salePriceInput = form.querySelector('input[name="sale_price"]');
+            const variationPriceInputs = form.querySelectorAll('input[name^="variations"][name$="[price]"]');
+            const variationSalePriceInputs = form.querySelectorAll('input[name^="variations"][name$="[sale_price]"]');
+            const stockQuantityInput = productType?.value === 'simple' ? simpleStockQuantityInput : variableStockQuantityInput;
 
-        let hasError = false;
+            let hasError = false;
 
-        if (stockQuantityInput && productType?.value === 'simple') {
-            if (!stockQuantityInput.value || isNaN(parseInt(stockQuantityInput.value)) || parseInt(stockQuantityInput.value) < 0) {
-                stockQuantityInput.value = '0';
-                console.log('Set stock_quantity to default: 0');
-            } else {
-                stockQuantityInput.value = parseInt(stockQuantityInput.value).toString();
-                console.log('Stock quantity after validation:', stockQuantityInput.value);
-            }
-        }
-
-        if (productType?.value === 'simple' && priceInput && priceInput.value) {
-            let priceValue = priceInput.value.replace(',', '.');
-            if (isNaN(parseFloat(priceValue)) || parseFloat(priceValue) < 0) {
-                priceInput.classList.add('is-invalid');
-                hasError = true;
-            } else {
-                priceInput.classList.remove('is-invalid');
-                priceInput.value = parseFloat(priceValue).toString();
-            }
-        }
-
-        [salePriceInput, ...variationPriceInputs, ...variationSalePriceInputs].forEach(input => {
-            if (input && input.value) {
-                let priceValue = input.value.replace(',', '.');
-                if (isNaN(parseFloat(priceValue)) || parseFloat(priceValue) < 0) {
-                    input.classList.add('is-invalid');
-                    hasError = true;
+            if (stockQuantityInput && productType?.value === 'simple') {
+                if (!stockQuantityInput.value || isNaN(parseInt(stockQuantityInput.value)) || parseInt(stockQuantityInput.value) < 0) {
+                    stockQuantityInput.value = '0';
+                    console.log('Set stock_quantity to default: 0');
                 } else {
-                    input.classList.remove('is-invalid');
-                    input.value = parseFloat(priceValue).toString();
+                    stockQuantityInput.value = parseInt(stockQuantityInput.value).toString();
+                    console.log('Stock quantity after validation:', stockQuantityInput.value);
                 }
             }
-        });
 
-        console.log('Form data before submit:', {
-            product_type: productType?.value,
-            stock_quantity: stockQuantityInput?.value,
-            price: priceInput?.value,
-            sale_price: salePriceInput?.value,
-        });
+            if (productType?.value === 'simple' && priceInput && priceInput.value) {
+                let priceValue = priceInput.value.replace(',', '.');
+                if (isNaN(parseFloat(priceValue)) || parseFloat(priceValue) < 0) {
+                    priceInput.classList.add('is-invalid');
+                    hasError = true;
+                } else {
+                    priceInput.classList.remove('is-invalid');
+                    priceInput.value = parseFloat(priceValue).toString();
+                }
+            }
 
-        if (hasError) {
-            e.preventDefault();
-            alert('Vui lòng nhập số lượng tồn kho và giá hợp lệ (số dương).');
-        }
+            [salePriceInput, ...variationPriceInputs, ...variationSalePriceInputs].forEach(input => {
+                if (input && input.value) {
+                    let priceValue = input.value.replace(',', '.');
+                    if (isNaN(parseFloat(priceValue)) || parseFloat(priceValue) < 0) {
+                        input.classList.add('is-invalid');
+                        hasError = true;
+                    } else {
+                        input.classList.remove('is-invalid');
+                        input.value = parseFloat(priceValue).toString();
+                    }
+                }
+            });
+
+            console.log('Form data before submit:', {
+                product_type: productType?.value,
+                stock_quantity: stockQuantityInput?.value,
+                price: priceInput?.value,
+                sale_price: salePriceInput?.value,
+            });
+
+            if (hasError) {
+                e.preventDefault();
+                alert('Vui lòng nhập số lượng tồn kho và giá hợp lệ (số dương).');
+            }
+        });
     });
-});
 
     // Khởi tạo sự kiện cho các checkbox hiện có
     document.querySelectorAll('.attribute-value-checkbox').forEach(checkbox => {

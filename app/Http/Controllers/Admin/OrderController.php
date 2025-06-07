@@ -10,9 +10,11 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\OrderPlaced;
 use App\Mail\OrderDelivered;
 use App\Mail\OrderDeliveryFailed;
+use App\Http\Controllers\Admin\NotificationController;
 
 class OrderController extends Controller
 {
@@ -53,13 +55,17 @@ class OrderController extends Controller
         $countShipping = Order::where('status', 'shipping')->count();
         $countDelivered = Order::where('status', 'delivered')->count();
         $countCancelled = Order::where('status', 'cancelled')->count();
+        $countCancelledByCustomer = Order::where('status', 'cancelled_by_customer')->count();
+        $countCancelledByAdmin = Order::where('status', 'cancelled_by_admin')->count();
         return view('admin.orders.index', compact(
             'orders',
             'countAll',
             'countPending',
             'countShipping',
             'countDelivered',
-            'countCancelled'
+            'countCancelled',
+            'countCancelledByCustomer',
+            'countCancelledByAdmin'
         ));
     }
 
@@ -82,7 +88,7 @@ class OrderController extends Controller
             'user_id' => 'required|exists:users,id',
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:pending,paid,failed,refunded,cancelled',
+            'payment_status' => 'required|in:unpaid,paid,failed,refunded,cancelled',
             'status' => 'required|in:pending,confirmed,processing,shipping,delivered,cancelled',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
@@ -148,8 +154,8 @@ class OrderController extends Controller
         $data = $request->validate([
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
-            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,returned,processing_return,return_rejected,completed,refunded,cancelled',
+            'payment_status' => 'required|in:unpaid,paid,cod,confirmed,refunded,processing_refund,failed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed,returned_requested,processing_return,return_rejected,refunded',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -188,10 +194,15 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,returned,processing_return,return_rejected,completed,refunded,cancelled',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_admin,delivery_failed,processing_return,refunded',
             'comment' => 'nullable|string',
             'cancellation_reason_id' => 'nullable',
         ]);
+
+        // Kiểm tra nếu đơn hàng đã bị khách hủy thì không cho phép cập nhật
+        if ($order->status === 'cancelled_by_customer') {
+            return back()->with('error', 'Không thể cập nhật trạng thái đơn hàng đã bị khách hủy');
+        }
 
         DB::transaction(function () use ($order, $request) {
             $oldStatus = $order->status;
@@ -199,7 +210,9 @@ class OrderController extends Controller
                 'status' => $request->status,
                 'admin_note' => $request->comment,
             ];
-            if ($request->status === 'cancelled') {
+
+            // Xử lý khi admin hủy đơn
+            if ($request->status === 'cancelled_by_admin') {
                 if (!$request->cancellation_reason_id) {
                     throw new \Exception('Vui lòng chọn lý do huỷ đơn hàng!');
                 }
@@ -215,9 +228,15 @@ class OrderController extends Controller
                     $updateData['cancellation_reason_id'] = $request->cancellation_reason_id;
                 }
                 $updateData['cancelled_at'] = now();
+
+                // Gửi thông báo khi admin hủy đơn
+                $reason = \App\Models\CancellationReason::find($updateData['cancellation_reason_id']);
+                $reasonText = $reason ? $reason->reason : 'Không có lý do';
+                app(NotificationController::class)->notifyOrderCancelled($order->id, $reasonText, 'Admin');
             } else {
                 $updateData['cancellation_reason_id'] = null;
             }
+
             $order->update($updateData);
 
             // Cập nhật thời gian tương ứng với trạng thái
@@ -232,7 +251,7 @@ class OrderController extends Controller
                 } elseif ($order->customer_email) {
                     Mail::to($order->customer_email)->send(new OrderDelivered($order));
                 }
-            } elseif ($request->status === 'returned_refunded' && $oldStatus === 'shipping') {
+            } elseif ($request->status === 'delivery_failed') {
                 // Gửi email khi giao hàng thất bại
                 if ($order->user && $order->user->email) {
                     Mail::to($order->user->email)->send(new OrderDeliveryFailed($order));
@@ -253,7 +272,7 @@ class OrderController extends Controller
                 'old_status' => $oldStatus,
                 'new_status' => $request->status,
                 'note' => $request->comment,
-                'updated_by' => auth()->id()
+                'updated_by' => Auth::id()
             ]);
         });
 
@@ -266,7 +285,7 @@ class OrderController extends Controller
     public function updatePaymentStatus(Request $request, Order $order)
     {
         $request->validate([
-            'payment_status' => 'required|in:pending,paid,cod,confirmed,refunded,processing_refund,failed',
+            'payment_status' => 'required|in:unpaid,paid,cod,confirmed,refunded,processing_refund,failed',
             'comment' => 'nullable|string'
         ]);
 

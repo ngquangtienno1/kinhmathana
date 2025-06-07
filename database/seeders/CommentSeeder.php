@@ -16,6 +16,14 @@ class CommentSeeder extends Seeder
      */
     public function run(): void
     {
+        // Kiểm tra xem có dữ liệu news và products chưa
+        if (News::count() === 0) {
+            News::factory()->count(10)->create();
+        }
+        if (Product::count() === 0) {
+            Product::factory()->count(10)->create();
+        }
+
         Comment::factory()->count(20)->create();
     }
 }

@@ -104,7 +104,7 @@
                                 @forelse ($customer->orders as $order)
                                     @php
                                         $paymentStatusMap = [
-                                            'pending' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
+                                            'unpaid' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
                                             'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
                                             'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
@@ -134,19 +134,25 @@
                                             'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
                                             'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
                                             'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
-                                            'returned' => ['Khách trả hàng', 'badge-phoenix-warning', 'corner-up-left'],
+                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
+                                            'cancelled_by_customer' => ['Khách hủy đơn', 'badge-phoenix-danger', 'x'],
+                                            'cancelled_by_admin' => ['Admin hủy đơn', 'badge-phoenix-danger', 'x'],
+                                            'delivery_failed' => ['Giao thất bại', 'badge-phoenix-danger', 'x'],
+                                            'returned_requested' => [
+                                                'Khách trả hàng',
+                                                'badge-phoenix-warning',
+                                                'corner-up-left',
+                                            ],
                                             'processing_return' => [
                                                 'Đang xử lý trả hàng',
                                                 'badge-phoenix-warning',
                                                 'refresh-cw',
                                             ],
-                                            'cancelled' => ['Đã hủy', 'badge-phoenix-secondary', 'x'],
                                             'return_rejected' => [
                                                 'Trả hàng bị từ chối',
                                                 'badge-phoenix-danger',
                                                 'corner-up-left',
                                             ],
-                                            'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
                                             'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [
@@ -271,7 +277,7 @@
                             <textarea name="default_address" class="form-control" rows="3" readonly>{{ $customer->default_address }}</textarea>
                         </div>
                     </form>
-                    
+
                     {{-- Form cập nhật chỉ Loại khách hàng --}}
                     <form action="{{ route('admin.customers.update', $customer) }}" method="POST">
                         @csrf

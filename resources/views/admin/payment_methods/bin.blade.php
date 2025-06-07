@@ -47,13 +47,13 @@
                                         type="checkbox" data-bulk-select='{"body":"payment-methods-table-body"}' />
                                 </div>
                             </th>
-                            <th class="align-middle text-center" style="width:70px;">BIỂU TƯỢNG</th>
-                            <th class="align-middle text-center" style="width:220px;">TÊN PHƯƠNG THỨC</th>
-                            <th class="align-middle text-center" style="width:100px;">MÃ</th>
-                            <th class="align-middle text-center" style="width:250px;">MÔ TẢ</th>
-                            <th class="align-middle text-center" style="width:120px;">TRẠNG THÁI</th>
-                            <th class="align-middle text-center" style="width:150px;">NGÀY XÓA</th>
-                            <th class="align-middle text-center" style="width:120px;"></th>
+                            <th class="align-middle text-center text-nowrap">BIỂU TƯỢNG</th>
+                            <th class="align-middle text-center text-nowrap">TÊN PHƯƠNG THỨC</th>
+                            <th class="align-middle text-center text-nowrap">MÃ</th>
+                            <th class="align-middle text-center text-nowrap">MÔ TẢ</th>
+                            <th class="align-middle text-center text-nowrap">TRẠNG THÁI</th>
+                            <th class="align-middle text-center text-nowrap">NGÀY XÓA</th>
+                            <th class="align-middle text-center text-nowrap"></th>
                         </tr>
                     </thead>
                     <tbody class="list" id="payment-methods-table-body">

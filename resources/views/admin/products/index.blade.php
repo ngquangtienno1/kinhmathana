@@ -13,7 +13,7 @@
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Sản phẩm</h2>
+            <h2 class="mb-0">Danh sách sản phẩm</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
@@ -39,13 +39,13 @@
     <div id="products"
         data-list='{"valueNames":["name","price","status","created_at","stock","has_variations"],"page":10,"pagination":true}'>
         <div class="mb-4">
-            <form action="{{ route('admin.products.list') }}" method="GET"
-                class="d-flex flex-wrap gap-3 align-items-end" id="product-search-form">
-                <div class="search-box" style="flex: 1; min-width: 200px;">
-                    <input class="form-control search-input search" type="search" name="search"
-                        placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" id="product-search-input"
-                        autocomplete="off" />
-                    <span class="fas fa-search search-box-icon"></span>
+            <div class="d-flex flex-wrap gap-3">
+                <div class="search-box">
+                    <form class="position-relative" action="{{ route('admin.products.list') }}" method="GET">
+                        <input class="form-control search-input search" type="search" name="search"
+                            placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" aria-label="Search" />
+                        <span class="fas fa-search search-box-icon"></span>
+                    </form>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
                     <select class="form-select" name="category_id" id="category_id">
@@ -67,7 +67,7 @@
                         <span class="fas fa-filter me-2"></span>Lọc
                     </button>
                     <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">
-                        <span class="fas fa-eraser me-2"></span>Xóa bộ lọc
+                        <span class="fas fa-eraser me-2"></span>Bỏ lọc
                     </a>
                 </div>
                 <div class="ms-auto">
@@ -78,7 +78,7 @@
                         <span class="fas fa-plus me-2"></span>Thêm sản phẩm
                     </a>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1"
             id="product-table-wrapper">
@@ -261,64 +261,36 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa mềm các sản phẩm đã chọn?')) return;
-
-            // Tạo các input hidden cho từng ID
-            const form = document.getElementById('bulk-delete-form');
-            form.innerHTML = ''; // Xóa các input cũ
-
-            // Thêm CSRF token và method
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-
-            // Thêm từng ID vào form
-            checkedIds.forEach(id => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'ids[]';
-                input.value = id;
-                form.appendChild(input);
-            });
-
-            form.submit();
+            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteForm.submit();
         });
 
-        // Tìm kiếm tự động bằng AJAX cho sản phẩm
-        const searchInput = document.getElementById('product-search-input');
-        const form = document.getElementById('product-search-form');
+        // Tìm kiếm realtime cho sản phẩm (giống brand)
+        const searchBox = document.querySelector('.search-box input[name="search"]');
         const tableWrapper = document.getElementById('product-table-wrapper');
         let timer = null;
-
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
+        if (searchBox) {
+            searchBox.addEventListener('input', function(e) {
                 clearTimeout(timer);
                 timer = setTimeout(function() {
-                    const formData = new FormData(form);
-                    const params = new URLSearchParams(formData).toString();
-                    fetch(form.action + '?' + params, {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('search', searchBox.value);
+                    fetch(`{{ route('admin.products.list') }}?${params.toString()}`, {
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
-                        .then(res => res.json())
-                        .then(data => {
+                        .then(res => res.text())
+                        .then(html => {
                             // Lấy phần table từ HTML trả về
                             const parser = new DOMParser();
-                            const doc = parser.parseFromString(data.html, 'text/html');
+                            const doc = parser.parseFromString(html, 'text/html');
                             const newTable = doc.getElementById('product-table-wrapper');
                             if (newTable && tableWrapper) {
                                 tableWrapper.innerHTML = newTable.innerHTML;
                             }
                         });
-                }, 350); // debounce 350ms
+                }, 300); // debounce 300ms
             });
         }
     });

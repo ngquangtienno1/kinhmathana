@@ -92,6 +92,11 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\CancellationReason::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id', 'id');
+    }
+
 
     public function getStatusLabelAttribute()
     {
@@ -102,8 +107,10 @@ class Order extends Model
             'shipping' => 'Đang giao',
             'delivered' => 'Đã giao hàng',
             'completed' => 'Đã hoàn thành',
-            'cancelled' => 'Đã huỷ',
-            'returned' => 'Khách trả hàng',
+            'cancelled_by_customer' => 'Khách hủy đơn',
+            'cancelled_by_admin' => 'Admin hủy đơn',
+            'delivery_failed' => 'Giao thất bại',
+            'returned_requested' => 'Khách trả hàng',
             'processing_return' => 'Đang xử lý trả hàng',
             'return_rejected' => 'Trả hàng bị từ chối',
             'refunded' => 'Đã hoàn tiền',
@@ -114,7 +121,7 @@ class Order extends Model
     public function getPaymentStatusLabelAttribute()
     {
         return match ($this->payment_status) {
-            'pending' => 'Chờ thanh toán',
+            'unpaid' => 'Chờ thanh toán',
             'paid' => 'Đã thanh toán',
             'failed' => 'Thanh toán thất bại',
             'refunded' => 'Đã hoàn tiền',
@@ -134,8 +141,10 @@ class Order extends Model
             'shipping' => 'warning',
             'delivered' => 'success',
             'completed' => 'success',
-            'cancelled' => 'danger',
-            'returned' => 'danger',
+            'cancelled_by_customer' => 'danger',
+            'cancelled_by_admin' => 'danger',
+            'delivery_failed' => 'danger',
+            'returned_requested' => 'warning',
             'processing_return' => 'warning',
             'return_rejected' => 'danger',
             'refunded' => 'info',
@@ -146,7 +155,7 @@ class Order extends Model
     public function getPaymentStatusColorAttribute()
     {
         return match ($this->payment_status) {
-            'pending' => 'warning',
+            'unpaid' => 'warning',
             'paid' => 'success',
             'failed' => 'danger',
             'refunded' => 'info',

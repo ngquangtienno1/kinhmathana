@@ -13,6 +13,27 @@
             <h2 class="mb-0">Quản lý đánh giá</h2>
         </div>
     </div>
+    <!-- Tabs filter -->
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item">
+            <a class="nav-link {{ !request('reply_status') ? 'active' : '' }}" aria-current="page"
+                href="{{ route('admin.reviews.index', array_merge(request()->except(['reply_status', 'page']))) }}">
+                <span>Tất cả </span><span class="text-body-tertiary fw-semibold">({{ $reviews->count() }})</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request('reply_status') === 'replied' ? 'active' : '' }}"
+                href="{{ route('admin.reviews.index', array_merge(request()->except(['reply_status', 'page']), ['reply_status' => 'replied'])) }}">
+                <span>Đã trả lời </span><span class="text-body-tertiary fw-semibold">({{ $repliedCount }})</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request('reply_status') === 'not_replied' ? 'active' : '' }}"
+                href="{{ route('admin.reviews.index', array_merge(request()->except(['reply_status', 'page']), ['reply_status' => 'not_replied'])) }}">
+                <span>Chưa trả lời </span><span class="text-body-tertiary fw-semibold">({{ $notRepliedCount }})</span>
+            </a>
+        </li>
+    </ul>
     <div id="reviews"
         data-list='{"valueNames":["userId","userName","productName","rating","content","createdAt"],"page":10,"pagination":true}'>
         <div class="mb-4">
@@ -22,8 +43,7 @@
                     {{-- Search Input --}}
                     <div class="search-box">
                         <input class="form-control search-input search" type="search" name="search"
-                            placeholder="Tìm kiếm đánh giá" value="{{ request('search') }}"
-                            aria-label="Search" />
+                            placeholder="Tìm kiếm đánh giá" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </div>
 
@@ -65,22 +85,11 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Reply Status Filter --}}
-                    <div style="width: 180px;">
-                        <select class="form-select" name="reply_status">
-                            <option value="">Tất cả trạng thái trả lời</option>
-                            <option value="replied" {{ request('reply_status') === 'replied' ? 'selected' : '' }}>
-                                Đã trả lời ({{ $repliedCount }})
-                            </option>
-                            <option value="not_replied" {{ request('reply_status') === 'not_replied' ? 'selected' : '' }}>
-                                Chưa trả lời ({{ $notRepliedCount }})
-                            </option>
-                        </select>
-                    </div>
+
                     {{-- Date Range Filter --}}
                     <div class="d-flex align-items-center gap-2">
-                        <input type="date" class="form-control" id="startDate" name="start_date" style="width: 150px;"
-                            value="{{ request('start_date') }}" placeholder="Từ ngày">
+                        <input type="date" class="form-control" id="startDate" name="start_date"
+                            style="width: 150px;" value="{{ request('start_date') }}" placeholder="Từ ngày">
                         <span>-</span>
                         <input type="date" class="form-control" id="endDate" name="end_date" style="width: 150px;"
                             value="{{ request('end_date') }}" placeholder="Đến ngày">
@@ -126,7 +135,8 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:200px;">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                style="width:200px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'product_id', 'direction' => request('sort') === 'product_id' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Sản phẩm
@@ -136,7 +146,8 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:100px;">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                style="width:100px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'rating', 'direction' => request('sort') === 'rating' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Đánh giá
@@ -146,7 +157,7 @@
                                     @endif
                                 </a>
                             </th>
-                         
+
                             <th class="sort align-middle ps-4" scope="col" style="min-width:300px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'content', 'direction' => request('sort') === 'content' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
@@ -206,7 +217,7 @@
                                         @endfor
                                     </div>
                                 </td>
-                                
+
                                 <td class="content align-middle ps-4">{{ $review->content }}</td>
                                 <td class="reply align-middle ps-4">
                                     {{ $review->reply ?? '' }}
