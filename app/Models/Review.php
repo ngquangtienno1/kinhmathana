@@ -11,8 +11,8 @@ class Review extends Model
 
     protected $fillable = ['user_id', 'product_id', 'order_id', 'content', 'rating'];
 
-    public $timestamps = ['created_at'];
-    const UPDATED_AT = null;
+    // public $timestamps = ['created_at'];
+    // const UPDATED_AT = null;
 
     public function user()
     {
