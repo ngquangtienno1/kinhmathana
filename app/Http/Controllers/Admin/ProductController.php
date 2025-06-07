@@ -14,6 +14,7 @@ use App\Models\Variation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Admin\NotificationController;
 
 class ProductController extends Controller
 {
@@ -425,6 +426,9 @@ class ProductController extends Controller
             }
 
             \Log::info('Product created', ['id' => $product->id, 'stock_quantity' => $product->stock_quantity]);
+
+            // Gửi thông báo khi tạo sản phẩm mới
+            app(NotificationController::class)->notifyNewProduct($product);
 
             return redirect()->route('admin.products.list')->with('success', 'Sản phẩm đã được thêm thành công!');
         } catch (\ValidationException $e) {

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Mail\OrderPlaced;
 use App\Mail\OrderDelivered;
 use App\Mail\OrderDeliveryFailed;
+use App\Http\Controllers\Admin\NotificationController;
 
 class OrderController extends Controller
 {
@@ -227,6 +228,11 @@ class OrderController extends Controller
                     $updateData['cancellation_reason_id'] = $request->cancellation_reason_id;
                 }
                 $updateData['cancelled_at'] = now();
+
+                // Gửi thông báo khi admin hủy đơn
+                $reason = \App\Models\CancellationReason::find($updateData['cancellation_reason_id']);
+                $reasonText = $reason ? $reason->reason : 'Không có lý do';
+                app(NotificationController::class)->notifyOrderCancelled($order->id, $reasonText, 'Admin');
             } else {
                 $updateData['cancellation_reason_id'] = null;
             }
