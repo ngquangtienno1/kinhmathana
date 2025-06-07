@@ -55,7 +55,7 @@ class OrderController extends Controller
         $countDelivered = Order::where('status', 'delivered')->count();
         $countCancelled = Order::where('status', 'cancelled')->count();
         $countCancelledByCustomer = Order::where('status', 'cancelled_by_customer')->count();
-        $countCancelledByAdmin = Order::where('status', 'cancelled_by_adqmin')->count();
+        $countCancelledByAdmin = Order::where('status', 'cancelled_by_admin')->count();
         return view('admin.orders.index', compact(
             'orders',
             'countAll',

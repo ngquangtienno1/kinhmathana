@@ -34,6 +34,7 @@ class User extends Authenticatable
     ];
     protected $casts = [
         'banned_until' => 'datetime',
+         'created_at' => 'datetime',
     ];
     protected $hidden = ['password', 'remember_token'];
     protected function casts(): array

@@ -4,14 +4,14 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Đơn hàng</a>
+        <a href="{{ route('admin.orders.index') }}">Đơn hàng</a>
     </li>
     <li class="breadcrumb-item active">Tất cả đơn hàng</li>
 @endsection
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Đơn hàng</h2>
+            <h2 class="mb-0">Danh sách đơn hàng</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">

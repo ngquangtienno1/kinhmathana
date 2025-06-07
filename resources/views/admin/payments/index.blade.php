@@ -11,7 +11,7 @@
 
 <div class="mb-9">
     <div id="paymentSummary"
-        data-list='{"valueNames":["paymentId","customerName","amount","status","paymentDate","action"],"page":6,"pagination":true}'>
+        data-list='{"valueNames":["paymentId","customerName","amount","status","paymentDate","action"],"page":10,"pagination":true}'>
         <div class="row mb-4 gx-6 gy-3 align-items-center">
             <div class="col-auto">
                 <h2 class="mb-0">Quản lý thanh toán</h2>
@@ -62,7 +62,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-12 col-sm-auto">
+            {{-- <div class="col-12 col-sm-auto">
                 <div class="d-flex align-items-center">
                     <div class="search-box me-3">
                         <form method="GET" action="{{ route('admin.payments.index') }}" class="position-relative">
@@ -73,10 +73,8 @@
                         </form>
 
                     </div>
-
-
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <div class="table-responsive scrollbar">
@@ -102,14 +100,27 @@
                     </tr>
                 </thead>
                 <tbody class="list" id="payment-list-table-body">
+                    @php
+                        $statusMap = [
+                            'đã thanh toán' => ['badge-phoenix-success', 'check'],
+                            'đang chờ thanh toán' => ['badge-phoenix-warning', 'clock'],
+                            'đã hủy' => ['badge-phoenix-secondary', 'x'],
+                            'thất bại' => ['badge-phoenix-danger', 'x'],
+                        ];
+                    @endphp
                     @foreach ($payments as $payment)
+                        @php
+                            $status = $payment->status === 'đã hoàn thành' ? 'đã thanh toán' : $payment->status;
+                            $map = $statusMap[$status] ?? ['badge-phoenix-secondary', 'info'];
+                        @endphp
                         <tr>
-                            <td class="align-middle time white-space-nowrap ps-0 paymentId py-4"><a class="fw-bold fs-8"
-                                    href="#">{{ $payment->id }}</a></td>
-                            <td class="align-middle time white-space-nowrap ps-0 paymentId py-4"><a class="fw-bold fs-8"
-                                    href="#">{{ $payment->transaction_code }}</a></td>
-
-                            <td>
+                            <td class="align-middle text-center white-space-nowrap py-0 paymentId">
+                                <a class="fw-semibold" href="#">{{ $payment->id }}</a>
+                            </td>
+                            <td class="align-middle text-center white-space-nowrap py-0 paymentId">
+                                <a class="fw-semibold" href="#">{{ $payment->transaction_code }}</a>
+                            </td>
+                            <td class="align-middle text-center white-space-nowrap py-0">
                                 @if ($payment->order)
                                     <a href="{{ route('admin.orders.show', $payment->order->id) }}">
                                         {{ $payment->order->order_number ?? 'Không có số đơn' }}
@@ -118,85 +129,40 @@
                                     Không có
                                 @endif
                             </td>
-
-
-                            <td class="align-middle white-space-nowrap amount ps-3 py-4">
-                                {{ number_format($payment->amount, 0, ',', '.') }} VND</td>
-                            <td
-                                class="payment_status align-middle white-space-nowrap text-start fw-bold text-body-tertiary">
-                                <span
-                                    class="{{ $payment->status == 'đã hoàn thành'
-                                        ? 'badge badge-phoenix fs-10 badge-phoenix-success'
-                                        : ($payment->status == 'đang chờ thanh toán'
-                                            ? 'badge badge-phoenix fs-10 badge-phoenix-warning'
-                                            : ($payment->status == 'đã hủy'
-                                                ? 'badge badge-phoenix fs-10 badge-phoenix-secondary'
-                                                : ($payment->status == 'thất bại'
-                                                    ? 'badge badge-phoenix fs-10 badge-phoenix-danger'
-                                                    : 'badge'))) }}"
-                                    style="font-size: 20px;">
-                                    {{ $payment->status }}
+                            <td class="align-middle text-end fw-semibold text-body-highlight px-3">
+                                {{ number_format($payment->amount, 0, ',', '.') }} VND
+                            </td>
+                            <td class="align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
+                                <span class="badge badge-phoenix fs-10 {{ $map[0] }}">
+                                    <span class="badge-label">{{ $status }}</span>
+                                    <span class="ms-1" data-feather="{{ $map[1] }}"
+                                        style="height:12.8px;width:12.8px;"></span>
                                 </span>
-
                             </td>
-
-                            <td class="align-middle white-space-nowrap paymentDate ps-3 py-4">
-                                <p class="mb-0 fs-9 text-body">{{ $payment->formatted_payment_date }}</p>
+                            <td class="align-middle text-center white-space-nowrap text-body-tertiary fs-9 px-3">
+                                {{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('d/m/Y H:i') : ($payment->created_at ? $payment->created_at->format('d/m/Y H:i') : '') }}
                             </td>
-                            <td class="align-middle white-space-nowrap ps-3 py-4">
+                            <td class="align-middle text-center white-space-nowrap text-body fs-9 px-3">
                                 {{ $payment->paymentMethod->name ?? 'Không xác định' }}
                             </td>
-
-                            <td class="align-middle text-end white-space-nowrap pe-0 action">
+                            <td class="align-middle text-center white-space-nowrap px-3 btn-reveal-trigger">
                                 <div class="btn-reveal-trigger position-static">
                                     <button
                                         class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                        type="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false" data-bs-reference="parent"><span
-                                            class="fas fa-ellipsis-h fs-10"></span></button>
+                                        type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                        aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                        <span class="fas fa-ellipsis-h fs-10"></span>
+                                    </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                         <a class="dropdown-item"
                                             href="{{ route('admin.payments.show', $payment->id) }}">Xem chi tiết</a>
-
-                                        <div class="dropdown-divider"></div>
-                                        <form action="{{ route('admin.payments.updateStatus', $payment->id) }}"
-                                            method="POST" class="d-inline-block">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="status" value="đã hoàn thành">
-                                            <button type="submit" class="dropdown-item text-success">
-                                                <i class="fa-solid fa-check me-2"></i> Đánh dấu hoàn thành
-                                            </button>
-                                        </form>
-
-                                        <form action="{{ route('admin.payments.updateStatus', $payment->id) }}"
-                                            method="POST" class="d-inline-block">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="status" value="đã hủy">
-                                            <button type="submit" class="dropdown-item text-secondary">
-                                                <i class="fa-solid fa-ban me-2"></i> Hủy thanh toán
-                                            </button>
-                                        </form>
-
-
-
-                                        <div class="dropdown-divider"></div>
-
-                                        <a class="dropdown-item text-info"
-                                            href="{{ route('admin.payments.invoice', $payment->id) }}">
-                                            <i class="fa-solid fa-file-invoice me-2"></i> In hóa đơn
-                                        </a>
                                         <form action="{{ route('admin.payments.destroy', $payment->id) }}"
                                             method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa thanh toán này?')">
-                                                <i class="fa-solid fa-trash"></i> Xóa
-                                            </button>
+                                            <button type="submit" class="dropdown-item text-danger"
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa thanh toán này?')">Xóa</button>
                                         </form>
-
                                     </div>
                                 </div>
                             </td>
@@ -205,7 +171,25 @@
                 </tbody>
             </table>
         </div>
-        {{ $payments->links('pagination::bootstrap-5') }}
+        <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+            <div class="col-auto d-flex">
+                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
+                    Tổng: {{ $payments->count() }} đơn hàng
+                </p>
+                <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
+                        class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn <span
+                        class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+            </div>
+            <div class="col-auto d-flex">
+                <button class="page-link" data-list-pagination="prev"><span
+                        class="fas fa-chevron-left"></span></button>
+                <ul class="mb-0 pagination"></ul>
+                <button class="page-link pe-0" data-list-pagination="next">
+                    <span class="fas fa-chevron-right"></span>
+                </button>
+            </div>
+        </div>
     </div>
 
 </div>

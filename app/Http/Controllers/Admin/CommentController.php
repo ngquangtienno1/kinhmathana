@@ -142,18 +142,46 @@ class CommentController extends Controller
         return redirect()->route('admin.comments.index', ['status' => 'trashed'])->with('success', 'Xóa vĩnh viễn bình luận thành công!');
     }
 
-    public function updateStatus(Request $request, Comment $comment)
+    public function updateStatus(Request $request, $id)
     {
-        $validated = $request->validate([
-            'status' => 'required|in:đã duyệt,chờ duyệt,spam,chặn',
+        $request->validate([
+            'status' => 'required|in:chờ duyệt,đã duyệt',
         ]);
 
-        $comment->status = $validated['status'];
+        $comment = Comment::findOrFail($id);
+
+        $currentStatus = $comment->status;
+        $newStatus = $request->status;
+
+        // Danh sách các trạng thái hợp lệ cho từng trạng thái hiện tại
+        $statusTransitions = [
+            'chờ duyệt' => ['đã duyệt'],
+            'đã duyệt' => [],
+        ];
+
+        // Kiểm tra key tồn tại
+        if (!array_key_exists($currentStatus, $statusTransitions)) {
+            return back()->with('error', 'Trạng thái hiện tại không hợp lệ.');
+        }
+
+        // Nếu trạng thái không thay đổi thì thôi
+        if ($currentStatus === $newStatus) {
+            return back()->with('info', 'Trạng thái không có thay đổi.');
+        }
+
+        // Kiểm tra xem có được phép chuyển trạng thái không
+        if (!in_array($newStatus, $statusTransitions[$currentStatus])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "' . $currentStatus . '" sang "' . $newStatus . '".');
+        }
+
+        // Cập nhật trạng thái
+        $comment->status = $newStatus;
         $comment->save();
 
-        // dd($comment->status);
-        return redirect()->route('admin.comments.index')->with('success', 'Cập nhật trạng thái bình luận thành công.');
+        return back()->with('success', 'Trạng thái bình luận đã được cập nhật.');
     }
+
+
     public function badWordsIndex()
     {
         $badWords = BadWord::all();
