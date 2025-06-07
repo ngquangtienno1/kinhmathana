@@ -1,6 +1,23 @@
 @extends('admin.layouts')
 @section('title', 'Chi tiết bình luận #' . $comment->id)
 
+@php
+    $current = $comment->status;
+    $statusLabels = [
+        'chờ duyệt' => 'Chờ duyệt',
+        'đã duyệt' => 'Đã duyệt',
+        'spam' => 'Spam',
+        'chặn' => 'Bị chặn',
+    ];
+    $statusTransitions = [
+        'chờ duyệt' => ['đã duyệt'],
+        'đã duyệt' => [],
+        'spam' => [],
+        'chặn' => [],
+    ];
+    $canUpdate = isset($statusTransitions[$current]) && count($statusTransitions[$current]) > 0;
+@endphp
+
 @section('content')
 
 @section('breadcrumbs')
@@ -11,73 +28,104 @@
 @endsection
 
 <div class="mb-9">
-    <h2 class="mb-0">Bình luận #{{ $comment->id }}</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-auto">
+            <h2 class="mb-0">Chi tiết bình luận #{{ $comment->id }}</h2>
+        </div>
+        <div class="col-auto ms-auto">
+            <div class="d-flex gap-2">
+                @if (!$comment->trashed())
+                    <form action="{{ route('admin.comments.destroy', $comment->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-phoenix-danger"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">
+                            <span class="fas fa-trash me-2"></span>Xóa bình luận
+                        </button>
+                    </form>
+                @endif
+                <a href="{{ route('admin.comments.index') }}" class="btn btn-phoenix-secondary">
+                    <span class="fas fa-arrow-left me-2"></span>Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-1">
+                        <h5 class="mb-0">Thông tin người dùng</h5>
+                    </div>
+                    @if ($comment->user && $comment->user->banned_until && now()->lt($comment->user->banned_until))
+                        <span class="badge badge-phoenix fs-10 badge-phoenix-danger">
+                            User bị khóa còn
+                            {{ now()->diffForHumans($comment->user->banned_until, ['short' => true, 'parts' => 2]) }}
+                        </span>
+                    @endif
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <div class="avatar avatar-xl me-2">
+                        <div class="avatar-name rounded-circle">
+                            <span>{{ substr($comment->user->name ?? 'N/A', 0, 1) }}</span>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h5 class="mb-0">{{ $comment->user->name ?? 'N/A' }}</h5>
+                        <p class="text-body-tertiary mb-0">{{ $comment->user->email ?? 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="mb-3">Thông tin bình luận</h5>
+                <div class="mb-2">
+                    <span class="text-body-tertiary">Loại:</span>
+                    <span class="fw-semibold ms-2">{{ $comment->entity_type }}</span>
+                </div>
+                <div class="mb-2">
+                    <span class="text-body-tertiary">Đối tượng:</span>
+                    <span class="fw-semibold ms-2">
+                        @if ($comment->entity_type === 'product' && $comment->product)
+                            {{ $comment->product->name }}
+                        @elseif ($comment->entity_type === 'news' && $comment->news)
+                            {{ $comment->news->title }}
+                        @else
+                            {{ $comment->entity_id }}
+                        @endif
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <span class="text-body-tertiary">Ngày tạo:</span>
+                    <span class="fw-semibold ms-2">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card mb-4">
     <div class="card-body">
-        <h5>Thông tin người dùng</h5>
-        <p><strong>Tên:</strong> {{ $comment->user->name ?? 'N/A' }}</p>
-        <p><strong>Email:</strong> {{ $comment->user->email ?? 'N/A' }}</p>
-
-        <h5>Nội dung bình luận</h5>
-        <p>{{ $comment->content }}</p>
-
-        <h5>Trạng thái bình luận</h5>
-        @php
-            $statusLabels = [
-                'chờ duyệt' => 'Chờ duyệt',
-                'đã duyệt' => 'Đã duyệt',
-            ];
-            $statusColors = [
-                'chờ duyệt' => 'warning',
-                'đã duyệt' => 'success',
-            ];
-            $current = $comment->status;
-            // Định nghĩa trạng thái có thể chuyển tới
-            $statusTransitions = [
-                'chờ duyệt' => ['đã duyệt'],
-                'đã duyệt' => [],
-            ];
-            $canUpdate = isset($statusTransitions[$current]) && count($statusTransitions[$current]) > 0;
-        @endphp
-
-        <span
-            class="badge bg-{{ $statusColors[$current] ?? 'secondary' }}">{{ $statusLabels[$current] ?? $current }}</span>
+        <h5 class="mb-3">Nội dung bình luận</h5>
+        <div class="p-3 bg-body-tertiary rounded">
+            <p class="mb-0">{{ $comment->content }}</p>
+        </div>
     </div>
 </div>
 
-@php
-    $current = $comment->status;
-
-    $statusLabels = [
-        'chờ duyệt' => 'Chờ duyệt',
-        'đã duyệt' => 'Đã duyệt',
-        'spam' => 'Spam',
-        'chặn' => 'Bị chặn',
-    ];
-
-    // Chỉ cho phép cập nhật khi trạng thái hiện tại là "chờ duyệt"
-    $statusTransitions = [
-        'chờ duyệt' => ['đã duyệt'],  // Chỉ chuyển từ chờ duyệt sang đã duyệt
-        'đã duyệt' => [],             // Đã duyệt là trạng thái cuối, không đổi
-        'spam' => [],                // Không đổi
-        'chặn' => [],                // Không đổi
-    ];
-
-    $canUpdate = isset($statusTransitions[$current]) && count($statusTransitions[$current]) > 0;
-@endphp
-
-
 @if (!$comment->trashed())
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-body">
-            <h5>Cập nhật trạng thái bình luận</h5>
+            <h5 class="mb-3">Cập nhật trạng thái</h5>
             <form action="{{ route('admin.comments.updateStatus', $comment->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
-
-                {{-- Hiển thị thông báo nếu không thể cập nhật --}}
 
                 <div class="mb-3">
                     <label for="status" class="form-label">Trạng thái</label>
@@ -91,36 +139,76 @@
                         @endforeach
                     </select>
                     @if (!$canUpdate)
-                        <small class="text-danger">Trạng thái
-                            <strong>{{ $statusLabels[$current] ?? $current }}</strong> không thể cập nhật nữa.</small>
+                        <div class="text-danger mt-2">
+                            <small>Trạng thái <strong>{{ $statusLabels[$current] ?? $current }}</strong> không thể cập
+                                nhật nữa.</small>
+                        </div>
                     @endif
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100" {{ !$canUpdate ? 'disabled' : '' }}>
-                    Cập nhật trạng thái
+                <button type="submit" class="btn btn-phoenix-primary w-100" {{ !$canUpdate ? 'disabled' : '' }}>
+                    <span class="fas fa-save me-2"></span>Cập nhật trạng thái
                 </button>
             </form>
         </div>
     </div>
 @endif
 
-
-{{-- Phần trả lời bình luận --}}
-<div class="card mt-4">
+<div class="card mb-4">
     <div class="card-body">
-        <h5>Câu trả lời</h5>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Câu trả lời</h5>
+            <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#replyModal">
+                <span class="fas fa-reply me-2"></span>Trả lời
+            </button>
+        </div>
+
         @forelse ($comment->replies as $reply)
-            <div class="mb-3 p-3 border rounded">
-                <p><strong>{{ $reply->user->name ?? 'Admin' }}</strong> <small
-                        class="text-muted">{{ $reply->created_at->format('d/m/Y H:i') }}</small></p>
-                <p>{{ $reply->content }}</p>
+            <div class="border-bottom border-translucent py-3">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="avatar avatar-xl me-2">
+                        <div class="avatar-name rounded-circle">
+                            <span>{{ substr($reply->user->name ?? 'Admin', 0, 1) }}</span>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h6 class="mb-0">{{ $reply->user->name ?? 'Admin' }}</h6>
+                        <p class="text-body-tertiary fs-9 mb-0">{{ $reply->created_at->format('d/m/Y H:i') }}</p>
+                    </div>
+                </div>
+                <p class="mb-0 ps-5">{{ $reply->content }}</p>
             </div>
         @empty
-            <p>Chưa có câu trả lời nào.</p>
+            <div class="text-center py-4">
+                <p class="text-body-tertiary mb-0">Chưa có câu trả lời nào.</p>
+            </div>
         @endforelse
     </div>
 </div>
 
-<a href="{{ route('admin.comments.index') }}" class="btn btn-secondary mt-4">Quay lại danh sách bình luận</a>
+<!-- Modal Trả lời bình luận -->
+<div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('admin.comments.reply', $comment->id) }}">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="replyModalLabel">Trả lời bình luận</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="replyContent" class="form-label">Nội dung trả lời</label>
+                        <textarea class="form-control" id="replyContent" name="reply_content" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-phoenix-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-phoenix-primary">Gửi trả lời</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection

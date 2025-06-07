@@ -463,7 +463,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('badwords/{badword}', [CommentController::class, 'badWordsDestroy'])->name('badwords.destroy');
 
         Route::middleware(['auth'])->group(function () {
-            Route::get('scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('scan_badwords');
+            Route::post('scan-badwords', [CommentController::class, 'updateCommentsStatusAndBanUsers'])->name('scan_badwords');
         });
 
         Route::get('/{comment}', [CommentController::class, 'show'])->name('show');

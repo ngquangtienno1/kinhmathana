@@ -218,7 +218,8 @@ class CommentController extends Controller
         $unblockedCount = 0;
         $bannedUsers = [];
 
-        $usersToBan = [];
+        // Lưu số lần vi phạm của mỗi user
+        $userViolations = [];
 
         foreach ($comments as $comment) {
             $containsBadWord = false;
@@ -233,38 +234,48 @@ class CommentController extends Controller
             if ($containsBadWord) {
                 if ($comment->status !== 'chặn') {
                     $comment->status = 'chặn';
+                    $comment->is_hidden = true;
                     $comment->save();
                     $blockedCount++;
-                }
 
-                // Gom các user cần khóa (kể cả comment đã bị chặn rồi)
-                if ($comment->user && !in_array($comment->user->id, $bannedUsers)) {
-                    $usersToBan[$comment->user->id] = $comment->user;
+                    // Đếm số lần vi phạm của user
+                    if ($comment->user) {
+                        $userId = $comment->user->id;
+                        if (!isset($userViolations[$userId])) {
+                            $userViolations[$userId] = 0;
+                        }
+                        $userViolations[$userId]++;
+                    }
                 }
             } else {
                 if ($comment->status === 'chặn') {
                     $comment->status = 'chờ duyệt';
+                    $comment->is_hidden = false;
                     $comment->save();
                     $unblockedCount++;
                 } elseif ($comment->status === 'chờ duyệt') {
                     $comment->status = 'đã duyệt';
+                    $comment->is_hidden = false;
                     $comment->save();
                     $autoApprovedCount++;
                 }
             }
         }
 
-        // Khóa tất cả user vi phạm mà chưa bị khóa
-        foreach ($usersToBan as $user) {
-            if (is_null($user->banned_until) || now()->gt($user->banned_until)) {
-                $user->banned_until = now()->addHours(24);
-                $user->save();
-                $bannedUsers[] = $user->id;
+        // Khóa user vi phạm từ 3 lần trở lên
+        foreach ($userViolations as $userId => $violationCount) {
+            if ($violationCount >= 3) {
+                $user = \App\Models\User::find($userId);
+                if ($user && (is_null($user->banned_until) || now()->gt($user->banned_until))) {
+                    $user->banned_until = now()->addDay();
+                    $user->save();
+                    $bannedUsers[] = $userId;
+                }
             }
         }
 
         return redirect()->route('admin.comments.index', ['status' => 'chặn'])
-            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch. Đã khóa tạm thời " . count($bannedUsers) . " người dùng.");
+            ->with('success', "Đã chặn $blockedCount bình luận chứa từ cấm, mở $unblockedCount bình luận và tự động duyệt $autoApprovedCount bình luận sạch. Đã khóa tạm thời " . count($bannedUsers) . " người dùng vi phạm từ 3 lần trở lên.");
     }
     public function reply(Request $request, Comment $comment)
     {

@@ -57,11 +57,11 @@
                     <form class="row g-2 align-items-end" method="GET" action="">
                         <!-- Search Form -->
                         <div class="col-auto">
-                    <div class="search-box">
+                            <div class="search-box">
                                 <div class="position-relative">
                                     <input class="form-control search-input search" type="search"
-                                placeholder="Search members" aria-label="Search" />
-                            <span class="fas fa-search search-box-icon"></span>
+                                        placeholder="Tìm kiếm người dùng" aria-label="Search" />
+                                    <span class="fas fa-search search-box-icon"></span>
                                 </div>
                             </div>
                         </div>
@@ -99,9 +99,9 @@
                             <button type="submit" class="btn btn-primary">Lọc</button>
                             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Đặt lại</a>
                         </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
+            </div>
 
             <!-- Bảng dữ liệu -->
             <div class="mx-n4 mx-lg-n6 px-4 px-lg-6 mb-9 bg-body-emphasis border-y mt-2 position-relative top-1">
@@ -153,12 +153,12 @@
                                         {{ $user->updated_at->diffForHumans() }}
                                     </td>
                                     <td class="joined align-middle white-space-nowrap text-body-tertiary text-end">
-                                        {{ $user->created_at->format('M d, h:i A') }}
+                                        {{ $user->created_at->format('d/m/Y H:i') }}
                                     </td>
                                     <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
-                                        @if (($user->role_id == 1 || $user->role_id == 2) && 
-                                            (auth()->user()->role_id == 1 || 
-                                            (auth()->user()->role_id == 2 && $user->id == auth()->id())))
+                                        @if (
+                                            ($user->role_id == 1 || $user->role_id == 2) &&
+                                                (auth()->user()->role_id == 1 || (auth()->user()->role_id == 2 && $user->id == auth()->id())))
                                             <div class="btn-reveal-trigger position-static">
                                                 <button
                                                     class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"

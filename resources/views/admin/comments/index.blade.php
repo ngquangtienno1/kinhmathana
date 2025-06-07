@@ -50,6 +50,12 @@
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>
+                    <form action="{{ route('admin.comments.scan_badwords') }}" method="POST" class="d-inline me-2">
+                        @csrf
+                        <button type="submit" class="btn btn-warning">
+                            <span class="fas fa-search me-2"></span>Quét bình luận
+                        </button>
+                    </form>
                     <a href="{{ route('admin.comments.badwords.index') }}" class="btn btn-primary">
                         <span class="fas fa-plus me-2"></span>Quản lý từ cấm
                     </a>
@@ -88,7 +94,8 @@
                                 style="min-width:300px;">NỘI DUNG</th>
                             <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
                                 TRẠNG THÁI</th>
-                            <th class="sort align-middle ps-4" scope="col" style="width:120px;">TRẠNG THÁI KHÓA</th>
+                            <th class="sort align-middle ps-4" scope="col" style="width:120px;">TRẠNG THÁI KHÓA
+                            </th>
                             <th class="sort align-middle ps-4" scope="col" style="width:100px;">HIỂN THỊ</th>
 
                             <th class="sort align-middle ps-4" scope="col" data-sort="createdAt"
