@@ -89,6 +89,8 @@
                             <th class="sort align-middle ps-4" scope="col" data-sort="status" style="width:120px;">
                                 TRẠNG THÁI</th>
                             <th class="sort align-middle ps-4" scope="col" style="width:120px;">TRẠNG THÁI KHÓA</th>
+                            <th class="sort align-middle ps-4" scope="col" style="width:100px;">HIỂN THỊ</th>
+
                             <th class="sort align-middle ps-4" scope="col" data-sort="createdAt"
                                 style="width:150px;">NGÀY TẠO</th>
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;">
@@ -166,6 +168,15 @@
                                             thường</span>
                                     @endif
                                 </td>
+                                <td class="align-middle ps-4">
+                                    @if ($comment->is_hidden)
+                                        <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">Đã ẩn</span>
+                                    @else
+                                        <span class="badge badge-phoenix fs-10 badge-phoenix-success">Đang hiển
+                                            thị</span>
+                                    @endif
+                                </td>
+
                                 <td class="createdAt align-middle white-space-nowrap text-body-tertiary ps-4">
                                     {{ $comment->created_at->format('d/m/Y H:i') }}
                                 </td>
