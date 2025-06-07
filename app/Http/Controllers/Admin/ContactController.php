@@ -2,18 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\ContactMessage;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactReply;
+use Illuminate\Http\Request;
+use App\Models\ContactMessage;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Admin\NotificationController;
 
 class ContactController extends Controller
 {
     public function index(Request $request)
     {
+        // Gửi notification nếu có liên hệ mới quá 3 ngày chưa xử lý
+        $overdueContacts = ContactMessage::where('status', 'mới')
+            ->where('created_at', '<', now()->subDays(3))
+            ->get();
+        if ($overdueContacts->count() > 0) {
+            // Gửi notification chung, tránh gửi lặp lại cho từng contact
+            NotificationController::notifyAdmins(
+                'contact_overdue',
+                'Liên hệ mới quá hạn',
+                "Có {$overdueContacts->count()} liên hệ mới đã quá 3 ngày chưa xử lý.",
+                ['contact_ids' => $overdueContacts->pluck('id')->toArray()]
+            );
+        }
+
         $query = ContactMessage::query();
 
         // Tìm kiếm theo tên, email hoặc số điện thoại
@@ -73,13 +88,13 @@ class ContactController extends Controller
 
             // Chỉ cập nhật trạng thái và ghi chú từ modal
             $dataNew = $request->validate([
-                'status' => 'required|in:mới,đã đọc,đã trả lời,đã bỏ qua',
+                'status' => 'required|in:mới,đã đọc,đã bỏ qua',
                 'note' => 'nullable|string',
             ]);
 
-            // Không cho phép cập nhật thành 'đã trả lời' nếu chưa gửi mail
-            if ($dataNew['status'] === 'đã trả lời' && !$contact->reply_at) {
-                return redirect()->back()->with('error', 'Không thể cập nhật trạng thái thành Đã trả lời khi chưa gửi mail phản hồi.');
+            // Không cho phép cập nhật thành 'đã trả lời' từ modal
+            if ($dataNew['status'] === 'đã trả lời') {
+                return redirect()->back()->with('error', 'Không thể cập nhật trạng thái thành Đã trả lời từ đây. Trạng thái này chỉ được cập nhật khi gửi mail phản hồi thành công.');
             }
 
             if ($contact->status === 'đã trả lời' && in_array($dataNew['status'], ['đã đọc', 'mới'])) {

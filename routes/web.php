@@ -604,8 +604,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{contact}/force', [ContactController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-vinh-vien-lien-he']);
         Route::get('/{contact}/reply', [ContactController::class, 'reply'])->name('reply')
-            ->middleware(['permission:xem-lien-he']);
+            ->middleware(['permission:gui-email-lien-he']);
         Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
-            ->middleware(['permission:xem-lien-he']);
+            ->middleware(['permission:gui-email-lien-he']);
     });
 });

@@ -242,23 +242,32 @@
                                         $orderStatusColor = $order->getStatusColorAttribute();
                                     @endphp
                                     <span class="badge bg-{{ $orderStatusColor }}">{{ $orderStatusLabel }}</span>
-                                    @if ($order->status === 'cancelled')
-                                        <br>
-                                        @if ($order->cancellationReason)
-                                            <span class="text-danger">Lý do huỷ:
-                                                {{ $order->cancellationReason->reason }}</span><br>
-                                        @endif
-                                        @php
-                                            $cancelHistory = $order
-                                                ->statusHistories()
-                                                ->where('new_status', 'cancelled')
-                                                ->latest()
-                                                ->first();
-                                        @endphp
-                                        @if ($cancelHistory && $cancelHistory->updatedBy)
-                                            <span class="text-muted">Huỷ bởi:
-                                                {{ $cancelHistory->updatedBy->name }}</span>
-                                        @endif
+                                    @if (in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin']))
+                                        <div class="alert bg-danger-subtle border-0 d-flex align-items-start p-3 mt-2">
+                                            <i class="fa-solid fa-circle-exclamation fa-lg text-danger me-3 mt-1"></i>
+                                            <div>
+                                                @if ($order->cancellationReason)
+                                                    <div class="fw-bold text-danger mb-1">
+                                                        Lý do huỷ: {{ $order->cancellationReason->reason }}
+                                                    </div>
+                                                @endif
+                                                @php
+                                                    $cancelHistory = $order
+                                                        ->statusHistories()
+                                                        ->whereIn('new_status', [
+                                                            'cancelled_by_customer',
+                                                            'cancelled_by_admin',
+                                                        ])
+                                                        ->latest()
+                                                        ->first();
+                                                @endphp
+                                                @if ($cancelHistory && $cancelHistory->updatedBy)
+                                                    <div class="fst-italic text-secondary small">
+                                                        Huỷ bởi: {{ $cancelHistory->updatedBy->name }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     @endif
                                 </p>
                             </div>
@@ -321,17 +330,19 @@
                             <label class="form-label">Trạng thái đơn hàng</label>
                             @php
                                 $statusTransitions = [
-                                    'pending' => ['confirmed', 'cancelled'],
-                                    'confirmed' => ['awaiting_pickup', 'cancelled'],
-                                    'awaiting_pickup' => ['shipping', 'cancelled'],
-                                    'shipping' => ['delivered', 'returned'],
-                                    'delivered' => ['completed', 'returned'],
+                                    'pending' => ['confirmed', 'cancelled_by_admin'],
+                                    'confirmed' => ['awaiting_pickup', 'cancelled_by_admin'],
+                                    'awaiting_pickup' => ['shipping', 'cancelled_by_admin'],
+                                    'shipping' => ['delivered', 'delivery_failed'],
+                                    'delivered' => ['completed', 'processing_return'],
                                     'completed' => [],
-                                    'returned' => ['processing_return'],
-                                    'processing_return' => ['return_rejected', 'refunded'],
-                                    'return_rejected' => ['refunded'],
+                                    'processing_return' => ['refunded'],
                                     'refunded' => [],
-                                    'cancelled' => [],
+                                    'cancelled_by_admin' => [],
+                                    'delivery_failed' => ['cancelled_by_admin'],
+                                    'cancelled_by_customer' => [], // Read-only status
+                                    'return_rejected' => ['refunded'],
+                                    'returned_requested' => ['processing_return'], // Thêm lại để tránh lỗi
                                 ];
                                 $statusLabels = [
                                     'pending' => 'Chờ xác nhận',
@@ -340,11 +351,13 @@
                                     'shipping' => 'Đang giao',
                                     'delivered' => 'Đã giao hàng',
                                     'completed' => 'Đã hoàn thành',
-                                    'returned' => 'Khách trả hàng',
                                     'processing_return' => 'Đang xử lý trả hàng',
-                                    'return_rejected' => 'Trả hàng bị từ chối',
                                     'refunded' => 'Đã hoàn tiền',
-                                    'cancelled' => 'Đã hủy',
+                                    'cancelled_by_admin' => 'Admin hủy đơn',
+                                    'delivery_failed' => 'Giao thất bại',
+                                    'cancelled_by_customer' => 'Khách hủy đơn',
+                                    'return_rejected' => 'Trả hàng bị từ chối',
+                                    'returned_requested' => 'Khách trả hàng', // Thêm lại để tránh lỗi
                                 ];
                                 $current = $order->status;
                                 $canUpdate = count($statusTransitions[$current]) > 0;
@@ -431,7 +444,7 @@
         });
 
         statusSelect.addEventListener('change', function(e) {
-            if (this.value === 'cancelled') {
+            if (this.value === 'cancelled_by_admin') {
                 shouldShowModal = true;
                 cancellationReasonModal.show();
                 orderStatusSubmit.disabled = true;
@@ -466,7 +479,7 @@
 
         // Ngăn submit nếu chọn huỷ mà chưa chọn lý do
         orderStatusForm.addEventListener('submit', function(e) {
-            if (statusSelect.value === 'cancelled' && !cancellationReasonIdInput.value) {
+            if (statusSelect.value === 'cancelled_by_admin' && !cancellationReasonIdInput.value) {
                 e.preventDefault();
                 cancellationReasonModal.show();
                 orderStatusSubmit.disabled = true;

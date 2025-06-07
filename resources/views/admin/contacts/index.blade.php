@@ -97,7 +97,10 @@
                     </thead>
                     <tbody class="list" id="contacts-table-body">
                         @forelse ($contacts as $contact)
-                            <tr class="position-static">
+                            @php
+                                $isOverdue = $contact->status === 'mới' && $contact->created_at->diffInDays(now()) > 3;
+                            @endphp
+                            <tr class="position-static{{ $isOverdue ? ' table-danger' : '' }}">
                                 <td class="fs-9 align-middle">
                                     <div class="form-check mb-0 fs-8">
                                         <input class="form-check-input contact-checkbox" type="checkbox"

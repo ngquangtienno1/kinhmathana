@@ -162,7 +162,7 @@ class NotificationController extends Controller
     }
 
     // Helper method to notify admins
-    protected function notifyAdmins($type, $title, $content, $data = [])
+    public static function notifyAdmins($type, $title, $content, $data = [])
     {
         // Get admin role ID
         $adminRole = Role::where('name', 'admin')->first();

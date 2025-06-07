@@ -23,7 +23,7 @@ class OrderHistoryFactory extends Factory
             'cancelled'
         ];
         $paymentStatuses = [
-            'pending',
+            'unpaid',
             'paid',
             'failed',
             'refunded',
