@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target.classList.contains('remove-variation')) {
             const variationRows = variationsContainer.getElementsByClassName('variation-row');
             if (variationRows.length <= 1) {
-                alert('Bạn không thể xóa biến thể này vì sản phẩm phải có ít nhất một biến thể để đảm bảo tính toàn vẹn của dữ liệu.');
+                alert('Bạn không thể xóa biến thể này vì sản phẩm phải có ít nhất một biến thể.');
                 return;
             }
             if (confirm('Bạn có chắc muốn xóa biến thể này?')) {

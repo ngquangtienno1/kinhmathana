@@ -14,6 +14,8 @@ use App\Models\Variation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Admin\NotificationController;
 
 class ProductController extends Controller
@@ -75,7 +77,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['images', 'variations.color', 'variations.size', 'brand', 'categories', 'reviews'])->findOrFail($id);
+        $product = Product::with(['images', 'variations.color', 'variations.size', 'brand', 'categories', 'reviews', 'comments.user'])->findOrFail($id);
 
         if ($product->product_type === 'variable') {
             $product->total_stock = $product->variations->sum('stock_quantity');

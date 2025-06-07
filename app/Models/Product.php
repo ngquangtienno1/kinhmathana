@@ -12,9 +12,20 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'description_short', 'description_long', 'product_type', 'sku',
-        'stock_quantity', 'price', 'sale_price', 'slug', 'brand_id', 'status',
-        'is_featured', 'views', 'video_path',
+        'name',
+        'description_short',
+        'description_long',
+        'product_type',
+        'sku',
+        'stock_quantity',
+        'price',
+        'sale_price',
+        'slug',
+        'brand_id',
+        'status',
+        'is_featured',
+        'views',
+        'video_path',
     ];
 
     protected $appends = ['total_stock_quantity'];
@@ -47,6 +58,11 @@ class Product extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'entity_id')->where('entity_type', 'product');
     }
 
     public function getTotalStockQuantityAttribute()
