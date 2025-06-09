@@ -50,12 +50,7 @@ class OrderSeeder extends Seeder
                 'customer_email' => $user->email,
                 'customer_phone' => $user->phone,
                 'customer_address' => $user->address,
-            ])->each(function ($order) {
-                if ($order->status === 'cancelled' && \App\Models\CancellationReason::where('type', 'admin')->count() > 0) {
-                    $order->cancellation_reason_id = \App\Models\CancellationReason::where('type', 'admin')->inRandomOrder()->first()->id;
-                    $order->save();
-                }
-            });
+            ]);
 
             // Update customer statistics after creating orders
             $customer = $user->customer;

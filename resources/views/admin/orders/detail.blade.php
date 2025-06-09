@@ -10,14 +10,38 @@
 @endsection
 
 @php
-    $steps = [
-        ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
-        ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
-        ['label' => 'Đang chuẩn bị', 'key' => 'awaiting_pickup', 'icon' => 'fa-truck-loading'],
-        ['label' => 'Đang giao', 'key' => 'shipping', 'icon' => 'fa-shipping-fast'],
-        ['label' => 'Đã giao hàng', 'key' => 'delivered', 'icon' => 'fa-box-open'],
-        ['label' => 'Hoàn thành', 'key' => 'completed', 'icon' => 'fa-star'],
-    ];
+    // Lấy trạng thái trước đó nếu có
+    $lastHistory = $order->statusHistories()->where('new_status', $order->status)->latest()->first();
+    $prevStatus = $lastHistory ? $lastHistory->old_status : null;
+    if (in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin']) && $prevStatus === 'pending') {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã huỷ', 'key' => $order->status, 'icon' => 'fa-times-circle'],
+        ];
+    } elseif (in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin'])) {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+            ['label' => 'Đã huỷ', 'key' => $order->status, 'icon' => 'fa-times-circle'],
+        ];
+    } elseif ($order->status === 'delivery_failed') {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+            ['label' => 'Đang chuẩn bị', 'key' => 'awaiting_pickup', 'icon' => 'fa-truck-loading'],
+            ['label' => 'Đang giao', 'key' => 'shipping', 'icon' => 'fa-shipping-fast'],
+            ['label' => 'Giao hàng thất bại', 'key' => 'delivery_failed', 'icon' => 'fa-times-circle'],
+        ];
+    } else {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+            ['label' => 'Đang chuẩn bị', 'key' => 'awaiting_pickup', 'icon' => 'fa-truck-loading'],
+            ['label' => 'Đang giao', 'key' => 'shipping', 'icon' => 'fa-shipping-fast'],
+            ['label' => 'Đã giao hàng', 'key' => 'delivered', 'icon' => 'fa-box-open'],
+            ['label' => 'Hoàn thành', 'key' => 'completed', 'icon' => 'fa-star'],
+        ];
+    }
     $currentIndex = collect($steps)->search(fn($step) => $step['key'] === $order->status);
     if ($currentIndex === false) $currentIndex = 0;
 @endphp
@@ -289,12 +313,7 @@
                                             'unpaid' => ['Chưa thanh toán', 'warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'success', 'check'],
                                             'cod' => ['Thanh toán khi nhận hàng', 'info', 'dollar-sign'],
-                                            'disputed' => ['Đang xử lý', 'warning', 'clock'],
-                                            'partially_paid' => ['Đã thanh toán một phần', 'info', 'dollar-sign'],
                                             'confirmed' => ['Đã xác nhận thanh toán', 'primary', 'check-circle'],
-                                            'refunded' => ['Đã hoàn tiền', 'info', 'refresh-cw'],
-                                            'processing_refund' => ['Đang hoàn tiền', 'warning', 'clock'],
-                                            'failed' => ['Thanh toán không thành công', 'danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -455,15 +474,11 @@
                                     'confirmed' => ['awaiting_pickup', 'cancelled_by_admin'],
                                     'awaiting_pickup' => ['shipping', 'cancelled_by_admin'],
                                     'shipping' => ['delivered', 'delivery_failed'],
-                                    'delivered' => ['completed', 'processing_return'],
+                                    'delivered' => ['completed'],
                                     'completed' => [],
-                                    'processing_return' => ['refunded'],
-                                    'refunded' => [],
                                     'cancelled_by_admin' => [],
                                     'delivery_failed' => ['cancelled_by_admin'],
-                                    'cancelled_by_customer' => [], // Read-only status
-                                    'return_rejected' => ['refunded'],
-                                    'returned_requested' => ['processing_return'], // Thêm lại để tránh lỗi
+                                    'cancelled_by_customer' => [],
                                 ];
                                 $statusLabels = [
                                     'pending' => 'Chờ xác nhận',
@@ -472,13 +487,9 @@
                                     'shipping' => 'Đang giao',
                                     'delivered' => 'Đã giao hàng',
                                     'completed' => 'Đã hoàn thành',
-                                    'processing_return' => 'Đang xử lý trả hàng',
-                                    'refunded' => 'Đã hoàn tiền',
                                     'cancelled_by_admin' => 'Admin hủy đơn',
                                     'delivery_failed' => 'Giao thất bại',
                                     'cancelled_by_customer' => 'Khách hủy đơn',
-                                    'return_rejected' => 'Trả hàng bị từ chối',
-                                    'returned_requested' => 'Khách trả hàng', // Thêm lại để tránh lỗi
                                 ];
                                 $current = $order->status;
                                 $canUpdate = count($statusTransitions[$current]) > 0;
@@ -541,3 +552,72 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('order-status-select');
+    const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
+    const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
+    const cancellationReasonOther = document.getElementById('cancellation_reason_other');
+    const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
+    const orderStatusForm = document.getElementById('order-status-form');
+    const orderStatusSubmit = document.getElementById('order-status-submit');
+
+    let shouldShowModal = false;
+
+    // Khi chọn trạng thái admin huỷ đơn thì show modal
+    statusSelect.addEventListener('change', function() {
+        if (this.value === 'cancelled_by_admin') {
+            cancellationReasonModal.show();
+            shouldShowModal = true;
+            orderStatusSubmit.disabled = true;
+        } else {
+            cancellationReasonIdInput.value = '';
+            orderStatusSubmit.disabled = false;
+        }
+    });
+
+    // Khi chọn lý do huỷ
+    cancellationReasonSelect.addEventListener('change', function() {
+        if (this.value === 'other') {
+            cancellationReasonOther.classList.remove('d-none');
+        } else {
+            cancellationReasonOther.classList.add('d-none');
+        }
+    });
+
+    // Xác nhận lý do huỷ
+    document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
+        const selectedReason = cancellationReasonSelect.value;
+        if (!selectedReason) {
+            cancellationReasonSelect.classList.add('is-invalid');
+            return;
+        }
+        cancellationReasonSelect.classList.remove('is-invalid');
+        if (selectedReason === 'other') {
+            if (!cancellationReasonOther.value.trim()) {
+                cancellationReasonOther.classList.add('is-invalid');
+                return;
+            }
+            cancellationReasonOther.classList.remove('is-invalid');
+            cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
+        } else {
+            cancellationReasonOther.classList.remove('is-invalid');
+            cancellationReasonIdInput.value = selectedReason;
+        }
+        cancellationReasonModal.hide();
+        orderStatusSubmit.disabled = false;
+    });
+
+    // Khi submit form, nếu chọn admin huỷ đơn mà chưa chọn lý do thì show modal
+    orderStatusForm.addEventListener('submit', function(e) {
+        if (statusSelect.value === 'cancelled_by_admin' && !cancellationReasonIdInput.value) {
+            e.preventDefault();
+            cancellationReasonModal.show();
+            orderStatusSubmit.disabled = true;
+        }
+    });
+});
+</script>
+@endpush

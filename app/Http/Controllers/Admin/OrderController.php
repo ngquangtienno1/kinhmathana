@@ -88,8 +88,8 @@ class OrderController extends Controller
             'user_id' => 'required|exists:users,id',
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:unpaid,paid,failed,refunded,cancelled',
-            'status' => 'required|in:pending,confirmed,processing,shipping,delivered,cancelled',
+            'payment_status' => 'required|in:unpaid,paid,cod,confirmed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -154,8 +154,8 @@ class OrderController extends Controller
         $data = $request->validate([
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:unpaid,paid,cod,confirmed,refunded,processing_refund,failed',
-            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed,returned_requested,processing_return,return_rejected,refunded',
+            'payment_status' => 'required|in:unpaid,paid,cod,confirmed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -194,7 +194,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_admin,delivery_failed,processing_return,refunded',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_admin,delivery_failed',
             'comment' => 'nullable|string',
             'cancellation_reason_id' => 'nullable',
         ]);
@@ -296,7 +296,7 @@ class OrderController extends Controller
         if ($request->status === 'delivered') {
             return back()->with('success', 'Đã gửi thông báo đơn hàng đến khách hàng. Cập nhật trạng thái đơn hàng thành công');
         } else {
-            return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
+        return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
         }
     }
 
@@ -306,7 +306,7 @@ class OrderController extends Controller
     public function updatePaymentStatus(Request $request, Order $order)
     {
         $request->validate([
-            'payment_status' => 'required|in:unpaid,paid,cod,confirmed,refunded,processing_refund,failed',
+            'payment_status' => 'required|in:unpaid,paid,cod,confirmed',
             'comment' => 'nullable|string'
         ]);
 

@@ -64,10 +64,7 @@ class OrderFactory extends Factory
             'unpaid',
             'paid',
             'cod',
-            'confirmed',
-            'refunded',
-            'processing_refund',
-            'failed'
+            'confirmed'
         ];
         $orderStatuses = [
             'pending',              // Chờ xác nhận
@@ -78,11 +75,7 @@ class OrderFactory extends Factory
             'completed',            // Đã hoàn thành
             'cancelled_by_customer', // Khách hủy đơn
             'cancelled_by_admin',    // Admin hủy đơn
-            'delivery_failed',       // Giao thất bại
-            'returned_requested',    // Khách trả hàng
-            'processing_return',     // Đang xử lý trả hàng
-            'return_rejected',       // Trả hàng bị từ chối
-            'refunded'              // Đã hoàn tiền
+            'delivery_failed'       // Giao thất bại
         ];
 
         $status = $this->faker->randomElement($orderStatuses);

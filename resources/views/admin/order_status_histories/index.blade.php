@@ -93,32 +93,12 @@
                                                 'pending' => ['Chờ xác nhận', 'badge-phoenix-warning', 'clock'],
                                                 'confirmed' => ['Đã xác nhận', 'badge-phoenix-primary', 'check'],
                                                 'awaiting_pickup' => ['Chờ lấy hàng', 'badge-phoenix-info', 'package'],
-                                                'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
+                                                'shipping' => ['Đang giao', 'badge-phoenix-primary', 'truck'],
                                                 'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
                                                 'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
-                                                'cancelled_by_customer' => [
-                                                    'Khách hủy đơn',
-                                                    'badge-phoenix-danger',
-                                                    'x',
-                                                ],
+                                                'cancelled_by_customer' => ['Khách hủy đơn', 'badge-phoenix-danger', 'x'],
                                                 'cancelled_by_admin' => ['Admin hủy đơn', 'badge-phoenix-danger', 'x'],
                                                 'delivery_failed' => ['Giao thất bại', 'badge-phoenix-danger', 'x'],
-                                                'returned_requested' => [
-                                                    'Khách trả hàng',
-                                                    'badge-phoenix-warning',
-                                                    'corner-up-left',
-                                                ],
-                                                'processing_return' => [
-                                                    'Đang xử lý trả hàng',
-                                                    'badge-phoenix-warning',
-                                                    'refresh-cw',
-                                                ],
-                                                'return_rejected' => [
-                                                    'Trả hàng bị từ chối',
-                                                    'badge-phoenix-danger',
-                                                    'corner-up-left',
-                                                ],
-                                                'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
                                             ];
                                             $os = $orderStatusMap[$history->old_status] ?? [
                                                 ucfirst($history->old_status),

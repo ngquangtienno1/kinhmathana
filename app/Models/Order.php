@@ -110,10 +110,6 @@ class Order extends Model
             'cancelled_by_customer' => 'Khách hủy đơn',
             'cancelled_by_admin' => 'Admin hủy đơn',
             'delivery_failed' => 'Giao thất bại',
-            'returned_requested' => 'Khách trả hàng',
-            'processing_return' => 'Đang xử lý trả hàng',
-            'return_rejected' => 'Trả hàng bị từ chối',
-            'refunded' => 'Đã hoàn tiền',
             default => 'Không xác định',
         };
     }
@@ -123,11 +119,8 @@ class Order extends Model
         return match ($this->payment_status) {
             'unpaid' => 'Chờ thanh toán',
             'paid' => 'Đã thanh toán',
-            'failed' => 'Thanh toán thất bại',
-            'refunded' => 'Đã hoàn tiền',
-            'cancelled' => 'Đã huỷ',
-            'partially_paid' => 'Thanh toán một phần',
-            'disputed' => 'Đang tranh chấp',
+            'cod' => 'Thanh toán khi nhận hàng',
+            'confirmed' => 'Đã xác nhận thanh toán',
             default => 'Không xác định'
         };
     }
@@ -144,10 +137,6 @@ class Order extends Model
             'cancelled_by_customer' => 'danger',
             'cancelled_by_admin' => 'danger',
             'delivery_failed' => 'danger',
-            'returned_requested' => 'warning',
-            'processing_return' => 'warning',
-            'return_rejected' => 'danger',
-            'refunded' => 'info',
             default => 'secondary',
         };
     }
@@ -157,11 +146,8 @@ class Order extends Model
         return match ($this->payment_status) {
             'unpaid' => 'warning',
             'paid' => 'success',
-            'failed' => 'danger',
-            'refunded' => 'info',
-            'cancelled' => 'secondary',
-            'partially_paid' => 'warning',
-            'disputed' => 'danger',
+            'cod' => 'info',
+            'confirmed' => 'primary',
             default => 'secondary'
         };
     }
