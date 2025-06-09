@@ -9,6 +9,92 @@
     <li class="breadcrumb-item active">Chi tiết đơn hàng #{{ $order->order_number }}</li>
 @endsection
 
+@php
+    $steps = [
+        ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+        ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+        ['label' => 'Đang chuẩn bị', 'key' => 'awaiting_pickup', 'icon' => 'fa-truck-loading'],
+        ['label' => 'Đang giao', 'key' => 'shipping', 'icon' => 'fa-shipping-fast'],
+        ['label' => 'Đã giao hàng', 'key' => 'delivered', 'icon' => 'fa-box-open'],
+        ['label' => 'Hoàn thành', 'key' => 'completed', 'icon' => 'fa-star'],
+    ];
+    $currentIndex = collect($steps)->search(fn($step) => $step['key'] === $order->status);
+    if ($currentIndex === false) $currentIndex = 0;
+@endphp
+<div class="order-progress-bar mb-4">
+    <div class="order-progress-steps d-flex align-items-center">
+        @foreach ($steps as $i => $step)
+            <div class="order-step text-center flex-fill {{ $i <= $currentIndex ? 'completed' : '' }}">
+                <div class="order-step-circle mx-auto mb-1">
+                    @if ($i < $currentIndex || ($i == $currentIndex && $step['key'] === 'completed'))
+                        <span class="fa fa-check"></span>
+                    @else
+                        <span class="fa {{ $step['icon'] }}"></span>
+                    @endif
+                </div>
+                <div class="order-step-label">{{ $step['label'] }}</div>
+            </div>
+            @if ($i < count($steps) - 1)
+                <div class="order-step-line flex-grow-1
+                    {{ $i < $currentIndex ? 'completed' : '' }}
+                    {{ $i === $currentIndex && $currentIndex < count($steps) - 1 ? 'animated' : '' }}
+                "></div>
+            @endif
+        @endforeach
+    </div>
+    <div class="order-progress-note mt-2 text-center">
+        @php
+            $statusNote = match($order->status) {
+                'completed' => 'Đơn hàng đã hoàn thành. Cảm ơn bạn đã mua sắm tại cửa hàng!',
+                'delivered' => 'Đơn hàng đã giao thành công. Cảm ơn bạn đã mua sắm tại cửa hàng!',
+                'shipping' => 'Đơn hàng đang được vận chuyển đến bạn. Vui lòng chờ shipper liên hệ.',
+                'awaiting_pickup' => 'Đơn hàng đang chuẩn bị và sẽ sớm được gửi đi.',
+                'confirmed' => 'Đơn hàng đã được xác nhận và đang chờ xử lý.',
+                'pending' => 'Đơn hàng đang chờ xác nhận từ cửa hàng.',
+                default => 'Đơn hàng đang được xử lý. Thông tin tracking sẽ cập nhật trong 24 giờ tới.'
+            };
+        @endphp
+        {{ $statusNote }}
+    </div>
+</div>
+<style>
+.order-progress-bar { margin-bottom: 32px; }
+.order-progress-steps { display: flex; align-items: center; }
+.order-step { text-align: center; flex: 1; }
+.order-step-circle {
+    width: 28px; height: 28px; border-radius: 50%; background: #eee; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center; font-size: 16px; color: #bbb;
+}
+.order-step.completed .order-step-circle { background: #0d6efd; color: #fff; }
+.order-step-label { font-size: 13px; margin-top: 4px; color: #888; }
+.order-step.completed .order-step-label { color: #0d6efd; font-weight: bold; }
+.order-step-line {
+    height: 3px; background: #eee; flex: 1; margin: 0 2px; border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+.order-step-line.completed { background: #0d6efd; }
+/* Hiệu ứng động cho trạng thái shipping/delivered */
+.order-step-line.animated {
+    background: #0d6efd;
+}
+.order-step-line.animated::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #0d6efd 0%, #fff 50%, #0d6efd 100%);
+    background-size: 200% 100%;
+    animation: progress-bar-stripes 1.2s linear infinite;
+    opacity: 0.5;
+}
+@keyframes progress-bar-stripes {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.order-progress-note { font-size: 14px; color: #666; text-align: center; }
+</style>
+
 <div class="mb-9">
     <h2 class="mb-0">Đơn hàng #{{ $order->order_number }}</h2>
     <div class="d-sm-flex flex-between-center mb-3">
@@ -453,74 +539,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const statusSelect = document.getElementById('order-status-select');
-        const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
-        const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
-        const cancellationReasonOther = document.getElementById('cancellation_reason_other');
-        const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
-        const orderStatusForm = document.getElementById('order-status-form');
-        const orderStatusSubmit = document.getElementById('order-status-submit');
-
-        let shouldShowModal = false;
-
-        // Hiện/ẩn input nhập lý do mới
-        cancellationReasonSelect.addEventListener('change', function() {
-            if (this.value === 'other') {
-                cancellationReasonOther.classList.remove('d-none');
-                cancellationReasonOther.required = true;
-            } else {
-                cancellationReasonOther.classList.add('d-none');
-                cancellationReasonOther.value = '';
-                cancellationReasonOther.required = false;
-            }
-        });
-
-        statusSelect.addEventListener('change', function(e) {
-            if (this.value === 'cancelled_by_admin') {
-                shouldShowModal = true;
-                cancellationReasonModal.show();
-                orderStatusSubmit.disabled = true;
-            } else {
-                cancellationReasonIdInput.value = '';
-                orderStatusSubmit.disabled = false;
-            }
-        });
-
-        document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
-            const selectedReason = cancellationReasonSelect.value;
-            if (!selectedReason) {
-                cancellationReasonSelect.classList.add('is-invalid');
-                return;
-            }
-            cancellationReasonSelect.classList.remove('is-invalid');
-            if (selectedReason === 'other') {
-                if (!cancellationReasonOther.value.trim()) {
-                    cancellationReasonOther.classList.add('is-invalid');
-                    return;
-                }
-                cancellationReasonOther.classList.remove('is-invalid');
-                // Gửi lý do mới qua hidden input (có thể dùng 1 hidden input hoặc truyền qua cancellation_reason_id)
-                cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
-            } else {
-                cancellationReasonOther.classList.remove('is-invalid');
-                cancellationReasonIdInput.value = selectedReason;
-            }
-            cancellationReasonModal.hide();
-            orderStatusSubmit.disabled = false;
-        });
-
-        // Ngăn submit nếu chọn huỷ mà chưa chọn lý do
-        orderStatusForm.addEventListener('submit', function(e) {
-            if (statusSelect.value === 'cancelled_by_admin' && !cancellationReasonIdInput.value) {
-                e.preventDefault();
-                cancellationReasonModal.show();
-                orderStatusSubmit.disabled = true;
-            }
-        });
-    });
-</script>
 
 @endsection

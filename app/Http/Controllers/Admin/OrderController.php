@@ -204,6 +204,22 @@ class OrderController extends Controller
             return back()->with('error', 'Không thể cập nhật trạng thái đơn hàng đã bị khách hủy');
         }
 
+        // Kiểm tra cấu hình mail trước khi cho phép cập nhật trạng thái cần gửi thông báo
+        if (in_array($request->status, ['delivered', 'delivery_failed'])) {
+            // Test gửi mail thực tế trước khi cho phép cập nhật
+            $testEmail = $order->user ? $order->user->email : $order->customer_email;
+            if ($testEmail) {
+                try {
+                    // Test gửi mail với nội dung rỗng để kiểm tra kết nối
+                    Mail::raw('', function ($message) use ($testEmail) {
+                        $message->to($testEmail)->subject('Test Connection');
+                    });
+                } catch (\Exception $e) {
+                    return back()->with('error', 'Không thể gửi email thông báo do chưa cấu hình hệ thống gửi mail. Vui lòng kiểm tra cấu hình email để đảm bảo thông báo đơn hàng được gửi đến khách hàng.');
+                }
+            }
+        }
+
         DB::transaction(function () use ($order, $request) {
             $oldStatus = $order->status;
             $updateData = [
@@ -276,7 +292,12 @@ class OrderController extends Controller
             ]);
         });
 
-        return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
+        // Thông báo khác nhau tùy theo trạng thái
+        if ($request->status === 'delivered') {
+            return back()->with('success', 'Đã gửi thông báo đơn hàng đến khách hàng. Cập nhật trạng thái đơn hàng thành công');
+        } else {
+            return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
+        }
     }
 
     /**
