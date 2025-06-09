@@ -70,11 +70,8 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'paid'])) }}">Đã
                                         thanh toán</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'cod'])) }}">Thanh
-                                        toán khi nhận hàng (COD)</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'confirmed'])) }}">Đã
-                                        xác nhận thanh toán</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'failed'])) }}">Thanh
+                                        toán thất bại</a></li>
                             </ul>
                         </div>
                         <!-- Order status -->
@@ -178,8 +175,7 @@
                                         $paymentStatusMap = [
                                             'unpaid' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
-                                            'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
-                                            'confirmed' => ['Đã xác nhận thanh toán', 'badge-phoenix-primary', 'check-circle'],
+                                            'failed' => ['Thanh toán thất bại', 'badge-phoenix-danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),

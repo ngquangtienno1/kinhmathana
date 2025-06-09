@@ -27,7 +27,7 @@ class OrderStatusHistoryController extends Controller
     public function show(Order $order): View
     {
         $history = $this->orderStatusHistoryService->getOrderStatusHistory($order);
-        
+
         return view('admin.orders.status-history', [
             'order' => $order,
             'history' => $history
@@ -50,10 +50,10 @@ class OrderStatusHistoryController extends Controller
 
         $oldStatus = $order->status;
         $newStatus = $request->new_status;
-        
+
         // Update order status
         $order->update(['status' => $newStatus]);
-        
+
         // Record the status change
         $this->orderStatusHistoryService->recordStatusChange(
             $order,
@@ -72,4 +72,4 @@ class OrderStatusHistoryController extends Controller
         $histories = \App\Models\OrderStatusHistory::with(['order.user', 'updatedBy'])->orderByDesc('created_at')->paginate(20);
         return view('admin.order_status_histories.index', compact('histories'));
     }
-} 
+}

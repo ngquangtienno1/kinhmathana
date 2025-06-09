@@ -42,8 +42,11 @@
             ['label' => 'Hoàn thành', 'key' => 'completed', 'icon' => 'fa-star'],
         ];
     }
-    $currentIndex = collect($steps)->search(fn($step) => $step['key'] === $order->status);
-    if ($currentIndex === false) $currentIndex = 0;
+    $currentOrderStatus = $order->status;
+    $currentIndex = collect($steps)->search(fn($step) => $step['key'] === $currentOrderStatus);
+    if ($currentIndex === false) {
+        $currentIndex = 0;
+    }
 @endphp
 <div class="order-progress-bar mb-4">
     <div class="order-progress-steps d-flex align-items-center">
@@ -59,64 +62,121 @@
                 <div class="order-step-label">{{ $step['label'] }}</div>
             </div>
             @if ($i < count($steps) - 1)
-                <div class="order-step-line flex-grow-1
+                <div
+                    class="order-step-line flex-grow-1
                     {{ $i < $currentIndex ? 'completed' : '' }}
                     {{ $i === $currentIndex && $currentIndex < count($steps) - 1 ? 'animated' : '' }}
-                "></div>
+                ">
+                </div>
             @endif
         @endforeach
     </div>
     <div class="order-progress-note mt-2 text-center">
         @php
-            $statusNote = match($order->status) {
+            $statusNote = match ($order->status) {
                 'completed' => 'Đơn hàng đã hoàn thành. Cảm ơn bạn đã mua sắm tại cửa hàng!',
                 'delivered' => 'Đơn hàng đã giao thành công. Cảm ơn bạn đã mua sắm tại cửa hàng!',
                 'shipping' => 'Đơn hàng đang được vận chuyển đến bạn. Vui lòng chờ shipper liên hệ.',
                 'awaiting_pickup' => 'Đơn hàng đang chuẩn bị và sẽ sớm được gửi đi.',
                 'confirmed' => 'Đơn hàng đã được xác nhận và đang chờ xử lý.',
                 'pending' => 'Đơn hàng đang chờ xác nhận từ cửa hàng.',
-                default => 'Đơn hàng đang được xử lý. Thông tin tracking sẽ cập nhật trong 24 giờ tới.'
+                default => 'Đơn hàng đang được xử lý. Thông tin tracking sẽ cập nhật trong 24 giờ tới.',
             };
         @endphp
         {{ $statusNote }}
     </div>
 </div>
 <style>
-.order-progress-bar { margin-bottom: 32px; }
-.order-progress-steps { display: flex; align-items: center; }
-.order-step { text-align: center; flex: 1; }
-.order-step-circle {
-    width: 28px; height: 28px; border-radius: 50%; background: #eee; margin: 0 auto;
-    display: flex; align-items: center; justify-content: center; font-size: 16px; color: #bbb;
-}
-.order-step.completed .order-step-circle { background: #0d6efd; color: #fff; }
-.order-step-label { font-size: 13px; margin-top: 4px; color: #888; }
-.order-step.completed .order-step-label { color: #0d6efd; font-weight: bold; }
-.order-step-line {
-    height: 3px; background: #eee; flex: 1; margin: 0 2px; border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-}
-.order-step-line.completed { background: #0d6efd; }
-/* Hiệu ứng động cho trạng thái shipping/delivered */
-.order-step-line.animated {
-    background: #0d6efd;
-}
-.order-step-line.animated::after {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 100%;
-    background: linear-gradient(90deg, #0d6efd 0%, #fff 50%, #0d6efd 100%);
-    background-size: 200% 100%;
-    animation: progress-bar-stripes 1.2s linear infinite;
-    opacity: 0.5;
-}
-@keyframes progress-bar-stripes {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-.order-progress-note { font-size: 14px; color: #666; text-align: center; }
+    .order-progress-bar {
+        margin-bottom: 32px;
+    }
+
+    .order-progress-steps {
+        display: flex;
+        align-items: center;
+    }
+
+    .order-step {
+        text-align: center;
+        flex: 1;
+    }
+
+    .order-step-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eee;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #bbb;
+    }
+
+    .order-step.completed .order-step-circle {
+        background: #0d6efd;
+        color: #fff;
+    }
+
+    .order-step-label {
+        font-size: 13px;
+        margin-top: 4px;
+        color: #888;
+    }
+
+    .order-step.completed .order-step-label {
+        color: #0d6efd;
+        font-weight: bold;
+    }
+
+    .order-step-line {
+        height: 3px;
+        background: #eee;
+        flex: 1;
+        margin: 0 2px;
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-step-line.completed {
+        background: #0d6efd;
+    }
+
+    /* Hiệu ứng động cho trạng thái shipping/delivered */
+    .order-step-line.animated {
+        background: #0d6efd;
+    }
+
+    .order-step-line.animated::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(90deg, #0d6efd 0%, #fff 50%, #0d6efd 100%);
+        background-size: 200% 100%;
+        animation: progress-bar-stripes 1.2s linear infinite;
+        opacity: 0.5;
+    }
+
+    @keyframes progress-bar-stripes {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .order-progress-note {
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+    }
 </style>
 
 <div class="mb-9">
@@ -312,8 +372,7 @@
                                         $paymentStatusMap = [
                                             'unpaid' => ['Chưa thanh toán', 'warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'success', 'check'],
-                                            'cod' => ['Thanh toán khi nhận hàng', 'info', 'dollar-sign'],
-                                            'confirmed' => ['Đã xác nhận thanh toán', 'primary', 'check-circle'],
+                                            'failed' => ['Thanh toán thất bại', 'danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -321,7 +380,8 @@
                                             'info',
                                         ];
                                     @endphp
-                                    <span class="badge bg-{{ $ps[1] }}-subtle text-{{ $ps[1] }} fw-semibold">
+                                    <span
+                                        class="badge bg-{{ $ps[1] }}-subtle text-{{ $ps[1] }} fw-semibold">
                                         {{ $ps[0] }}
                                     </span>
                                 </p>
@@ -426,11 +486,12 @@
                 <div class="card-body">
                     <h3 class="card-title mb-4">Tổng quan</h3>
                     @php
-                        $calculatedSubtotal = $order->items->sum(function($item) {
+                        $calculatedSubtotal = $order->items->sum(function ($item) {
                             return $item->price * $item->quantity;
                         });
-                        $calculatedTotal = $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
-                    @endphp 
+                        $calculatedTotal =
+                            $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
+                    @endphp
                     <div class="d-flex justify-content-between mb-2">
                         <p class="text-body fw-semibold mb-0">Tổng tiền hàng:</p>
                         <p class="text-body-emphasis fw-semibold mb-0">{{ number_format($calculatedSubtotal) }}đ</p>
@@ -555,69 +616,69 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const statusSelect = document.getElementById('order-status-select');
-    const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
-    const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
-    const cancellationReasonOther = document.getElementById('cancellation_reason_other');
-    const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
-    const orderStatusForm = document.getElementById('order-status-form');
-    const orderStatusSubmit = document.getElementById('order-status-submit');
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('order-status-select');
+        const cancellationReasonModal = new bootstrap.Modal(document.getElementById('cancellationReasonModal'));
+        const cancellationReasonSelect = document.getElementById('cancellation_reason_select');
+        const cancellationReasonOther = document.getElementById('cancellation_reason_other');
+        const cancellationReasonIdInput = document.getElementById('cancellation_reason_id');
+        const orderStatusForm = document.getElementById('order-status-form');
+        const orderStatusSubmit = document.getElementById('order-status-submit');
 
-    let shouldShowModal = false;
+        let shouldShowModal = false;
 
-    // Khi chọn trạng thái admin huỷ đơn thì show modal
-    statusSelect.addEventListener('change', function() {
-        if (this.value === 'cancelled_by_admin') {
-            cancellationReasonModal.show();
-            shouldShowModal = true;
-            orderStatusSubmit.disabled = true;
-        } else {
-            cancellationReasonIdInput.value = '';
-            orderStatusSubmit.disabled = false;
-        }
-    });
+        // Khi chọn trạng thái admin huỷ đơn thì show modal
+        statusSelect.addEventListener('change', function() {
+            if (this.value === 'cancelled_by_admin') {
+                cancellationReasonModal.show();
+                shouldShowModal = true;
+                orderStatusSubmit.disabled = true;
+            } else {
+                cancellationReasonIdInput.value = '';
+                orderStatusSubmit.disabled = false;
+            }
+        });
 
-    // Khi chọn lý do huỷ
-    cancellationReasonSelect.addEventListener('change', function() {
-        if (this.value === 'other') {
-            cancellationReasonOther.classList.remove('d-none');
-        } else {
-            cancellationReasonOther.classList.add('d-none');
-        }
-    });
+        // Khi chọn lý do huỷ
+        cancellationReasonSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                cancellationReasonOther.classList.remove('d-none');
+            } else {
+                cancellationReasonOther.classList.add('d-none');
+            }
+        });
 
-    // Xác nhận lý do huỷ
-    document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
-        const selectedReason = cancellationReasonSelect.value;
-        if (!selectedReason) {
-            cancellationReasonSelect.classList.add('is-invalid');
-            return;
-        }
-        cancellationReasonSelect.classList.remove('is-invalid');
-        if (selectedReason === 'other') {
-            if (!cancellationReasonOther.value.trim()) {
-                cancellationReasonOther.classList.add('is-invalid');
+        // Xác nhận lý do huỷ
+        document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
+            const selectedReason = cancellationReasonSelect.value;
+            if (!selectedReason) {
+                cancellationReasonSelect.classList.add('is-invalid');
                 return;
             }
-            cancellationReasonOther.classList.remove('is-invalid');
-            cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
-        } else {
-            cancellationReasonOther.classList.remove('is-invalid');
-            cancellationReasonIdInput.value = selectedReason;
-        }
-        cancellationReasonModal.hide();
-        orderStatusSubmit.disabled = false;
-    });
+            cancellationReasonSelect.classList.remove('is-invalid');
+            if (selectedReason === 'other') {
+                if (!cancellationReasonOther.value.trim()) {
+                    cancellationReasonOther.classList.add('is-invalid');
+                    return;
+                }
+                cancellationReasonOther.classList.remove('is-invalid');
+                cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
+            } else {
+                cancellationReasonOther.classList.remove('is-invalid');
+                cancellationReasonIdInput.value = selectedReason;
+            }
+            cancellationReasonModal.hide();
+            orderStatusSubmit.disabled = false;
+        });
 
-    // Khi submit form, nếu chọn admin huỷ đơn mà chưa chọn lý do thì show modal
-    orderStatusForm.addEventListener('submit', function(e) {
-        if (statusSelect.value === 'cancelled_by_admin' && !cancellationReasonIdInput.value) {
-            e.preventDefault();
-            cancellationReasonModal.show();
-            orderStatusSubmit.disabled = true;
-        }
+        // Khi submit form, nếu chọn admin huỷ đơn mà chưa chọn lý do thì show modal
+        orderStatusForm.addEventListener('submit', function(e) {
+            if (statusSelect.value === 'cancelled_by_admin' && !cancellationReasonIdInput.value) {
+                e.preventDefault();
+                cancellationReasonModal.show();
+                orderStatusSubmit.disabled = true;
+            }
+        });
     });
-});
 </script>
 @endpush

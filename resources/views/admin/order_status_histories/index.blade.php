@@ -96,7 +96,11 @@
                                                 'shipping' => ['Đang giao', 'badge-phoenix-primary', 'truck'],
                                                 'delivered' => ['Đã giao hàng', 'badge-phoenix-success', 'check'],
                                                 'completed' => ['Đã hoàn thành', 'badge-phoenix-primary', 'award'],
-                                                'cancelled_by_customer' => ['Khách hủy đơn', 'badge-phoenix-danger', 'x'],
+                                                'cancelled_by_customer' => [
+                                                    'Khách hủy đơn',
+                                                    'badge-phoenix-danger',
+                                                    'x',
+                                                ],
                                                 'cancelled_by_admin' => ['Admin hủy đơn', 'badge-phoenix-danger', 'x'],
                                                 'delivery_failed' => ['Giao thất bại', 'badge-phoenix-danger', 'x'],
                                             ];

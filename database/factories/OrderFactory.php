@@ -61,10 +61,9 @@ class OrderFactory extends Factory
         $totalAmount = max(0, $totalAmount);
 
         $paymentStatuses = [
-            'unpaid',
-            'paid',
-            'cod',
-            'confirmed'
+            'unpaid',      // Chưa thanh toán
+            'paid',        // Đã thanh toán
+            'failed'       // Thanh toán thất bại
         ];
         $orderStatuses = [
             'pending',              // Chờ xác nhận

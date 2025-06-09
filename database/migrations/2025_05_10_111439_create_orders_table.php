@@ -41,8 +41,7 @@ return new class extends Migration
             $table->enum('payment_status', [
                 'unpaid',      // Chưa thanh toán
                 'paid',        // Đã thanh toán
-                'cod',         // Thanh toán khi nhận hàng (COD)
-                'confirmed'    // Đã xác nhận thanh toán
+                'failed'       // Thanh toán thất bại
             ])->default('unpaid');
 
             // Trạng thái đơn hàng
