@@ -792,13 +792,33 @@ class ProductController extends Controller
             ->withInput();
     }
 
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         $product = Product::findOrFail($id);
-        $product->delete();
+        $orderCount = $product->orderItems()->count();
 
-        return redirect()->route('admin.products.list')
-            ->with('success', 'Xóa sản phẩm thành công.');
+        // Nếu có đơn hàng và chưa xác nhận force, chỉ cảnh báo
+        if ($orderCount > 0 && !$request->input('force')) {
+            $message = "Sản phẩm này đã có trong {$orderCount} đơn hàng. Bạn có chắc chắn muốn xoá sản phẩm này?";
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+                'orderCount' => $orderCount
+            ]);
+        }
+
+        try {
+            $product->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Sản phẩm đã được chuyển vào thùng rác'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi xóa sản phẩm'
+            ], 500);
+        }
     }
 
     public function trashed(Request $request)
@@ -853,6 +873,12 @@ class ProductController extends Controller
     {
         $product = Product::onlyTrashed()->findOrFail($id);
 
+        $orderCount = $product->orderItems()->count();
+        if ($orderCount > 0) {
+            return redirect()->route('admin.products.trashed')
+                ->with('error', 'Không thể xóa vĩnh viễn sản phẩm đã có trong ' . $orderCount . ' đơn hàng!');
+        }
+
         // Xóa các hình ảnh liên quan
         foreach ($product->images as $image) {
             if (Storage::disk('public')->exists($image->image_path)) {
@@ -872,7 +898,6 @@ class ProductController extends Controller
             $variation->delete();
         }
 
-        // Xóa sản phẩm vĩnh viễn
         $product->forceDelete();
 
         return redirect()->route('admin.products.trashed')

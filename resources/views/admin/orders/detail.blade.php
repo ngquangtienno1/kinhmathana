@@ -194,6 +194,35 @@
                             </div>
                             <div class="mb-3">
                                 <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    <h6 class="mb-0">Trạng thái thanh toán</h6>
+                                </div>
+                                <p class="mb-0 ms-4">
+                                    @php
+                                        $paymentStatusMap = [
+                                            'unpaid' => ['Chưa thanh toán', 'warning', 'clock'],
+                                            'paid' => ['Đã thanh toán', 'success', 'check'],
+                                            'cod' => ['Thanh toán khi nhận hàng', 'info', 'dollar-sign'],
+                                            'disputed' => ['Đang xử lý', 'warning', 'clock'],
+                                            'partially_paid' => ['Đã thanh toán một phần', 'info', 'dollar-sign'],
+                                            'confirmed' => ['Đã xác nhận thanh toán', 'primary', 'check-circle'],
+                                            'refunded' => ['Đã hoàn tiền', 'info', 'refresh-cw'],
+                                            'processing_refund' => ['Đang hoàn tiền', 'warning', 'clock'],
+                                            'failed' => ['Thanh toán không thành công', 'danger', 'x'],
+                                        ];
+                                        $ps = $paymentStatusMap[$order->payment_status] ?? [
+                                            ucfirst($order->payment_status),
+                                            'secondary',
+                                            'info',
+                                        ];
+                                    @endphp
+                                    <span class="badge bg-{{ $ps[1] }}-subtle text-{{ $ps[1] }} fw-semibold">
+                                        {{ $ps[0] }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
                                     <i class="fas fa-truck me-2"></i>
                                     <h6 class="mb-0">Phương thức vận chuyển</h6>
                                 </div>
@@ -291,9 +320,15 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="card-title mb-4">Tổng quan</h3>
+                    @php
+                        $calculatedSubtotal = $order->items->sum(function($item) {
+                            return $item->price * $item->quantity;
+                        });
+                        $calculatedTotal = $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
+                    @endphp 
                     <div class="d-flex justify-content-between mb-2">
                         <p class="text-body fw-semibold mb-0">Tổng tiền hàng:</p>
-                        <p class="text-body-emphasis fw-semibold mb-0">{{ number_format($order->subtotal) }}đ</p>
+                        <p class="text-body-emphasis fw-semibold mb-0">{{ number_format($calculatedSubtotal) }}đ</p>
                     </div>
                     @if ($order->promotion_amount > 0)
                         <div class="d-flex justify-content-between mb-2">
@@ -308,7 +343,7 @@
                     </div>
                     <div class="d-flex justify-content-between border-top pt-3">
                         <h4 class="mb-0">Tổng thanh toán:</h4>
-                        <h4 class="mb-0">{{ number_format($order->total_amount) }}đ</h4>
+                        <h4 class="mb-0">{{ number_format($calculatedTotal) }}đ</h4>
                     </div>
                 </div>
             </div>

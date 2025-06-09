@@ -1,5 +1,9 @@
 @php
     use SimpleSoftwareIO\QrCode\Facades\QrCode;
+    $calculatedSubtotal = $order->items->sum(function($item) {
+        return $item->price * $item->quantity;
+    });
+    $calculatedTotal = $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
 @endphp
 <!DOCTYPE html>
 <html lang="vi">
@@ -240,13 +244,13 @@
             <div class="hana-col-sep"></div>
             <div style="width: 49%;">
                 <div>Khối lượng ước tính:</div>
-                <div class="hana-highlight">{{ $order->weight ?? '---' }}g</div>
+                <div class="hana-highlight">{{ $order->weight ?? '100' }}g</div>
             </div>
         </div>
         <div class="hana-block hana-row">
             <div style="width: 49%;">
                 <div>Tiền thu người nhận:</div>
-                <div class="hana-cod">{{ number_format($order->total_amount) }}đ</div>
+                <div class="hana-cod">{{ number_format($calculatedTotal) }}đ</div>
             </div>
             <div class="hana-col-sep"></div>
             <div style="width: 49%;">

@@ -173,8 +173,8 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</button>
+                                                <button type="button" class="dropdown-item text-danger"
+                                                    onclick="deleteProduct({{ $product->id }})">Xóa</button>
                                             </form>
                                         </div>
                                     </div>
@@ -294,6 +294,77 @@
             });
         }
     });
+
+    function deleteProduct(id) {
+        $.ajax({
+            url: `/admin/products/destroy/${id}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Xác nhận xóa',
+                        text: response.message,
+                        showCancelButton: true,
+                        confirmButtonText: 'Xóa',
+                        cancelButtonText: 'Hủy',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Gửi lại request với force true
+                            $.ajax({
+                                url: `/admin/products/destroy/${id}`,
+                                type: 'DELETE',
+                                data: { force: true },
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function(response) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Thành công!',
+                                        text: 'Sản phẩm đã được chuyển vào thùng rác',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi!',
+                                        text: 'Có lỗi xảy ra khi xóa sản phẩm'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi xóa sản phẩm'
+                });
+            }
+        });
+    }
 </script>
 
 @endsection

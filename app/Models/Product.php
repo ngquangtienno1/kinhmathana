@@ -50,6 +50,11 @@ class Product extends Model
         return $this->hasMany(Variation::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'product_tags');
