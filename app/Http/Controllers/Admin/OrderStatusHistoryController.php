@@ -67,9 +67,35 @@ class OrderStatusHistoryController extends Controller
             ->with('success', 'Trạng thái đơn hàng đã được cập nhật thành công.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $histories = \App\Models\OrderStatusHistory::with(['order.user', 'updatedBy'])->orderByDesc('created_at')->paginate(20);
+        $query = \App\Models\OrderStatusHistory::with(['order.user', 'updatedBy']);
+
+        // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->whereHas('order', function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Lọc theo trạng thái mới
+        if ($request->filled('status')) {
+            $query->where('new_status', $request->status);
+        }
+
+        // Lọc theo khoảng thời gian
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $histories = $query->orderByDesc('created_at')->paginate(20);
         return view('admin.order_status_histories.index', compact('histories'));
     }
 }

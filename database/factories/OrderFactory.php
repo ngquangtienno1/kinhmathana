@@ -116,7 +116,7 @@ class OrderFactory extends Factory
         ];
     }
 
-    // Nếu muốn sinh luôn order_items, order_histories, order_status_logs khi dùng seeder:
+    // Nếu muốn sinh luôn order_items, order_histories khi dùng seeder:
     public function configure()
     {
         return $this->afterCreating(function (Order $order) {
@@ -124,8 +124,7 @@ class OrderFactory extends Factory
             \App\Models\OrderItem::factory()->count(rand(1, 5))->create(['order_id' => $order->id]);
             // Sinh 1-3 order_histories
             \App\Models\OrderHistory::factory()->count(rand(1, 3))->create(['order_id' => $order->id]);
-            // Sinh 1-2 order_status_logs
-            \App\Models\OrderStatusLog::factory()->count(rand(1, 2))->create(['order_id' => $order->id]);
         });
     }
+
 }
