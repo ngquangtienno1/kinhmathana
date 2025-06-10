@@ -115,14 +115,12 @@
                                     style="width:15%; min-width:200px;">EMAIL</th>
                                 <th class="sort align-middle pe-3" scope="col" data-sort="mobile_number"
                                     style="width:20%; min-width:200px;">SỐ ĐIỆN THOẠI</th>
-                                <th class="sort align-middle" scope="col" data-sort="city" style="width:10%;">CITY
+                                <th class="sort align-middle" scope="col" data-sort="city" style="width:10%;">NƠI Ở
                                 </th>
                                 <th class="sort align-middle text-end" scope="col" data-sort="last_active"
                                     style="width:21%; min-width:200px;">HOẠT ĐỘNG</th>
                                 <th class="sort align-middle text-end pe-0" scope="col" data-sort="joined"
                                     style="width:19%; min-width:200px;">THAM GIA</th>
-                                <th class="sort align-middle text-end pe-0" scope="col" style="width:100px;">THAO TÁC
-                                </th>
                             </tr>
                         </thead>
                         <tbody class="list" id="members-table-body">
