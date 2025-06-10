@@ -30,32 +30,44 @@
     <div id="news"
         data-list='{"valueNames":["title","content","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
-            <div class="d-flex flex-wrap gap-3">
-                <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.news.index') }}" method="GET">
+            <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                <form action="{{ route('admin.news.index') }}" method="GET" class="d-flex flex-wrap align-items-center gap-3 mb-0">
+                    <!-- Search Input -->
+                    <div class="search-box">
                         <input class="form-control search-input search" type="search" name="search"
                             placeholder="Tìm kiếm tin tức" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
-                    </form>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Danh mục:
-                        {{ request('category') ? $categories->firstWhere('id', request('category'))->name : 'Tất cả' }}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
-                                href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => null])) }}">Tất
-                                cả</a></li>
-                        @foreach ($categories as $category)
-                            <li><a class="dropdown-item {{ request('category') == $category->id ? 'active' : '' }}"
-                                    href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => $category->id])) }}">{{ $category->name }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-                <div class="ms-xxl-auto">
+                    </div>
+                    <!-- Category Filter -->
+                    <div>
+                        <div class="dropdown">
+                            <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Danh mục: {{ request('category') ? $categories->firstWhere('id', request('category'))->name : 'Tất cả' }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
+                                        href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => null])) }}">Tất cả</a></li>
+                                @foreach ($categories as $category)
+                                    <li><a class="dropdown-item {{ request('category') == $category->id ? 'active' : '' }}"
+                                            href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => $category->id])) }}">{{ $category->name }}</a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Date Range Filter -->
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}" style="width: 150px;" placeholder="Từ ngày">
+                        <span>-</span>
+                        <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}" style="width: 150px;" placeholder="Đến ngày">
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Lọc</button>
+                        <a href="{{ route('admin.news.index') }}" class="btn btn-secondary"><i class="fas fa-times me-1"></i>Bỏ lọc</a>
+                    </div>
+                </form>
+                <div class="ms-xxl-auto d-flex gap-2">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>

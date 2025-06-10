@@ -24,10 +24,10 @@
                     <div class="d-flex flex-wrap align-items-center gap-3">
                         <!-- Search Input -->
                         <div class="search-box">
-                            <input class="form-control search-input search" type="search" name="search"
+                                <input class="form-control search-input search" type="search" name="search"
                                 placeholder="Tìm mã đơn hàng hoặc tên khách hàng" value="{{ request('search') }}"
                                 aria-label="Search" />
-                            <span class="fas fa-search search-box-icon"></span>
+                                <span class="fas fa-search search-box-icon"></span>
                         </div>
 
                         <!-- Status Filter -->

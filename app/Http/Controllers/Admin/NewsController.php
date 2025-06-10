@@ -36,6 +36,14 @@ class NewsController extends Controller
             $query->where('author_id', $request->author);
         }
 
+        // Lọc theo ngày tạo
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
         $news = $query->latest()->get();
         $categories = NewsCategory::where('is_active', true)->get();
         $deletedCount = News::onlyTrashed()->count();
