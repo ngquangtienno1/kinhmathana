@@ -2,6 +2,17 @@
     <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
         <div class="navbar-vertical-content">
             <ul class="navbar-nav flex-column" id="navbarVerticalNav">
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ request()->routeIs('admin.home') ? 'active' : '' }}"
+                            href="{{ route('admin.home') }}">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon"><span data-feather="home"></span></span>
+                                <span class="nav-link-text">Trang chủ</span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
                 @if (canAccess('xem-danh-sach-khach-hang'))
                     <!-- Quản lý Khách hàng -->
                     <li class="nav-item">
@@ -50,8 +61,7 @@
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-users">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-users">
                                     @if (canAccess('xem-danh-sach-nguoi-dung'))
                                         <li class="nav-item">
                                             <a class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}"

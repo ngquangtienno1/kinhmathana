@@ -188,7 +188,7 @@
         <div class="d-flex">
             <a href="{{ route('admin.orders.print', $order->id) }}" target="_blank"
                 class="btn btn-link pe-3 ps-0 text-body">
-                <i class="fas fa-print me-2"></i>In
+                <i class="fas fa-print me-2"></i>In đơn hàng
             </a>
             @if ($order->status == 'cancelled')
                 <button class="btn btn-link px-3 text-danger"
