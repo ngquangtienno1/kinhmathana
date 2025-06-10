@@ -131,11 +131,6 @@
                 <table class="table table-sm fs-9 mb-0">
                     <thead>
                         <tr>
-                            <th class="white-space-nowrap fs-9 align-middle ps-0" style="width:26px;">
-                                <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                        id="checkbox-bulk-order-select" type="checkbox"
-                                        data-bulk-select='{"body":"order-table-body"}' /></div>
-                            </th>
                             <th class="sort align-middle text-center px-3" scope="col" data-sort="order"
                                 style="width:90px;">Mã đơn hàng</th>
                             <th class="sort align-middle text-end px-3" scope="col" data-sort="total"
@@ -156,10 +151,6 @@
                     <tbody class="list" id="order-table-body">
                         @forelse ($orders as $order)
                             <tr>
-                                <td class="fs-9 align-middle px-0 py-3">
-                                    <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                            type="checkbox" /></div>
-                                </td>
                                 <td class="order align-middle text-center white-space-nowrap py-0"><a
                                         class="fw-semibold"
                                         href="{{ route('admin.orders.show', $order->id) }}">#{{ $order->order_number }}</a>
