@@ -10,5 +10,15 @@ class Cylindrical extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['value', 'sort_order'];
+    protected $fillable = ['name', 'description', 'sort_order'];
+
+    protected $casts = [
+        'value' => 'float',
+        'sort_order' => 'integer'
+    ];
+
+    public function getDisplayValueAttribute()
+    {
+        return $this->value;
+    }
 }

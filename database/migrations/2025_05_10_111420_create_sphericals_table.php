@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('sphericals', function (Blueprint $table) {
             $table->id();
-            $table->decimal('value', 5, 2)->unique(); // Giá trị Độ cận, ví dụ: -0.50
+            $table->string('name', 10)->unique(); // VD: -0.25, -0.50, -1.00
+            $table->text('description')->nullable();
             $table->integer('sort_order')->default(0);
             $table->timestamps();
             $table->softDeletes();

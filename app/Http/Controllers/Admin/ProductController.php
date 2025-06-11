@@ -105,8 +105,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        \Log::info('Request data before validation', $request->all());
-
         try {
             // Xử lý dữ liệu price và sale_price trước khi validate
             $processedData = $request->all();
@@ -156,12 +154,11 @@ class ProductController extends Controller
                     $variation['stock_quantity'] = (int)($variation['stock_quantity'] ?? 0);
                     // Đảm bảo name của biến thể không rỗng
                     $variation['name'] = !empty(trim($variation['name'] ?? '')) ? trim($variation['name']) : 'Biến thể ' . ($index + 1);
-                    \Log::info("Variation name for index {$index}: {$variation['name']}");
                 }
                 unset($variation);
             } else {
                 if ($processedData['product_type'] === 'variable') {
-                    \Log::error('No variations provided for variable product', ['request_data' => $request->all()]);
+                    // No variations provided for variable product
                 }
             }
 
@@ -280,8 +277,6 @@ class ProductController extends Controller
 
             $validated = $request->validate($rules, $messages);
 
-            \Log::info('Validated data', ['validated' => $validated]);
-
             $errors = [];
             foreach ($request->input('attributes', []) as $index => $attribute) {
                 if (!empty($attribute['values'])) {
@@ -363,33 +358,40 @@ class ProductController extends Controller
 
             if ($validated['product_type'] === 'variable' && !empty($validated['variations'])) {
                 foreach ($validated['variations'] as $index => $variationData) {
-                    $colorId = null;
-                    $sizeId = null;
-                    $spherical = null;
-                    $cylindrical = null;
+                    $colorId = $sizeId = $sphericalId = $cylindricalId = null;
 
                     // Parse variation name to extract attributes
                     $attributes = array_map('trim', explode('-', $variationData['name']));
+
                     foreach ($validated['attributes'] as $attribute) {
                         foreach ($attribute['values'] as $value) {
-                            if (in_array($value, $attributes)) {
+                            $compareValue = $value;
+                            if ($attribute['type'] === 'spherical' || $attribute['type'] === 'cylindrical') {
+                                // Nếu value là code, giữ nguyên, nếu là số thì tìm code tương ứng
+                                if (!preg_match('/^[SC]-\d{3}$/', $value)) {
+                                    if ($attribute['type'] === 'spherical') {
+                                        $spherical = Spherical::where('name', $value)->first();
+                                        $compareValue = $spherical ? $spherical->code : $value;
+                                    } else {
+                                        $cylindrical = Cylindrical::where('name', $value)->first();
+                                        $compareValue = $cylindrical ? $cylindrical->code : $value;
+                                    }
+                                }
+                            }
+                            if (in_array($compareValue, $attributes)) {
                                 if ($attribute['type'] === 'color') {
                                     $color = Color::where('name', $value)->first();
-                                    if ($color) {
-                                        $colorId = $color->id;
-                                    }
+                                    if ($color) $colorId = $color->id;
                                 } elseif ($attribute['type'] === 'size') {
                                     $size = Size::where('name', $value)->first();
-                                    if ($size) {
-                                        $sizeId = $size->id;
-                                    }
+                                    if ($size) $sizeId = $size->id;
                                 } elseif ($attribute['type'] === 'spherical') {
-                                    $spherical = Spherical::where('value', (float)$value)->first();
+                                    $spherical = Spherical::where('name', $value)->first();
                                     if ($spherical) {
                                         $sphericalId = $spherical->id;
                                     }
                                 } elseif ($attribute['type'] === 'cylindrical') {
-                                    $cylindrical = Cylindrical::where('value', (float)$value)->first();
+                                    $cylindrical = Cylindrical::where('name', $value)->first();
                                     if ($cylindrical) {
                                         $cylindricalId = $cylindrical->id;
                                     }
@@ -408,8 +410,8 @@ class ProductController extends Controller
                         'status' => $variationData['status'] ?? 'in_stock',
                         'color_id' => $colorId,
                         'size_id' => $sizeId,
-                        'spherical_id' => $sphericalId ?? null,
-                        'cylindrical_id' => $cylindricalId ?? null,
+                        'spherical_id' => $sphericalId,
+                        'cylindrical_id' => $cylindricalId,
                     ]);
 
                     $variation->save();
@@ -427,17 +429,11 @@ class ProductController extends Controller
                 $product->save();
             }
 
-            \Log::info('Product created', ['id' => $product->id, 'stock_quantity' => $product->stock_quantity]);
-
             // Gửi thông báo khi tạo sản phẩm mới
             app(NotificationController::class)->notifyNewProduct($product);
 
             return redirect()->route('admin.products.list')->with('success', 'Sản phẩm đã được thêm thành công!');
-        } catch (\ValidationException $e) {
-            \Log::error('Validation failed', ['errors' => $e->validator->errors()->all(), 'request_data' => $request->all()]);
-            return redirect()->back()->withErrors($e->validator->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error('Error occurred while storing product', ['message' => $e->getMessage(), 'request_data' => $request->all()]);
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())->withInput();
         }
     }
@@ -464,9 +460,6 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-
-        \Log::info('Request data before validation (update)', $request->all());
-
         // Xử lý dữ liệu trước khi validate
         $processedData = $request->all();
 
@@ -581,14 +574,40 @@ class ProductController extends Controller
             'brand_id' => 'required|exists:brands,id',
             'status' => 'required|string',
             'is_featured' => 'required|boolean',
-            'variations' => 'nullable|array',
+            'variations' => [
+                'required_if:product_type,variable',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) use ($product) {
+                    if ($product->product_type === 'variable' && empty($value)) {
+                        $fail('Sản phẩm có biến thể phải có ít nhất một biến thể.');
+                    }
+                },
+            ],
             'variations.*.id' => 'nullable|exists:variations,id',
             'variations.*.name' => 'required|string',
-            'variations.*.price' => 'nullable|numeric|min:0',
-            'variations.*.sale_price' => 'nullable|numeric|min:0',
+            'variations.*.sku' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1]; // Lấy index từ variations.X.sku
+                    $variationId = $request->input("variations.$index.id", null);
+                    $exists = Variation::where('sku', $value)
+                        ->where('id', '!=', $variationId)
+                        ->exists();
+                    if ($exists) {
+                        $fail("Mã biến thể '$value' đã tồn tại.");
+                    }
+                },
+            ],
+            'variations.*.price' => 'required|numeric|min:0',
+            'variations.*.sale_price' => 'nullable|numeric|min:0|lte:variations.*.price',
             'variations.*.stock_quantity' => 'required|integer|min:0',
             'variations.*.status' => 'nullable|in:in_stock,out_of_stock,hidden',
             'variations.*.image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
+            'attributes' => 'required_if:product_type,variable|array',
+            'attributes.*.type' => 'required_with:attributes|in:color,size,spherical,cylindrical',
+            'attributes.*.values' => 'required_with:attributes|array',
             'featured_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
             'gallery_images' => 'nullable|array',
             'gallery_images.*' => 'image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
@@ -598,7 +617,7 @@ class ProductController extends Controller
         if ($product->product_type === 'simple') {
             $rules['stock_quantity'] = 'required|integer|min:0';
             $rules['price'] = 'required|numeric|min:0';
-            $rules['sale_price'] = 'nullable|numeric|min:0';
+            $rules['sale_price'] = 'nullable|numeric|min:0|lte:price';
         }
 
         $validated = $request->validate($rules, $messages);
@@ -647,90 +666,100 @@ class ProductController extends Controller
             }
         }
 
-        \Log::info('Updating product', ['id' => $id, 'data' => $updateData]);
         $product->update($updateData);
 
-        if ($product->product_type === 'variable' && !empty($processedVariations)) {
-            // Lấy danh sách ID biến thể hiện tại để so sánh
-            $existingVariationIds = $product->variations->pluck('id')->toArray();
+
+        if ($product->product_type === 'variable') {
+            if (empty($processedVariations)) {
+                // No variations provided for variable product update
+                // Không redirect ngay mà thêm thông báo lỗi vào session
+                return redirect()->back()->withErrors(['variations' => 'Sản phẩm có biến thể phải có ít nhất một biến thể.'])->withInput();
+            }
+
+            // Lấy danh sách ID biến thể hiện tại
+            $existingVariationIds = $product->variations()->pluck('id')->toArray();
             $updatedVariationIds = array_filter(array_column($processedVariations, 'id'), fn($id) => !empty($id));
 
             // Xóa các biến thể không còn trong danh sách cập nhật
             $product->variations()->whereNotIn('id', $updatedVariationIds)->delete();
 
-            // Cập nhật hoặc tạo biến thể mới
-            foreach ($processedVariations as $index => $variationData) {
-                $colorId = null;
-                $sizeId = null;
-                $sphericalId = null;
-                $cylindricalId = null;
+            // Thu thập các thuộc tính từ input
+            $attributes = $request->input('attributes', []);
 
-                // Parse variation name to extract attributes
-                $attributes = array_map('trim', explode('-', $variationData['name']));
-                foreach ($request->input('attributes', []) as $attribute) {
+            foreach ($processedVariations as $index => $variationData) {
+                $colorId = $sizeId = $sphericalId = $cylindricalId = null;
+
+                // Parse variation name để lấy thuộc tính
+                $variationAttributes = array_map('trim', explode('-', $variationData['name']));
+
+                foreach ($attributes as $attribute) {
+                    if (empty($attribute['values'])) continue;
                     foreach ($attribute['values'] as $value) {
-                        if (in_array($value, $attributes)) {
+                        $compareValue = $value;
+                        if ($attribute['type'] === 'spherical' || $attribute['type'] === 'cylindrical') {
+                            // Nếu value là code, giữ nguyên, nếu là số thì tìm code tương ứng
+                            if (!preg_match('/^[SC]-\d{3}$/', $value)) {
+                                if ($attribute['type'] === 'spherical') {
+                                    $spherical = Spherical::where('name', $value)->first();
+                                    $compareValue = $spherical ? $spherical->code : $value;
+                                } else {
+                                    $cylindrical = Cylindrical::where('name', $value)->first();
+                                    $compareValue = $cylindrical ? $cylindrical->code : $value;
+                                }
+                            }
+                        }
+                        if (in_array($compareValue, $variationAttributes)) {
                             if ($attribute['type'] === 'color') {
                                 $color = Color::where('name', $value)->first();
-                                if ($color) $colorId = $color->id;
+                                $colorId = $color ? $color->id : null;
                             } elseif ($attribute['type'] === 'size') {
                                 $size = Size::where('name', $value)->first();
-                                if ($size) $sizeId = $size->id;
+                                $sizeId = $size ? $size->id : null;
                             } elseif ($attribute['type'] === 'spherical') {
-                                $spherical = Spherical::where('value', (float)$value)->first();
-                                if ($spherical) $sphericalId = $spherical->id;
+                                $spherical = Spherical::where('name', $value)->first();
+                                if ($spherical) {
+                                    $sphericalId = $spherical->id;
+                                }
                             } elseif ($attribute['type'] === 'cylindrical') {
-                                $cylindrical = Cylindrical::where('value', (float)$value)->first();
-                                if ($cylindrical) $cylindricalId = $cylindrical->id;
+                                $cylindrical = Cylindrical::where('name', $value)->first();
+                                if ($cylindrical) {
+                                    $cylindricalId = $cylindrical->id;
+                                }
                             }
                         }
                     }
                 }
 
-                // Tìm hoặc tạo biến thể
+                // Chuẩn bị dữ liệu biến thể
+                $variationDataToSave = [
+                    'product_id' => $product->id,
+                    'name' => trim($variationData['name'] ?? '') ?: 'Biến thể ' . ($index + 1),
+                    'sku' => trim($variationData['sku'] ?? '') ?: 'VAR-' . Str::random(8),
+                    'price' => (float)($variationData['price'] ?? 0),
+                    'sale_price' => isset($variationData['sale_price']) && is_numeric($variationData['sale_price']) ? (float)$variationData['sale_price'] : null,
+                    'stock_quantity' => (int)($variationData['stock_quantity'] ?? 0),
+                    'status' => $variationData['status'] ?? ((int)($variationData['stock_quantity'] ?? 0) > 0 ? 'in_stock' : 'out_of_stock'),
+                    'color_id' => $colorId,
+                    'size_id' => $sizeId,
+                    'spherical_id' => $sphericalId,
+                    'cylindrical_id' => $cylindricalId,
+                ];
+
+                // Cập nhật hoặc tạo biến thể
                 if (!empty($variationData['id']) && in_array($variationData['id'], $existingVariationIds)) {
                     $variation = Variation::find($variationData['id']);
-                    if ($variation) {
-                        $variation->update([
-                            'name' => !empty(trim($variationData['name'] ?? '')) ? trim($variationData['name']) : 'Biến thể ' . ($index + 1),
-                            'sku' => !empty($variationData['sku']) ? $variationData['sku'] : Str::random(8),
-                            'price' => isset($variationData['price']) ? (float)$variationData['price'] : 0,
-                            'sale_price' => isset($variationData['sale_price']) && $variationData['sale_price'] !== '' ? (float)$variationData['sale_price'] : null,
-                            'stock_quantity' => (int)($variationData['stock_quantity'] ?? 0),
-                            'status' => $variationData['status'] ?? 'in_stock',
-                            'color_id' => $colorId,
-                            'size_id' => $sizeId,
-                            'spherical_id' => $sphericalId,
-                            'cylindrical_id' => $cylindricalId,
-                        ]);
-                    }
+                    $variation?->update($variationDataToSave);
                 } else {
-                    $variation = new Variation([
-                        'product_id' => $product->id,
-                        'name' => !empty(trim($variationData['name'] ?? '')) ? trim($variationData['name']) : 'Biến thể ' . ($index + 1),
-                        'sku' => !empty($variationData['sku']) ? $variationData['sku'] : Str::random(8),
-                        'price' => isset($variationData['price']) ? (float)$variationData['price'] : 0,
-                        'sale_price' => isset($variationData['sale_price']) && $variationData['sale_price'] !== '' ? (float)$variationData['sale_price'] : null,
-                        'stock_quantity' => (int)($variationData['stock_quantity'] ?? 0),
-                        'status' => $variationData['status'] ?? 'in_stock',
-                        'color_id' => $colorId,
-                        'size_id' => $sizeId,
-                        'spherical_id' => $sphericalId,
-                        'cylindrical_id' => $cylindricalId,
-                    ]);
-                    $variation->save();
+                    $variation = Variation::create($variationDataToSave);
                 }
 
                 // Xử lý ảnh biến thể
-                if (isset($variationData['image']) && $request->hasFile("variations.$index.image")) {
+                if ($request->hasFile("variations.$index.image")) {
                     $image = $request->file("variations.$index.image");
                     if ($image->isValid()) {
-                        // Xóa ảnh cũ nếu có
-                        $oldImages = $variation->images()->get();
-                        foreach ($oldImages as $oldImage) {
-                            if (Storage::disk('public')->exists($oldImage->image_path)) {
-                                Storage::disk('public')->delete($oldImage->image_path);
-                            }
+                        // Xóa ảnh cũ
+                        foreach ($variation->images as $oldImage) {
+                            Storage::disk('public')->exists($oldImage->image_path) && Storage::disk('public')->delete($oldImage->image_path);
                             $oldImage->delete();
                         }
                         // Lưu ảnh mới
@@ -740,18 +769,13 @@ class ProductController extends Controller
                 }
             }
 
-            // Tính lại stock_quantity dựa trên tổng các biến thể
+            // Cập nhật tổng stock_quantity
             $product->stock_quantity = $product->variations->sum('stock_quantity');
             $product->save();
+        } elseif ($product->product_type === 'variable') {
+            // No variations provided for variable product update
+            return redirect()->back()->withErrors(['variations' => 'Sản phẩm có biến thể phải có ít nhất một biến thể.'])->withInput();
         }
-
-        \Log::info('Product updated', [
-            'id' => $id,
-            'stock_quantity_after_update' => $product->stock_quantity,
-            'price_after_update' => $product->price,
-            'sale_price_after_update' => $product->sale_price,
-            'is_featured_after_update' => $product->is_featured,
-        ]);
 
         $product->categories()->sync($validated['categories']);
 
@@ -787,9 +811,8 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('admin.products.edit', $product->id)
-            ->with('success', 'Cập nhật sản phẩm thành công.')
-            ->withInput();
+        return redirect()->route('admin.products.list')
+            ->with('success', 'Cập nhật sản phẩm thành công.');
     }
 
     public function destroy($id, Request $request)
