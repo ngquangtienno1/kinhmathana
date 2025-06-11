@@ -2,6 +2,11 @@
 @section('title', 'Sửa sản phẩm')
 
 @section('content')
+@if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="mb-9">
         <div class="row g-3 mb-4">
             <div class="col-auto">
@@ -150,9 +155,10 @@
 
                                     <!-- Thuộc tính biến thể -->
                                     <div class="col-md-12">
-                                        <label class="form-label">Thuộc tính biến thể</label>
-                                        <div id="attributes-container">
-                                            @php
+                                    <label class="form-label">Thuộc tính biến thể</label>
+                                    <button type="button" id="add-attribute" class="btn btn-primary btn-sm mb-2">Thêm thuộc tính</button>
+                                    <div id="attributes-container">
+                                        @php
                                             // Nhóm các thuộc tính theo loại (color/size/spherical/cylindrical)
                                             $attributeGroups = [
                                                 'color' => [],
@@ -181,61 +187,71 @@
                                             $attributeIndex = 0;
                                         @endphp
 
-                                        @foreach (['color', 'size', 'spherical', 'cylindrical'] as $type)
-                                            @if (!empty($attributeGroups[$type]))
-                                                <div class="attribute-row row g-2 mb-2" data-index="{{ $attributeIndex }}">
-                                                    <div class="col-md-3">
-                                                        <select name="attributes[{{ $attributeIndex }}][type]" class="form-select attribute-type">
-                                                            <option value="color" {{ $type == 'color' ? 'selected' : '' }}>Màu sắc</option>
-                                                            <option value="size" {{ $type == 'size' ? 'selected' : '' }}>Kích thước</option>
-                                                            <option value="spherical" {{ $type == 'spherical' ? 'selected' : '' }}>Độ cận</option>
-                                                            <option value="cylindrical" {{ $type == 'cylindrical' ? 'selected' : '' }}>Độ loạn</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="attribute-values-tags">
-                                                            @foreach ($attributeGroups[$type] as $value)
-                                                                <span class="tag">{{ $value }}<input type="hidden" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $value }}"><button type="button" class="remove-tag" data-value="{{ $value }}">×</button></span>
-                                                            @endforeach
-                                                        </div>
-                                                        <div class="border rounded p-3 attribute-values-container" style="max-height: 200px; overflow-y: auto;">
-                                                            @if ($type == 'color')
-                                                                @foreach ($colors as $color)
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $color->name }}" data-index="{{ $attributeIndex }}" {{ in_array($color->name, $attributeGroups['color']) ? 'checked' : '' }}>
-                                                                        <label class="form-check-label">{{ $color->name }}</label>
-                                                                    </div>
-                                                                @endforeach
-                                                            @elseif ($type == 'size')
-                                                                @foreach ($sizes as $size)
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $size->name }}" data-index="{{ $attributeIndex }}" {{ in_array($size->name, $attributeGroups['size']) ? 'checked' : '' }}>
-                                                                        <label class="form-check-label">{{ $size->name }}</label>
-                                                                    </div>
-                                                                @endforeach
-                                                            @elseif ($type == 'spherical')
-                                                                @foreach ($sphericals as $spherical)
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ number_format($spherical->value, 2) }}" data-index="{{ $attributeIndex }}" {{ in_array(number_format($spherical->value, 2), $attributeGroups['spherical']) ? 'checked' : '' }}>
-                                                                        <label class="form-check-label">{{ number_format($spherical->value, 2) }}</label>
-                                                                    </div>
-                                                                @endforeach
-                                                            @elseif ($type == 'cylindrical')
-                                                                @foreach ($cylindricals as $cylindrical)
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ number_format($cylindrical->value, 2) }}" data-index="{{ $attributeIndex }}" {{ in_array(number_format($cylindrical->value, 2), $attributeGroups['cylindrical']) ? 'checked' : '' }}>
-                                                                        <label class="form-check-label">{{ number_format($cylindrical->value, 2) }}</label>
-                                                                    </div>
-                                                                @endforeach
-                                                            @endif
-                                                        </div>
-                                                    </div>
+                                       @foreach (['color', 'size', 'spherical', 'cylindrical'] as $type)
+                                        @if (!empty($attributeGroups[$type]))
+                                            <div class="attribute-row row g-2 mb-2" data-index="{{ $attributeIndex }}">
+                                                <div class="col-md-3">
+                                                    <select name="attributes[{{ $attributeIndex }}][type]" class="form-select attribute-type" data-index="{{ $attributeIndex }}">
+                                                        <option value="color" {{ $type == 'color' ? 'selected' : '' }}>Màu sắc</option>
+                                                        <option value="size" {{ $type == 'size' ? 'selected' : '' }}>Kích thước</option>
+                                                        <option value="spherical" {{ $type == 'spherical' ? 'selected' : '' }}>Độ cận</option>
+                                                        <option value="cylindrical" {{ $type == 'cylindrical' ? 'selected' : '' }}>Độ loạn</option>
+                                                    </select>
+                                                    @if ($errors->has("attributes.{$attributeIndex}.type"))
+                                                        <div class="text-danger">{{ $errors->first("attributes.{$attributeIndex}.type") }}</div>
+                                                    @endif
                                                 </div>
-                                                @php $attributeIndex++; @endphp
-                                            @endif
-                                        @endforeach
-                                        </div>
+                                                <div class="col-md-6">
+                                                    <div class="attribute-values-tags">
+                                                        @foreach ($attributeGroups[$type] as $value)
+                                                            <span class="tag">{{ $value }}<input type="hidden" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $value }}"><button type="button" class="remove-tag" data-value="{{ $value }}">×</button></span>
+                                                        @endforeach
+                                                    </div>
+                                                    <div class="border rounded p-3 attribute-values-container" style="max-height: 200px; overflow-y: auto;">
+                                                        @if ($type == 'color')
+                                                            @foreach ($colors as $color)
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $color->name }}" data-index="{{ $attributeIndex }}" {{ in_array($color->name, $attributeGroups['color']) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label">{{ $color->name }}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        @elseif ($type == 'size')
+                                                            @foreach ($sizes as $size)
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ $size->name }}" data-index="{{ $attributeIndex }}" {{ in_array($size->name, $attributeGroups['size']) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label">{{ $size->name }}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        @elseif ($type == 'spherical')
+                                                            @foreach ($sphericals as $spherical)
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ number_format($spherical->value, 2) }}" data-index="{{ $attributeIndex }}" {{ in_array(number_format($spherical->value, 2), $attributeGroups['spherical']) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label">{{ number_format($spherical->value, 2) }}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        @elseif ($type == 'cylindrical')
+                                                            @foreach ($cylindricals as $cylindrical)
+                                                                <div class="form-check">
+                                                                    <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $attributeIndex }}][values][]" value="{{ number_format($cylindrical->value, 2) }}" data-index="{{ $attributeIndex }}" {{ in_array(number_format($cylindrical->value, 2), $attributeGroups['cylindrical']) ? 'checked' : '' }}>
+                                                                    <label class="form-check-label">{{ number_format($cylindrical->value, 2) }}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    @if ($errors->has("attributes.{$attributeIndex}.values"))
+                                                        <div class="text-danger">{{ $errors->first("attributes.{$attributeIndex}.values") }}</div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-attribute">Xóa</button>
+                                                </div>
+                                            </div>
+                                            @php $attributeIndex++; @endphp
+                                        @endif
+                                    @endforeach
                                     </div>
+                                    <button type="button" id="generate-variations" class="btn btn-primary btn-sm mt-2" style="{{ $product->variations->isNotEmpty() ? '' : 'display: none' }}">Tạo biến thể</button>
+                                </div>
 
                                     <!-- Biến thể -->
                                     <div id="variations-container" class="mt-3">
@@ -430,80 +446,83 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    let attributeIndex = {{ $attributeIndex }};
+    window.colors = @json($colors->pluck('name'));
+    window.sizes = @json($sizes->pluck('name'));
+    window.spherical_values = @json($sphericals->pluck('value')->map(fn($v) => number_format($v, 2)));
+    window.cylindrical_values = @json($cylindricals->pluck('value')->map(fn($v) => number_format($v, 2)));
 
-    // Cập nhật giá trị của container dựa trên loại thuộc tính
-    function updateAttributeValues(typeSelect, valuesContainer) {
+    function updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index) {
         const type = typeSelect.value;
-        const colors = @json($colors->pluck('name'));
-        const sizes = @json($sizes->pluck('name'));
-        const spherical = @json($sphericals->pluck('value'));
-        const cylindrical = @json($cylindricals->pluck('value'));
         valuesContainer.innerHTML = '';
-        let options = [];
-        if (type === 'color') options = colors;
-        else if (type === 'size') options = sizes;
-        else if (type === 'spherical') options = spherical;
-        else if (type === 'cylindrical') options = cylindrical;
+        const options = type === 'color' ? window.colors :
+                        type === 'size' ? window.sizes :
+                        type === 'spherical' ? window.spherical_values :
+                        window.cylindrical_values;
+
         options.forEach(option => {
             const div = document.createElement('div');
             div.className = 'form-check';
             div.innerHTML = `
-                <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${typeSelect.closest('.attribute-row').getAttribute('data-index')}][values][]" value="${option}" data-index="${typeSelect.closest('.attribute-row').getAttribute('data-index')}">
+                <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${index}][values][]" value="${option}" data-index="${index}" ${tagsContainer.querySelector(`input[value="${option}"]`) ? 'checked' : ''}>
                 <label class="form-check-label">${option}</label>
             `;
             valuesContainer.appendChild(div);
         });
     }
 
-    // Xử lý thay đổi loại thuộc tính
+    document.querySelectorAll('.attribute-type').forEach(typeSelect => {
+        const row = typeSelect.closest('.attribute-row');
+        const valuesContainer = row.querySelector('.attribute-values-container');
+        const tagsContainer = row.querySelector('.attribute-values-tags');
+        const index = row.getAttribute('data-index');
+        updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index);
+    });
+
     document.addEventListener('change', function (e) {
         if (e.target.classList.contains('attribute-type')) {
             const row = e.target.closest('.attribute-row');
             const valuesContainer = row.querySelector('.attribute-values-container');
             const tagsContainer = row.querySelector('.attribute-values-tags');
-            tagsContainer.innerHTML = '';
-            updateAttributeValues(e.target, valuesContainer);
-        }
-    });
-
-    // Xử lý thêm/xóa tag khi chọn giá trị checkbox
-    document.addEventListener('change', function (e) {
-        if (e.target.classList.contains('attribute-value-checkbox')) {
+            const index = row.getAttribute('data-index');
+            updateAttributeValues(e.target, valuesContainer, tagsContainer, index);
+            checkGenerateButton();
+        } else if (e.target.classList.contains('attribute-value-checkbox')) {
             const row = e.target.closest('.attribute-row');
             const tagsContainer = row.querySelector('.attribute-values-tags');
             const index = row.getAttribute('data-index');
-            const selectedValues = Array.from(row.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(checkbox => checkbox.value);
+            const selectedValues = Array.from(row.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(cb => cb.value);
             tagsContainer.innerHTML = '';
             selectedValues.forEach(value => {
                 if (value) {
-                    tagsContainer.innerHTML += `
-                        <span class="tag">${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button></span>
-                    `;
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = `${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                    tagsContainer.appendChild(tag);
                 }
             });
+            checkGenerateButton();
         }
     });
 
-    // Xóa tag
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-tag')) {
-            const tag = e.target.closest('.tag');
             const value = e.target.getAttribute('data-value');
             const row = e.target.closest('.attribute-row');
             const valuesContainer = row.querySelector('.attribute-values-container');
             const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
             if (checkbox) checkbox.checked = false;
-            tag.remove();
+            e.target.parentElement.remove();
+            checkGenerateButton();
         }
     });
 
-    // Khởi tạo giá trị ban đầu cho các container
-    document.querySelectorAll('.attribute-type').forEach(typeSelect => {
-        const row = typeSelect.closest('.attribute-row');
-        const valuesContainer = row.querySelector('.attribute-values-container');
-        updateAttributeValues(typeSelect, valuesContainer);
-    });
+    function checkGenerateButton() {
+        const attributeRows = document.querySelectorAll('.attribute-row');
+        const hasValues = Array.from(attributeRows).some(row => row.querySelectorAll('.tag').length > 0);
+        document.getElementById('generate-variations').style.display = hasValues ? 'block' : 'none';
+    }
+
+    checkGenerateButton();
 });
 </script>
 

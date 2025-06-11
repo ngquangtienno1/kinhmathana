@@ -155,8 +155,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label">Thuộc tính biến thể</label>
-                                    <button type="button" id="add-attribute"
-                                        class="btn btn-primary btn-sm mb-2">Thêm thuộc tính</button>
+                                    <button type="button" id="add-attribute" class="btn btn-primary btn-sm mb-2">Thêm thuộc tính</button>
                                     <div id="attributes-container">
                                         @foreach (old('attributes', []) as $index => $attribute)
                                             <div class="attribute-row row g-2 mb-2">
@@ -278,10 +277,8 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                    <button type="button" id="generate-variations"
-                                        class="btn btn-primary btn-sm mt-2"
-                                        style="{{ old('attributes') && count(old('attributes', [])) > 0 ? '' : 'display: none' }}">Tạo
-                                        biến thể</button>
+                                    <button type="button" id="generate-variations" class="btn btn-primary btn-sm mt-2" style="{{ old('attributes') && count(old('attributes', [])) > 0 ? '' : 'display: none' }}">Tạo biến thể</button>
+                                    <button type="button" id="set-variations-price" class="btn btn-primary btn-sm mt-2 ms-2" style="{{ old('variations') && count(old('variations', [])) > 0 ? '' : 'display: none' }}">Thêm giá gốc</button>
                                 </div>
                                 <div id="variations-container" class="mt-3" style="{{ old('variations') && count(old('variations', [])) > 0 ? '' : 'display: none' }}">
                                     @foreach (old('variations', []) as $index => $variation)
@@ -361,14 +358,14 @@
                         aria-labelledby="product-images-tab">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Ảnh đại diện</label>
+                                <label class="form-label">Ảnh đại diện <span class="text-danger">*</span></label>
                                 <input type="file" class="form-control" name="featured_image" accept="image/*">
                                 @error('featured_image')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Album ảnh</label>
+                                <label class="form-label">Album ảnh <span class="text-danger">*</span></label>
                                 <input type="file" class="form-control" name="gallery_images[]" multiple
                                     accept="image/*">
                                 @error('gallery_images')
