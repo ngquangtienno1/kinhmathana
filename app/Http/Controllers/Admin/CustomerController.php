@@ -52,6 +52,7 @@ class CustomerController extends Controller
     }
 
     public function export(Request $request)
+
     {
         $query = Customer::with('user');
 
@@ -87,22 +88,22 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        $customer->load(['orders' => function ($query) {
-            $query->latest()->take(5);
-        }, 'user']);
+        // Lấy các đơn hàng hợp lệ (chưa xóa mềm)
+        $orders = $customer->orders()->latest()->take(5)->get();
+        $totalOrders = $customer->orders()->count();
 
         // Lấy sản phẩm hay mua
-        $frequentProducts = DB::table('order_items')
+        $frequentProducts = \DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->join('products', 'products.id', '=', 'order_items.product_id')
             ->where('orders.user_id', $customer->user_id)
-            ->select('products.name', DB::raw('count(*) as total'))
+            ->select('products.name', \DB::raw('count(*) as total'))
             ->groupBy('products.id', 'products.name')
             ->orderBy('total', 'desc')
             ->take(5)
             ->get();
 
-        return view('admin.customers.show', compact('customer', 'frequentProducts'));
+        return view('admin.customers.show', compact('customer', 'orders', 'totalOrders', 'frequentProducts'));
     }
 
     public function update(Request $request, Customer $customer)

@@ -33,27 +33,27 @@
             <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
                 <form action="{{ route('admin.news.index') }}" method="GET" class="d-flex flex-wrap align-items-center gap-3 mb-0">
                     <!-- Search Input -->
-                    <div class="search-box">
+                <div class="search-box">
                         <input class="form-control search-input search" type="search" name="search"
                             placeholder="Tìm kiếm tin tức" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
-                    </div>
+                </div>
                     <!-- Category Filter -->
                     <div>
-                        <div class="dropdown">
-                            <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                <div class="dropdown">
+                    <button class="btn btn-phoenix-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                                 Danh mục: {{ request('category') ? $categories->firstWhere('id', request('category'))->name : 'Tất cả' }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
                                         href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => null])) }}">Tất cả</a></li>
-                                @foreach ($categories as $category)
-                                    <li><a class="dropdown-item {{ request('category') == $category->id ? 'active' : '' }}"
+                        @foreach ($categories as $category)
+                            <li><a class="dropdown-item {{ request('category') == $category->id ? 'active' : '' }}"
                                             href="{{ route('admin.news.index', array_merge(request()->query(), ['category' => $category->id])) }}">{{ $category->name }}</a></li>
-                                @endforeach
-                            </ul>
-                        </div>
+                        @endforeach
+                    </ul>
+                </div>
                     </div>
                     <!-- Date Range Filter -->
                     <div class="d-flex align-items-center gap-2">
