@@ -106,6 +106,7 @@
                             <th class="sort" data-sort="category">Danh mục</th>
                             <th class="sort" data-sort="author">Tác giả</th>
                             <th class="sort" data-sort="published_at">Ngày xuất bản</th>
+                            <th class="sort" data-sort="views">Lượt xem</th>
                             <th class="sort" data-sort="status">Trạng thái</th>
                             <th class="sort" data-sort="created_at">Ngày tạo</th>
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
@@ -140,6 +141,7 @@
                                 <td class="published_at align-middle ps-4">
                                     {{ $item->published_at ? $item->published_at->format('d/m/Y H:i') : 'Chưa xuất bản' }}
                                 </td>
+                                <td class="views align-middle ps-4">{{ $item->views }}</td>
                                 <td class="status align-middle ps-4">
                                     <span
                                         class="badge badge-phoenix fs-10 {{ $item->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">

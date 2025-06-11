@@ -107,6 +107,10 @@
                                         <th>Ngày cập nhật</th>
                                         <td>{{ $news->updated_at ? $news->updated_at->format('d/m/Y H:i') : '' }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Lượt xem</th>
+                                        <td>{{ $news->views }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

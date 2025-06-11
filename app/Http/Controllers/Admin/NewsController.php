@@ -44,18 +44,48 @@ class NewsController extends Controller
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $news = $query->latest()->get();
+        // Sắp xếp theo lượt xem nếu được yêu cầu
+        if ($request->filled('sort_by') && $request->sort_by === 'views') {
+            $query->orderBy('views', $request->sort_order ?? 'desc');
+        } else {
+            $query->latest();
+        }
+
+        $news = $query->get();
         $categories = NewsCategory::where('is_active', true)->get();
         $deletedCount = News::onlyTrashed()->count();
         $activeCount = News::where('is_active', true)->count();
 
-        return view('admin.news.index', compact('news', 'categories', 'deletedCount', 'activeCount'));
+        // Lấy top 5 bài viết có lượt xem nhiều nhất
+        $mostViewedNews = News::with(['category', 'author'])
+            ->active()
+            ->published()
+            ->orderBy('views', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('admin.news.index', compact('news', 'categories', 'deletedCount', 'activeCount', 'mostViewedNews'));
     }
 
     public function show(News $news)
     {
+        // Tăng lượt xem
+        $news->increment('views');
+        $news->refresh(); // Refresh để lấy giá trị views mới nhất
+        
         $news->load(['category', 'author']);
-        return view('admin.news.show', compact('news'));
+        
+        // Lấy các bài viết liên quan cùng danh mục
+        $relatedNews = News::with(['category', 'author'])
+            ->where('category_id', $news->category_id)
+            ->where('id', '!=', $news->id)
+            ->active()
+            ->published()
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        return view('admin.news.show', compact('news', 'relatedNews'));
     }
 
     public function create()
