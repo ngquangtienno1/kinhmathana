@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\Models\Comment;
+use Illuminate\Support\Str;
 use App\Models\NewsCategory;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
@@ -85,7 +86,16 @@ class NewsController extends Controller
             ->limit(3)
             ->get();
 
-        return view('admin.news.show', compact('news', 'relatedNews'));
+        // Lấy bình luận loại news cho bài viết này
+        $comments = Comment::where('entity_type', 'news')
+            ->where('entity_id', $news->id)
+            ->whereNull('parent_id')
+            ->where('status', 'đã duyệt')
+            ->orderByDesc('created_at')
+            ->with('user')
+            ->get();
+
+        return view('admin.news.show', compact('news', 'relatedNews', 'comments'));
     }
 
     public function create()
