@@ -10,7 +10,20 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_id', 'variation_id', 'quantity', 'sale_price'
+        'order_id',
+        'product_id',
+        'product_name',
+        'product_sku',
+        'price',
+        'quantity',
+        'subtotal',
+        'discount_amount',
+        'product_options',
+        'note'
+    ];
+
+    protected $casts = [
+        'product_options' => 'json',
     ];
 
     public $timestamps = false;
@@ -20,8 +33,8 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function variation()
+    public function product()
     {
-        return $this->belongsTo(Variation::class);
+        return $this->belongsTo(Product::class);
     }
 }

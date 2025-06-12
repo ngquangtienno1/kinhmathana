@@ -4,18 +4,74 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class News extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'content', 'image_id'];
+    protected $fillable = [
+        'category_id',
+        'title',
+        'slug',
+        'summary',
+        'content',
+        'image',
+        'author_id',
+        'is_active',
+        'published_at',
+        'views'
+    ];
 
-    public $timestamps = ['created_at'];
-    const UPDATED_AT = null;
+    protected $casts = [
+        'is_active' => 'boolean',
+        'published_at' => 'datetime',
+        'views' => 'integer'
+    ];
 
-    public function image()
+    protected $dates = ['deleted_at'];
+
+    public function category()
     {
-        return $this->belongsTo(UploadFile::class, 'image_id');
+        return $this->belongsTo(NewsCategory::class, 'category_id');
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('published_at', '<=', now());
+    }
+
+    /**
+     * Tăng lượt xem của bài viết
+     */
+    public function incrementViews()
+    {
+        $this->increment('views');
+    }
+
+    /**
+     * Lấy danh sách bài viết được xem nhiều nhất
+     */
+    public function scopeMostViewed($query, $limit = 5)
+    {
+        return $query->orderBy('views', 'desc')->limit($limit);
+    }
+
+    /**
+     * Lấy danh sách bài viết mới nhất
+     */
+    public function scopeLatest($query, $limit = 5)
+    {
+        return $query->orderBy('published_at', 'desc')->limit($limit);
     }
 }

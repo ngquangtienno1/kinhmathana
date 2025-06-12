@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Slider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,13 @@ class SliderFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->word(),
+            'description' => $this->faker->paragraph(2),
+            'image' => null,
+            'sort_order' => $this->faker->numberBetween(1, 50),
+            'is_active' => $this->faker->boolean(80),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

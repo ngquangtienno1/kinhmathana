@@ -13,11 +13,18 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 125);
-            $table->text('content');
-            $table->unsignedBigInteger('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('upload_files')->onDelete('set null');
+            $table->foreignId('category_id')->constrained('news_categories')->onDelete('cascade');
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->text('summary');
+            $table->longText('content');
+            $table->string('image')->nullable();
+            $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('published_at')->nullable();
+            $table->integer('views')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

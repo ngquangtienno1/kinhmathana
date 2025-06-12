@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('entity_type', 50); // Ví dụ: 'news', 'product'
             $table->unsignedBigInteger('entity_id');
             $table->text('content');
+            $table->boolean('is_hidden')->default(false);
+            $table->enum('status', ['chờ duyệt', 'đã duyệt', 'spam', 'chặn'])->default('chờ duyệt');
             $table->timestamps();
+            $table->softDeletes(); // <-- Thêm dòng này để hỗ trợ soft delete
         });
     }
 

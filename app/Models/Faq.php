@@ -2,14 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Faq extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['question', 'answer'];
+    protected $fillable = [
+        'question',
+        'answer',
+        'category',
+        'images',
+        'sort_order',
+        'is_active'
+    ];
 
-    public $timestamps = false;
+    protected $casts = [
+        'images' => 'array',
+        'is_active' => 'boolean'
+    ];
 }

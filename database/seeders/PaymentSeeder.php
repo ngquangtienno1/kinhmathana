@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Payment;
 use Illuminate\Database\Seeder;
 
 class PaymentSeeder extends Seeder
@@ -12,6 +12,7 @@ class PaymentSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // Tạo 50 thanh toán ngẫu nhiên
+        Payment::factory()->count(30)->create();
     }
 }
