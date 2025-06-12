@@ -12,7 +12,7 @@ class SphericalFactory extends Factory
     public function definition(): array
     {
         return [
-            'value' => $this->faker->unique()->randomFloat(2, -8.00, -0.25),
+            'name' => (string) $this->faker->unique()->randomFloat(2, 0.25, 8.00),
             'sort_order' => 0,
         ];
     }
