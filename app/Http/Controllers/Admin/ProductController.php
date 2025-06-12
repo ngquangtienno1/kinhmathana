@@ -362,27 +362,27 @@ class ProductController extends Controller
                     $attributes = array_map('trim', explode('-', $variationData['name']));
                     foreach ($validated['attributes'] as $attribute) {
                         if ($attribute['type'] === 'color') {
-                            foreach ($attribute['values'] as $value) {
+                        foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
                                     $color = Color::where('name', $value)->first();
                                     if ($color) $colorId = $color->id;
                                 }
                             }
-                        } elseif ($attribute['type'] === 'size') {
+                                } elseif ($attribute['type'] === 'size') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
                                     $size = Size::where('name', $value)->first();
                                     if ($size) $sizeId = $size->id;
                                 }
                             }
-                        } elseif ($attribute['type'] === 'spherical') {
+                                } elseif ($attribute['type'] === 'spherical') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
                                     $spherical = Spherical::where('name', $value)->first();
                                     if ($spherical) $sphericalId = $spherical->id;
                                 }
-                            }
-                        } elseif ($attribute['type'] === 'cylindrical') {
+                                    }
+                                } elseif ($attribute['type'] === 'cylindrical') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
                                     $cylindrical = Cylindrical::where('name', $value)->first();
@@ -448,7 +448,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-        
+
         // Quy tắc validate với thông báo lỗi bằng tiếng Việt
         $messages = [
             'name.required' => 'Tên sản phẩm là bắt buộc.',
@@ -512,13 +512,13 @@ class ProductController extends Controller
 
         if ($product->product_type === 'simple') {
             if ($request->has('stock_quantity')) {
-                $updateData['stock_quantity'] = (int)($validated['stock_quantity'] ?? 0);
+            $updateData['stock_quantity'] = (int)($validated['stock_quantity'] ?? 0);
             }
             if ($request->has('price')) {
-                $updateData['price'] = (float)$validated['price'];
+            $updateData['price'] = (float)$validated['price'];
             }
             if ($request->has('sale_price')) {
-                $updateData['sale_price'] = isset($validated['sale_price']) && $validated['sale_price'] !== '' ? (float)$validated['sale_price'] : null;
+            $updateData['sale_price'] = isset($validated['sale_price']) && $validated['sale_price'] !== '' ? (float)$validated['sale_price'] : null;
             }
         }
 

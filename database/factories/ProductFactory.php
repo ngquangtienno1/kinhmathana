@@ -69,25 +69,25 @@ class ProductFactory extends Factory
 
                     // Tạo tên biến thể từ các thuộc tính đã chọn
                     $variationName = $color->name . ' - ' . $size->name . ' - ' . $spherical->name . ' - ' . $cylindrical->name;
-                    $variationSku = $product->sku . '-VAR' . $variationIndex++;
+                        $variationSku = $product->sku . '-VAR' . $variationIndex++;
                     
                     // Tạo giá gốc và giá khuyến mãi cho biến thể
-                    $variationPrice = $this->faker->numberBetween(100000, 5000000);
+                        $variationPrice = $this->faker->numberBetween(100000, 5000000);
                     $hasSale = $this->faker->boolean(30); // 30% cơ hội có giá khuyến mãi
                     $salePrice = $hasSale ? $variationPrice * 0.9 : null; // Giảm giá 10% nếu có khuyến mãi
 
-                    $variations[] = [
-                        'name' => $variationName,
-                        'sku' => $variationSku,
-                        'price' => $variationPrice,
+                        $variations[] = [
+                            'name' => $variationName,
+                            'sku' => $variationSku,
+                            'price' => $variationPrice,
                         'sale_price' => $salePrice,
-                        'stock_quantity' => $this->faker->numberBetween(0, 50),
-                        'status' => $this->faker->randomElement(['in_stock', 'out_of_stock', 'hidden']),
-                        'color_id' => $color->id,
-                        'size_id' => $size->id,
+                            'stock_quantity' => $this->faker->numberBetween(0, 50),
+                            'status' => $this->faker->randomElement(['in_stock', 'out_of_stock', 'hidden']),
+                            'color_id' => $color->id,
+                            'size_id' => $size->id,
                         'spherical_id' => $spherical->id,
                         'cylindrical_id' => $cylindrical->id,
-                    ];
+                        ];
                 }
 
                 // Tạo các biến thể cho sản phẩm
