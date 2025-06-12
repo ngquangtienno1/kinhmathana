@@ -448,200 +448,81 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-        // Xử lý dữ liệu trước khi validate
-        $processedData = $request->all();
-
-        if ($product->product_type === 'simple') {
-            // Xử lý stock_quantity cho sản phẩm đơn giản
-            if (isset($processedData['stock_quantity'])) {
-                $processedData['stock_quantity'] = (int)($processedData['stock_quantity'] ?? 0);
-            } else {
-                $processedData['stock_quantity'] = 0;
-            }
-            // Xử lý price và sale_price
-            if (isset($processedData['price'])) {
-                $processedData['price'] = str_replace(',', '.', trim($processedData['price']));
-                if (empty($processedData['price']) || !is_numeric($processedData['price'])) {
-                    $processedData['price'] = '0';
-                }
-            }
-            if (isset($processedData['sale_price'])) {
-                $processedData['sale_price'] = str_replace(',', '.', trim($processedData['sale_price']));
-                if (empty($processedData['sale_price']) || !is_numeric($processedData['sale_price'])) {
-                    $processedData['sale_price'] = null;
-                }
-            }
-        } else {
-            // Nếu product_type là variable, không cần price, sale_price, stock_quantity
-            unset($processedData['price']);
-            unset($processedData['sale_price']);
-            unset($processedData['stock_quantity']);
-        }
-
-        // Xử lý variations nếu có
-        if (isset($processedData['variations'])) {
-            foreach ($processedData['variations'] as $index => &$variation) {
-                if (isset($variation['price'])) {
-                    $variation['price'] = str_replace(',', '.', trim($variation['price']));
-                    if (empty($variation['price']) || !is_numeric($variation['price'])) {
-                        $variation['price'] = '0';
-                    }
-                }
-                if (isset($variation['sale_price'])) {
-                    $variation['sale_price'] = str_replace(',', '.', trim($variation['sale_price']));
-                    if (empty($variation['sale_price']) || !is_numeric($variation['sale_price'])) {
-                        $variation['sale_price'] = null;
-                    }
-                }
-                $variation['stock_quantity'] = (int)($variation['stock_quantity'] ?? 0);
-                $variation['name'] = !empty(trim($variation['name'] ?? '')) ? trim($variation['name']) : 'Biến thể ' . ($index + 1);
-            }
-            unset($variation);
-        }
-
-        $request->merge($processedData);
-
+        
         // Quy tắc validate với thông báo lỗi bằng tiếng Việt
         $messages = [
             'name.required' => 'Tên sản phẩm là bắt buộc.',
             'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
             'name.max' => 'Tên sản phẩm không được vượt quá 125 ký tự.',
-            'description_short.required' => 'Mô tả ngắn là bắt buộc.',
             'description_short.string' => 'Mô tả ngắn phải là chuỗi ký tự.',
             'description_long.string' => 'Mô tả chi tiết phải là chuỗi ký tự.',
-            'categories.required' => 'Vui lòng chọn ít nhất một danh mục.',
             'categories.array' => 'Danh mục phải là một mảng.',
             'categories.*.exists' => 'Danh mục được chọn không hợp lệ.',
-            'brand_id.required' => 'Vui lòng chọn một thương hiệu.',
             'brand_id.exists' => 'Thương hiệu được chọn không hợp lệ.',
-            'status.required' => 'Trạng thái sản phẩm là bắt buộc.',
             'status.string' => 'Trạng thái sản phẩm phải là chuỗi ký tự.',
-            'is_featured.required' => 'Trạng thái nổi bật là bắt buộc.',
             'is_featured.boolean' => 'Trạng thái nổi bật phải là true hoặc false.',
-            'stock_quantity.required' => 'Số lượng tồn kho là bắt buộc.',
             'stock_quantity.integer' => 'Số lượng tồn kho phải là số nguyên.',
             'stock_quantity.min' => 'Số lượng tồn kho không được nhỏ hơn 0.',
-            'price.required' => 'Giá gốc là bắt buộc đối với sản phẩm đơn giản.',
             'price.numeric' => 'Giá gốc phải là một số hợp lệ.',
             'price.min' => 'Giá gốc không được nhỏ hơn 0.',
             'sale_price.numeric' => 'Giá khuyến mãi phải là một số hợp lệ.',
             'sale_price.min' => 'Giá khuyến mãi không được nhỏ hơn 0.',
-            'variations.array' => 'Dữ liệu biến thể phải là một mảng.',
-            'variations.*.id.exists' => 'ID biến thể không hợp lệ.',
-            'variations.*.name.required' => 'Tên biến thể là bắt buộc.',
-            'variations.*.name.string' => 'Tên biến thể phải là chuỗi ký tự.',
-            'variations.*.price.numeric' => 'Giá biến thể phải là số hợp lệ.',
-            'variations.*.price.min' => 'Giá biến thể không được nhỏ hơn 0.',
-            'variations.*.sale_price.numeric' => 'Giá khuyến mãi của biến thể phải là số hợp lệ.',
-            'variations.*.sale_price.min' => 'Giá khuyến mãi của biến thể không được nhỏ hơn 0.',
-            'variations.*.stock_quantity.required' => 'Số lượng tồn kho của biến thể là bắt buộc.',
-            'variations.*.stock_quantity.integer' => 'Số lượng tồn kho của biến thể phải là số nguyên.',
-            'variations.*.stock_quantity.min' => 'Số lượng tồn kho của biến thể không được nhỏ hơn 0.',
-            'variations.*.status.in' => 'Trạng thái biến thể không hợp lệ.',
-            'variations.*.image.image' => 'Ảnh biến thể phải là một tệp hình ảnh.',
-            'variations.*.image.mimes' => 'Ảnh biến thể phải có định dạng jpg, jpeg, png, gif, webp hoặc tiff.',
-            'variations.*.image.max' => 'Ảnh biến thể không được vượt quá 5MB.',
-            'featured_image.image' => 'Ảnh đại diện phải là một tệp hình ảnh.',
-            'featured_image.mimes' => 'Ảnh đại diện phải có định dạng jpg, jpeg, png, gif, webp hoặc tiff.',
-            'featured_image.max' => 'Ảnh đại diện không được vượt quá 5MB.',
-            'gallery_images.array' => 'Ảnh thư viện phải là một mảng.',
-            'gallery_images.*.image' => 'Ảnh trong thư viện phải là một tệp hình ảnh.',
-            'gallery_images.*.mimes' => 'Ảnh trong ảnh thư viện phải có định dạng jpg, jpeg, png, gif, webp hoặc tiff.',
-            'gallery_images.*.max' => 'Ảnh trong thư viện không được vượt quá 5MB.',
-            'video_path.file' => 'Video sản phẩm phải là một tệp.',
-            'video_path.mimes' => 'Video sản phẩm phải có định dạng mp4, webm hoặc ogg.',
-            'video_path.max' => 'Video sản phẩm không được vượt quá 50MB.',
         ];
 
         $rules = [
             'name' => 'required|string|max:125',
-            'description_short' => 'required|string',
+            'description_short' => 'nullable|string',
             'description_long' => 'nullable|string',
-            'categories' => 'required|array',
+            'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id',
-            'brand_id' => 'required|exists:brands,id',
-            'status' => 'required|string',
-            'is_featured' => 'required|boolean',
-            'variations' => [
-                'required_if:product_type,variable',
-                'array',
-                'min:1',
-                function ($attribute, $value, $fail) use ($product) {
-                    if ($product->product_type === 'variable' && empty($value)) {
-                        $fail('Sản phẩm có biến thể phải có ít nhất một biến thể.');
-                    }
-                },
-            ],
-            'variations.*.id' => 'nullable|exists:variations,id',
-            'variations.*.name' => 'required|string',
-            'variations.*.sku' => [
-                'required',
-                'string',
-                function ($attribute, $value, $fail) use ($request) {
-                    $index = explode('.', $attribute)[1]; // Lấy index từ variations.X.sku
-                    $variationId = $request->input("variations.$index.id", null);
-                    $exists = Variation::where('sku', $value)
-                        ->where('id', '!=', $variationId)
-                        ->exists();
-                    if ($exists) {
-                        $fail("Mã biến thể '$value' đã tồn tại.");
-                    }
-                },
-            ],
-            'variations.*.price' => 'required|numeric|min:0',
-            'variations.*.sale_price' => 'nullable|numeric|min:0|lte:variations.*.price',
-            'variations.*.stock_quantity' => 'required|integer|min:0',
-            'variations.*.status' => 'nullable|in:in_stock,out_of_stock,hidden',
-            'variations.*.image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
-            'attributes' => 'required_if:product_type,variable|array',
-            'attributes.*.type' => 'required_with:attributes|in:color,size,spherical,cylindrical',
-            'attributes.*.values' => 'required_with:attributes|array',
-            'featured_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
-            'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
-            'video_path' => 'nullable|file|mimes:mp4,webm,ogg|max:51200',
+            'brand_id' => 'nullable|exists:brands,id',
+            'status' => 'nullable|string',
+            'is_featured' => 'nullable|boolean',
         ];
 
         if ($product->product_type === 'simple') {
-            $rules['stock_quantity'] = 'required|integer|min:0';
-            $rules['price'] = 'required|numeric|min:0';
+            $rules['stock_quantity'] = 'nullable|integer|min:0';
+            $rules['price'] = 'nullable|numeric|min:0';
             $rules['sale_price'] = 'nullable|numeric|min:0|lte:price';
         }
 
         $validated = $request->validate($rules, $messages);
 
-        // Xử lý dữ liệu variations trước khi lưu
-        $processedVariations = $validated['variations'] ?? [];
-        foreach ($processedVariations as $index => &$variation) {
-            // Đảm bảo name không rỗng
-            $variation['name'] = !empty(trim($variation['name'] ?? '')) ? trim($variation['name']) : 'Biến thể ' . ($index + 1);
-            // Tự động cập nhật trạng thái biến thể dựa trên stock_quantity
-            if (isset($variation['stock_quantity']) && (int)$variation['stock_quantity'] === 0) {
-                $variation['status'] = 'out_of_stock';
-            }
+        $updateData = [];
+        
+        // Chỉ cập nhật các trường được gửi lên
+        if ($request->has('name')) {
+            $updateData['name'] = $validated['name'];
         }
-        unset($variation);
-
-        $updateData = [
-            'name' => $validated['name'],
-            'description_short' => $validated['description_short'],
-            'description_long' => $validated['description_long'],
-            'brand_id' => $validated['brand_id'],
-            'status' => $validated['status'],
-            'is_featured' => (int)$validated['is_featured'],
-        ];
+        if ($request->has('description_short')) {
+            $updateData['description_short'] = $validated['description_short'];
+        }
+        if ($request->has('description_long')) {
+            $updateData['description_long'] = $validated['description_long'];
+        }
+        if ($request->has('brand_id')) {
+            $updateData['brand_id'] = $validated['brand_id'];
+        }
+        if ($request->has('status')) {
+            $updateData['status'] = $validated['status'];
+        }
+        if ($request->has('is_featured')) {
+            $updateData['is_featured'] = (int)$validated['is_featured'];
+        }
 
         if ($product->product_type === 'simple') {
-            $updateData['stock_quantity'] = (int)($validated['stock_quantity'] ?? 0);
-            $updateData['price'] = (float)$validated['price'];
-            $updateData['sale_price'] = isset($validated['sale_price']) && $validated['sale_price'] !== '' ? (float)$validated['sale_price'] : null;
-            if (isset($validated['sku']) && !empty($validated['sku'])) {
-                $updateData['sku'] = $validated['sku'];
+            if ($request->has('stock_quantity')) {
+                $updateData['stock_quantity'] = (int)($validated['stock_quantity'] ?? 0);
             }
-        } else {
-            $updateData['stock_quantity'] = 0; // Sẽ được tính lại từ biến thể
+            if ($request->has('price')) {
+                $updateData['price'] = (float)$validated['price'];
+            }
+            if ($request->has('sale_price')) {
+                $updateData['sale_price'] = isset($validated['sale_price']) && $validated['sale_price'] !== '' ? (float)$validated['sale_price'] : null;
+            }
         }
 
+        // Xử lý file video trước khi update
         if ($request->hasFile('video_path')) {
             $video = $request->file('video_path');
             if ($video->isValid()) {
@@ -654,92 +535,14 @@ class ProductController extends Controller
             }
         }
 
+        // Cập nhật sản phẩm (bao gồm video_path nếu có)
         $product->update($updateData);
 
-
-        if ($product->product_type === 'variable') {
-            if (empty($processedVariations)) {
-                return redirect()->back()->withErrors(['variations' => 'Sản phẩm có biến thể phải có ít nhất một biến thể.'])->withInput();
-            }
-            $existingVariationIds = $product->variations()->pluck('id')->toArray();
-            $updatedVariationIds = array_filter(array_column($processedVariations, 'id'), fn($id) => !empty($id));
-            $product->variations()->whereNotIn('id', $updatedVariationIds)->delete();
-            $attributes = $request->input('attributes', []);
-            foreach ($processedVariations as $index => $variationData) {
-                $colorId = $sizeId = $sphericalId = $cylindricalId = null;
-                $variationAttributes = array_map('trim', explode('-', $variationData['name']));
-                foreach ($attributes as $attribute) {
-                    if ($attribute['type'] === 'color') {
-                        foreach ($attribute['values'] as $value) {
-                            if (in_array(trim((string)$value), array_map('trim', $variationAttributes))) {
-                                $color = Color::where('name', $value)->first();
-                                $colorId = $color ? $color->id : null;
-                            }
-                        }
-                    } elseif ($attribute['type'] === 'size') {
-                        foreach ($attribute['values'] as $value) {
-                            if (in_array(trim((string)$value), array_map('trim', $variationAttributes))) {
-                                $size = Size::where('name', $value)->first();
-                                $sizeId = $size ? $size->id : null;
-                            }
-                        }
-                    } elseif ($attribute['type'] === 'spherical') {
-                        foreach ($attribute['values'] as $value) {
-                            if (in_array(trim((string)$value), array_map('trim', $variationAttributes))) {
-                                $spherical = Spherical::where('name', $value)->first();
-                                if ($spherical) $sphericalId = $spherical->id;
-                            }
-                        }
-                    } elseif ($attribute['type'] === 'cylindrical') {
-                        foreach ($attribute['values'] as $value) {
-                            if (in_array(trim((string)$value), array_map('trim', $variationAttributes))) {
-                                $cylindrical = Cylindrical::where('name', $value)->first();
-                                if ($cylindrical) $cylindricalId = $cylindrical->id;
-                            }
-                        }
-                    }
-                }
-                $variationDataToSave = [
-                    'product_id' => $product->id,
-                    'name' => trim($variationData['name'] ?? '') ?: 'Biến thể ' . ($index + 1),
-                    'sku' => trim($variationData['sku'] ?? '') ?: 'VAR-' . Str::random(8),
-                    'price' => (float)($variationData['price'] ?? 0),
-                    'sale_price' => isset($variationData['sale_price']) && is_numeric($variationData['sale_price']) ? (float)$variationData['sale_price'] : null,
-                    'stock_quantity' => (int)($variationData['stock_quantity'] ?? 0),
-                    'status' => $variationData['status'] ?? ((int)($variationData['stock_quantity'] ?? 0) > 0 ? 'in_stock' : 'out_of_stock'),
-                    'color_id' => $colorId,
-                    'size_id' => $sizeId,
-                    'spherical_id' => $sphericalId,
-                    'cylindrical_id' => $cylindricalId,
-                ];
-                if (!empty($variationData['id']) && in_array($variationData['id'], $existingVariationIds)) {
-                    $variation = Variation::find($variationData['id']);
-                    $variation?->update($variationDataToSave);
-                } else {
-                    $variation = Variation::create($variationDataToSave);
-                }
-                if ($request->hasFile("variations.$index.image")) {
-                    $image = $request->file("variations.$index.image");
-                    if ($image->isValid()) {
-                        foreach ($variation->images as $oldImage) {
-                            Storage::disk('public')->exists($oldImage->image_path) && Storage::disk('public')->delete($oldImage->image_path);
-                            $oldImage->delete();
-                        }
-                        $path = $image->store('variations', 'public');
-                        $variation->images()->create(['image_path' => $path]);
-                    }
-                }
-            }
-        }
-        $product->stock_quantity = $product->variations->sum('stock_quantity');
-        $product->save();
-
-
-        $product->categories()->sync($validated['categories']);
-
+        // Xử lý ảnh đại diện (featured_image)
         if ($request->hasFile('featured_image')) {
             $featuredImage = $request->file('featured_image');
             if ($featuredImage->isValid()) {
+                // Xóa ảnh đại diện cũ
                 $oldFeaturedImages = $product->images()->where('is_featured', true)->get();
                 foreach ($oldFeaturedImages as $oldFeaturedImage) {
                     if (Storage::disk('public')->exists($oldFeaturedImage->image_path)) {
@@ -747,7 +550,7 @@ class ProductController extends Controller
                     }
                     $oldFeaturedImage->delete();
                 }
-
+                // Lưu ảnh mới
                 $path = $featuredImage->store('images/products', 'public');
                 if ($path) {
                     $product->images()->create(['image_path' => $path, 'is_featured' => true]);
@@ -757,8 +560,16 @@ class ProductController extends Controller
             }
         }
 
+        // Xử lý gallery images
         if ($request->hasFile('gallery_images')) {
-            $product->images()->where('is_featured', false)->delete();
+            // Xóa toàn bộ ảnh gallery cũ (không phải featured)
+            $product->images()->where('is_featured', false)->get()->each(function($img) {
+                if (Storage::disk('public')->exists($img->image_path)) {
+                    Storage::disk('public')->delete($img->image_path);
+                }
+                $img->delete();
+            });
+            // Lưu các ảnh mới
             foreach ($request->file('gallery_images') as $image) {
                 if ($image->isValid()) {
                     $path = $image->store('images/products', 'public');
@@ -767,6 +578,11 @@ class ProductController extends Controller
                     }
                 }
             }
+        }
+
+        // Cập nhật categories nếu có
+        if ($request->has('categories')) {
+            $product->categories()->sync($validated['categories']);
         }
 
         return redirect()->route('admin.products.list')

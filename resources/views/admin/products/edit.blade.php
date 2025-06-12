@@ -486,9 +486,6 @@
                                         <div class="position-relative me-3 mb-3">
                                             <img src="{{ Storage::url($image->image_path) }}" alt="Gallery Image"
                                                 style="max-width: 100px;">
-                                            <input type="checkbox" name="delete_gallery_images[]"
-                                                value="{{ $image->id }}" class="position-absolute top-0 end-0">
-                                            <label class="form-label small">Xóa</label>
                                         </div>
                                     @endforeach
                                 </div>
