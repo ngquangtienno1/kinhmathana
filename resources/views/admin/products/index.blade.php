@@ -4,10 +4,10 @@
 @section('content')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item">
-        <a href="{{ route('admin.products.list') }}">Sản phẩm</a>
-    </li>
-    <li class="breadcrumb-item active">Danh sách sản phẩm</li>
+<li class="breadcrumb-item">
+    <a href="{{ route('admin.products.list') }}">Sản phẩm</a>
+</li>
+<li class="breadcrumb-item active">Danh sách sản phẩm</li>
 @endsection
 
 <div class="mb-9">
@@ -51,10 +51,10 @@
                     <select class="form-select" name="category_id" id="category_id">
                         <option value="">Tất cả danh mục</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}"
-                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
+                        <option value="{{ $category->id }}" {{ request('category_id')==$category->id ? 'selected' : ''
+                            }}>
+                            {{ $category->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -109,81 +109,82 @@
                     </thead>
                     <tbody class="list" id="products-table-body">
                         @forelse ($products as $product)
-                            <tr class="position-static">
-                                <td class="align-middle ps-0">
-                                    <div class="form-check mb-0 fs-8">
-                                        <input class="form-check-input product-checkbox" type="checkbox"
-                                            value="{{ $product->id }}" />
+                        <tr class="position-static">
+                            <td class="align-middle ps-0">
+                                <div class="form-check mb-0 fs-8">
+                                    <input class="form-check-input product-checkbox" type="checkbox"
+                                        value="{{ $product->id }}" />
+                                </div>
+                            </td>
+                            <td class="align-middle ps-4">{{ $loop->iteration }}</td>
+                            <td class="align-middle ps-4">{{ $product->name }}</td>
+                            <td class="align-middle ps-4 text-end">
+                                {{ $product->product_type === 'simple' ? number_format($product->price ?? 0, 0, ',',
+                                '.') . 'đ' : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
+                            </td>
+                            <td class="align-middle ps-4 text-end">
+                                {{ $product->product_type === 'simple' ? number_format($product->sale_price ?? 0, 0,
+                                ',', '.') . 'đ' : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
+                            </td>
+                            <td class="align-middle ps-4 text-center">
+                                {{ $product->total_stock }}
+                            </td>
+                            <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}
+                            </td>
+                            <td class="align-middle ps-4">
+                                @if ($product->categories->count() > 0)
+                                {{ $product->categories->pluck('name')->join(', ') }}
+                                @else
+                                -
+                                @endif
+                            </td>
+                            <td class="align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
+                            <td class="align-middle text-center has_variations">
+                                <span
+                                    class="badge {{ $product->product_type === 'variable' ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $product->product_type === 'variable' ? 'Có' : 'Không' }}
+                                </span>
+                            </td>
+                            <td class="align-middle text-center">
+                                <span class="badge {{ $product->is_featured ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $product->is_featured ? 'Có' : 'Không' }}
+                                </span>
+                            </td>
+                            <td class="align-middle text-center">{{ $product->views ?? 0 }}</td>
+                            <td class="align-middle text-center">
+                                <span class="badge {{ $product->status === 'Hoạt động' ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $product->status ?? 'Không hoạt động' }}
+                                </span>
+                            </td>
+                            <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
+                                <div class="btn-reveal-trigger position-static">
+                                    <button
+                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        type="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <span class="fas fa-ellipsis-h fs-10"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end py-2">
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.products.show', $product->id) }}">Xem</a>
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.products.edit', $product->id) }}">Sửa</a>
+                                        <div class="dropdown-divider"></div>
+                                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="dropdown-item text-danger"
+                                                onclick="deleteProduct({{ $product->id }})">Xóa</button>
+                                        </form>
                                     </div>
-                                </td>
-                                <td class="align-middle ps-4">{{ $loop->iteration }}</td>
-                                <td class="align-middle ps-4">{{ $product->name }}</td>
-                                <td class="align-middle ps-4 text-end">
-                                    {{ $product->product_type === 'simple' ? number_format($product->price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
-                                </td>
-                                <td class="align-middle ps-4 text-end">
-                                    {{ $product->product_type === 'simple' ? number_format($product->sale_price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
-                                </td>
-                                <td class="align-middle ps-4 text-center">
-                                    {{ $product->total_stock }}
-                                </td>
-                                <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}
-                                </td>
-                                <td class="align-middle ps-4">
-                                    @if ($product->categories->count() > 0)
-                                        {{ $product->categories->pluck('name')->join(', ') }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
-                                <td class="align-middle text-center has_variations">
-                                    <span
-                                        class="badge {{ $product->product_type === 'variable' ? 'bg-success' : 'bg-secondary' }}">
-                                        {{ $product->product_type === 'variable' ? 'Có' : 'Không' }}
-                                    </span>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <span class="badge {{ $product->is_featured ? 'bg-success' : 'bg-secondary' }}">
-                                        {{ $product->is_featured ? 'Có' : 'Không' }}
-                                    </span>
-                                </td>
-                                <td class="align-middle text-center">{{ $product->views ?? 0 }}</td>
-                                <td class="align-middle text-center">
-                                    <span
-                                        class="badge {{ $product->status === 'Hoạt động' ? 'bg-success' : 'bg-danger' }}">
-                                        {{ $product->status ?? 'Không hoạt động' }}
-                                    </span>
-                                </td>
-                                <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
-                                    <div class="btn-reveal-trigger position-static">
-                                        <button
-                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                            type="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <span class="fas fa-ellipsis-h fs-10"></span>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end py-2">
-                                            <a class="dropdown-item"
-                                                href="{{ route('admin.products.show', $product->id) }}">Xem</a>
-                                            <a class="dropdown-item"
-                                                href="{{ route('admin.products.edit', $product->id) }}">Sửa</a>
-                                            <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.products.destroy', $product->id) }}"
-                                                method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="dropdown-item text-danger"
-                                                    onclick="deleteProduct({{ $product->id }})">Xóa</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="14" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
-                            </tr>
+                        <tr>
+                            <td colspan="14" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -193,8 +194,8 @@
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
                         Tổng: {{ $products->count() }} sản phẩm
                     </p>
-                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
-                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span class="fas fa-angle-right ms-1"
+                            data-fa-transform="down-1"></span></a>
                     <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn <span
                             class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                 </div>
@@ -211,8 +212,7 @@
     </div>
 </div>
 
-<form id="bulk-delete-form" action="{{ route('admin.products.bulkDestroy') }}" method="POST"
-    style="display:none;">
+<form id="bulk-delete-form" action="{{ route('admin.products.bulkDestroy') }}" method="POST" style="display:none;">
     @csrf
     @method('DELETE')
     <input type="hidden" name="ids[]" id="bulk-delete-ids">
