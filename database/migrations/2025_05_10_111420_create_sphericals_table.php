@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('sphericals', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 10)->unique(); // VD: -0.25, -0.50, -1.00
+            $table->string('name', 10)->unique();
             $table->text('description')->nullable();
             $table->integer('sort_order')->default(0);
             $table->timestamps();

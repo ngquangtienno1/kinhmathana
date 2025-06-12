@@ -44,6 +44,9 @@ class CustomerController extends Controller
         }
 
         $customers = $query->get();
+        foreach ($customers as $customer) {
+            $customer->updateCustomerType();
+        }
 
         // Lấy query builder object để truyền cho export (nếu cần filtering)
         $exportQuery = clone $query; // Tạo bản sao để không ảnh hưởng đến query hiển thị
@@ -86,11 +89,11 @@ class CustomerController extends Controller
         return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CustomerExport($query), 'khach_hang.xlsx');
     }
 
+
     public function show(Customer $customer)
     {
         // Lấy các đơn hàng hợp lệ (chưa xóa mềm)
         $orders = $customer->orders()->latest()->take(5)->get();
-        $totalOrders = $customer->orders()->count();
 
         // Lấy sản phẩm hay mua
         $frequentProducts = \DB::table('order_items')
@@ -103,7 +106,7 @@ class CustomerController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.customers.show', compact('customer', 'orders', 'totalOrders', 'frequentProducts'));
+        return view('admin.customers.show', compact('customer', 'orders', 'frequentProducts'));
     }
 
     public function update(Request $request, Customer $customer)

@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const result = [];
         for (let val of first.values) {
             for (let combo of combinationsOfRest) {
-                result.push([val, ...combo]);
+                result.push([val.trim(), ...combo.map(v => v.trim())]);
             }
         }
         return result;
@@ -265,10 +265,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const typeSelect = row.querySelector('.attribute-type');
             if (!typeSelect) {
                 console.warn('Missing attribute-type select in row:', row);
-                return null; // Skip rows without a valid type select
+                return null;
             }
             const type = typeSelect.value;
-            const values = Array.from(row.querySelectorAll('.attribute-value-checkbox:checked')).map(cb => cb.value);
+            const values = Array.from(row.querySelectorAll('.attribute-value-checkbox:checked')).map(cb => cb.value.trim());
             return values.length ? { type, values } : null;
         }).filter(attr => attr);
 
@@ -303,13 +303,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][name]" value="${name}" class="form-control" placeholder="Tên biến thể" readonly>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${name.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 234.56)">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 234.56)">
                 </div>
                 <div class="col-md-1">
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <option value="hidden">Ẩn</option>
                     </select>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <input type="file" name="variations[${globalIndex}][image]" class="form-control variation-image-input">
                 </div>
                 <div class="col-md-1">

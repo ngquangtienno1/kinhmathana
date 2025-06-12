@@ -48,15 +48,7 @@
                                     <div class="d-flex align-items-center">
                                         <div class="flex-1">
                                             <h5 class="mb-0 text-success">
-                                                @php
-                                                    $totalSpent = $customer->orders->sum(function ($order) {
-                                                        $calculatedSubtotal = $order->items->sum(function ($item) {
-                                                            return $item->price * $item->quantity;
-                                                        });
-                                                        return $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
-                                                    });
-                                                @endphp
-                                                {{ number_format($totalSpent) }}đ
+                                                {{ number_format($customer->calculated_total_spent) }}đ
                                             </h5>
                                             <p class="mb-0 fs-9 text-success">Tổng chi tiêu</p>
                                         </div>

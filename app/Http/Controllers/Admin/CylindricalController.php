@@ -14,7 +14,7 @@ class CylindricalController extends Controller
 
         if ($request->filled('search')) {
             $search = mb_strtolower(trim($request->search));
-            $query->whereRaw('LOWER(value) LIKE ?', ["%{$search}%"]);
+            $query->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
         }
 
         $cylindricals = $query->orderBy('sort_order')->get();
@@ -30,11 +30,11 @@ class CylindricalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'value' => 'required|numeric|between:-20.00,20.00|unique:cylindricals,value',
+            'name' => 'required|string|max:10|unique:cylindricals,name',
             'sort_order' => 'nullable|integer',
         ]);
 
-        Cylindrical::create($request->only(['value', 'sort_order']));
+        Cylindrical::create($request->only(['name', 'sort_order']));
 
         return redirect()->route('admin.cylindricals.index')->with('success', 'Thêm Độ loạn thành công.');
     }
@@ -50,11 +50,11 @@ class CylindricalController extends Controller
         $cylindrical = Cylindrical::findOrFail($id);
 
         $request->validate([
-            'value' => 'required|numeric|between:-20.00,20.00|unique:cylindricals,value,' . $id,
+            'name' => 'required|string|max:10|unique:cylindricals,name,' . $id,
             'sort_order' => 'nullable|integer',
         ]);
 
-        $cylindrical->update($request->only(['value', 'sort_order']));
+        $cylindrical->update($request->only(['name', 'sort_order']));
 
         return redirect()->route('admin.cylindricals.index')->with('success', 'Cập nhật Độ loạn thành công.');
     }

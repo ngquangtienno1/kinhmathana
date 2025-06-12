@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Thuộc tính</a>
+        <a href="{{ route('admin.sphericals.index') }}">Độ cận</a>
     </li>
     <li class="breadcrumb-item active">Danh sách Độ cận</li>
 @endsection
@@ -68,7 +68,7 @@
                                     </div>
                                 </td>
                                 <td class="align-middle ps-4">{{ $spherical->id }}</td>
-                                <td class="align-middle ps-4">{{ $spherical->value }}</td>
+                                <td class="align-middle ps-4">{{ $spherical->name }}</td>
                                 <td class="align-middle ps-4">{{ $spherical->sort_order }}</td>
                                 <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
