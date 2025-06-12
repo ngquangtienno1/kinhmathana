@@ -59,6 +59,7 @@
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="published_at">NGÀY XUẤT BẢN</th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="status">TRẠNG THÁI</th>
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="deleted_at">NGÀY XÓA</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="views">Lượt xem</th>
                             <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
                         </tr>
                     </thead>
@@ -96,6 +97,7 @@
                                 <td class="deleted_at align-middle white-space-nowrap text-body-tertiary ps-4">
                                     {{ $item->deleted_at ? $item->deleted_at->format('d/m/Y H:i') : '' }}
                                 </td>
+                                <td class="views align-middle ps-4">{{ $item->views }}</td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
                                         <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">

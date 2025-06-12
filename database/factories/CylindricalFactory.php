@@ -12,7 +12,7 @@ class CylindricalFactory extends Factory
     public function definition(): array
     {
         return [
-            'value' => $this->faker->unique()->randomFloat(2, -4.00, -0.25),
+            'name' => (string) $this->faker->unique()->randomFloat(2, 0.25, 4.00),
             'sort_order' => 0,
         ];
     }

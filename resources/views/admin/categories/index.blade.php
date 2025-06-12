@@ -34,7 +34,7 @@
         </li>
     </ul>
 
-    <div id="categories" data-list='{"valueNames":["name","description"],"page":10,"pagination":true}'>
+    <div id="categories" data-list='{"valueNames":["name","description","parent","status"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
@@ -118,9 +118,8 @@
                                     <span
                                         class="text-body-tertiary">{{ Str::limit($category->description, 50) }}</span>
                                 </td>
-                                <td class="align-middle ps-4">
-                                    <span
-                                        class="text-body-tertiary">{{ optional($category->parent)->name ?? '-' }}</span>
+                                <td class="align-middle ps-4 parent">
+                                    <span class="text-body-tertiary">{{ optional($category->parent)->name ?? '-' }}</span>
                                 </td>
                                 <td class="align-middle ps-4">
                                     <span class="text-body-tertiary">{{ $category->products_count ?? 0 }}</span>
@@ -246,6 +245,14 @@
             bulkDeleteIds.value = checkedIds.join(',');
             bulkDeleteForm.submit();
         });
+
+        // Chặn submit form search để Phoenix List.js tự động lọc realtime
+        const searchForm = document.querySelector('.search-box form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+            });
+        }
     });
 </script>
 

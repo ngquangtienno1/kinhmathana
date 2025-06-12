@@ -70,17 +70,8 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'paid'])) }}">Đã
                                         thanh toán</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'cod'])) }}">Thanh
-                                        toán khi nhận hàng (COD)</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'processing_refund'])) }}">Đang
-                                        hoàn tiền</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'refunded'])) }}">Đã
-                                        hoàn tiền</a></li>
-                                <li><a class="dropdown-item"
                                         href="{{ route('admin.orders.index', array_merge(request()->except('payment_status'), ['payment_status' => 'failed'])) }}">Thanh
-                                        toán không thành công</a></li>
+                                        toán thất bại</a></li>
                             </ul>
                         </div>
                         <!-- Order status -->
@@ -110,20 +101,14 @@
                                         href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'completed'])) }}">Đã
                                         hoàn thành</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}">Đã
-                                        hủy</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled_by_customer'])) }}">Khách
+                                        hủy đơn</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'returned_requested'])) }}">Khách
-                                        trả hàng</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'cancelled_by_admin'])) }}">Admin
+                                        hủy đơn</a></li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'processing_return'])) }}">Đang
-                                        xử lý trả hàng</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'return_rejected'])) }}">Trả
-                                        hàng bị từ chối</a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'refunded'])) }}">Đã
-                                        hoàn tiền</a></li>
+                                        href="{{ route('admin.orders.index', array_merge(request()->except('status'), ['status' => 'delivery_failed'])) }}">Giao
+                                        thất bại</a></li>
                             </ul>
                         </div>
                     </div>
@@ -146,11 +131,6 @@
                 <table class="table table-sm fs-9 mb-0">
                     <thead>
                         <tr>
-                            <th class="white-space-nowrap fs-9 align-middle ps-0" style="width:26px;">
-                                <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                        id="checkbox-bulk-order-select" type="checkbox"
-                                        data-bulk-select='{"body":"order-table-body"}' /></div>
-                            </th>
                             <th class="sort align-middle text-center px-3" scope="col" data-sort="order"
                                 style="width:90px;">Mã đơn hàng</th>
                             <th class="sort align-middle text-end px-3" scope="col" data-sort="total"
@@ -171,10 +151,6 @@
                     <tbody class="list" id="order-table-body">
                         @forelse ($orders as $order)
                             <tr>
-                                <td class="fs-9 align-middle px-0 py-3">
-                                    <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                            type="checkbox" /></div>
-                                </td>
                                 <td class="order align-middle text-center white-space-nowrap py-0"><a
                                         class="fw-semibold"
                                         href="{{ route('admin.orders.show', $order->id) }}">#{{ $order->order_number }}</a>
@@ -190,21 +166,7 @@
                                         $paymentStatusMap = [
                                             'unpaid' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
-                                            'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
-                                            'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
-                                            'partially_paid' => [
-                                                'Đã thanh toán một phần',
-                                                'badge-phoenix-info',
-                                                'dollar-sign',
-                                            ],
-                                            'confirmed' => [
-                                                'Đã xác nhận thanh toán',
-                                                'badge-phoenix-primary',
-                                                'check-circle',
-                                            ],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'processing_refund' => ['Đang hoàn tiền', 'badge-phoenix-warning', 'clock'],
-                                            'failed' => ['Thanh toán không thành công', 'badge-phoenix-danger', 'x'],
+                                            'failed' => ['Thanh toán thất bại', 'badge-phoenix-danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -231,22 +193,6 @@
                                             'cancelled_by_customer' => ['Khách hủy đơn', 'badge-phoenix-danger', 'x'],
                                             'cancelled_by_admin' => ['Admin hủy đơn', 'badge-phoenix-danger', 'x'],
                                             'delivery_failed' => ['Giao thất bại', 'badge-phoenix-danger', 'x'],
-                                            'returned_requested' => [
-                                                'Khách trả hàng',
-                                                'badge-phoenix-warning',
-                                                'corner-up-left',
-                                            ],
-                                            'processing_return' => [
-                                                'Đang xử lý trả hàng',
-                                                'badge-phoenix-warning',
-                                                'refresh-cw',
-                                            ],
-                                            'return_rejected' => [
-                                                'Trả hàng bị từ chối',
-                                                'badge-phoenix-danger',
-                                                'corner-up-left',
-                                            ],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [
                                             ucfirst($order->status),
@@ -319,5 +265,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chặn submit form search để Phoenix List.js tự động lọc realtime
+        const searchForm = document.querySelector('.search-box form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+            });
+        }
+    });
+</script>
 
 @endsection

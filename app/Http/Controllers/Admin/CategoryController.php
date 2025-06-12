@@ -18,7 +18,15 @@ class CategoryController extends Controller
             $search = mb_strtolower(trim($request->search));
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"])
+                    // Tìm kiếm theo tên danh mục cha
+                    ->orWhereHas('parent', function ($subQ) use ($search) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    })
+                    // Tìm kiếm theo tên danh mục con
+                    ->orWhereHas('children', function ($subQ) use ($search) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
+                    });
             });
         }
 

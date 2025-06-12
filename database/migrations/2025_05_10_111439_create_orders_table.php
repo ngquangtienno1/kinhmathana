@@ -41,11 +41,7 @@ return new class extends Migration
             $table->enum('payment_status', [
                 'unpaid',      // Chưa thanh toán
                 'paid',        // Đã thanh toán
-                'cod',         // Thanh toán khi nhận hàng (COD)
-                'confirmed',   // Đã xác nhận thanh toán
-                'refunded',    // Đã hoàn tiền
-                'processing_refund', // Đang hoàn tiền
-                'failed'       // Thanh toán không thành công
+                'failed'       // Thanh toán thất bại
             ])->default('unpaid');
 
             // Trạng thái đơn hàng
@@ -58,11 +54,7 @@ return new class extends Migration
                 'completed',            // Đã hoàn thành
                 'cancelled_by_customer', // Khách hủy đơn
                 'cancelled_by_admin',    // Admin hủy đơn
-                'delivery_failed',       // Giao thất bại
-                'returned_requested',    // Khách trả hàng
-                'processing_return',     // Đang xử lý trả hàng
-                'return_rejected',       // Trả hàng bị từ chối
-                'refunded'              // Đã hoàn tiền
+                'delivery_failed'       // Giao thất bại
             ])->default('pending');
 
             // Thêm trường cancellation_reason_id

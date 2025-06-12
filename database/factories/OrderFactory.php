@@ -61,13 +61,9 @@ class OrderFactory extends Factory
         $totalAmount = max(0, $totalAmount);
 
         $paymentStatuses = [
-            'unpaid',
-            'paid',
-            'cod',
-            'confirmed',
-            'refunded',
-            'processing_refund',
-            'failed'
+            'unpaid',      // Chưa thanh toán
+            'paid',        // Đã thanh toán
+            'failed'       // Thanh toán thất bại
         ];
         $orderStatuses = [
             'pending',              // Chờ xác nhận
@@ -78,11 +74,7 @@ class OrderFactory extends Factory
             'completed',            // Đã hoàn thành
             'cancelled_by_customer', // Khách hủy đơn
             'cancelled_by_admin',    // Admin hủy đơn
-            'delivery_failed',       // Giao thất bại
-            'returned_requested',    // Khách trả hàng
-            'processing_return',     // Đang xử lý trả hàng
-            'return_rejected',       // Trả hàng bị từ chối
-            'refunded'              // Đã hoàn tiền
+            'delivery_failed'       // Giao thất bại
         ];
 
         $status = $this->faker->randomElement($orderStatuses);
@@ -124,7 +116,7 @@ class OrderFactory extends Factory
         ];
     }
 
-    // Nếu muốn sinh luôn order_items, order_histories, order_status_logs khi dùng seeder:
+    // Nếu muốn sinh luôn order_items, order_histories khi dùng seeder:
     public function configure()
     {
         return $this->afterCreating(function (Order $order) {
@@ -132,8 +124,7 @@ class OrderFactory extends Factory
             \App\Models\OrderItem::factory()->count(rand(1, 5))->create(['order_id' => $order->id]);
             // Sinh 1-3 order_histories
             \App\Models\OrderHistory::factory()->count(rand(1, 3))->create(['order_id' => $order->id]);
-            // Sinh 1-2 order_status_logs
-            \App\Models\OrderStatusLog::factory()->count(rand(1, 2))->create(['order_id' => $order->id]);
         });
     }
+
 }

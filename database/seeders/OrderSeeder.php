@@ -44,18 +44,13 @@ class OrderSeeder extends Seeder
 
         foreach ($users as $user) {
             // Create 1-5 orders for each customer
-            $orders = Order::factory()->count(rand(1, 5))->create([
+            $orders = Order::factory()->count(rand(1, 10))->create([
                 'user_id' => $user->id,
                 'customer_name' => $user->name,
                 'customer_email' => $user->email,
                 'customer_phone' => $user->phone,
                 'customer_address' => $user->address,
-            ])->each(function ($order) {
-                if ($order->status === 'cancelled' && \App\Models\CancellationReason::where('type', 'admin')->count() > 0) {
-                    $order->cancellation_reason_id = \App\Models\CancellationReason::where('type', 'admin')->inRandomOrder()->first()->id;
-                    $order->save();
-                }
-            });
+            ]);
 
             // Update customer statistics after creating orders
             $customer = $user->customer;

@@ -9,6 +9,176 @@
     <li class="breadcrumb-item active">Chi tiết đơn hàng #{{ $order->order_number }}</li>
 @endsection
 
+@php
+    // Lấy trạng thái trước đó nếu có
+    $lastHistory = $order->statusHistories()->where('new_status', $order->status)->latest()->first();
+    $prevStatus = $lastHistory ? $lastHistory->old_status : null;
+    if (in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin']) && $prevStatus === 'pending') {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã huỷ', 'key' => $order->status, 'icon' => 'fa-times-circle'],
+        ];
+    } elseif (in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin'])) {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+            ['label' => 'Đã huỷ', 'key' => $order->status, 'icon' => 'fa-times-circle'],
+        ];
+    } elseif ($order->status === 'delivery_failed') {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+            ['label' => 'Đang chuẩn bị', 'key' => 'awaiting_pickup', 'icon' => 'fa-truck-loading'],
+            ['label' => 'Đang giao', 'key' => 'shipping', 'icon' => 'fa-shipping-fast'],
+            ['label' => 'Giao hàng thất bại', 'key' => 'delivery_failed', 'icon' => 'fa-times-circle'],
+        ];
+    } else {
+        $steps = [
+            ['label' => 'Chờ xác nhận', 'key' => 'pending', 'icon' => 'fa-file-alt'],
+            ['label' => 'Đã xác nhận', 'key' => 'confirmed', 'icon' => 'fa-money-check-alt'],
+            ['label' => 'Đang chuẩn bị', 'key' => 'awaiting_pickup', 'icon' => 'fa-truck-loading'],
+            ['label' => 'Đang giao', 'key' => 'shipping', 'icon' => 'fa-shipping-fast'],
+            ['label' => 'Đã giao hàng', 'key' => 'delivered', 'icon' => 'fa-box-open'],
+            ['label' => 'Hoàn thành', 'key' => 'completed', 'icon' => 'fa-star'],
+        ];
+    }
+    $currentOrderStatus = $order->status;
+    $currentIndex = collect($steps)->search(fn($step) => $step['key'] === $currentOrderStatus);
+    if ($currentIndex === false) {
+        $currentIndex = 0;
+    }
+@endphp
+<div class="order-progress-bar mb-4">
+    <div class="order-progress-steps d-flex align-items-center">
+        @foreach ($steps as $i => $step)
+            <div class="order-step text-center flex-fill {{ $i <= $currentIndex ? 'completed' : '' }}">
+                <div class="order-step-circle mx-auto mb-1">
+                    @if ($i < $currentIndex || ($i == $currentIndex && $step['key'] === 'completed'))
+                        <span class="fa fa-check"></span>
+                    @else
+                        <span class="fa {{ $step['icon'] }}"></span>
+                    @endif
+                </div>
+                <div class="order-step-label">{{ $step['label'] }}</div>
+            </div>
+            @if ($i < count($steps) - 1)
+                <div
+                    class="order-step-line flex-grow-1
+                    {{ $i < $currentIndex ? 'completed' : '' }}
+                    {{ $i === $currentIndex && $currentIndex < count($steps) - 1 ? 'animated' : '' }}
+                ">
+                </div>
+            @endif
+        @endforeach
+    </div>
+    <div class="order-progress-note mt-2 text-center">
+        @php
+            $statusNote = match ($order->status) {
+                'completed' => 'Đơn hàng đã hoàn thành. Cảm ơn bạn đã mua sắm tại cửa hàng!',
+                'delivered' => 'Đơn hàng đã giao thành công. Cảm ơn bạn đã mua sắm tại cửa hàng!',
+                'shipping' => 'Đơn hàng đang được vận chuyển đến bạn. Vui lòng chờ shipper liên hệ.',
+                'awaiting_pickup' => 'Đơn hàng đang chuẩn bị và sẽ sớm được gửi đi.',
+                'confirmed' => 'Đơn hàng đã được xác nhận và đang chờ xử lý.',
+                'pending' => 'Đơn hàng đang chờ xác nhận từ cửa hàng.',
+                default => 'Đơn hàng đang được xử lý. Thông tin tracking sẽ cập nhật trong 24 giờ tới.',
+            };
+        @endphp
+        {{ $statusNote }}
+    </div>
+</div>
+<style>
+    .order-progress-bar {
+        margin-bottom: 32px;
+    }
+
+    .order-progress-steps {
+        display: flex;
+        align-items: center;
+    }
+
+    .order-step {
+        text-align: center;
+        flex: 1;
+    }
+
+    .order-step-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eee;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #bbb;
+    }
+
+    .order-step.completed .order-step-circle {
+        background: #0d6efd;
+        color: #fff;
+    }
+
+    .order-step-label {
+        font-size: 13px;
+        margin-top: 4px;
+        color: #888;
+    }
+
+    .order-step.completed .order-step-label {
+        color: #0d6efd;
+        font-weight: bold;
+    }
+
+    .order-step-line {
+        height: 3px;
+        background: #eee;
+        flex: 1;
+        margin: 0 2px;
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-step-line.completed {
+        background: #0d6efd;
+    }
+
+    /* Hiệu ứng động cho trạng thái shipping/delivered */
+    .order-step-line.animated {
+        background: #0d6efd;
+    }
+
+    .order-step-line.animated::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(90deg, #0d6efd 0%, #fff 50%, #0d6efd 100%);
+        background-size: 200% 100%;
+        animation: progress-bar-stripes 1.2s linear infinite;
+        opacity: 0.5;
+    }
+
+    @keyframes progress-bar-stripes {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .order-progress-note {
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+    }
+</style>
+
 <div class="mb-9">
     <h2 class="mb-0">Đơn hàng #{{ $order->order_number }}</h2>
     <div class="d-sm-flex flex-between-center mb-3">
@@ -18,7 +188,7 @@
         <div class="d-flex">
             <a href="{{ route('admin.orders.print', $order->id) }}" target="_blank"
                 class="btn btn-link pe-3 ps-0 text-body">
-                <i class="fas fa-print me-2"></i>In
+                <i class="fas fa-print me-2"></i>In đơn hàng
             </a>
             @if ($order->status == 'cancelled')
                 <button class="btn btn-link px-3 text-danger"
@@ -194,6 +364,30 @@
                             </div>
                             <div class="mb-3">
                                 <div class="d-flex align-items-center mb-1">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    <h6 class="mb-0">Trạng thái thanh toán</h6>
+                                </div>
+                                <p class="mb-0 ms-4">
+                                    @php
+                                        $paymentStatusMap = [
+                                            'unpaid' => ['Chưa thanh toán', 'warning', 'clock'],
+                                            'paid' => ['Đã thanh toán', 'success', 'check'],
+                                            'failed' => ['Thanh toán thất bại', 'danger', 'x'],
+                                        ];
+                                        $ps = $paymentStatusMap[$order->payment_status] ?? [
+                                            ucfirst($order->payment_status),
+                                            'secondary',
+                                            'info',
+                                        ];
+                                    @endphp
+                                    <span
+                                        class="badge bg-{{ $ps[1] }}-subtle text-{{ $ps[1] }} fw-semibold">
+                                        {{ $ps[0] }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-1">
                                     <i class="fas fa-truck me-2"></i>
                                     <h6 class="mb-0">Phương thức vận chuyển</h6>
                                 </div>
@@ -291,9 +485,16 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h3 class="card-title mb-4">Tổng quan</h3>
+                    @php
+                        $calculatedSubtotal = $order->items->sum(function ($item) {
+                            return $item->price * $item->quantity;
+                        });
+                        $calculatedTotal =
+                            $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
+                    @endphp
                     <div class="d-flex justify-content-between mb-2">
                         <p class="text-body fw-semibold mb-0">Tổng tiền hàng:</p>
-                        <p class="text-body-emphasis fw-semibold mb-0">{{ number_format($order->subtotal) }}đ</p>
+                        <p class="text-body-emphasis fw-semibold mb-0">{{ number_format($calculatedSubtotal) }}đ</p>
                     </div>
                     @if ($order->promotion_amount > 0)
                         <div class="d-flex justify-content-between mb-2">
@@ -308,7 +509,7 @@
                     </div>
                     <div class="d-flex justify-content-between border-top pt-3">
                         <h4 class="mb-0">Tổng thanh toán:</h4>
-                        <h4 class="mb-0">{{ number_format($order->total_amount) }}đ</h4>
+                        <h4 class="mb-0">{{ number_format($calculatedTotal) }}đ</h4>
                     </div>
                 </div>
             </div>
@@ -334,15 +535,11 @@
                                     'confirmed' => ['awaiting_pickup', 'cancelled_by_admin'],
                                     'awaiting_pickup' => ['shipping', 'cancelled_by_admin'],
                                     'shipping' => ['delivered', 'delivery_failed'],
-                                    'delivered' => ['completed', 'processing_return'],
+                                    'delivered' => ['completed'],
                                     'completed' => [],
-                                    'processing_return' => ['refunded'],
-                                    'refunded' => [],
                                     'cancelled_by_admin' => [],
                                     'delivery_failed' => ['cancelled_by_admin'],
-                                    'cancelled_by_customer' => [], // Read-only status
-                                    'return_rejected' => ['refunded'],
-                                    'returned_requested' => ['processing_return'], // Thêm lại để tránh lỗi
+                                    'cancelled_by_customer' => [],
                                 ];
                                 $statusLabels = [
                                     'pending' => 'Chờ xác nhận',
@@ -351,13 +548,9 @@
                                     'shipping' => 'Đang giao',
                                     'delivered' => 'Đã giao hàng',
                                     'completed' => 'Đã hoàn thành',
-                                    'processing_return' => 'Đang xử lý trả hàng',
-                                    'refunded' => 'Đã hoàn tiền',
                                     'cancelled_by_admin' => 'Admin hủy đơn',
                                     'delivery_failed' => 'Giao thất bại',
                                     'cancelled_by_customer' => 'Khách hủy đơn',
-                                    'return_rejected' => 'Trả hàng bị từ chối',
-                                    'returned_requested' => 'Khách trả hàng', // Thêm lại để tránh lỗi
                                 ];
                                 $current = $order->status;
                                 $canUpdate = count($statusTransitions[$current]) > 0;
@@ -419,6 +612,9 @@
     </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const statusSelect = document.getElementById('order-status-select');
@@ -431,22 +627,11 @@
 
         let shouldShowModal = false;
 
-        // Hiện/ẩn input nhập lý do mới
-        cancellationReasonSelect.addEventListener('change', function() {
-            if (this.value === 'other') {
-                cancellationReasonOther.classList.remove('d-none');
-                cancellationReasonOther.required = true;
-            } else {
-                cancellationReasonOther.classList.add('d-none');
-                cancellationReasonOther.value = '';
-                cancellationReasonOther.required = false;
-            }
-        });
-
-        statusSelect.addEventListener('change', function(e) {
+        // Khi chọn trạng thái admin huỷ đơn thì show modal
+        statusSelect.addEventListener('change', function() {
             if (this.value === 'cancelled_by_admin') {
-                shouldShowModal = true;
                 cancellationReasonModal.show();
+                shouldShowModal = true;
                 orderStatusSubmit.disabled = true;
             } else {
                 cancellationReasonIdInput.value = '';
@@ -454,6 +639,16 @@
             }
         });
 
+        // Khi chọn lý do huỷ
+        cancellationReasonSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                cancellationReasonOther.classList.remove('d-none');
+            } else {
+                cancellationReasonOther.classList.add('d-none');
+            }
+        });
+
+        // Xác nhận lý do huỷ
         document.getElementById('confirm-cancellation-reason').addEventListener('click', function() {
             const selectedReason = cancellationReasonSelect.value;
             if (!selectedReason) {
@@ -467,7 +662,6 @@
                     return;
                 }
                 cancellationReasonOther.classList.remove('is-invalid');
-                // Gửi lý do mới qua hidden input (có thể dùng 1 hidden input hoặc truyền qua cancellation_reason_id)
                 cancellationReasonIdInput.value = 'other:' + cancellationReasonOther.value.trim();
             } else {
                 cancellationReasonOther.classList.remove('is-invalid');
@@ -477,7 +671,7 @@
             orderStatusSubmit.disabled = false;
         });
 
-        // Ngăn submit nếu chọn huỷ mà chưa chọn lý do
+        // Khi submit form, nếu chọn admin huỷ đơn mà chưa chọn lý do thì show modal
         orderStatusForm.addEventListener('submit', function(e) {
             if (statusSelect.value === 'cancelled_by_admin' && !cancellationReasonIdInput.value) {
                 e.preventDefault();
@@ -487,5 +681,4 @@
         });
     });
 </script>
-
-@endsection
+@endpush

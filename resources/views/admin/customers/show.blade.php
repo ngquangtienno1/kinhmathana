@@ -32,7 +32,7 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-1">
-                                            <h5 class="mb-0 text-primary">{{ $customer->total_orders }}</h5>
+                                            <h5 class="mb-1 text-primary">{{ $totalOrders }}</h5>
                                             <p class="mb-0 fs-9 text-primary">Số đơn đã đặt</p>
                                         </div>
                                         <div class="ms-2">
@@ -47,7 +47,8 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-1">
-                                            <h5 class="mb-0 text-success">{{ number_format($customer->total_spent) }}đ
+                                            <h5 class="mb-0 text-success">
+                                                {{ number_format($customer->calculated_total_spent) }}đ
                                             </h5>
                                             <p class="mb-0 fs-9 text-success">Tổng chi tiêu</p>
                                         </div>
@@ -64,7 +65,10 @@
                                     <div class="d-flex align-items-center">
                                         <div class="flex-1">
                                             <h5 class="mb-0 text-info">
-                                                {{ $customer->last_order_at ? $customer->last_order_at->format('d/m/Y') : 'Chưa có' }}
+                                                @php
+                                                    $lastOrder = $customer->orders->sortByDesc('created_at')->first();
+                                                @endphp
+                                                {{ $lastOrder ? $lastOrder->created_at->format('d/m/Y') : 'Chưa có' }}
                                             </h5>
                                             <p class="mb-0 fs-9 text-info">Đơn hàng gần nhất</p>
                                         </div>
@@ -106,21 +110,7 @@
                                         $paymentStatusMap = [
                                             'unpaid' => ['Chưa thanh toán', 'badge-phoenix-warning', 'clock'],
                                             'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
-                                            'cod' => ['Thanh toán khi nhận hàng', 'badge-phoenix-info', 'dollar-sign'],
-                                            'disputed' => ['Đang xử lý', 'badge-phoenix-warning', 'clock'],
-                                            'partially_paid' => [
-                                                'Đã thanh toán một phần',
-                                                'badge-phoenix-info',
-                                                'dollar-sign',
-                                            ],
-                                            'confirmed' => [
-                                                'Đã xác nhận thanh toán',
-                                                'badge-phoenix-primary',
-                                                'check-circle',
-                                            ],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
-                                            'processing_refund' => ['Đang hoàn tiền', 'badge-phoenix-warning', 'clock'],
-                                            'failed' => ['Thanh toán không thành công', 'badge-phoenix-danger', 'x'],
+                                            'failed' => ['Thanh toán thất bại', 'badge-phoenix-danger', 'x'],
                                         ];
                                         $ps = $paymentStatusMap[$order->payment_status] ?? [
                                             ucfirst($order->payment_status),
@@ -138,22 +128,6 @@
                                             'cancelled_by_customer' => ['Khách hủy đơn', 'badge-phoenix-danger', 'x'],
                                             'cancelled_by_admin' => ['Admin hủy đơn', 'badge-phoenix-danger', 'x'],
                                             'delivery_failed' => ['Giao thất bại', 'badge-phoenix-danger', 'x'],
-                                            'returned_requested' => [
-                                                'Khách trả hàng',
-                                                'badge-phoenix-warning',
-                                                'corner-up-left',
-                                            ],
-                                            'processing_return' => [
-                                                'Đang xử lý trả hàng',
-                                                'badge-phoenix-warning',
-                                                'refresh-cw',
-                                            ],
-                                            'return_rejected' => [
-                                                'Trả hàng bị từ chối',
-                                                'badge-phoenix-danger',
-                                                'corner-up-left',
-                                            ],
-                                            'refunded' => ['Đã hoàn tiền', 'badge-phoenix-info', 'refresh-cw'],
                                         ];
                                         $os = $orderStatusMap[$order->status] ?? [
                                             ucfirst($order->status),
@@ -170,7 +144,14 @@
                                             </a>
                                         </td>
                                         <td class="align-middle">{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                        <td class="align-middle text-end">{{ number_format($order->total_amount) }}đ
+                                        <td class="align-middle text-end">
+                                            @php
+                                                $calculatedSubtotal = $order->items->sum(function ($item) {
+                                                    return $item->price * $item->quantity;
+                                                });
+                                                $calculatedTotal = $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
+                                            @endphp
+                                            {{ number_format($calculatedTotal) }}đ
                                         </td>
                                         <td class="align-middle text-center">
                                             <span class="badge badge-phoenix fs-10 {{ $ps[1] }}">

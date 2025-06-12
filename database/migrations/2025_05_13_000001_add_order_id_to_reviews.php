@@ -26,4 +26,4 @@ return new class extends Migration
             $table->dropColumn('order_id');
         });
     }
-}; 
+};

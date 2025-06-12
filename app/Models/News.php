@@ -19,12 +19,14 @@ class News extends Model
         'image',
         'author_id',
         'is_active',
-        'published_at'
+        'published_at',
+        'views'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'published_at' => 'datetime',
+        'views' => 'integer'
     ];
 
     protected $dates = ['deleted_at'];
@@ -47,5 +49,29 @@ class News extends Model
     public function scopePublished($query)
     {
         return $query->where('published_at', '<=', now());
+    }
+
+    /**
+     * Tăng lượt xem của bài viết
+     */
+    public function incrementViews()
+    {
+        $this->increment('views');
+    }
+
+    /**
+     * Lấy danh sách bài viết được xem nhiều nhất
+     */
+    public function scopeMostViewed($query, $limit = 5)
+    {
+        return $query->orderBy('views', 'desc')->limit($limit);
+    }
+
+    /**
+     * Lấy danh sách bài viết mới nhất
+     */
+    public function scopeLatest($query, $limit = 5)
+    {
+        return $query->orderBy('published_at', 'desc')->limit($limit);
     }
 }

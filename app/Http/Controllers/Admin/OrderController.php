@@ -15,9 +15,99 @@ use App\Mail\OrderPlaced;
 use App\Mail\OrderDelivered;
 use App\Mail\OrderDeliveryFailed;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Models\PaymentMethod;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    /**
+     * Kiểm tra xem phương thức thanh toán có phải là COD không
+     */
+    private function isCodPayment(Order $order): bool
+    {
+        return $order->paymentMethod && $order->paymentMethod->code === 'cod';
+    }
+
+    /**
+     * Kiểm tra xem phương thức thanh toán có phải là online không
+     */
+    private function isOnlinePayment(Order $order): bool
+    {
+        return $order->paymentMethod && in_array($order->paymentMethod->code, ['vnpay', 'momo', 'banking', 'card',]);
+    }
+
+    /**
+     * Cập nhật trạng thái thanh toán dựa trên trạng thái đơn hàng
+     */
+    private function updatePaymentStatusBasedOnOrderStatus(Order $order, string $newStatus): void
+    {
+        $paymentStatus = $order->payment_status;
+        $isCod = $this->isCodPayment($order);
+        $isOnline = $this->isOnlinePayment($order);
+
+        switch ($newStatus) {
+            case 'confirmed':
+                // Nếu là online payment, tự động cập nhật thành paid
+                if ($isOnline) {
+                    $paymentStatus = 'paid';
+                }
+                break;
+
+            case 'shipping':
+                // Nếu là COD, giữ nguyên unpaid
+                if ($isCod) {
+                    $paymentStatus = 'unpaid';
+                }
+                break;
+
+            case 'delivered':
+                // Nếu là COD, cập nhật thành paid
+                if ($isCod && $paymentStatus === 'unpaid') {
+                    $paymentStatus = 'paid';
+                }
+                break;
+
+            case 'completed':
+                // Giữ nguyên trạng thái thanh toán nếu đã delivered và thanh toán xong
+                if ($order->status === 'delivered' && $paymentStatus === 'paid') {
+                    // Không thay đổi payment_status
+                }
+                break;
+
+            case 'cancelled_by_customer':
+            case 'cancelled_by_admin':
+                // Nếu là online và chưa thanh toán, cập nhật thành failed
+                if ($isOnline && $paymentStatus === 'unpaid') {
+                    $paymentStatus = 'failed';
+                }
+                break;
+
+            case 'delivery_failed':
+                // Nếu là COD, giữ nguyên unpaid
+                // Nếu là online, cập nhật thành failed
+                if ($isOnline) {
+                    $paymentStatus = 'failed';
+                } else if ($isCod) {
+                    $paymentStatus = 'unpaid';
+                }
+                break;
+        }
+
+        if ($paymentStatus !== $order->payment_status) {
+            Log::info('Updating payment status', [
+                'order_id' => $order->id,
+                'old_payment_status' => $order->payment_status,
+                'new_payment_status' => $paymentStatus,
+                'order_status' => $newStatus,
+                'payment_method' => $order->paymentMethod ? $order->paymentMethod->code : 'unknown',
+                'is_cod' => $isCod,
+                'is_online' => $isOnline
+            ]);
+
+            $order->update(['payment_status' => $paymentStatus]);
+        }
+    }
+
     /**
      * Hiển thị danh sách đơn hàng
      */
@@ -88,8 +178,8 @@ class OrderController extends Controller
             'user_id' => 'required|exists:users,id',
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:unpaid,paid,failed,refunded,cancelled',
-            'status' => 'required|in:pending,confirmed,processing,shipping,delivered,cancelled',
+            'payment_status' => 'required|in:unpaid,paid,failed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -100,6 +190,15 @@ class OrderController extends Controller
 
         DB::beginTransaction();
         try {
+            // Lấy thông tin phương thức thanh toán
+            $codPaymentMethod = PaymentMethod::where('code', 'cod')->first();
+
+            // Nếu phương thức thanh toán là COD, đặt trạng thái thanh toán và đơn hàng mặc định
+            if ($codPaymentMethod && $request->input('payment_method_id') == $codPaymentMethod->id) {
+                $data['payment_status'] = 'unpaid';
+                $data['status'] = 'pending';
+            }
+
             $order = Order::create($data);
 
             // Tạo log trạng thái đầu tiên
@@ -154,8 +253,8 @@ class OrderController extends Controller
         $data = $request->validate([
             'total_amount' => 'required|numeric',
             'discount_id' => 'nullable|exists:discounts,id',
-            'payment_status' => 'required|in:unpaid,paid,cod,confirmed,refunded,processing_refund,failed',
-            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed,returned_requested,processing_return,return_rejected,refunded',
+            'payment_status' => 'required|in:unpaid,paid,failed',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_customer,cancelled_by_admin,delivery_failed',
             'shipping_fee' => 'required|numeric',
             'note' => 'nullable|string',
             'shipping_address' => 'required|string',
@@ -194,7 +293,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_admin,delivery_failed,processing_return,refunded',
+            'status' => 'required|in:pending,confirmed,awaiting_pickup,shipping,delivered,completed,cancelled_by_admin,delivery_failed',
             'comment' => 'nullable|string',
             'cancellation_reason_id' => 'nullable',
         ]);
@@ -202,6 +301,22 @@ class OrderController extends Controller
         // Kiểm tra nếu đơn hàng đã bị khách hủy thì không cho phép cập nhật
         if ($order->status === 'cancelled_by_customer') {
             return back()->with('error', 'Không thể cập nhật trạng thái đơn hàng đã bị khách hủy');
+        }
+
+        // Kiểm tra cấu hình mail trước khi cho phép cập nhật trạng thái cần gửi thông báo
+        if (in_array($request->status, ['delivered', 'delivery_failed'])) {
+            // Test gửi mail thực tế trước khi cho phép cập nhật
+            $testEmail = $order->user ? $order->user->email : $order->customer_email;
+            if ($testEmail) {
+                try {
+                    // Test gửi mail với nội dung rỗng để kiểm tra kết nối
+                    Mail::raw('', function ($message) use ($testEmail) {
+                        $message->to($testEmail)->subject('Test Connection');
+                    });
+                } catch (\Exception $e) {
+                    return back()->with('error', 'Không thể gửi email thông báo do chưa cấu hình hệ thống gửi mail. Vui lòng kiểm tra cấu hình email để đảm bảo thông báo đơn hàng được gửi đến khách hàng.');
+                }
+            }
         }
 
         DB::transaction(function () use ($order, $request) {
@@ -239,6 +354,9 @@ class OrderController extends Controller
 
             $order->update($updateData);
 
+            // Cập nhật trạng thái thanh toán dựa trên trạng thái đơn hàng mới
+            $this->updatePaymentStatusBasedOnOrderStatus($order, $request->status);
+
             // Cập nhật thời gian tương ứng với trạng thái
             if ($request->status === 'confirmed' && !$order->confirmed_at) {
                 $order->update(['confirmed_at' => now()]);
@@ -251,6 +369,8 @@ class OrderController extends Controller
                 } elseif ($order->customer_email) {
                     Mail::to($order->customer_email)->send(new OrderDelivered($order));
                 }
+            } elseif ($request->status === 'completed' && !$order->completed_at) {
+                $order->update(['completed_at' => now()]);
             } elseif ($request->status === 'delivery_failed') {
                 // Gửi email khi giao hàng thất bại
                 if ($order->user && $order->user->email) {
@@ -276,7 +396,12 @@ class OrderController extends Controller
             ]);
         });
 
-        return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
+        // Thông báo khác nhau tùy theo trạng thái
+        if ($request->status === 'delivered') {
+            return back()->with('success', 'Đã gửi thông báo đơn hàng đến khách hàng. Cập nhật trạng thái đơn hàng thành công');
+        } else {
+            return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
+        }
     }
 
     /**
@@ -285,7 +410,7 @@ class OrderController extends Controller
     public function updatePaymentStatus(Request $request, Order $order)
     {
         $request->validate([
-            'payment_status' => 'required|in:unpaid,paid,cod,confirmed,refunded,processing_refund,failed',
+            'payment_status' => 'required|in:unpaid,paid,failed',
             'comment' => 'nullable|string'
         ]);
 

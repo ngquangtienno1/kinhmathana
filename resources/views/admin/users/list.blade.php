@@ -3,7 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item active">Người dùng</li>
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.users.index') }}">Người dùng</a>
+    </li>
+    <li class="breadcrumb-item active">Danh sách người dùng</li>
 @endsection
 
 @section('content')
@@ -115,14 +118,13 @@
                                     style="width:15%; min-width:200px;">EMAIL</th>
                                 <th class="sort align-middle pe-3" scope="col" data-sort="mobile_number"
                                     style="width:20%; min-width:200px;">SỐ ĐIỆN THOẠI</th>
-                                <th class="sort align-middle" scope="col" data-sort="city" style="width:10%;">CITY
+                                <th class="sort align-middle" scope="col" data-sort="city" style="width:150%;">NƠI Ở
                                 </th>
+                                <th class="sort align-middle" scope="col" data-sort="role" style="width:15%;">VAI TRÒ</th>
                                 <th class="sort align-middle text-end" scope="col" data-sort="last_active"
                                     style="width:21%; min-width:200px;">HOẠT ĐỘNG</th>
                                 <th class="sort align-middle text-end pe-0" scope="col" data-sort="joined"
                                     style="width:19%; min-width:200px;">THAM GIA</th>
-                                <th class="sort align-middle text-end pe-0" scope="col" style="width:100px;">THAO TÁC
-                                </th>
                             </tr>
                         </thead>
                         <tbody class="list" id="members-table-body">
@@ -148,6 +150,9 @@
                                     </td>
                                     <td class="city align-middle white-space-nowrap text-body">
                                         {{ $user->address ?? 'N/A' }}
+                                    </td>
+                                    <td class="role align-middle white-space-nowrap">
+                                        {{ $user->role->name ?? 'N/A' }}
                                     </td>
                                     <td class="last_active align-middle text-end white-space-nowrap text-body-tertiary">
                                         {{ $user->updated_at->diffForHumans() }}
@@ -206,58 +211,4 @@
             </div>
         </div>
     </div>
-
-    @push('styles')
-        <style>
-            /* Tùy chỉnh giao diện để các bộ lọc và search form thẳng hàng */
-            .search-box {
-                margin-top: 0 !important;
-            }
-
-            .search-input {
-                padding-left: 2.5rem;
-                height: calc(1.5em + 0.75rem + 2px);
-                /* Đồng bộ chiều cao với các input khác */
-            }
-
-            .search-box-icon {
-                position: absolute;
-                top: 50%;
-                left: 0.75rem;
-                transform: translateY(-50%);
-                color: #6c757d;
-            }
-
-            .form-select,
-            .form-control {
-                font-size: 0.875rem;
-                padding: 0.375rem 0.75rem;
-            }
-
-            .btn-primary,
-            .btn-secondary {
-                font-size: 0.875rem;
-                padding: 0.375rem 1rem;
-            }
-
-            /* Responsive: Xếp chồng các bộ lọc trên màn hình nhỏ */
-            @media (max-width: 992px) {
-                .row.align-items-end {
-                    flex-wrap: wrap;
-                }
-
-                .col-auto {
-                    margin-bottom: 0.5rem;
-                }
-
-                .search-box {
-                    width: 100%;
-                }
-
-                .search-input {
-                    width: 100%;
-                }
-            }
-        </style>
-    @endpush
 @endsection

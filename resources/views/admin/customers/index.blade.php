@@ -130,7 +130,7 @@
                                 </td>
                                 <td class="spent align-middle text-end fw-semibold text-body-highlight px-3"
                                     style="white-space:nowrap;">
-                                    {{ number_format($customer->total_spent) }} <span
+                                    {{ number_format($customer->calculated_total_spent) }} <span
                                         class="text-muted ms-1">VND</span>
                                 </td>
                                 <td

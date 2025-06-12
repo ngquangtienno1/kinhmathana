@@ -4,7 +4,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Thuộc tính</a>
+        <a href="{{ route('admin.cylindricals.index') }}">Độ loạn</a>
     </li>
     <li class="breadcrumb-item active">Danh sách Độ loạn</li>
 @endsection
@@ -68,7 +68,7 @@
                                     </div>
                                 </td>
                                 <td class="align-middle ps-4">{{ $cylindrical->id }}</td>
-                                <td class="align-middle ps-4">{{ $cylindrical->value }}</td>
+                                <td class="align-middle ps-4">{{ $cylindrical->name }}</td>
                                 <td class="align-middle ps-4">{{ $cylindrical->sort_order }}</td>
                                 <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">

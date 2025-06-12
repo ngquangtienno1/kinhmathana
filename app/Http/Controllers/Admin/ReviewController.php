@@ -142,7 +142,7 @@ class ReviewController extends Controller
     {
         $review = Review::findOrFail($id);
         $review->delete();
-    
+
         $redirect = $request->input('redirect');
         if ($redirect) {
             return redirect($redirect)->with('success', 'Xoá đánh giá thành công!');
@@ -195,6 +195,7 @@ class ReviewController extends Controller
         }
 
         $review->reply = $request->reply;
+        $review->updated_at = now();
         $review->save();
 
         return back()->with('success', 'Đã trả lời đánh giá thành công!');

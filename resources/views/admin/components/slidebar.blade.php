@@ -44,6 +44,40 @@
                         </div>
                     </li>
                 @endif
+
+                @if (canAccess('xem-danh-sach-nguoi-dung') || canAccess('xem-danh-sach-vai-tro') || canAccess('xem-danh-sach-quyen'))
+                    <!-- User Management -->
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*') || request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
+                                href="#nv-users" role="button" data-bs-toggle="collapse" aria-expanded="false"
+                                aria-controls="nv-users">
+                                <div class="d-flex align-items-center">
+                                    <div class="dropdown-indicator-icon-wrapper">
+                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
+                                    </div>
+                                    <span class="nav-link-icon"><span data-feather="user-check"></span></span>
+                                    <span class="nav-link-text">Người dùng</span>
+                                </div>
+                            </a>
+                            <div class="parent-wrapper label-1">
+                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-users">
+                                    @if (canAccess('xem-danh-sach-nguoi-dung'))
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}"
+                                                href="{{ route('admin.users.index') }}">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="nav-link-text">Danh sách người dùng</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
                 @if (canAccess('xem-danh-sach-san-pham') ||
                         canAccess('xem-bien-the-san-pham') ||
                         canAccess('xem-danh-sach-danh-muc') ||
@@ -713,60 +747,6 @@
                                             </div>
                                         </a>
                                     </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                @endif
-
-                @if (canAccess('xem-danh-sach-nguoi-dung') || canAccess('xem-danh-sach-vai-tro') || canAccess('xem-danh-sach-quyen'))
-                    <!-- User Management -->
-                    <li class="nav-item">
-                        <div class="nav-item-wrapper">
-                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.roles.*') || request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
-                                href="#nv-users" role="button" data-bs-toggle="collapse" aria-expanded="false"
-                                aria-controls="nv-users">
-                                <div class="d-flex align-items-center">
-                                    <div class="dropdown-indicator-icon-wrapper">
-                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
-                                    </div>
-                                    <span class="nav-link-icon"><span data-feather="user-check"></span></span>
-                                    <span class="nav-link-text">Người dùng</span>
-                                </div>
-                            </a>
-                            <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-users">
-                                    @if (canAccess('xem-danh-sach-nguoi-dung'))
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : '' }}"
-                                                href="{{ route('admin.users.index') }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Danh sách người dùng</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @if (canAccess('xem-danh-sach-vai-tro'))
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
-                                                href="{{ route('admin.roles.index') }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Roles</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @if (canAccess('xem-danh-sach-quyen'))
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
-                                                href="{{ route('admin.permissions.index') }}">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Permissions</span>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endif
                                 </ul>
                             </div>
                         </div>

@@ -30,15 +30,16 @@
     <div id="sliders"
         data-list='{"valueNames":["title","description","sort_order","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
-            <div class="d-flex flex-wrap gap-3">
-                <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.sliders.index') }}" method="GET">
-                        <input class="form-control search-input search" type="search" name="search"
-                            placeholder="Tìm kiếm slider" value="{{ request('search') }}" aria-label="Search" />
-                        <span class="fas fa-search search-box-icon"></span>
-                    </form>
-                </div>
-                <div class="ms-xxl-auto">
+            <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                <form action="{{ route('admin.sliders.index') }}" method="GET" class="d-flex flex-wrap align-items-center gap-3 mb-0">
+                    <input class="form-control search-input search" type="search" name="search"
+                        placeholder="Tìm kiếm slider" value="{{ request('search') }}" aria-label="Search" style="width:220px;" />
+                    <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}" style="width: 150px;" placeholder="Từ ngày">
+                    <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}" style="width: 150px;" placeholder="Đến ngày">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Lọc</button>
+                    <a href="{{ route('admin.sliders.index') }}" class="btn btn-secondary"><i class="fas fa-times me-1"></i>Bỏ lọc</a>
+                </form>
+                <div class="ms-xxl-auto d-flex gap-2">  
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>

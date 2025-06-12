@@ -32,6 +32,14 @@ class SliderController extends Controller
             }
         }
 
+        // Lọc theo ngày tạo
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
         $sort = $request->get('sort', 'created_at');
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);

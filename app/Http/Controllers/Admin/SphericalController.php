@@ -14,7 +14,7 @@ class SphericalController extends Controller
 
         if ($request->filled('search')) {
             $search = mb_strtolower(trim($request->search));
-            $query->whereRaw('LOWER(value) LIKE ?', ["%{$search}%"]);
+            $query->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]);
         }
 
         $sphericals = $query->orderBy('sort_order')->get();
@@ -30,11 +30,11 @@ class SphericalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'value' => 'required|numeric|between:-20.00,20.00|unique:sphericals,value',
+            'name' => 'required|string|max:10|unique:sphericals,name',
             'sort_order' => 'nullable|integer',
         ]);
 
-        Spherical::create($request->only(['value', 'sort_order']));
+        Spherical::create($request->only(['name', 'sort_order']));
 
         return redirect()->route('admin.sphericals.index')->with('success', 'Thêm Độ cận thành công.');
     }
@@ -50,11 +50,11 @@ class SphericalController extends Controller
         $spherical = Spherical::findOrFail($id);
 
         $request->validate([
-            'value' => 'required|numeric|between:-20.00,20.00|unique:sphericals,value,' . $id,
+            'name' => 'required|string|max:10|unique:sphericals,name,' . $id,
             'sort_order' => 'nullable|integer',
         ]);
 
-        $spherical->update($request->only(['value', 'sort_order']));
+        $spherical->update($request->only(['name', 'sort_order']));
 
         return redirect()->route('admin.sphericals.index')->with('success', 'Cập nhật Độ cận thành công.');
     }
