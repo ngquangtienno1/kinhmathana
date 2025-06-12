@@ -37,7 +37,7 @@
         </li>
     </ul>
     <div id="products"
-        data-list='{"valueNames":["name","price","status","created_at","stock","has_variations"],"page":10,"pagination":true}'>
+        data-list='{"valueNames":["name","price","sale_price","stock","description","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
@@ -117,39 +117,39 @@
                                     </div>
                                 </td>
                                 <td class="align-middle ps-4">{{ $loop->iteration }}</td>
-                                <td class="align-middle ps-4">{{ $product->name }}</td>
-                                <td class="align-middle ps-4 text-end">
+                                <td class="align-middle ps-4 name">{{ $product->name }}</td>
+                                <td class="align-middle ps-4 text-end price">
                                     {{ $product->product_type === 'simple' ? number_format($product->price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
-                                <td class="align-middle ps-4 text-end">
+                                <td class="align-middle ps-4 text-end sale_price">
                                     {{ $product->product_type === 'simple' ? number_format($product->sale_price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
-                                <td class="align-middle ps-4 text-center">
+                                <td class="align-middle ps-4 text-center stock">
                                     {{ $product->total_stock }}
                                 </td>
-                                <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}
+                                <td class="align-middle ps-4 description">{{ Str::limit($product->description_short ?? '', 50) }}
                                 </td>
-                                <td class="align-middle ps-4">
+                                <td class="align-middle ps-4 categories">
                                     @if ($product->categories->count() > 0)
                                         {{ $product->categories->pluck('name')->join(', ') }}
                                     @else
                                         -
                                     @endif
                                 </td>
-                                <td class="align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
+                                <td class="align-middle ps-4 brand">{{ optional($product->brand)->name ?? '-' }}</td>
                                 <td class="align-middle text-center has_variations">
                                     <span
                                         class="badge {{ $product->product_type === 'variable' ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $product->product_type === 'variable' ? 'Có' : 'Không' }}
                                     </span>
                                 </td>
-                                <td class="align-middle text-center">
+                                <td class="align-middle text-center is_featured">
                                     <span class="badge {{ $product->is_featured ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $product->is_featured ? 'Có' : 'Không' }}
                                     </span>
                                 </td>
-                                <td class="align-middle text-center">{{ $product->views ?? 0 }}</td>
-                                <td class="align-middle text-center">
+                                <td class="align-middle text-center views">{{ $product->views ?? 0 }}</td>
+                                <td class="align-middle text-center status">
                                     <span
                                         class="badge {{ $product->status === 'Hoạt động' ? 'bg-success' : 'bg-danger' }}">
                                         {{ $product->status ?? 'Không hoạt động' }}
@@ -264,35 +264,6 @@
             bulkDeleteIds.value = checkedIds.join(',');
             bulkDeleteForm.submit();
         });
-
-        // Tìm kiếm realtime cho sản phẩm (giống brand)
-        const searchBox = document.querySelector('.search-box input[name="search"]');
-        const tableWrapper = document.getElementById('product-table-wrapper');
-        let timer = null;
-        if (searchBox) {
-            searchBox.addEventListener('input', function(e) {
-                clearTimeout(timer);
-                timer = setTimeout(function() {
-                    const params = new URLSearchParams(window.location.search);
-                    params.set('search', searchBox.value);
-                    fetch(`{{ route('admin.products.list') }}?${params.toString()}`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(res => res.text())
-                        .then(html => {
-                            // Lấy phần table từ HTML trả về
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const newTable = doc.getElementById('product-table-wrapper');
-                            if (newTable && tableWrapper) {
-                                tableWrapper.innerHTML = newTable.innerHTML;
-                            }
-                        });
-                }, 300); // debounce 300ms
-            });
-        }
     });
 
     function deleteProduct(id) {

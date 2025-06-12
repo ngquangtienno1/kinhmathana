@@ -266,4 +266,16 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chặn submit form search để Phoenix List.js tự động lọc realtime
+        const searchForm = document.querySelector('.search-box form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+            });
+        }
+    });
+</script>
+
 @endsection
