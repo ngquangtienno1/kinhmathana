@@ -70,11 +70,37 @@
                                 </tr>
                                 <tr>
                                     <th>Thương hiệu</th>
-                                    <td>{{ $product->brand->name ?? 'N/A' }}</td>
+                                    <td>
+                                        @if($product->brand)
+                                            <span class="badge badge-phoenix fs-10 badge-phoenix-primary">
+                                                <span class="badge-label">{{ $product->brand->name }}</span>
+                                                <span class="ms-1" data-feather="award" style="height:12.8px;width:12.8px;"></span>
+                                            </span>
+                                        @else
+                                            <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
+                                                <span class="badge-label">N/A</span>
+                                                <span class="ms-1" data-feather="info" style="height:12.8px;width:12.8px;"></span>
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Danh mục</th>
-                                    <td>{{ $product->categories->pluck('name')->implode(', ') }}</td>
+                                    <td>
+                                        @if($product->categories->count())
+                                            @foreach($product->categories as $cat)
+                                                <span class="badge badge-phoenix fs-10 badge-phoenix-info mb-1">
+                                                    <span class="badge-label">{{ $cat->name }}</span>
+                                                    <span class="ms-1" data-feather="tag" style="height:12.8px;width:12.8px;"></span>
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
+                                                <span class="badge-label">N/A</span>
+                                                <span class="ms-1" data-feather="info" style="height:12.8px;width:12.8px;"></span>
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Trạng thái</th>
@@ -385,4 +411,14 @@
         }
     });
 </script>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.feather) {
+            window.feather.replace();
+        }
+    });
+</script>
+@endpush
 @endsection
