@@ -388,6 +388,11 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Thêm độ loạn', 'slug' => 'them-do-loan', 'description' => 'Cho phép thêm độ loạn mới'],
             ['name' => 'Sửa độ loạn', 'slug' => 'sua-do-loan', 'description' => 'Cho phép chỉnh sửa độ loạn'],
             ['name' => 'Xóa độ loạn', 'slug' => 'xoa-do-loan', 'description' => 'Cho phép xóa độ loạn'],
+
+            // Quản lý kho
+            ['name' => 'Xem giao dịch kho', 'slug' => 'xem-giao-dich-kho', 'description' => 'Cho phép xem lịch sử giao dịch kho'],
+            ['name' => 'Thêm giao dịch kho', 'slug' => 'them-giao-dich-kho', 'description' => 'Cho phép thực hiện nhập/xuất kho'],
+            ['name' => 'In phiếu kho', 'slug' => 'in-phieu-kho', 'description' => 'Cho phép in phiếu kho'],
         ];
 
         // Thêm timestamps cho mỗi permission
@@ -437,7 +442,11 @@ class RolePermissionSeeder extends Seeder
             'xem-mau-sac',
             'xem-kich-thuoc',
             'xem-anh-san-pham',
-            'xem-anh-bien-the'
+            'xem-anh-bien-the',
+            'quan-ly-ton-kho',
+            'xem-giao-dich-kho',
+            'them-giao-dich-kho',
+            'in-phieu-kho', 
         ];
         foreach ($allPermissions as $permission) {
             if (in_array($permission->slug, $staffPermissions)) {

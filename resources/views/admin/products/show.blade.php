@@ -200,8 +200,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Trạng thái</th>
-                                                            <td>{{ $variation->status === 'in_stock' ? 'Còn hàng' : ($variation->status === 'out_of_stock' ? 'Hết hàng' : 'Ẩn') }}
-                                                            </td>
+                                                            <td>{{ $variation->stock_quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Ảnh</th>
@@ -301,6 +300,7 @@
             <div class="mt-4">
                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-primary">Sửa</a>
                 <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">Quay lại</a>
+                <a href="{{ route('admin.inventory.index') }}?search={{ $product->sku }}" class="btn btn-sm btn-info">Xem lịch sử kho</a>
             </div>
         </div>
     </div>

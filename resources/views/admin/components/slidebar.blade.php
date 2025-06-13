@@ -211,7 +211,20 @@
                         </div>
                     </li>
                 @endif
-
+                 <!-- Quản lý kho -->
+                @if (canAccess('quan-ly-ton-kho'))
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 {{ request()->routeIs('admin.inventory.*') ? 'active' : '' }}"
+                                href="{{ route('admin.inventory.index') }}">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon"><span data-feather="package"></span></span>
+                                    <span class="nav-link-text">Quản lý kho</span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                @endif
                 @if (canAccess('xem-danh-sach-don-hang'))
                     <!-- Orders Management -->
                     <li class="nav-item">
