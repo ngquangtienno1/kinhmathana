@@ -489,7 +489,7 @@ class ProductController extends Controller
         $validated = $request->validate($rules, $messages);
 
         $updateData = [];
-        
+
         // Chỉ cập nhật các trường được gửi lên
         if ($request->has('name')) {
             $updateData['name'] = $validated['name'];

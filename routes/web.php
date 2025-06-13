@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\InventoryController;
 
 // Redirect login
 Route::get('/', function () {
@@ -71,6 +72,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
 
     Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
+
+    // Inventory routes
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::post('/', [InventoryController::class, 'store'])->name('store');
+        Route::get('/search-variations', [InventoryController::class, 'searchVariations'])->name('search-variations');
+        Route::get('/print/{id}', [InventoryController::class, 'print'])->name('print');
+    });
+
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');
