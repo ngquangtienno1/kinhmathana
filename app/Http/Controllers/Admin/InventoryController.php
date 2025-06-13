@@ -110,6 +110,129 @@ class InventoryController extends Controller
     ]);
 }
 
+public function getVariationsByProduct(Request $request)
+{
+    $productId = $request->input('product_id');
+    $product = Product::with('variations')->find($productId);
+
+    if (!$product || $product->product_type !== 'variable') {
+        return response()->json(['variations' => []]);
+    }
+
+    $variations = $product->variations->map(function ($variation) {
+        return [
+            'id' => $variation->id,
+            'name' => $variation->name,
+            'sku' => $variation->sku,
+            'stock_quantity' => $variation->stock_quantity,
+        ];
+    });
+
+    return response()->json(['variations' => $variations]);
+}
+public function storeBulk(Request $request)
+{
+    $messages = [
+        'product_id.required' => 'Vui lòng chọn sản phẩm.',
+        'type.required' => 'Loại giao dịch là bắt buộc.',
+        'type.in' => 'Loại giao dịch không hợp lệ.',
+        'variations.*.id.required' => 'ID biến thể là bắt buộc.',
+        'variations.*.id.integer' => 'ID biến thể phải là số nguyên.',
+        'variations.*.id.exists' => 'Biến thể không tồn tại.',
+        'variations.*.quantity.required' => 'Số lượng là bắt buộc.',
+        'variations.*.quantity.integer' => 'Số lượng phải là số nguyên.',
+        'variations.*.quantity.min' => 'Số lượng phải lớn hơn 0.',
+        'note.string' => 'Ghi chú phải là chuỗi ký tự.',
+    ];
+
+    $validated = $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'type' => 'required|in:import,export,adjust',
+        'variations.*.id' => 'required|integer|exists:variations,id',
+        'variations.*.quantity' => 'required|integer|min:1',
+        'note' => 'nullable|string',
+    ], $messages);
+
+    try {
+        DB::transaction(function () use ($validated) {
+            $product = Product::findOrFail($validated['product_id']);
+            if ($product->product_type !== 'variable') {
+                throw new \Exception('Chỉ sản phẩm có biến thể mới có thể nhập kho hàng loạt.');
+            }
+
+            $importDocumentId = null;
+            if ($validated['type'] === 'import') {
+                $importDocument = ImportDocument::create([
+                    'code' => 'IMP-' . time(),
+                    'total_amount' => 0,
+                    'import_date' => now(),
+                    'status' => 'confirmed',
+                    'user_id' => Auth::id(),
+                    'note' => $validated['note'],
+                ]);
+                $importDocumentId = $importDocument->id;
+            }
+
+            foreach ($validated['variations'] as $variationId => $variationData) {
+                if (!isset($variationData['id'])) {
+                    throw new \Exception("Thiếu ID biến thể cho variationId: {$variationId}.");
+                }
+                $variation = Variation::lockForUpdate()->findOrFail($variationData['id']);
+                if ($validated['type'] === 'export' && $variation->stock_quantity < $variationData['quantity']) {
+                    throw new \Exception("Tồn kho không đủ để xuất cho biến thể {$variation->name}.");
+                }
+
+                if ($validated['type'] === 'import') {
+                    $variation->increment('stock_quantity', $variationData['quantity']);
+                } elseif ($validated['type'] === 'export') {
+                    $variation->decrement('stock_quantity', $variationData['quantity']);
+                } elseif ($validated['type'] === 'adjust') {
+                    $variation->stock_quantity = $variationData['quantity'];
+                    $variation->save();
+                }
+
+                Inventory::create([
+                    'variation_id' => $variation->id,
+                    'product_id' => $product->id,
+                    'type' => $validated['type'],
+                    'quantity' => $variationData['quantity'],
+                    'reference' => $validated['type'] . '-' . time() . '-' . $variation->id,
+                    'note' => $validated['note'],
+                    'status' => 'confirmed',
+                    'user_id' => Auth::id(),
+                    'import_document_id' => $importDocumentId,
+                ]);
+            }
+
+            $product->stock_quantity = $product->variations->sum('stock_quantity');
+            $product->save();
+        });
+
+        return redirect()->route('admin.inventory.index')->with('success', 'Giao dịch kho hàng loạt đã được thực hiện.');
+    } catch (\Exception $e) {
+        return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
+    }
+}
+public function searchProducts(Request $request)
+{
+    $search = $request->input('search', '');
+
+    $products = Product::where('product_type', 'variable')
+        ->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('sku', 'like', "%{$search}%");
+        })
+        ->take(20)
+        ->get()
+        ->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'text' => $product->name . ' (SKU: ' . ($product->sku ?? 'N/A') . ')',
+            ];
+        });
+
+    return response()->json(['results' => $products]);
+}
 public function store(Request $request)
 {
     $messages = [
