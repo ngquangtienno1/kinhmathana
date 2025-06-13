@@ -212,7 +212,7 @@
                     </li>
                 @endif
                  <!-- Quản lý kho -->
-                @if (canAccess('items.view_inventory_management'))
+                @if (canAccess('quan-ly-ton-kho'))
                     <li class="nav-item">
                         <div class="nav-item-wrapper">
                             <a class="nav-link label-1 {{ request()->routeIs('admin.inventory.*') ? 'active' : '' }}"

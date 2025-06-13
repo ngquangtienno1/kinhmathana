@@ -75,11 +75,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
     // Inventory routes
     Route::prefix('inventory')->name('inventory.')->group(function () {
-        Route::get('/', [InventoryController::class, 'index'])->name('index');
-        Route::post('/', [InventoryController::class, 'store'])->name('store');
-        Route::get('/search-variations', [InventoryController::class, 'searchVariations'])->name('search-variations');
-        Route::get('/print/{id}', [InventoryController::class, 'print'])->name('print');
-    });
+    Route::get('/', [InventoryController::class, 'index'])->name('index')->middleware(['permission:quan-ly-ton-kho']);
+    Route::post('/', [InventoryController::class, 'store'])->name('store')->middleware(['permission:them-giao-dich-kho']);
+    Route::get('/search-variations', [InventoryController::class, 'searchVariations'])->name('search-variations');
+    Route::get('/print/{id}', [InventoryController::class, 'print'])->name('print')->middleware(['permission:in-phieu-kho']);
+});
 
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {

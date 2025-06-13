@@ -10,6 +10,7 @@ class Inventory extends Model
     use HasFactory;
 
     protected $fillable = [
+        'product_id',
         'variation_id',
         'type',
         'quantity',
@@ -20,6 +21,10 @@ class Inventory extends Model
         'status',
         'user_id',
     ];
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 
     public function variation()
     {

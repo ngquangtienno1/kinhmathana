@@ -16,103 +16,145 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class InventoryController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Inventory::with(['variation.product', 'user']);
+{
+    $query = Inventory::with(['variation.product', 'product', 'user']);
 
-        // Lọc theo loại giao dịch
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
+    // Lọc theo loại giao dịch
+    if ($request->filled('type')) {
+        $query->where('type', $request->type);
+    }
 
-        // Tìm kiếm theo SKU hoặc tên sản phẩm
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('variation', function ($q) use ($search) {
+    // Tìm kiếm theo SKU hoặc tên sản phẩm
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('variation', function ($q) use ($search) {
                 $q->where('sku', 'like', "%{$search}%")
                   ->orWhereHas('product', function ($q2) use ($search) {
                       $q2->where('name', 'like', "%{$search}%");
                   });
+            })->orWhereHas('product', function ($q) use ($search) {
+                $q->where('sku', 'like', "%{$search}%")
+                  ->orWhere('name', 'like', "%{$search}%");
             });
-        }
-
-        // Lọc theo tồn kho thấp
-        if ($request->filled('low_stock')) {
-            $query->whereHas('variation', function ($q) {
-                $q->whereColumn('stock_quantity', '<=', 'stock_alert_threshold');
-            });
-        }
-
-        $inventories = $query->orderBy('created_at', 'desc')->paginate(10);
-        $categories = Category::all(); // Lấy danh sách danh mục
-
-        return view('admin.inventory.index', compact('inventories', 'categories'));
+        });
     }
+
+    // Lọc theo tồn kho thấp
+    if ($request->filled('low_stock')) {
+        $query->where(function ($q) {
+            $q->whereHas('variation', function ($q) {
+                $q->whereColumn('stock_quantity', '<=', 'stock_alert_threshold');
+            })->orWhereHas('product', function ($q) {
+                $q->where('stock_quantity', '<=', 10); // Giả sử ngưỡng là 10
+            });
+        });
+    }
+
+    $inventories = $query->orderBy('created_at', 'desc')->paginate(10);
+    $categories = Category::all();
+
+    return view('admin.inventory.index', compact('inventories', 'categories'));
+}
 
     public function searchVariations(Request $request)
-    {
-        $search = $request->input('search', '');
-        $category_id = $request->input('category_id', '');
+{
+    $search = $request->input('search', '');
+    $category_id = $request->input('category_id', '');
 
-        $query = Variation::with(['product.categories'])
-            ->where(function ($q) use ($search) {
-                $q->where('sku', 'like', "%{$search}%")
-                  ->orWhereHas('product', function ($q2) use ($search) {
-                      $q2->where('name', 'like', "%{$search}%");
-                  });
-            });
+    $variationQuery = Variation::with(['product.categories'])
+        ->where(function ($q) use ($search) {
+            $q->where('sku', 'like', "%{$search}%")
+              ->orWhereHas('product', function ($q2) use ($search) {
+                  $q2->where('name', 'like', "%{$search}%");
+              });
+        });
 
-        // Lọc theo danh mục
-        if ($category_id) {
-            $query->whereHas('product.categories', function ($q) use ($category_id) {
-                $q->where('categories.id', $category_id);
-            });
-        }
+    $productQuery = Product::with('categories')
+        ->where('product_type', 'simple')
+        ->where(function ($q) use ($search) {
+            $q->where('sku', 'like', "%{$search}%")
+              ->orWhere('name', 'like', "%{$search}%");
+        });
 
-        $variations = $query->take(20)->get();
-
-        return response()->json([
-            'results' => $variations->map(function ($variation) {
-                return [
-                    'id' => $variation->id,
-                    'text' => ($variation->product->name ?? 'N/A') . ' - ' . ($variation->name ?? 'N/A') . ' (SKU: ' . ($variation->sku ?? 'N/A') . ')'
-                ];
-            })
-        ]);
+    if ($category_id) {
+        $variationQuery->whereHas('product.categories', function ($q) use ($category_id) {
+            $q->where('categories.id', $category_id);
+        });
+        $productQuery->whereHas('categories', function ($q) use ($category_id) {
+            $q->where('categories.id', $category_id);
+        });
     }
 
-    public function store(Request $request)
-    {
-        $messages = [
-            'variation_id.required' => 'Vui lòng chọn biến thể hoặc sản phẩm.',
-            'variation_id.exists' => 'Biến thể hoặc sản phẩm không hợp lệ.',
-            'type.required' => 'Loại giao dịch là bắt buộc.',
-            'type.in' => 'Loại giao dịch không hợp lệ.',
-            'quantity.required' => 'Số lượng là bắt buộc.',
-            'quantity.integer' => 'Số lượng phải là số nguyên.',
-            'quantity.min' => 'Số lượng phải lớn hơn 0.',
-            'note.string' => 'Ghi chú phải là chuỗi ký tự.',
+    $variations = $variationQuery->take(20)->get();
+    $products = $productQuery->take(20)->get();
+
+    $results = [];
+
+    foreach ($products as $product) {
+        $results[] = [
+            'id' => 'product_' . $product->id, // Sửa thành product_
+            'text' => $product->name . ' (SKU: ' . ($product->sku ?? 'N/A') . ')',
         ];
+    }
 
-        $validated = $request->validate([
-            'variation_id' => 'required|exists:variations,id',
-            'type' => 'required|in:import,export,adjust',
-            'quantity' => 'required|integer|min:1',
-            'note' => 'nullable|string',
-        ], $messages);
+    foreach ($variations as $variation) {
+        $results[] = [
+            'id' => 'variation_' . $variation->id, // Sửa thành variation_
+            'text' => ($variation->product->name ?? 'N/A') . ' - ' . ($variation->name ?? 'N/A') . ' (SKU: ' . ($variation->sku ?? 'N/A') . ')',
+        ];
+    }
 
-        DB::transaction(function () use ($validated) {
-            $variation = Variation::lockForUpdate()->findOrFail($validated['variation_id']);
-            $importDocumentId = null;
+    return response()->json([
+        'results' => $results
+    ]);
+}
 
-            if ($validated['type'] === 'export' && $variation->stock_quantity < $validated['quantity']) {
+public function store(Request $request)
+{
+    $messages = [
+        'target_id.required' => 'Vui lòng chọn sản phẩm hoặc biến thể.',
+        'type.required' => 'Loại giao dịch là bắt buộc.',
+        'type.in' => 'Loại giao dịch không hợp lệ.',
+        'quantity.required' => 'Số lượng là bắt buộc.',
+        'quantity.integer' => 'Số lượng phải là số nguyên.',
+        'quantity.min' => 'Số lượng phải lớn hơn 0.',
+        'note.string' => 'Ghi chú phải là chuỗi ký tự.',
+    ];
+
+    $validated = $request->validate([
+        'target_id' => 'required',
+        'type' => 'required|in:import,export,adjust',
+        'quantity' => 'required|integer|min:1',
+        'note' => 'nullable|string',
+    ], $messages);
+
+    DB::transaction(function () use ($validated) {
+        $targetType = explode('_', $validated['target_id'])[0];
+        $targetId = explode('_', $validated['target_id'])[1];
+        $importDocumentId = null;
+
+        if ($targetType === 'variation') {
+            $target = Variation::lockForUpdate()->findOrFail($targetId);
+            $product = $target->product;
+
+            if ($validated['type'] === 'export' && $target->stock_quantity < $validated['quantity']) {
                 throw new \Exception('Tồn kho không đủ để xuất.');
             }
 
-            // Tạo import_document nếu là nhập kho
+            if ($validated['type'] === 'import') {
+                $target->increment('stock_quantity', $validated['quantity']);
+            } elseif ($validated['type'] === 'export') {
+                $target->decrement('stock_quantity', $validated['quantity']);
+            } elseif ($validated['type'] === 'adjust') {
+                $target->stock_quantity = $validated['quantity'];
+                $target->save();
+            }
+
             if ($validated['type'] === 'import') {
                 $importDocument = ImportDocument::create([
                     'code' => 'IMP-' . time(),
-                    'total_amount' => 0, // Cập nhật sau nếu cần
+                    'total_amount' => 0,
                     'import_date' => now(),
                     'status' => 'confirmed',
                     'user_id' => Auth::id(),
@@ -121,19 +163,9 @@ class InventoryController extends Controller
                 $importDocumentId = $importDocument->id;
             }
 
-            // Cập nhật stock_quantity
-            if ($validated['type'] === 'import') {
-                $variation->increment('stock_quantity', $validated['quantity']);
-            } elseif ($validated['type'] === 'export') {
-                $variation->decrement('stock_quantity', $validated['quantity']);
-            } elseif ($validated['type'] === 'adjust') {
-                $variation->stock_quantity = $validated['quantity'];
-                $variation->save();
-            }
-
-            // Ghi log vào inventories
             Inventory::create([
-                'variation_id' => $variation->id,
+                'variation_id' => $target->id,
+                'product_id' => $product->id,
                 'type' => $validated['type'],
                 'quantity' => $validated['quantity'],
                 'reference' => $validated['type'] . '-' . time(),
@@ -143,18 +175,61 @@ class InventoryController extends Controller
                 'import_document_id' => $importDocumentId,
             ]);
 
-            // Cập nhật stock_quantity của product
-            $product = $variation->product;
             $product->stock_quantity = $product->variations->sum('stock_quantity');
             $product->save();
-        });
+        } elseif ($targetType === 'product') {
+            $target = Product::lockForUpdate()->findOrFail($targetId);
+            if ($target->product_type !== 'simple') {
+                throw new \Exception('Chỉ sản phẩm đơn giản mới có thể được chọn trực tiếp.');
+            }
 
-        return redirect()->route('admin.inventory.index')->with('success', 'Giao dịch kho đã được thực hiện.');
-    }
+            if ($validated['type'] === 'export' && $target->stock_quantity < $validated['quantity']) {
+                throw new \Exception('Tồn kho không đủ để xuất.');
+            }
+
+            if ($validated['type'] === 'import') {
+                $target->increment('stock_quantity', $validated['quantity']);
+            } elseif ($validated['type'] === 'export') {
+                $target->decrement('stock_quantity', $validated['quantity']);
+            } elseif ($validated['type'] === 'adjust') {
+                $target->stock_quantity = $validated['quantity'];
+                $target->save();
+            }
+
+            if ($validated['type'] === 'import') {
+                $importDocument = ImportDocument::create([
+                    'code' => 'IMP-' . time(),
+                    'total_amount' => 0,
+                    'import_date' => now(),
+                    'status' => 'confirmed',
+                    'user_id' => Auth::id(),
+                    'note' => $validated['note'],
+                ]);
+                $importDocumentId = $importDocument->id;
+            }
+
+            Inventory::create([
+                'product_id' => $target->id,
+                'variation_id' => null, // Rõ ràng đặt variation_id là null
+                'type' => $validated['type'],
+                'quantity' => $validated['quantity'],
+                'reference' => $validated['type'] . '-' . time(),
+                'note' => $validated['note'],
+                'status' => 'confirmed',
+                'user_id' => Auth::id(),
+                'import_document_id' => $importDocumentId,
+            ]);
+        } else {
+            throw new \Exception('ID không hợp lệ.');
+        }
+    });
+
+    return redirect()->route('admin.inventory.index')->with('success', 'Giao dịch kho đã được thực hiện.');
+}
 
     public function print(Request $request, $id)
     {
-        $inventory = Inventory::with(['variation.product', 'user'])->findOrFail($id);
+        $inventory = Inventory::with(['variation.product', 'product', 'user'])->findOrFail($id);
         $pdf = Pdf::loadView('admin.inventory.print', compact('inventory'));
         return $pdf->download('phieu-kho-' . $inventory->reference . '.pdf');
     }

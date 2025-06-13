@@ -33,10 +33,10 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Sản phẩm/Biến thể <span class="text-danger">*</span></label>
-                        <select name="variation_id" id="variation_id" class="form-select" required>
+                        <select name="target_id" id="target_id" class="form-select" required>
                             <option value="">Chọn sản phẩm/biến thể</option>
                         </select>
-                        @error('variation_id')
+                        @error('target_id')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -119,40 +119,52 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($inventories as $inventory)
-                        <tr>
-                            <td>{{ $inventory->reference }}</td>
-                            <td>
-                                {{ $inventory->variation->product->name ?? 'N/A' }}
-                                @if ($inventory->variation)
-                                    - {{ $inventory->variation->name }} (SKU: {{ $inventory->variation->sku }})
-                                @endif
-                            </td>
-                            <td>{{ $inventory->importDocument->code ?? 'N/A' }}</td>
-                            <td>
-                                @if ($inventory->type === 'import')
-                                    Nhập kho
-                                @elseif ($inventory->type === 'export')
-                                    Xuất kho
-                                @else
-                                    Điều chỉnh
-                                @endif
-                            </td>
-                            <td>{{ $inventory->quantity }}</td>
-                            <td>
+                @foreach ($inventories as $inventory)
+                    <tr>
+                        <td>{{ $inventory->reference }}</td>
+                        <td>
+                            @if ($inventory->variation)
+                                {{ $inventory->variation->product->name ?? 'N/A' }} - {{ $inventory->variation->name }} (SKU: {{ $inventory->variation->sku }})
+                            @elseif ($inventory->product)
+                                {{ $inventory->product->name ?? 'N/A' }} (SKU: {{ $inventory->product->sku }})
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>{{ $inventory->importDocument->code ?? 'N/A' }}</td>
+                        <td>
+                            @if ($inventory->type === 'import')
+                                Nhập kho
+                            @elseif ($inventory->type === 'export')
+                                Xuất kho
+                            @else
+                                Điều chỉnh
+                            @endif
+                        </td>
+                        <td>{{ $inventory->quantity }}</td>
+                        <td>
+                            @if ($inventory->variation)
                                 {{ $inventory->variation->stock_quantity ?? 'N/A' }}
                                 @if ($inventory->variation && $inventory->variation->stock_quantity <= $inventory->variation->stock_alert_threshold)
                                     <span class="badge bg-warning">Tồn thấp</span>
                                 @endif
-                            </td>
-                            <td>{{ $inventory->note }}</td>
-                            <td>{{ $inventory->user->name ?? 'N/A' }}</td>
-                            <td>{{ $inventory->created_at->format('d/m/Y H:i') }}</td>
-                            <td>
-                                <a href="{{ route('admin.inventory.print', $inventory->id) }}" class="btn btn-sm btn-primary">In phiếu</a>
-                            </td>
-                        </tr>
-                    @endforeach
+                            @elseif ($inventory->product)
+                                {{ $inventory->product->stock_quantity ?? 'N/A' }}
+                                @if ($inventory->product && $inventory->product->stock_quantity <= 10) <!-- Giả sử ngưỡng cảnh báo là 10 -->
+                                    <span class="badge bg-warning">Tồn thấp</span>
+                                @endif
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>{{ $inventory->note }}</td>
+                        <td>{{ $inventory->user->name ?? 'N/A' }}</td>
+                        <td>{{ $inventory->created_at->format('d/m/Y H:i') }}</td>
+                        <td>
+                            <a href="{{ route('admin.inventory.print', $inventory->id) }}" class="btn btn-sm btn-primary">In phiếu</a>
+                        </td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
             {{ $inventories->links() }}
@@ -160,13 +172,12 @@
     </div>
 </div>
 
-<!-- Thêm CSS và JS cho Select2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function() {
-    $('#variation_id').select2({
+    $('#target_id').select2({
         placeholder: 'Tìm sản phẩm/biến thể theo tên hoặc SKU',
         allowClear: true,
         ajax: {
@@ -189,9 +200,8 @@ $(document).ready(function() {
         minimumInputLength: 2
     });
 
-    // Cập nhật kết quả tìm kiếm khi thay đổi danh mục
     $('#category_id').on('change', function() {
-        $('#variation_id').val(null).trigger('change');
+        $('#target_id').val(null).trigger('change');
     });
 });
 </script>

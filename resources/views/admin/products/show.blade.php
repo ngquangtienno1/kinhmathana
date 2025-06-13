@@ -200,8 +200,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Trạng thái</th>
-                                                            <td>{{ $variation->status === 'in_stock' ? 'Còn hàng' : ($variation->status === 'out_of_stock' ? 'Hết hàng' : 'Ẩn') }}
-                                                            </td>
+                                                            <td>{{ $variation->stock_quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Ảnh</th>

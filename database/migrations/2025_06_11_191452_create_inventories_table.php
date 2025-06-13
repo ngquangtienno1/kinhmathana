@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('variation_id')->constrained('variations')->onDelete('cascade');
+            $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
+            $table->foreignId('variation_id')->nullable()->constrained('variations')->onDelete('cascade');
             $table->enum('type', ['import', 'export', 'adjust']);
             $table->integer('quantity')->unsigned(); // Số lượng dương, type quyết định tăng/giảm
             $table->string('reference')->nullable(); // Mã phiếu nhập/xuất
