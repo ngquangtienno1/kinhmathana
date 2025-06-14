@@ -74,11 +74,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
 
     // Inventory routes
-    Route::prefix('inventory')->name('inventory.')->group(function () {
+Route::prefix('inventory')->name('inventory.')->group(function () {
     Route::get('/', [InventoryController::class, 'index'])->name('index')->middleware(['permission:quan-ly-ton-kho']);
     Route::post('/', [InventoryController::class, 'store'])->name('store')->middleware(['permission:them-giao-dich-kho']);
+    Route::post('/store-bulk', [InventoryController::class, 'storeBulk'])->name('store-bulk')->middleware(['permission:them-giao-dich-kho']);
     Route::get('/search-variations', [InventoryController::class, 'searchVariations'])->name('search-variations');
-    Route::get('/print/{id}', [InventoryController::class, 'print'])->name('print')->middleware(['permission:in-phieu-kho']);
+    Route::get('/search-products', [InventoryController::class, 'searchProducts'])->name('search-products');
+    Route::get('/get-variations', [InventoryController::class, 'getVariationsByProduct'])->name('get-variations');
+    Route::get('/print/{id}', [InventoryController::class, 'print'])->name('inventory-print')->middleware(['permission:in-phieu-kho']);
 });
 
     // FAQ routes
