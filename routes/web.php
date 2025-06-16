@@ -1,38 +1,51 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\PromotionController;
-use App\Http\Controllers\Admin\CustomerSupportController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SocialController;
+// ================== Client Controllers ==================
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
+
+
+// ================== Admin Controllers ===================
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PaymentController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\SphericalController;
-use App\Http\Controllers\Admin\CylindricalController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\SphericalController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\CylindricalController;
+use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\PaymentMethodController;
+use App\Http\Controllers\Admin\CustomerSupportController;
+use App\Http\Controllers\Admin\ShippingProviderController;
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
-use App\Http\Controllers\Admin\TicketController;
-use App\Http\Controllers\Admin\CustomerController;
-use App\Http\Controllers\Admin\SearchController;
-use App\Http\Controllers\Admin\NewsCategoryController;
-use App\Http\Controllers\Admin\ContactController;
+
+
+// Authentication
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\AuthenticationController;
 
 // Redirect login
 Route::get('/', function () {
@@ -55,13 +68,19 @@ Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallb
 Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
 
-
-
+// Client routes group
+Route::prefix('client')->name('client.')->group(function () {
+    Route::get('/', [ClientHomeController::class, 'index'])->name('home');
+    
+    Route::prefix('product')->name('product.')->group(function () {
+        Route::get('/', [ClientProductController::class, 'index'])->name('index');
+    });
+});
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])
         ->name('settings.index')
         ->middleware(['permission:xem-cai-dat']);
@@ -70,7 +89,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         ->middleware(['permission:cap-nhat-cai-dat']);
 
 
-    Route::get('/product/{slug}', [ProductController::class, 'showBySlug'])->name('product.show');
+    Route::get('/product/{slug}', [AdminProductController::class, 'showBySlug'])->name('product.show');
+
+    // Inventory routes
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index')->middleware(['permission:quan-ly-ton-kho']);
+        Route::post('/', [InventoryController::class, 'store'])->name('store')->middleware(['permission:them-giao-dich-kho']);
+        Route::post('/store-bulk', [InventoryController::class, 'storeBulk'])->name('store-bulk')->middleware(['permission:them-giao-dich-kho']);
+        Route::get('/search-variations', [InventoryController::class, 'searchVariations'])->name('search-variations');
+        Route::get('/search-products', [InventoryController::class, 'searchProducts'])->name('search-products');
+        Route::get('/get-variations', [InventoryController::class, 'getVariationsByProduct'])->name('get-variations');
+        Route::get('/print/{id}', [InventoryController::class, 'print'])->name('inventory-print')->middleware(['permission:in-phieu-kho']);
+        Route::get('/{id}/show', [InventoryController::class, 'show'])->name('show')->middleware(['permission:quan-ly-ton-kho']);
+    });
+
     // FAQ routes
     Route::prefix('faqs')->middleware(['permission:xem-danh-sach-faq'])->group(function () {
         Route::get('/', [FaqController::class, 'index'])->name('faqs.index');
@@ -162,28 +194,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
     // Product Management
     Route::prefix('products')->name('products.')->middleware(['permission:xem-danh-sach-san-pham'])->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('list');
-        Route::get('/{id}/show', [ProductController::class, 'show'])->name('show');
-        Route::get('/create', [ProductController::class, 'create'])->name('create')
+        Route::get('/', [AdminProductController::class, 'index'])->name('list');
+        Route::get('/{id}/show', [AdminProductController::class, 'show'])->name('show');
+        Route::get('/create', [AdminProductController::class, 'create'])->name('create')
             ->middleware(['permission:them-san-pham']);
-        Route::post('store', [ProductController::class, 'store'])->name('store')
+        Route::post('store', [AdminProductController::class, 'store'])->name('store')
             ->middleware(['permission:them-san-pham']);
-        Route::get('edit/{id}', [ProductController::class, 'edit'])->name('edit')
+        Route::get('edit/{id}', [AdminProductController::class, 'edit'])->name('edit')
             ->middleware(['permission:sua-san-pham']);
-        Route::put('update/{id}', [ProductController::class, 'update'])->name('update')
+        Route::put('update/{id}', [AdminProductController::class, 'update'])->name('update')
             ->middleware(['permission:sua-san-pham']);
-        Route::delete('destroy/{id}', [ProductController::class, 'destroy'])->name('destroy')
+        Route::delete('destroy/{id}', [AdminProductController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-san-pham']);
-        Route::get('trashed', [ProductController::class, 'trashed'])->name('trashed');
-        Route::put('restore/{id}', [ProductController::class, 'restore'])->name('restore')
+        Route::get('trashed', [AdminProductController::class, 'trashed'])->name('trashed');
+        Route::put('restore/{id}', [AdminProductController::class, 'restore'])->name('restore')
             ->middleware(['permission:khoi-phuc-san-pham']);
-        Route::delete('forceDelete/{id}', [ProductController::class, 'forceDelete'])->name('forceDelete')
+        Route::delete('forceDelete/{id}', [AdminProductController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-vinh-vien-san-pham']);
-        Route::delete('bulk-delete', [ProductController::class, 'bulkDelete'])->name('bulk-delete')
+        Route::delete('bulk-delete', [AdminProductController::class, 'bulkDelete'])->name('bulk-delete')
             ->middleware(['permission:xoa-nhieu-san-pham']);
-        Route::delete('/bulk-delete', [ProductController::class, 'bulkDestroy'])->name('bulkDestroy');
-        Route::post('/bulk-restore', [ProductController::class, 'bulkRestore'])->name('bulkRestore');
-        Route::delete('/bulk-force-delete', [ProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
+        Route::delete('/bulk-delete', [AdminProductController::class, 'bulkDestroy'])->name('bulkDestroy');
+        Route::post('/bulk-restore', [AdminProductController::class, 'bulkRestore'])->name('bulkRestore');
+        Route::delete('/bulk-force-delete', [AdminProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
 

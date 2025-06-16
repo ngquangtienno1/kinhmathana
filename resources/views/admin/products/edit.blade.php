@@ -54,7 +54,7 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name"
+                                    <input type="text" class="form-control" name="name" id="name"
                                         value="{{ old('name', $product->name) }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -121,20 +121,9 @@
                                     style="{{ $product->product_type == 'variable' ? 'display:none' : '' }}">
                                     <div class="col-md-6">
                                         <label class="form-label">Mã sản phẩm</label>
-                                        <input type="text" class="form-control" name="sku"
+                                        <input type="text" class="form-control" name="sku" id="simple_sku"
                                             value="{{ old('sku', $product->sku) }}">
                                         @error('sku')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Số lượng tồn kho <span
-                                                class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" name="stock_quantity"
-                                            id="simple_stock_quantity"
-                                            value="{{ old('stock_quantity', $product->stock_quantity) ?? 0 }}"
-                                            min="0" step="1" required>
-                                        @error('stock_quantity')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -158,7 +147,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Slug sản phẩm</label>
-                                        <input type="text" class="form-control" name="slug"
+                                        <input type="text" class="form-control" name="slug" id="simple_slug"
                                             value="{{ old('slug', $product->slug) }}" readonly>
                                         @error('slug')
                                             <div class="text-danger">{{ $message }}</div>
@@ -171,26 +160,23 @@
                                     style="{{ $product->product_type == 'simple' ? 'display:none' : '' }}">
                                     <div class="col-md-6">
                                         <label class="form-label">Mã sản phẩm</label>
-                                        <input type="text" class="form-control" name="sku"
-                                            value="{{ old('sku', $product->sku) }}"
-                                            {{ $product->product_type == 'variable' ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" name="sku" id="variable_sku"
+                                            value="{{ old('sku', $product->sku) }}" readonly>
                                         @error('sku')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Theo dõi tồn kho</label>
-                                        <input type="number" class="form-control" name="stock_quantity"
-                                            id="variable_stock_quantity"
-                                            value="{{ old('stock_quantity', $product->total_stock) }}" min="0"
-                                            readonly>
+                                        <input type="number" class="form-control" name="stock_quantity" id="variable_stock_quantity" value="{{ old('stock_quantity', $product->total_stock) }}" min="0" readonly title="Tồn kho được quản lý qua module kho">
+                                        <small class="text-muted">Cập nhật tồn kho trong mục Quản lý kho.</small>
                                         @error('stock_quantity')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Slug sản phẩm</label>
-                                        <input type="text" class="form-control" name="slug"
+                                        <input type="text" class="form-control" name="slug" id="variable_slug"
                                             value="{{ old('slug', $product->slug) }}" readonly>
                                         @error('slug')
                                             <div class="text-danger">{{ $message }}</div>
@@ -362,77 +348,37 @@
                                     <!-- Biến thể -->
                                     <div id="variations-container" class="mt-3">
                                         @foreach ($product->variations as $index => $variation)
-                                            <div class="variation-row row g-2 mb-2"
-                                                data-variation-id="{{ $variation->id }}">
-                                                <input type="hidden" name="variations[{{ $index }}][id]"
-                                                    value="{{ $variation->id }}">
+                                            <div class="variation-row row g-2 mb-2" data-variation-id="{{ $variation->id }}">
+                                                <input type="hidden" name="variations[{{ $index }}][id]" value="{{ $variation->id }}">
                                                 <div class="col-md-2">
-                                                    <input type="text" name="variations[{{ $index }}][name]"
-                                                        value="{{ $variation->name }}" class="form-control"
-                                                        placeholder="Tên biến thể" readonly>
+                                                    <input type="text" name="variations[{{ $index }}][name]" value="{{ $variation->name }}" class="form-control" placeholder="Tên biến thể" readonly>
                                                 </div>
-                                            <div class="col-md-1">
-                                                    <input type="text" name="variations[{{ $index }}][sku]"
-                                                        value="{{ $variation->sku }}" class="form-control"
-                                                        placeholder="Mã sản phẩm">
+                                                <div class="col-md-1">
+                                                    <input type="text" name="variations[{{ $index }}][sku]" value="{{ $variation->sku }}" class="form-control" placeholder="Mã sản phẩm">
                                                 </div>
-                                            <div class="col-md-1">
-                                                    <input type="text" class="form-control price-input"
-                                                        name="variations[{{ $index }}][price]"
-                                                        value="{{ $variation->price ?? '' }}"
-                                                        placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
+                                                <div class="col-md-1">
+                                                    <input type="text" class="form-control price-input" name="variations[{{ $index }}][price]" value="{{ $variation->price ?? '' }}" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
                                                 </div>
-                                            <div class="col-md-1">
-                                                    <input type="text" class="form-control price-input"
-                                                        name="variations[{{ $index }}][sale_price]"
-                                                        value="{{ $variation->sale_price ?? '' }}"
-                                                        placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
+                                                <div class="col-md-1">
+                                                    <input type="text" class="form-control price-input" name="variations[{{ $index }}][sale_price]" value="{{ $variation->sale_price ?? '' }}" placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
                                                     @error("variations.$index.sale_price")
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <input type="number"
-                                                        name="variations[{{ $index }}][stock_quantity]"
-                                                        value="{{ old("variations.$index.stock_quantity", $variation->stock_quantity) ?? 0 }}"
-                                                    class="form-control stock-quantity-input" placeholder="Tồn kho"
-                                                    min="0" required>
-                                                    @error("variations.$index.stock_quantity")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
+                                                    <input type="number" class="form-control" value="{{ $variation->stock_quantity }}" readonly title="Tồn kho được quản lý qua module kho">
                                                 </div>
-                                                <div class="col-md-1">
-                                                    <select name="variations[{{ $index }}][status]"
-                                                    class="form-select variation-status">
-                                                        <option value="in_stock"
-                                                            {{ old("variations.$index.status", $variation->status) == 'in_stock' ? 'selected' : '' }}>
-                                                            Còn hàng</option>
-                                                        <option value="out_of_stock"
-                                                            {{ old("variations.$index.status", $variation->status) == 'out_of_stock' ? 'selected' : '' }}>
-                                                            Hết hàng</option>
-                                                        <option value="hidden"
-                                                            {{ old("variations.$index.status", $variation->status) == 'hidden' ? 'selected' : '' }}>
-                                                            Ẩn</option>
-                                                    </select>
-                                                    @error("variations.$index.status")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            <div class="col-md-2">
-                                                    <input type="file" name="variations[{{ $index }}][image]"
-                                                    class="form-control variation-image-input">
+                                                <div class="col-md-2">
+                                                    <input type="file" name="variations[{{ $index }}][image]" class="form-control variation-image-input">
                                                     @if ($variation->images->isNotEmpty())
-                                                        <img src="{{ Storage::url($variation->images->first()->image_path) }}"
-                                                            alt="Variation Image"
-                                                            style="width: 50px; height: 50px; margin-top: 10px;">
+                                                        <img src="{{ Storage::url($variation->images->first()->image_path) }}" alt="Variation Image" style="width: 50px; height: 50px; margin-top: 10px;">
                                                     @endif
                                                     @error("variations.$index.image")
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <button type="button" class="btn btn-danger btn-sm remove-variation"
-                                                        data-variation-id="{{ $variation->id }}">Xóa</button>
+                                                    <button type="button" class="btn btn-danger btn-sm remove-variation" data-variation-id="{{ $variation->id }}">Xóa</button>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -593,88 +539,104 @@
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            window.colors = @json($colors->pluck('name'));
-            window.sizes = @json($sizes->pluck('name'));
-            window.spherical_values = @json($sphericals->pluck('name'));
-            window.cylindrical_values = @json($cylindricals->pluck('name'));
+document.addEventListener('DOMContentLoaded', function() {
+    window.colors = @json($colors->pluck('name'));
+    window.sizes = @json($sizes->pluck('name'));
+    window.spherical_values = @json($sphericals->pluck('name'));
+    window.cylindrical_values = @json($cylindricals->pluck('name'));
 
-            function updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index) {
-                const type = typeSelect.value;
-                valuesContainer.innerHTML = '';
-                const options = type === 'color' ? window.colors :
-                    type === 'size' ? window.sizes :
-                    type === 'spherical' ? window.spherical_values :
-                    window.cylindrical_values;
+    function updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index) {
+        const type = typeSelect.value;
+        valuesContainer.innerHTML = '';
+        const options = type === 'color' ? window.colors :
+            type === 'size' ? window.sizes :
+            type === 'spherical' ? window.spherical_values :
+            window.cylindrical_values;
 
-                options.forEach(option => {
-                    const div = document.createElement('div');
-                    div.className = 'form-check';
-                    div.innerHTML = `
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.className = 'form-check';
+            div.innerHTML = `
                 <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${index}][values][]" value="${option}" data-index="${index}" ${tagsContainer.querySelector(`input[value="${option}"]`) ? 'checked' : ''}>
                 <label class="form-check-label">${option}</label>
             `;
-                    valuesContainer.appendChild(div);
-                });
-            }
-
-            document.querySelectorAll('.attribute-type').forEach(typeSelect => {
-                const row = typeSelect.closest('.attribute-row');
-                const valuesContainer = row.querySelector('.attribute-values-container');
-                const tagsContainer = row.querySelector('.attribute-values-tags');
-                const index = row.getAttribute('data-index');
-                updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index);
-            });
-
-            document.addEventListener('change', function(e) {
-                if (e.target.classList.contains('attribute-type')) {
-                    const row = e.target.closest('.attribute-row');
-                    const valuesContainer = row.querySelector('.attribute-values-container');
-                    const tagsContainer = row.querySelector('.attribute-values-tags');
-                    const index = row.getAttribute('data-index');
-                    updateAttributeValues(e.target, valuesContainer, tagsContainer, index);
-                    checkGenerateButton();
-                } else if (e.target.classList.contains('attribute-value-checkbox')) {
-                    const row = e.target.closest('.attribute-row');
-                    const tagsContainer = row.querySelector('.attribute-values-tags');
-                    const index = row.getAttribute('data-index');
-                    const selectedValues = Array.from(row.querySelectorAll(
-                        `input[name="attributes[${index}][values][]"]:checked`)).map(cb => cb.value);
-                    tagsContainer.innerHTML = '';
-                    selectedValues.forEach(value => {
-                        if (value) {
-                            const tag = document.createElement('span');
-                            tag.className = 'tag';
-                            tag.innerHTML =
-                                `${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
-                            tagsContainer.appendChild(tag);
-                        }
-                    });
-                    checkGenerateButton();
-                }
-            });
-
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-tag')) {
-                    const value = e.target.getAttribute('data-value');
-                    const row = e.target.closest('.attribute-row');
-                    const valuesContainer = row.querySelector('.attribute-values-container');
-                    const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
-                    if (checkbox) checkbox.checked = false;
-                    e.target.parentElement.remove();
-                    checkGenerateButton();
-                }
-            });
-
-            function checkGenerateButton() {
-                const attributeRows = document.querySelectorAll('.attribute-row');
-                const hasValues = Array.from(attributeRows).some(row => row.querySelectorAll('.tag').length > 0);
-                document.getElementById('generate-variations').style.display = hasValues ? 'block' : 'none';
-            }
-
-            checkGenerateButton();
+            valuesContainer.appendChild(div);
         });
-    </script>
+    }
+
+    function reindexAttributes() {
+        document.querySelectorAll('.attribute-row').forEach((row, index) => {
+            row.setAttribute('data-index', index);
+            const typeSelect = row.querySelector('.attribute-type');
+            const valuesInputs = row.querySelectorAll('input[name$="[values][]"]');
+            const typeInput = row.querySelector('select[name$="[type]"]');
+            if (typeInput) typeInput.name = `attributes[${index}][type]`;
+            valuesInputs.forEach(input => {
+                input.name = `attributes[${index}][values][]`;
+                input.dataset.index = index;
+            });
+        });
+    }
+
+    document.querySelectorAll('.attribute-type').forEach(typeSelect => {
+        const row = typeSelect.closest('.attribute-row');
+        const valuesContainer = row.querySelector('.attribute-values-container');
+        const tagsContainer = row.querySelector('.attribute-values-tags');
+        const index = row.getAttribute('data-index');
+        updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index);
+    });
+
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('attribute-type')) {
+            const row = e.target.closest('.attribute-row');
+            const valuesContainer = row.querySelector('.attribute-values-container');
+            const tagsContainer = row.querySelector('.attribute-values-tags');
+            const index = row.getAttribute('data-index');
+            updateAttributeValues(e.target, valuesContainer, tagsContainer, index);
+            checkGenerateButton();
+        } else if (e.target.classList.contains('attribute-value-checkbox')) {
+            const row = e.target.closest('.attribute-row');
+            const tagsContainer = row.querySelector('.attribute-values-tags');
+            const index = row.getAttribute('data-index');
+            const selectedValues = Array.from(row.querySelectorAll(`input[name="attributes[${index}][values][]"]:checked`)).map(cb => cb.value);
+            tagsContainer.innerHTML = '';
+            selectedValues.forEach(value => {
+                if (value) {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = `${value}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                    tagsContainer.appendChild(tag);
+                }
+            });
+            checkGenerateButton();
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-tag')) {
+            const value = e.target.getAttribute('data-value');
+            const row = e.target.closest('.attribute-row');
+            const valuesContainer = row.querySelector('.attribute-values-container');
+            const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
+            if (checkbox) checkbox.checked = false;
+            e.target.parentElement.remove();
+            checkGenerateButton();
+        } else if (e.target.classList.contains('remove-attribute')) {
+            e.target.closest('.attribute-row').remove();
+            reindexAttributes();
+            checkGenerateButton();
+        }
+    });
+
+    function checkGenerateButton() {
+        const attributeRows = document.querySelectorAll('.attribute-row');
+        const hasValues = Array.from(attributeRows).some(row => row.querySelectorAll('.tag').length > 0);
+        document.getElementById('generate-variations').style.display = hasValues ? 'block' : 'none';
+    }
+
+    checkGenerateButton();
+});
+</script>
 
     @push('scripts')
         <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
