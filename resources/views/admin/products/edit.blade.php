@@ -54,7 +54,7 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name"
+                                    <input type="text" class="form-control" name="name" id="name"
                                         value="{{ old('name', $product->name) }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -121,7 +121,7 @@
                                     style="{{ $product->product_type == 'variable' ? 'display:none' : '' }}">
                                     <div class="col-md-6">
                                         <label class="form-label">Mã sản phẩm</label>
-                                        <input type="text" class="form-control" name="sku"
+                                        <input type="text" class="form-control" name="sku" id="simple_sku"
                                             value="{{ old('sku', $product->sku) }}">
                                         @error('sku')
                                             <div class="text-danger">{{ $message }}</div>
@@ -147,7 +147,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Slug sản phẩm</label>
-                                        <input type="text" class="form-control" name="slug"
+                                        <input type="text" class="form-control" name="slug" id="simple_slug"
                                             value="{{ old('slug', $product->slug) }}" readonly>
                                         @error('slug')
                                             <div class="text-danger">{{ $message }}</div>
@@ -160,9 +160,8 @@
                                     style="{{ $product->product_type == 'simple' ? 'display:none' : '' }}">
                                     <div class="col-md-6">
                                         <label class="form-label">Mã sản phẩm</label>
-                                        <input type="text" class="form-control" name="sku"
-                                            value="{{ old('sku', $product->sku) }}"
-                                            {{ $product->product_type == 'variable' ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" name="sku" id="variable_sku"
+                                            value="{{ old('sku', $product->sku) }}" readonly>
                                         @error('sku')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -177,7 +176,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Slug sản phẩm</label>
-                                        <input type="text" class="form-control" name="slug"
+                                        <input type="text" class="form-control" name="slug" id="variable_slug"
                                             value="{{ old('slug', $product->slug) }}" readonly>
                                         @error('slug')
                                             <div class="text-danger">{{ $message }}</div>

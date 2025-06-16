@@ -356,4 +356,10 @@ public function store(Request $request)
         $pdf = Pdf::loadView('admin.inventory.print', compact('inventory'));
         return $pdf->download('phieu-kho-' . $inventory->reference . '.pdf');
     }
+
+    public function show($id)
+    {
+        $inventory = Inventory::with(['variation.product', 'product', 'user', 'importDocument'])->findOrFail($id);
+        return view('admin.inventory.show', compact('inventory'));
+    }
 }
