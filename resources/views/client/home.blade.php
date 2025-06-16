@@ -62,56 +62,36 @@
         <section class="py-0 px-xl-3">
             <div class="container px-xl-0 px-xxl-3">
                 <div class="row g-3 mb-9">
-                    <div class="col-12">
-                        <div class="whooping-banner w-100 rounded-3 overflow-hidden">
-                            <div class="bg-holder z-n1 product-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/whooping_banner_product.png') }});background-position: bottom right;">
-                            </div>
-                            <!--/.bg-holder-->
-                            <div class="bg-holder z-n1 shape-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/whooping_banner_shape_2.png') }});background-position: bottom left;">
-                            </div>
-                            <!--/.bg-holder-->
-                            <div class="banner-text" data-bs-theme="light">
-                                <h2 class="text-warning-light fw-bolder fs-lg-3 fs-xxl-2">Whooping <span
-                                        class="gradient-text">60% </span>Off</h2>
-                                <h3 class="fw-bolder fs-lg-5 fs-xxl-3 text-white">on everyday items</h3>
-                            </div><a class="btn btn-lg btn-primary rounded-pill banner-button" href="#">Shop Now</a>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div class="gift-items-banner w-100 rounded-3 overflow-hidden">
-                            <div class="bg-holder z-n1 banner-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/gift-items-banner-bg.png') }});">
-                            </div>
-                            <!--/.bg-holder-->
-                            <div class="banner-text text-md-center">
-                                <h2 class="text-white fw-bolder fs-xl-4">Get <span class="gradient-text">10% Off </span><br
-                                        class="d-md-none"> on gift items</h2><a
-                                    class="btn btn-lg btn-primary rounded-pill banner-button" href="#">Buy Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div
-                            class="best-in-market-banner d-flex h-100 px-4 px-sm-7 py-5 px-md-11 rounded-3 overflow-hidden">
-                            <div class="bg-holder z-n1 banner-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/best-in-market-bg.png') }});"></div>
-                            <!--/.bg-holder-->
-                            <div class="row align-items-center w-sm-100">
-                                <div class="col-8">
-                                    <div class="banner-text">
-                                        <h2 class="text-white fw-bolder fs-sm-4 mb-5">MI 11 Pro<br><span
-                                                class="fs-7 fs-sm-6"> Best in the market</span></h2><a
-                                            class="btn btn-lg btn-warning rounded-pill banner-button" href="#">Buy
-                                            Now</a>
+                    @if($sliders->isNotEmpty())
+                        @foreach($sliders as $slider)
+                            <div class="col-12 {{ $loop->first ? '' : 'col-xl-6' }}">
+                                <div class="whooping-banner w-100 rounded-3 overflow-hidden position-relative" style="min-height: 400px;">
+                                    <div class="bg-holder z-n1 product-bg"
+                                        style="background-image:url({{ asset('storage/' . $slider->image) }});background-position: center; background-size: cover; transition: transform 0.5s ease;">
+                                    </div>
+                                    <div class="banner-text position-relative z-1 p-4 p-md-5 h-100 d-flex flex-column justify-content-between" data-bs-theme="light">
+                                        {{-- <div class="banner-content" style="max-width: 600px;">
+                                            <h2 class="text-warning-light fw-bolder fs-lg-3 fs-xxl-2 mb-3">
+                                                {{ $slider->title }}
+                                            </h2>
+                                            @if($slider->description)
+                                                <h3 class="fw-bolder fs-lg-5 fs-xxl-3 text-white mb-4">
+                                                    {{ $slider->description }}
+                                                </h3>
+                                            @endif
+                                        </div> --}}
+                                        @if($slider->url)
+                                            <a class="btn btn-lg btn-primary rounded-pill banner-button position-absolute"
+                                               style="right: 32px; bottom: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); min-width: 140px; font-weight: 600;"
+                                               href="{{ $slider->url }}">
+                                                Xem ngay
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="col-4"><img class="w-100 w-sm-75" src="{{ asset('v1/assets/img/e-commerce/5.png') }}"
-                                        alt=""></div>
                             </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
                 <div class="row g-4 mb-6">
                     <div class="col-12 col-lg-9 col-xxl-10">
