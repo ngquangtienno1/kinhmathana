@@ -98,16 +98,6 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Số lượng tồn kho <span
-                                            class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" name="stock_quantity"
-                                        id="simple_stock_quantity" value="{{ old('stock_quantity', 0) }}"
-                                        min="0" required>
-                                    @error('stock_quantity')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
                                     <label class="form-label">Giá gốc <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control price-input" name="price"
                                         value="{{ old('price') }}" placeholder="Nhập giá (VD: 1000 hoặc 1.234,56)">
@@ -310,33 +300,6 @@
                                                     value="{{ $variation['sale_price'] ?? '' }}"
                                                     placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
                                                 @error("variations.$index.sale_price")
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-md-1">
-                                                <input type="number"
-                                                    name="variations[{{ $index }}][stock_quantity]"
-                                                    value="{{ $variation['stock_quantity'] ?? 0 }}"
-                                                    class="form-control stock-quantity-input" placeholder="Tồn kho"
-                                                    min="0" required>
-                                                @error("variations.$index.stock_quantity")
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-md-1">
-                                                <select name="variations[{{ $index }}][status]"
-                                                    class="form-select variation-status">
-                                                    <option value="in_stock"
-                                                        {{ ($variation['status'] ?? 'in_stock') == 'in_stock' ? 'selected' : '' }}>
-                                                        Còn hàng</option>
-                                                    <option value="out_of_stock"
-                                                        {{ ($variation['status'] ?? 'in_stock') == 'out_of_stock' ? 'selected' : '' }}>
-                                                        Hết hàng</option>
-                                                    <option value="hidden"
-                                                        {{ ($variation['status'] ?? 'in_stock') == 'hidden' ? 'selected' : '' }}>
-                                                        Ẩn</option>
-                                                </select>
-                                                @error("variations.$index.status")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
