@@ -304,7 +304,7 @@
                                 <ul class="nav collapse parent {{ request()->is('admin/payment-methods*') || request()->is('admin/payments*') ? 'show' : '' }}"
                                     data-bs-parent="#navbarVerticalCollapse" id="nv-payment-master">
 
-                                    @if (canAccess('xem-thanh-toan'))
+                                    {{-- @if (canAccess('xem-thanh-toan'))
                                         <li class="nav-item">
                                             <a class="nav-link {{ request()->routeIs('admin.payments.index') ? 'active' : '' }}"
                                                 href="{{ route('admin.payments.index') }}">
@@ -313,7 +313,7 @@
                                                 </div>
                                             </a>
                                         </li>
-                                    @endif
+                                    @endif --}}
                                     @if (canAccess('xem-danh-sach-phuong-thuc-thanh-toan'))
                                         <li class="nav-item">
                                             <a class="nav-link {{ request()->routeIs('admin.payment_methods.index') ? 'active' : '' }}"
