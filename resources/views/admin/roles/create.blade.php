@@ -24,7 +24,7 @@
     @endif
 
     <div class="row g-0">
-        <div class="col-lg-8">
+        <div class="col-12">
             <div class="card mb-5">
                 <div class="card-body">
                     <form action="{{ route('admin.roles.store') }}" method="POST">
