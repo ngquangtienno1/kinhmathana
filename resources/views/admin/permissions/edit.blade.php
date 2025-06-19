@@ -53,6 +53,15 @@
                         @enderror
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label" for="group_permissions">Nhóm quyền</label>
+                        <input class="form-control @error('group_permissions') is-invalid @enderror" id="group_permissions" name="group_permissions"
+                            type="text" value="{{ old('group_permissions', $permission->group_permissions ?? '') }}" />
+                        @error('group_permissions')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('admin.permissions.index') }}" class="btn btn-phoenix-secondary">Hủy</a>
                         <button type="submit" class="btn btn-phoenix-primary">Cập nhật</button>

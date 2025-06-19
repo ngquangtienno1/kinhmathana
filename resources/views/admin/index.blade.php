@@ -39,7 +39,7 @@ default => 'Tháng này'
     .card-stat {
         border: none;
         border-radius: 1.25rem;
-        box-shadow: 0 4px 32px 0 rgba(56,116,255,0.08);
+        box-shadow: 0 4px 32px 0 rgba(56, 116, 255, 0.08);
         background: linear-gradient(135deg, var(--phoenix-primary), #6c5ce7 80%);
         color: #fff;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -51,6 +51,7 @@ default => 'Tháng này'
         flex-direction: column;
         justify-content: center;
     }
+
     .card-stat .icon-bg {
         position: absolute;
         right: 1.2rem;
@@ -59,6 +60,7 @@ default => 'Tháng này'
         opacity: 0.13;
         z-index: 0;
     }
+
     .card-stat .stat-value {
         font-size: 1.25rem;
         font-weight: 800;
@@ -66,37 +68,65 @@ default => 'Tháng này'
         z-index: 1;
         position: relative;
     }
+
     .card-stat .stat-label {
         font-size: 0.92rem;
-        color: rgba(255,255,255,0.85);
+        color: rgba(255, 255, 255, 0.85);
         z-index: 1;
         position: relative;
     }
-    .card-stat.stat-success { background: linear-gradient(135deg, var(--phoenix-success), #00b894 80%); }
-    .card-stat.stat-warning { background: linear-gradient(135deg, var(--phoenix-warning), #f39c12 80%); }
-    .card-stat.stat-danger { background: linear-gradient(135deg, var(--phoenix-danger), #e74c3c 80%); }
-    .card-stat.stat-primary { background: linear-gradient(135deg, var(--phoenix-primary), #6c5ce7 80%); }
-    .card-stat.stat-info { background: linear-gradient(135deg, var(--phoenix-info), #00cfff 80%); }
-    .card-stat.stat-purple { background: linear-gradient(135deg, #a259ec, #6c5ce7 80%); }
-    .card-stat.stat-pink { background: linear-gradient(135deg, #ff6f91, #ff9472 80%); }
-    .card-stat.stat-teal { background: linear-gradient(135deg, #1abc9c, #16a085 80%); }
+
+    .card-stat.stat-success {
+        background: linear-gradient(135deg, var(--phoenix-success), #00b894 80%);
+    }
+
+    .card-stat.stat-warning {
+        background: linear-gradient(135deg, var(--phoenix-warning), #f39c12 80%);
+    }
+
+    .card-stat.stat-danger {
+        background: linear-gradient(135deg, var(--phoenix-danger), #e74c3c 80%);
+    }
+
+    .card-stat.stat-primary {
+        background: linear-gradient(135deg, var(--phoenix-primary), #6c5ce7 80%);
+    }
+
+    .card-stat.stat-info {
+        background: linear-gradient(135deg, var(--phoenix-info), #00cfff 80%);
+    }
+
+    .card-stat.stat-purple {
+        background: linear-gradient(135deg, #a259ec, #6c5ce7 80%);
+    }
+
+    .card-stat.stat-pink {
+        background: linear-gradient(135deg, #ff6f91, #ff9472 80%);
+    }
+
+    .card-stat.stat-teal {
+        background: linear-gradient(135deg, #1abc9c, #16a085 80%);
+    }
+
     .card-stat:hover {
         transform: translateY(-6px) scale(1.03);
-        box-shadow: 0 8px 32px 0 rgba(56,116,255,0.18);
+        box-shadow: 0 8px 32px 0 rgba(56, 116, 255, 0.18);
         z-index: 2;
     }
 
     .phoenix-card {
         border-radius: 1.25rem;
-        box-shadow: 0 4px 32px 0 rgba(56,116,255,0.08);
+        box-shadow: 0 4px 32px 0 rgba(56, 116, 255, 0.08);
         border: none;
         margin-bottom: 32px;
         transition: box-shadow 0.2s, transform 0.2s;
     }
+
     .phoenix-card:hover {
-        box-shadow: 0 8px 32px 0 rgba(56,116,255,0.18);
+        box-shadow: 0 8px 32px 0 rgba(56, 116, 255, 0.18);
         transform: translateY(-4px) scale(1.01);
     }
+
     .phoenix-card .card-header {
         background: none;
         border-bottom: 1px solid #f1f1f1;
@@ -104,31 +134,40 @@ default => 'Tháng này'
         font-weight: 700;
         font-size: 1.15rem;
     }
+
     .phoenix-card .card-body {
         padding: 1.5rem;
     }
+
     .chart-container {
         position: relative;
         height: 280px;
         margin: 1rem 0;
     }
+
     .table th {
         font-weight: 700;
         background-color: #f8f9fa;
     }
+
     .table tr {
         transition: background 0.2s;
     }
+
     .table tr:hover {
         background: #f1f7ff;
     }
-    .btn, .phoenix-btn {
+
+    .btn,
+    .phoenix-btn {
         border-radius: 0.5rem;
         font-weight: 600;
         transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
-    .btn:hover, .phoenix-btn:hover {
-        box-shadow: 0 2px 8px 0 rgba(56,116,255,0.12);
+
+    .btn:hover,
+    .phoenix-btn:hover {
+        box-shadow: 0 2px 8px 0 rgba(56, 116, 255, 0.12);
         transform: translateY(-2px) scale(1.03);
     }
 
@@ -138,7 +177,7 @@ default => 'Tháng này'
         object-fit: cover;
         border-radius: 50%;
         border: 2px solid #fff;
-        box-shadow: 0 2px 8px 0 rgba(56,116,255,0.10);
+        box-shadow: 0 2px 8px 0 rgba(56, 116, 255, 0.10);
         background: #f8f9fa;
     }
 
@@ -180,28 +219,36 @@ default => 'Tháng này'
             <div class="phoenix-card mb-4 p-4">
                 <form method="GET" action="{{ route('admin.home') }}" class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold"><i class="fa fa-calendar-alt me-1"></i>Khoảng thời gian</label>
-                    <select class="form-select" name="quick_range" id="quick_range" onchange="toggleDateInputs()">
-                            <option value="today" {{ request('quick_range')=='today' ? 'selected' : '' }}>Hôm nay</option>
-                            <option value="this_week" {{ request('quick_range')=='this_week' ? 'selected' : '' }}>Tuần này</option>
-                            <option value="this_month" {{ (request('quick_range')=='this_month' || request('quick_range')==null) ? 'selected' : '' }}>Tháng này</option>
-                            <option value="this_year" {{ request('quick_range')=='this_year' ? 'selected' : '' }}>Năm nay</option>
-                            <option value="custom" {{ request('quick_range')=='custom' ? 'selected' : '' }}>Tùy chọn</option>
-                    </select>
-                </div>
+                        <label class="form-label fw-semibold"><i class="fa fa-calendar-alt me-1"></i>Khoảng thời
+                            gian</label>
+                        <select class="form-select" name="quick_range" id="quick_range" onchange="toggleDateInputs()">
+                            <option value="today" {{ request('quick_range')=='today' ? 'selected' : '' }}>Hôm nay
+                            </option>
+                            <option value="this_week" {{ request('quick_range')=='this_week' ? 'selected' : '' }}>Tuần
+                                này</option>
+                            <option value="this_month" {{ (request('quick_range')=='this_month' ||
+                                request('quick_range')==null) ? 'selected' : '' }}>Tháng này</option>
+                            <option value="this_year" {{ request('quick_range')=='this_year' ? 'selected' : '' }}>Năm
+                                nay</option>
+                            <option value="custom" {{ request('quick_range')=='custom' ? 'selected' : '' }}>Tùy chọn
+                            </option>
+                        </select>
+                    </div>
                     <div class="col-md-3" id="date_from_col" style="display:none;">
                         <label class="form-label fw-semibold"><i class="fa fa-calendar-day me-1"></i>Từ ngày</label>
-                    <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
-                </div>
+                        <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
+                    </div>
                     <div class="col-md-3" id="date_to_col" style="display:none;">
                         <label class="form-label fw-semibold"><i class="fa fa-calendar-day me-1"></i>Đến ngày</label>
-                    <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
-                </div>
+                        <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
+                    </div>
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1"><i class="fa fa-filter me-1"></i>Lọc</button>
-                        <a href="{{ route('admin.home') }}" class="btn btn-outline-secondary flex-grow-1"><i class="fa fa-times me-1"></i>Xoá lọc</a>
-                </div>
-            </form>
+                        <button type="submit" class="btn btn-primary flex-grow-1"><i
+                                class="fa fa-filter me-1"></i>Lọc</button>
+                        <a href="{{ route('admin.home') }}" class="btn btn-outline-secondary flex-grow-1"><i
+                                class="fa fa-times me-1"></i>Xoá lọc</a>
+                    </div>
+                </form>
             </div>
             <script>
                 function toggleDateInputs() {
@@ -319,7 +366,8 @@ default => 'Tháng này'
     <div class="accordion mb-3" id="moreStatsAccordion">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingMore">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMore">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseMore">
                     Xem thêm thống kê
                 </button>
             </h2>
@@ -341,18 +389,20 @@ default => 'Tháng này'
                                             </thead>
                                             <tbody>
                                                 @foreach($topProducts as $product)
-                                                    @php $featuredImage = $product->images->where('is_featured', true)->first(); @endphp
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex align-items-center gap-3">
-                                                                <img src="{{ $featuredImage ? asset('storage/' . $featuredImage->image_path) : asset('images/no-image.png') }}" alt="{{ $product->name }}" class="product-image">
-                                                                <div class="fw-semibold">{{ $product->name }}</div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <span class="badge bg-success">{{ $product->sold }}</span>
-                                                        </td>
-                                                    </tr>
+                                                @php $featuredImage = $product->images->where('is_featured',
+                                                true)->first(); @endphp
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <img src="{{ $featuredImage ? asset('storage/' . $featuredImage->image_path) : asset('images/no-image.png') }}"
+                                                                alt="{{ $product->name }}" class="product-image">
+                                                            <div class="fw-semibold">{{ $product->name }}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span class="badge bg-success">{{ $product->sold }}</span>
+                                                    </td>
+                                                </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -386,20 +436,20 @@ default => 'Tháng này'
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex align-items-center gap-3">
-                                                            <div class="fw-semibold">{{ $review->product->name ?? 'N/A' }}</div>
+                                                            <div class="fw-semibold">{{ $review->product->name ?? 'N/A'
+                                                                }}</div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="rating-stars">
-                                                            @for ($i = 1; $i <= 5; $i++)
-                                                                @if ($review->rating >= $i)
-                                                                    <i class="fas fa-star"></i>
+                                                            @for ($i = 1; $i <= 5; $i++) @if ($review->rating >= $i)
+                                                                <i class="fas fa-star"></i>
                                                                 @elseif($review->rating > $i - 1)
-                                                                    <i class="fas fa-star-half-alt"></i>
+                                                                <i class="fas fa-star-half-alt"></i>
                                                                 @else
-                                                                    <i class="far fa-star"></i>
+                                                                <i class="far fa-star"></i>
                                                                 @endif
-                                                            @endfor
+                                                                @endfor
                                                         </div>
                                                     </td>
                                                     <td>{{ $review->created_at->diffForHumans() }}</td>
