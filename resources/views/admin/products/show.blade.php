@@ -14,6 +14,19 @@
         <div class="col-auto">
             <h2 class="mb-0">Chi tiết sản phẩm: {{ $product->name }}</h2>
         </div>
+        <div class="col-auto ms-auto">
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-phoenix-primary">
+                    <span class="fas fa-edit me-2"></span>Sửa
+                </a>
+                <a href="{{ route('admin.products.list') }}" class="btn btn-phoenix-secondary">
+                    <span class="fas fa-arrow-left me-2"></span>Quay lại
+                </a>
+                <a href="{{ route('admin.inventory.index') }}?search={{ $product->sku }}" class="btn btn-info">
+                    <span class="fas fa-history me-2"></span>Xem lịch sử kho
+                </a>
+            </div>
+        </div>
     </div>
 
     <div class="card">
@@ -200,8 +213,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Trạng thái</th>
-                                                            <td>{{ $variation->status === 'in_stock' ? 'Còn hàng' : ($variation->status === 'out_of_stock' ? 'Hết hàng' : 'Ẩn') }}
-                                                            </td>
+                                                            <td>{{ $variation->stock_quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Ảnh</th>
@@ -296,11 +308,6 @@
                         <p class="text-muted">Chưa có bình luận nào.</p>
                     @endif
                 </div>
-            </div>
-
-            <div class="mt-4">
-                <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-primary">Sửa</a>
-                <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>

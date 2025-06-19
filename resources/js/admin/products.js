@@ -7,12 +7,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const variableSkuInput = document.getElementById('variable_sku');
     const simpleSlugInput = document.getElementById('simple_slug');
     const variableSlugInput = document.getElementById('variable_slug');
-    const simpleStockQuantityInput = document.getElementById('simple_stock_quantity');
-    const variableStockQuantityInput = document.getElementById('variable_stock_quantity');
     const attributesContainer = document.getElementById('attributes-container');
     const addAttributeBtn = document.getElementById('add-attribute');
     const generateVariationsBtn = document.getElementById('generate-variations');
     const variationsContainer = document.getElementById('variations-container');
+    const setVariationsPriceBtn = document.getElementById('set-variations-price');
 
     // Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
     const colors = window.colors || [];
@@ -23,11 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Tự động sinh SKU và Slug
     function generateSkuAndSlug(name, prefix = '') {
         const timestamp = Date.now();
-        const sku = `${prefix}${name.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
-        const slug = `${prefix}${name.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
+        const sanitizedName = name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || 'product';
+        const sku = `${prefix}${sanitizedName}-${timestamp}`;
+        const slug = `${prefix}${sanitizedName}-${timestamp}`;
         return { sku, slug };
     }
 
+    // Cập nhật SKU và Slug khi nhập tên sản phẩm
     if (nameInput && simpleSkuInput && simpleSlugInput && variableSkuInput && variableSlugInput) {
         nameInput.addEventListener('input', function () {
             const { sku, slug } = generateSkuAndSlug(this.value);
@@ -38,50 +39,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Khởi tạo trạng thái ban đầu dựa trên product_type
+    // Xử lý chuyển đổi loại sản phẩm
     if (productType) {
-        if (productType.value === 'simple') {
-            simpleProduct.style.display = 'block';
-            variableProduct.style.display = 'none';
-        } else {
-            simpleProduct.style.display = 'none';
-            variableProduct.style.display = 'block';
-            if (nameInput && variableSkuInput && variableSlugInput) {
-                const { sku, slug } = generateSkuAndSlug(nameInput.value, 'VAR-');
+        function toggleProductType() {
+            if (productType.value === 'simple') {
+                simpleProduct.style.display = 'block';
+                variableProduct.style.display = 'none';
+            } else {
+                simpleProduct.style.display = 'none';
+                variableProduct.style.display = 'block';
+                const { sku, slug } = generateSkuAndSlug(nameInput.value || 'product', 'VAR-');
                 variableSkuInput.value = sku;
                 variableSlugInput.value = `var-${slug}`;
             }
         }
 
-        productType.addEventListener('change', function () {
-            const stockValue = simpleStockQuantityInput?.value || variableStockQuantityInput?.value || '0';
-            if (this.value === 'simple') {
-                simpleProduct.style.display = 'block';
-                variableProduct.style.display = 'none';
-                if (simpleStockQuantityInput) simpleStockQuantityInput.value = stockValue;
-            } else {
-                simpleProduct.style.display = 'none';
-                variableProduct.style.display = 'block';
-                if (variableStockQuantityInput) variableStockQuantityInput.value = stockValue;
-                if (nameInput && variableSkuInput && variableSlugInput) {
-                    const { sku, slug } = generateSkuAndSlug(nameInput.value, 'VAR-');
-                    variableSkuInput.value = sku;
-                    variableSlugInput.value = `var-${slug}`;
-                }
-            }
-        });
+        productType.addEventListener('change', toggleProductType);
+        toggleProductType(); // Khởi tạo trạng thái ban đầu
     }
-
-    // Đặt giá trị mặc định cho stock_quantity
-    [simpleStockQuantityInput, variableStockQuantityInput].forEach(input => {
-        if (input) {
-            input.addEventListener('blur', function () {
-                if (!this.value || isNaN(parseInt(this.value)) || parseInt(this.value) < 0) {
-                    this.value = '0';
-                }
-            });
-        }
-    });
 
     // Xử lý định dạng giá trị số
     document.querySelectorAll('.price-input').forEach(input => {
@@ -100,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Xử lý thêm thuộc tính
-    if (addAttributeBtn) {
+    if (addAttributeBtn && attributesContainer) {
         addAttributeBtn.addEventListener('click', function () {
             const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
             if (attributeRows.length >= 4) {
@@ -141,6 +116,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const options = selectedType === 'color' ? colors :
                     selectedType === 'size' ? sizes :
                         selectedType === 'spherical' ? spherical_values : cylindrical_values;
+
+                if (options.length === 0) {
+                    valuesContainer.innerHTML = '<p class="text-muted">Không có giá trị nào để chọn.</p>';
+                    return;
+                }
 
                 options.forEach(option => {
                     const div = document.createElement('div');
@@ -193,24 +173,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.remove();
                 checkGenerateButton();
                 updateAddAttributeBtn();
-
-                // Cập nhật lại các select loại thuộc tính
-                const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
-                const usedTypes = Array.from(attributeRows).map(r => r.querySelector('.attribute-type')?.value || '');
-                const allTypes = ['color', 'size', 'spherical', 'cylindrical'];
-                const availableTypes = allTypes.filter(t => !usedTypes.includes(t));
-
-                Array.from(attributeRows).forEach((r, rowIndex) => {
-                    const typeSelect = r.querySelector('.attribute-type');
-                    const currentType = typeSelect.value;
-                    typeSelect.innerHTML = allTypes.map(t => `<option value="${t}" ${t === currentType ? 'selected' : ''}>${t === 'color' ? 'Màu sắc' : t === 'size' ? 'Kích thước' : t === 'spherical' ? 'Độ cận' : 'Độ loạn'}</option>`).join('');
-                    r.setAttribute('data-index', rowIndex);
-                    updateValuesContainer(typeSelect.value, rowIndex);
-                });
+                updateAttributeTypeOptions();
             });
 
             updateValuesContainer(typeSelect.value, index);
             updateAddAttributeBtn();
+        });
+    }
+
+    function updateAttributeTypeOptions() {
+        const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
+        const usedTypes = Array.from(attributeRows).map(r => r.querySelector('.attribute-type')?.value || '');
+        const allTypes = ['color', 'size', 'spherical', 'cylindrical'];
+
+        Array.from(attributeRows).forEach((r, rowIndex) => {
+            const typeSelect = r.querySelector('.attribute-type');
+            const currentType = typeSelect.value;
+            const availableTypes = allTypes.filter(t => !usedTypes.includes(t) || t === currentType);
+            typeSelect.innerHTML = availableTypes.map(t => `<option value="${t}" ${t === currentType ? 'selected' : ''}>${t === 'color' ? 'Màu sắc' : t === 'size' ? 'Kích thước' : t === 'spherical' ? 'Độ cận' : 'Độ loạn'}</option>`).join('');
+            r.setAttribute('data-index', rowIndex);
+            updateValuesContainer(typeSelect.value, rowIndex);
         });
     }
 
@@ -226,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function checkGenerateButton() {
-        if (!attributesContainer) return;
+        if (!attributesContainer || !generateVariationsBtn) return;
         const attributeRows = attributesContainer.getElementsByClassName('attribute-row');
         let hasValues = false;
         for (let row of attributeRows) {
@@ -236,13 +218,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             }
         }
-        if (hasValues) {
-            generateVariationsBtn.style.display = 'block';
-        } else {
-            generateVariationsBtn.style.display = 'none';
-            variationsContainer.style.display = 'none';
-            variationsContainer.innerHTML = '';
-        }
+        generateVariationsBtn.style.display = hasValues ? 'block' : 'none';
+        variationsContainer.style.display = hasValues && variationsContainer.children.length > 0 ? 'block' : 'none';
     }
 
     function generateCombinations(attributes) {
@@ -263,10 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const attributeRows = Array.from(attributesContainer.getElementsByClassName('attribute-row'));
         const attributes = attributeRows.map(row => {
             const typeSelect = row.querySelector('.attribute-type');
-            if (!typeSelect) {
-                console.warn('Missing attribute-type select in row:', row);
-                return null;
-            }
+            if (!typeSelect) return null;
             const type = typeSelect.value;
             const values = Array.from(row.querySelectorAll('.attribute-value-checkbox:checked')).map(cb => cb.value.trim());
             return values.length ? { type, values } : null;
@@ -278,11 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const existingVariationNames = Array.from(variationsContainer.getElementsByClassName('variation-row'))
-            .map(row => {
-                const input = row.querySelector('input[name$="[name]"]');
-                return (input && typeof input.value === 'string' && input.value.trim() !== '') ? input.value : null;
-            })
-            .filter(name => !!name);
+            .map(row => row.querySelector('input[name$="[name]"]')?.value.trim())
+            .filter(name => name);
         const combinations = generateCombinations(attributes).map(combo => combo.join(' - ')).filter(name => !existingVariationNames.includes(name));
 
         if (!combinations.length) {
@@ -291,12 +262,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         variationsContainer.style.display = 'block';
-        const setVariationsPriceBtn = document.getElementById('set-variations-price');
         if (setVariationsPriceBtn) setVariationsPriceBtn.style.display = 'block';
 
         combinations.forEach((name, idx) => {
             const globalIndex = variationsContainer.getElementsByClassName('variation-row').length;
-            const skuPrefix = (variableSkuInput && typeof variableSkuInput.value === 'string' && variableSkuInput.value.trim() !== '') ? variableSkuInput.value : 'VAR';
+            const skuPrefix = variableSkuInput?.value.trim() || 'VAR';
             const row = document.createElement('div');
             row.className = 'variation-row row g-2 mb-2';
             row.innerHTML = `
@@ -312,16 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="col-md-1">
                     <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 234.56)">
                 </div>
-                <div class="col-md-1">
-                    <input type="number" name="variations[${globalIndex}][stock_quantity]" value="0" class="form-control stock-quantity-input" placeholder="Tồn kho" min="0">
-                </div>
-                <div class="col-md-1">
-                    <select name="variations[${globalIndex}][status]" class="form-select variation-status">
-                        <option value="in_stock">Còn hàng</option>
-                        <option value="out_of_stock" selected>Hết hàng</option>
-                        <option value="hidden">Ẩn</option>
-                    </select>
-                </div>
                 <div class="col-md-2">
                     <input type="file" name="variations[${globalIndex}][image]" class="form-control variation-image-input">
                 </div>
@@ -330,30 +290,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
             variationsContainer.appendChild(row);
-
-            const stockInput = row.querySelector('.stock-quantity-input');
-            const statusSelect = row.querySelector('.variation-status');
-            stockInput.addEventListener('input', function () {
-                statusSelect.value = parseInt(this.value) === 0 ? 'out_of_stock' : 'in_stock';
-            });
         });
     }
 
-    if (generateVariationsBtn) {
+    if (generateVariationsBtn && attributesContainer && variationsContainer) {
         generateVariationsBtn.addEventListener('click', function () {
             updateVariations(attributesContainer, variationsContainer, variableSkuInput);
         });
     }
 
+    // Xử lý xóa biến thể
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-variation')) {
             const variationRows = variationsContainer.getElementsByClassName('variation-row');
             if (variationRows.length <= 1) {
-                alert('Bạn không thể xóa biến thể này vì sản phẩm phải có ít nhất một biến thể');
+                alert('Bạn không thể xóa biến thể này vì sản phẩm phải có ít nhất một biến thể.');
                 return;
             }
             if (confirm('Bạn có chắc muốn xóa biến thể này?')) {
                 e.target.closest('.variation-row').remove();
+                variationsContainer.style.display = variationsContainer.children.length > 0 ? 'block' : 'none';
+                if (setVariationsPriceBtn) {
+                    setVariationsPriceBtn.style.display = variationsContainer.children.length > 0 ? 'block' : 'none';
+                }
             }
         }
     });
@@ -365,17 +324,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const salePriceInput = form.querySelector('input[name="sale_price"]');
             const variationPriceInputs = form.querySelectorAll('input[name^="variations"][name$="[price]"]');
             const variationSalePriceInputs = form.querySelectorAll('input[name^="variations"][name$="[sale_price]"]');
-            const stockQuantityInput = productType?.value === 'simple' ? simpleStockQuantityInput : variableStockQuantityInput;
 
             let hasError = false;
-
-            if (stockQuantityInput && productType?.value === 'simple') {
-                if (!stockQuantityInput.value || isNaN(parseInt(stockQuantityInput.value)) || parseInt(stockQuantityInput.value) < 0) {
-                    stockQuantityInput.value = '0';
-                } else {
-                    stockQuantityInput.value = parseInt(stockQuantityInput.value).toString();
-                }
-            }
 
             if (productType?.value === 'simple' && priceInput && priceInput.value) {
                 let priceValue = priceInput.value.replace(',', '.');
@@ -403,32 +353,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (hasError) {
                 e.preventDefault();
-                alert('Vui lòng nhập số lượng tồn kho và giá hợp lệ (số dương).');
+                alert('Vui lòng nhập giá hợp lệ (số dương).');
             }
         });
     });
 
-    // Khởi tạo sự kiện cho các checkbox hiện có
-    document.querySelectorAll('.attribute-value-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const row = this.closest('.attribute-row');
-            const rowIndex = row.getAttribute('data-index');
-            const tagsContainer = row.querySelector('.attribute-values-tags');
-            const selectedValues = Array.from(row.querySelectorAll(`input[name="attributes[${rowIndex}][values][]"]:checked`)).map(cb => cb.value);
-            tagsContainer.innerHTML = '';
-            selectedValues.forEach(value => {
-                const tag = document.createElement('span');
-                tag.className = 'tag';
-                tag.innerHTML = `${value}<input type="hidden" name="attributes[${rowIndex}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
-                tagsContainer.appendChild(tag);
-            });
-            checkGenerateButton();
-            updateAddAttributeBtn();
-        });
-    });
-
     // Xử lý nút "Thêm giá gốc" cho tất cả biến thể
-    const setVariationsPriceBtn = document.getElementById('set-variations-price');
     if (setVariationsPriceBtn) {
         setVariationsPriceBtn.addEventListener('click', function () {
             const variationRows = variationsContainer.getElementsByClassName('variation-row');
@@ -438,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const price = prompt('Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):');
-            if (price === null) return; // Người dùng hủy prompt
+            if (price === null) return;
 
             let parsedPrice = price.replace(',', '.').trim();
             if (!parsedPrice || isNaN(parseFloat(parsedPrice)) || parseFloat(parsedPrice) < 0) {
@@ -446,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            parsedPrice = parseFloat(parsedPrice).toString(); // Chuẩn hóa giá
+            parsedPrice = parseFloat(parsedPrice).toString();
             Array.from(variationRows).forEach(row => {
                 const priceInput = row.querySelector('input[name$="[price]"]');
                 if (priceInput) {
@@ -457,19 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Khởi tạo sự kiện cho stock_quantity để tự động cập nhật trạng thái
-    document.querySelectorAll('.stock-quantity-input').forEach(input => {
-        input.addEventListener('input', function () {
-            const row = this.closest('.variation-row');
-            const statusSelect = row.querySelector('.variation-status');
-            if (parseInt(this.value) === 0) {
-                statusSelect.value = 'out_of_stock';
-            } else if (statusSelect.value === 'out_of_stock') {
-                statusSelect.value = 'in_stock';
-            }
-        });
-    });
-
+    // Khởi tạo
     updateAddAttributeBtn();
     checkGenerateButton();
 });
