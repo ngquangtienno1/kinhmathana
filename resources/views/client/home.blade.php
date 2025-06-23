@@ -62,56 +62,38 @@
         <section class="py-0 px-xl-3">
             <div class="container px-xl-0 px-xxl-3">
                 <div class="row g-3 mb-9">
-                    <div class="col-12">
-                        <div class="whooping-banner w-100 rounded-3 overflow-hidden">
-                            <div class="bg-holder z-n1 product-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/whooping_banner_product.png') }});background-position: bottom right;">
-                            </div>
-                            <!--/.bg-holder-->
-                            <div class="bg-holder z-n1 shape-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/whooping_banner_shape_2.png') }});background-position: bottom left;">
-                            </div>
-                            <!--/.bg-holder-->
-                            <div class="banner-text" data-bs-theme="light">
-                                <h2 class="text-warning-light fw-bolder fs-lg-3 fs-xxl-2">Whooping <span
-                                        class="gradient-text">60% </span>Off</h2>
-                                <h3 class="fw-bolder fs-lg-5 fs-xxl-3 text-white">on everyday items</h3>
-                            </div><a class="btn btn-lg btn-primary rounded-pill banner-button" href="#">Shop Now</a>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div class="gift-items-banner w-100 rounded-3 overflow-hidden">
-                            <div class="bg-holder z-n1 banner-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/gift-items-banner-bg.png') }});">
-                            </div>
-                            <!--/.bg-holder-->
-                            <div class="banner-text text-md-center">
-                                <h2 class="text-white fw-bolder fs-xl-4">Get <span class="gradient-text">10% Off </span><br
-                                        class="d-md-none"> on gift items</h2><a
-                                    class="btn btn-lg btn-primary rounded-pill banner-button" href="#">Buy Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div
-                            class="best-in-market-banner d-flex h-100 px-4 px-sm-7 py-5 px-md-11 rounded-3 overflow-hidden">
-                            <div class="bg-holder z-n1 banner-bg"
-                                style="background-image:url({{ asset('v1/assets/img/e-commerce/best-in-market-bg.png') }});"></div>
-                            <!--/.bg-holder-->
-                            <div class="row align-items-center w-sm-100">
-                                <div class="col-8">
-                                    <div class="banner-text">
-                                        <h2 class="text-white fw-bolder fs-sm-4 mb-5">MI 11 Pro<br><span
-                                                class="fs-7 fs-sm-6"> Best in the market</span></h2><a
-                                            class="btn btn-lg btn-warning rounded-pill banner-button" href="#">Buy
-                                            Now</a>
+                    @if ($sliders->isNotEmpty())
+                        @foreach ($sliders as $slider)
+                            <div class="col-12 {{ $loop->first ? '' : 'col-xl-6' }}">
+                                <div class="whooping-banner w-100 rounded-3 overflow-hidden position-relative"
+                                    style="min-height: 400px;">
+                                    <div class="bg-holder z-n1 product-bg"
+                                        style="background-image:url({{ asset('storage/' . $slider->image) }});background-position: center; background-size: cover; transition: transform 0.5s ease;">
+                                    </div>
+                                    <div class="banner-text position-relative z-1 p-4 p-md-5 h-100 d-flex flex-column justify-content-between"
+                                        data-bs-theme="light">
+                                        {{-- <div class="banner-content" style="max-width: 600px;">
+                                            <h2 class="text-warning-light fw-bolder fs-lg-3 fs-xxl-2 mb-3">
+                                                {{ $slider->title }}
+                                            </h2>
+                                            @if ($slider->description)
+                                                <h3 class="fw-bolder fs-lg-5 fs-xxl-3 text-white mb-4">
+                                                    {{ $slider->description }}
+                                                </h3>
+                                            @endif
+                                        </div> --}}
+                                        @if ($slider->url)
+                                            <a class="btn btn-lg btn-primary rounded-pill banner-button position-absolute"
+                                                style="right: 32px; bottom: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); min-width: 140px; font-weight: 600;"
+                                                href="{{ $slider->url }}">
+                                                Xem ngay
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="col-4"><img class="w-100 w-sm-75" src="{{ asset('v1/assets/img/e-commerce/5.png') }}"
-                                        alt=""></div>
                             </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
                 <div class="row g-4 mb-6">
                     <div class="col-12 col-lg-9 col-xxl-10">
@@ -125,48 +107,53 @@
                             <div class="swiper swiper theme-slider"
                                 data-swiper='{"slidesPerView":1,"spaceBetween":16,"breakpoints":{"450":{"slidesPerView":2,"spaceBetween":16},"768":{"slidesPerView":3,"spaceBetween":20},"1200":{"slidesPerView":4,"spaceBetween":16},"1540":{"slidesPerView":5,"spaceBetween":16}}}'>
                                 <div class="swiper-wrapper">
-                                    @foreach([6,1,2,3,4,5] as $img)
-                                    <div class="swiper-slide">
-                                        <div class="position-relative text-decoration-none product-card h-100">
-                                            <div class="d-flex flex-column justify-content-between h-100">
-                                                <div>
-                                                    <div
-                                                        class="border border-1 border-translucent rounded-3 position-relative mb-3">
-                                                        <button
-                                                            class="btn btn-wish btn-wish-primary z-2 d-toggle-container"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                                            title="Add to wishlist"><span
-                                                                class="fas fa-heart d-block-hover"
-                                                                data-fa-transform="down-1"></span><span
-                                                                class="far fa-heart d-none-hover"
-                                                                data-fa-transform="down-1"></span></button><img
-                                                            class="img-fluid" src="{{ asset('v1/assets/img/products/' . $img . '.png') }}"
-                                                            alt="" />
-                                                    </div><a class="stretched-link" href="product-details.html">
-                                                        <h6 class="mb-2 lh-sm line-clamp-3 product-name">PlayStation 5
-                                                            DualSense Wireless Controller</h6>
-                                                    </a>
-                                                    <p class="fs-9"><span class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="text-body-quaternary fw-semibold ms-1">(67 people
-                                                            rated)</span></p>
-                                                </div>
-                                                <div>
-                                                    <p class="fs-9 text-body-highlight fw-bold mb-2">dbrand skin available
-                                                    </p>
-                                                    <div class="d-flex align-items-center mb-1">
-                                                        <p class="me-2 text-body text-decoration-line-through mb-0">$125.00
-                                                        </p>
-                                                        <h3 class="text-body-emphasis mb-0">$89.00</h3>
+                                    @foreach ([6, 1, 2, 3, 4, 5] as $img)
+                                        <div class="swiper-slide">
+                                            <div class="position-relative text-decoration-none product-card h-100">
+                                                <div class="d-flex flex-column justify-content-between h-100">
+                                                    <div>
+                                                        <div
+                                                            class="border border-1 border-translucent rounded-3 position-relative mb-3">
+                                                            <button
+                                                                class="btn btn-wish btn-wish-primary z-2 d-toggle-container"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Add to wishlist"><span
+                                                                    class="fas fa-heart d-block-hover"
+                                                                    data-fa-transform="down-1"></span><span
+                                                                    class="far fa-heart d-none-hover"
+                                                                    data-fa-transform="down-1"></span></button><img
+                                                                class="img-fluid"
+                                                                src="{{ asset('v1/assets/img/products/' . $img . '.png') }}"
+                                                                alt="" />
+                                                        </div><a class="stretched-link" href="product-details.html">
+                                                            <h6 class="mb-2 lh-sm line-clamp-3 product-name">PlayStation 5
+                                                                DualSense Wireless Controller</h6>
+                                                        </a>
+                                                        <p class="fs-9"><span
+                                                                class="fa fa-star text-warning"></span><span
+                                                                class="fa fa-star text-warning"></span><span
+                                                                class="fa fa-star text-warning"></span><span
+                                                                class="fa fa-star text-warning"></span><span
+                                                                class="fa fa-star text-warning"></span><span
+                                                                class="text-body-quaternary fw-semibold ms-1">(67 people
+                                                                rated)</span></p>
                                                     </div>
-                                                    <p class="text-body-tertiary fw-semibold fs-9 lh-1 mb-0">2 colors</p>
+                                                    <div>
+                                                        <p class="fs-9 text-body-highlight fw-bold mb-2">dbrand skin
+                                                            available
+                                                        </p>
+                                                        <div class="d-flex align-items-center mb-1">
+                                                            <p class="me-2 text-body text-decoration-line-through mb-0">
+                                                                $125.00
+                                                            </p>
+                                                            <h3 class="text-body-emphasis mb-0">$89.00</h3>
+                                                        </div>
+                                                        <p class="text-body-tertiary fw-semibold fs-9 lh-1 mb-0">2 colors
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -179,7 +166,8 @@
                     </div>
                     <div class="col-lg-3 d-none d-lg-block col-xxl-2">
                         <div class="h-100 position-relative rounded-3 overflow-hidden">
-                            <div class="bg-holder" style="background-image:url({{ asset('v1/assets/img/e-commerce/4.png') }});">
+                            <div class="bg-holder"
+                                style="background-image:url({{ asset('v1/assets/img/e-commerce/4.png') }});">
                             </div>
                             <!--/.bg-holder-->
                         </div>
@@ -208,7 +196,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/5.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/5.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Razer Kraken v3 x
@@ -241,7 +230,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/7.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/7.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">2021 Apple 12.9-inch
@@ -274,7 +264,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/12.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/12.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">HORI Racing Wheel Apex
@@ -309,7 +300,8 @@
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="Remove from wishlist"><span class="fas fa-heart"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/1.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/1.png') }}"
                                                         alt="" /><span
                                                         class="badge text-bg-success fs-10 product-verified-badge">Verified<span
                                                             class="fas fa-check ms-1"></span></span>
@@ -346,7 +338,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/16.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/16.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Apple AirPods Pro</h6>
@@ -381,7 +374,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/10.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/10.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Apple Magic Mouse
@@ -420,7 +414,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/8.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/8.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Amazon Basics Matte
@@ -473,7 +468,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/25.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/25.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">RESPAWN 200 Racing
@@ -503,7 +499,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/27.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/27.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">LEVOIT Humidifiers for
@@ -534,7 +531,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/26.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/26.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">NETGEAR Nighthawk Pro
@@ -564,7 +562,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/18.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/18.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Rachael Ray Cucina
@@ -595,7 +594,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/17.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/17.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Xbox Series S</h6>
@@ -624,7 +624,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/24.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/24.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">FURINNO Computer
@@ -654,7 +655,8 @@
                                                             data-fa-transform="down-1"></span><span
                                                             class="far fa-heart d-none-hover"
                                                             data-fa-transform="down-1"></span></button><img
-                                                        class="img-fluid" src="{{ asset('v1/assets/img/products/18.png') }}"
+                                                        class="img-fluid"
+                                                        src="{{ asset('v1/assets/img/products/18.png') }}"
                                                         alt="" />
                                                 </div><a class="stretched-link" href="product-details.html">
                                                     <h6 class="mb-2 lh-sm line-clamp-3 product-name">Seagate Portable 2TB
@@ -686,7 +688,8 @@
                     <div class="col-auto"><img class="d-dark-none"
                             src="{{ asset('v1/assets/img/spot-illustrations/light_30.png') }}" alt=""
                             width="305" /><img class="d-light-none"
-                            src="{{ asset('v1/assets/img/spot-illustrations/dark_30.png') }}" alt="" width="305" />
+                            src="{{ asset('v1/assets/img/spot-illustrations/dark_30.png') }}" alt=""
+                            width="305" />
                     </div>
                     <div class="col-auto">
                         <div class="text-center text-lg-start">
