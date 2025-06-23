@@ -14,20 +14,17 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 
-class AuthenticationController extends BaseController
+class AuthenticationClientController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
+    public function __construct() {}
 
     public function login()
     {
-        return view('admin.login.login');
-    }
 
+        return view('client.login.login');
+    }
     public function postLogin(UserLoginRequest $request)
     {
         try {
@@ -37,7 +34,7 @@ class AuthenticationController extends BaseController
                 ->first();
 
             if (!$user) {
-                Log::warning('Login attempt failed: Email not found', ['email' => $request->email]);
+                Log::warning('Login failed: Email does not exist', ['email' => $request->email]);
                 return redirect()->back()
                     ->withErrors(['email' => 'Email chưa được đăng ký'])
                     ->withInput();
@@ -45,21 +42,21 @@ class AuthenticationController extends BaseController
 
             // Check password
             if (!Hash::check($request->password, $user->password)) {
-                Log::warning('Login attempt failed: Invalid password', ['email' => $request->email]);
+                Log::warning('Login failed: Incorrect password', ['email' => $request->email]);
                 return redirect()->back()
                     ->withErrors(['password' => 'Mật khẩu không đúng'])
                     ->withInput();
             }
 
-            // Check account status
+            // Check user status
             if ($user->status_user !== 'active') {
-                Log::warning('Login attempt failed: Account not active', ['email' => $request->email]);
+                Log::warning('Login failed: Account is inactive', ['email' => $request->email]);
                 return redirect()->back()
                     ->withErrors(['email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt'])
                     ->withInput();
             }
 
-            // Login successful
+            // Successful login
             Auth::login($user, $request->has('remember'));
             session()->put('user_id', Auth::id());
 
@@ -69,21 +66,17 @@ class AuthenticationController extends BaseController
                 'role_id' => $user->role_id
             ]);
 
-            // Redirect based on role_id
-            if (in_array($user->role_id, [1, 2])) { // 1 là admin, 2 là staff
-                return redirect()->route('admin.home')
+            if ($user->role_id === 3) { // If the user is a client
+                return redirect()->route('client.home') // Redirect to client home page
                     ->with('message', 'Đăng nhập thành công');
-            } else if ($user->role_id == 3) {
-                return redirect()->route('client');
-            } else {
-                Auth::logout(); // Đăng xuất ngay lập tức
-                return redirect()->route('login')
-                    ->withErrors(['email' => 'Tài khoản không hợp lệ']);
             }
         } catch (\Exception $e) {
+            // Ghi chi tiết lỗi, bao gồm cả stack trace
             Log::error('Login error', [
                 'email' => $request->email,
-                'error' => $e->getMessage()
+                'error_message' => $e->getMessage(),
+                'error_code' => $e->getCode(),
+                'stack_trace' => $e->getTraceAsString(), // Thêm thông tin stack trace để debug
             ]);
 
             return redirect()->back()
@@ -91,6 +84,9 @@ class AuthenticationController extends BaseController
                 ->withInput();
         }
     }
+
+
+
 
     public function logout()
     {
@@ -100,7 +96,7 @@ class AuthenticationController extends BaseController
             session()->forget('user_id');
         }
 
-        return redirect()->route('login')
+        return redirect()->route('client.login')
             ->with('message', 'Đăng xuất thành công');
     }
 
@@ -135,8 +131,9 @@ class AuthenticationController extends BaseController
         ]);
 
         if ($user) {
-            return redirect()->route('client.login')->with([
-                'message' => 'Đăng ký thành công. Vui lòng đăng nhập'
+            Auth::login($user);
+            return redirect()->route('client.home')->with([
+                'message' => 'Đăng ký thành công. Chào mừng bạn!'
             ]);
         }
 

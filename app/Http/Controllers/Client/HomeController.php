@@ -16,4 +16,4 @@ class HomeController extends Controller
             ->get();
         return view('client.home', compact('sliders'));
     }
-} 
+}
