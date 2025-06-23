@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 simpleProduct.style.display = 'none';
                 variableProduct.style.display = 'block';
-                const { sku, slug } = generateSkuAndSlug(nameInput.value || 'product', 'VAR-');
+                const { sku, slug } = generateSkuAndSlug(`nameInput`.value || 'product', 'VAR-');
                 variableSkuInput.value = sku;
                 variableSlugInput.value = `var-${slug}`;
             }
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][name]" value="${name}" class="form-control" placeholder="Tên biến thể" readonly>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${name.toLowerCase().replace(/\s+/g, '-')}" class="form-control" placeholder="Mã sản phẩm">
                 </div>
                 <div class="col-md-1">
