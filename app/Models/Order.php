@@ -129,6 +129,7 @@ class Order extends Model
             'returned' => 'danger',
             'processing_return' => 'warning',
             'refunded' => 'info',
+            'cancelled' => 'secondary',
             default => 'secondary'
         };
     }
