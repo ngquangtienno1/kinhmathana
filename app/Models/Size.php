@@ -12,9 +12,4 @@ class Size extends Model
     protected $fillable = ['name', 'description', 'sort_order'];
 
     public $timestamps = false;
-
-    public function variationDetails()
-    {
-        return $this->hasMany(VariationDetail::class);
-    }
 }

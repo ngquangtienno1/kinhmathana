@@ -18,6 +18,7 @@ class CategoryFactory extends Factory
             'slug' => Str::slug($name), // Tạo slug từ name
             'description' => $this->faker->sentence(10), // Tạo mô tả ngẫu nhiên
             'parent_id' => null, // Để trống hoặc bạn có thể thêm logic để tạo danh mục con
+            'is_active' => $this->faker->boolean(),
         ];
     }
 }

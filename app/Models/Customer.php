@@ -47,4 +47,14 @@ class Customer extends Model
         }
         $this->save();
     }
+
+    public function getCalculatedTotalSpentAttribute()
+    {
+        return $this->orders->sum(function ($order) {
+            $calculatedSubtotal = $order->items->sum(function ($item) {
+                return $item->price * $item->quantity;
+            });
+            return $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
+        });
+    }
 }

@@ -32,6 +32,14 @@ class SliderController extends Controller
             }
         }
 
+        // Lọc theo ngày tạo
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
         $sort = $request->get('sort', 'created_at');
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
@@ -168,7 +176,7 @@ class SliderController extends Controller
 
     public function bin()
     {
-        $sliders = Slider::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        $sliders = Slider::onlyTrashed()->orderBy('deleted_at', 'desc')->get();
         return view('admin.sliders.bin', compact('sliders'));
     }
 

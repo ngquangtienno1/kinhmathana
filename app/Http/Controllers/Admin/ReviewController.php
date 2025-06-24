@@ -108,16 +108,6 @@ class ReviewController extends Controller
             $query->where('created_at', '<=', $endDate);
         }
 
-        // Filter by product
-        if ($request->filled('product_id')) {
-            $query->where('product_id', $request->product_id);
-        }
-
-        // Filter by user
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
         $sort = $request->get('sort', 'id');
         $direction = $request->get('direction', 'desc');
         $query->orderBy($sort, $direction);
@@ -152,7 +142,7 @@ class ReviewController extends Controller
     {
         $review = Review::findOrFail($id);
         $review->delete();
-    
+
         $redirect = $request->input('redirect');
         if ($redirect) {
             return redirect($redirect)->with('success', 'Xoá đánh giá thành công!');
@@ -205,6 +195,7 @@ class ReviewController extends Controller
         }
 
         $review->reply = $request->reply;
+        $review->updated_at = now();
         $review->save();
 
         return back()->with('success', 'Đã trả lời đánh giá thành công!');

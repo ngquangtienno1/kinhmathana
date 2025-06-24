@@ -26,89 +26,94 @@
         @csrf
         <input type="hidden" name="ids" id="bulk-restore-ids">
     </form>
-    <form id="bulk-force-delete-form" action="{{ route('admin.news.bulkForceDelete') }}" method="POST"
-        style="display:none;">
+    <form id="bulk-force-delete-form" action="{{ route('admin.news.bulkForceDelete') }}" method="POST" style="display:none;">
         @csrf
         @method('DELETE')
         <input type="hidden" name="ids" id="bulk-force-delete-ids">
     </form>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive scrollbar">
-                <table class="table fs-9 mb-0 align-middle">
+    <div id="news" data-list='{"valueNames":["id","title","category","author","published_at","status","deleted_at"],"page":10,"pagination":true}'>
+        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+            <div class="table-responsive scrollbar mx-n1 px-1">
+                <table class="table fs-9 mb-0">
                     <thead>
                         <tr>
-                            <th class="align-middle text-center" style="width:40px;">
+                            <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;" scope="col">
                                 <div class="form-check mb-0 fs-8">
-                                    <input class="form-check-input" id="checkbox-bulk-news-select" type="checkbox" />
+                                    <input class="form-check-input" id="checkbox-bulk-news-select" type="checkbox" data-bulk-select='{"body":"news-table-body"}' />
                                 </div>
                             </th>
-                            <th class="align-middle text-center" style="width:70px;">ẢNH</th>
-                            <th class="sort" data-sort="title">Tiêu đề</th>
-                            <th class="sort" data-sort="category">Danh mục</th>
-                            <th class="sort" data-sort="author">Tác giả</th>
-                            <th class="sort" data-sort="published_at">Ngày xuất bản</th>
-                            <th class="sort" data-sort="status">Trạng thái</th>
-                            <th class="sort" data-sort="deleted_at">Ngày xóa</th>
-                            <th class="text-end">Thao tác</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:80px;">
+                                <a href="{{ route('admin.news.bin', ['sort' => 'id', 'direction' => request('sort') === 'id' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
+                                    class="text-body" style="text-decoration:none;">
+                                    ID
+                                    @if (request('sort') === 'id')
+                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                    @endif
+                                </a>
+                            </th>
+                            <th class="sort white-space-nowrap align-middle fs-9" scope="col" style="width:70px;">ẢNH</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:250px;" data-sort="title">TIÊU ĐỀ</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="category">DANH MỤC</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="author">TÁC GIẢ</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="published_at">NGÀY XUẤT BẢN</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="status">TRẠNG THÁI</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="deleted_at">NGÀY XÓA</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" data-sort="views">Lượt xem</th>
+                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:100px;"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="list" id="news-table-body">
                         @forelse ($news as $item)
-                            <tr>
-                                <td class="align-middle text-center">
+                            <tr class="position-static">
+                                <td class="fs-9 align-middle">
                                     <div class="form-check mb-0 fs-8">
-                                        <input class="form-check-input news-checkbox" type="checkbox"
-                                            value="{{ $item->id }}" />
+                                        <input class="form-check-input news-checkbox" type="checkbox" value="{{ $item->id }}" />
                                     </div>
                                 </td>
-                                <td class="align-middle text-center">
+                                <td class="id align-middle ps-4">
+                                    <span class="text-body-tertiary">{{ $item->id }}</span>
+                                </td>
+                                <td class="align-middle white-space-nowrap py-0">
                                     @if ($item->image)
-                                        <a class="d-block" href="#">
-                                            <img src="{{ asset('storage/' . $item->image) }}" alt=""
-                                                width="48" style="object-fit:cover;"
-                                                class="border border-translucent rounded-2">
+                                        <a class="d-block" href="{{ route('admin.news.show', $item) }}">
+                                            <img src="{{ asset('storage/' . $item->image) }}" alt="" width="53" class="img-fluid rounded-2 border border-translucent" />
                                         </a>
                                     @endif
                                 </td>
-                                <td class="title">{{ $item->title }}</td>
-                                <td class="category">{{ $item->category ? $item->category->name : 'N/A' }}</td>
-                                <td class="author">{{ $item->author ? $item->author->name : 'N/A' }}</td>
-                                <td class="published_at">
+                                <td class="title align-middle ps-4">
+                                    <a class="fw-semibold line-clamp-3 mb-0" href="{{ route('admin.news.show', $item) }}">{{ $item->title }}</a>
+                                </td>
+                                <td class="category align-middle ps-4">{{ $item->category ? $item->category->name : 'N/A' }}</td>
+                                <td class="author align-middle ps-4">{{ $item->author ? $item->author->name : 'N/A' }}</td>
+                                <td class="published_at align-middle ps-4">
                                     {{ $item->published_at ? $item->published_at->format('d/m/Y H:i') : 'Chưa xuất bản' }}
                                 </td>
-                                <td class="status">
-                                    <span
-                                        class="badge badge-phoenix fs-10 {{ $item->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
+                                <td class="status align-middle ps-4">
+                                    <span class="badge badge-phoenix fs-10 {{ $item->is_active ? 'badge-phoenix-success' : 'badge-phoenix-danger' }}">
                                         {{ $item->is_active ? 'Hoạt động' : 'Không hoạt động' }}
                                     </span>
                                 </td>
-                                <td class="deleted_at">
-                                    {{ $item->deleted_at ? $item->deleted_at->format('d/m/Y H:i') : '' }}</td>
-                                <td class="align-middle text-center btn-reveal-trigger">
+                                <td class="deleted_at align-middle white-space-nowrap text-body-tertiary ps-4">
+                                    {{ $item->deleted_at ? $item->deleted_at->format('d/m/Y H:i') : '' }}
+                                </td>
+                                <td class="views align-middle ps-4">{{ $item->views }}</td>
+                                <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
-                                        <button
-                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                            type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                            aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                             <span class="fas fa-ellipsis-h fs-10"></span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
-                                            <form action="{{ route('admin.news.restore', $item->id) }}" method="POST"
-                                                class="d-inline">
+                                            <form action="{{ route('admin.news.restore', $item->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
                                                 <button type="submit" class="dropdown-item">Khôi phục</button>
                                             </form>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.news.forceDelete', $item->id) }}"
-                                                method="POST" class="d-inline">
+                                            <form action="{{ route('admin.news.forceDelete', $item->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tin tức này?')">Xóa
-                                                    vĩnh viễn</button>
+                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tin tức này?')">Xóa vĩnh viễn</button>
                                             </form>
                                         </div>
                                     </div>
@@ -116,14 +121,23 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">Không có tin tức nào trong thùng rác</td>
+                                <td colspan="10" class="text-center py-4">Không có tin tức nào trong thùng rác</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex justify-content-center mt-3">
-                {{ $news->links() }}
+            <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+                <div class="col-auto d-flex">
+                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p>
+                    <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                </div>
+                <div class="col-auto d-flex">
+                    <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                    <ul class="mb-0 pagination"></ul>
+                    <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                </div>
             </div>
         </div>
     </div>
@@ -180,6 +194,7 @@
             bulkRestoreIds.value = checkedIds.join(',');
             bulkRestoreForm.submit();
         });
+
         // Xử lý submit xóa vĩnh viễn
         bulkForceDeleteBtn.addEventListener('click', function(e) {
             e.preventDefault();

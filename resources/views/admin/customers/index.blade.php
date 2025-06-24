@@ -68,7 +68,7 @@
                 </div>
                 <!-- Export -->
                 <div class="col-auto d-flex align-items-center gap-2">
-                    <a href="#" class="btn btn-link text-body px-0 d-flex align-items-center"
+                    <a href="{{ route('admin.customers.export', request()->query()) }}" class="btn btn-link text-body px-0 d-flex align-items-center"
                         style="height: 40px;">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </a>
@@ -130,7 +130,7 @@
                                 </td>
                                 <td class="spent align-middle text-end fw-semibold text-body-highlight px-3"
                                     style="white-space:nowrap;">
-                                    {{ number_format($customer->total_spent) }} <span
+                                    {{ number_format($customer->calculated_total_spent) }} <span
                                         class="text-muted ms-1">VND</span>
                                 </td>
                                 <td

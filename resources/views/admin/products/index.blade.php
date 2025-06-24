@@ -5,7 +5,7 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="#">Products</a>
+        <a href="{{ route('admin.products.list') }}">Sản phẩm</a>
     </li>
     <li class="breadcrumb-item active">Danh sách sản phẩm</li>
 @endsection
@@ -13,7 +13,7 @@
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Sản phẩm</h2>
+            <h2 class="mb-0">Danh sách sản phẩm</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
@@ -37,15 +37,15 @@
         </li>
     </ul>
     <div id="products"
-        data-list='{"valueNames":["name","price","status","created_at","stock","has_variations"],"page":10,"pagination":true}'>
+        data-list='{"valueNames":["name","price","sale_price","stock","description","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true}'>
         <div class="mb-4">
-            <form action="{{ route('admin.products.list') }}" method="GET"
-                class="d-flex flex-wrap gap-3 align-items-end" id="product-search-form">
-                <div class="search-box" style="flex: 1; min-width: 200px;">
-                    <input class="form-control search-input search" type="search" name="search"
-                        placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" id="product-search-input"
-                        autocomplete="off" />
-                    <span class="fas fa-search search-box-icon"></span>
+            <div class="d-flex flex-wrap gap-3">
+                <div class="search-box">
+                    <form class="position-relative" action="{{ route('admin.products.list') }}" method="GET">
+                        <input class="form-control search-input search" type="search" name="search"
+                            placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" aria-label="Search" />
+                        <span class="fas fa-search search-box-icon"></span>
+                    </form>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
                     <select class="form-select" name="category_id" id="category_id">
@@ -67,7 +67,7 @@
                         <span class="fas fa-filter me-2"></span>Lọc
                     </button>
                     <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">
-                        <span class="fas fa-eraser me-2"></span>Xóa bộ lọc
+                        <span class="fas fa-eraser me-2"></span>Bỏ lọc
                     </a>
                 </div>
                 <div class="ms-auto">
@@ -78,7 +78,7 @@
                         <span class="fas fa-plus me-2"></span>Thêm sản phẩm
                     </a>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1"
             id="product-table-wrapper">
@@ -119,10 +119,14 @@
                                 <td class="align-middle ps-4">{{ $loop->iteration }}</td>
                                 <td class="align-middle ps-4">{{ $product->name }}</td>
                                 <td class="align-middle ps-4 text-end">
-                                    {{ $product->product_type === 'simple' ? number_format($product->price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
+                                    {{ $product->product_type === 'simple'
+                                        ? number_format($product->price ?? 0, 0, ',', '.') . 'đ'
+                                        : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
                                 <td class="align-middle ps-4 text-end">
-                                    {{ $product->product_type === 'simple' ? number_format($product->sale_price ?? 0, 0, ',', '.') . 'đ' : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
+                                    {{ $product->product_type === 'simple'
+                                        ? number_format($product->sale_price ?? 0, 0, ',', '.') . 'đ'
+                                        : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
                                 <td class="align-middle ps-4 text-center">
                                     {{ $product->total_stock }}
@@ -173,8 +177,8 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</button>
+                                                <button type="button" class="dropdown-item text-danger"
+                                                    onclick="deleteProduct({{ $product->id }})">Xóa</button>
                                             </form>
                                         </div>
                                     </div>
@@ -261,67 +265,84 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa mềm các sản phẩm đã chọn?')) return;
-
-            // Tạo các input hidden cho từng ID
-            const form = document.getElementById('bulk-delete-form');
-            form.innerHTML = ''; // Xóa các input cũ
-
-            // Thêm CSRF token và method
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-
-            // Thêm từng ID vào form
-            checkedIds.forEach(id => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'ids[]';
-                input.value = id;
-                form.appendChild(input);
-            });
-
-            form.submit();
+            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteForm.submit();
         });
-
-        // Tìm kiếm tự động bằng AJAX cho sản phẩm
-        const searchInput = document.getElementById('product-search-input');
-        const form = document.getElementById('product-search-form');
-        const tableWrapper = document.getElementById('product-table-wrapper');
-        let timer = null;
-
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-                clearTimeout(timer);
-                timer = setTimeout(function() {
-                    const formData = new FormData(form);
-                    const params = new URLSearchParams(formData).toString();
-                    fetch(form.action + '?' + params, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            // Lấy phần table từ HTML trả về
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(data.html, 'text/html');
-                            const newTable = doc.getElementById('product-table-wrapper');
-                            if (newTable && tableWrapper) {
-                                tableWrapper.innerHTML = newTable.innerHTML;
-                            }
-                        });
-                }, 350); // debounce 350ms
-            });
-        }
     });
+
+    function deleteProduct(id) {
+        $.ajax({
+            url: `/admin/products/destroy/${id}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Xác nhận xóa',
+                        text: response.message,
+                        showCancelButton: true,
+                        confirmButtonText: 'Xóa',
+                        cancelButtonText: 'Hủy',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Gửi lại request với force true
+                            $.ajax({
+                                url: `/admin/products/destroy/${id}`,
+                                type: 'DELETE',
+                                data: {
+                                    force: true
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                        'content')
+                                },
+                                success: function(response) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Thành công!',
+                                        text: 'Sản phẩm đã được chuyển vào thùng rác',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi!',
+                                        text: 'Có lỗi xảy ra khi xóa sản phẩm'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi xóa sản phẩm'
+                });
+            }
+        });
+    }
 </script>
 
 @endsection

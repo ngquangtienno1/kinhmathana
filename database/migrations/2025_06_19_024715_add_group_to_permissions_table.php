@@ -9,10 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->text('reply')->nullable()->after('content');
+        Schema::table('permissions', function (Blueprint $table) {
+            $table->string('group_permissions')->nullable()->after('description');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropColumn('reply');
+        Schema::table('permissions', function (Blueprint $table) {
+            //
         });
     }
 };

@@ -12,9 +12,4 @@ class Color extends Model
     protected $fillable = ['name', 'hex_code', 'image_url', 'sort_order'];
 
     public $timestamps = false;
-
-    public function variationDetails()
-    {
-        return $this->hasMany(VariationDetail::class);
-    }
 }

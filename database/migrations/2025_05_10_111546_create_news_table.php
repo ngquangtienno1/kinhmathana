@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->timestamp('published_at')->nullable();
+            $table->integer('views')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

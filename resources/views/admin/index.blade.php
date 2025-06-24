@@ -7,7 +7,187 @@
 @endsection
 
 @section('content')
+    @php
+        $rangeText = match (request('quick_range', 'this_month')) {
+            'today' => 'hôm nay',
+            'this_week' => 'tuần này',
+            'this_month' => 'tháng này',
+            'this_year' => 'năm nay',
+            'custom' => 'từ ' .
+                (request('date_from') ? \Carbon\Carbon::parse(request('date_from'))->format('d/m/Y') : '...') .
+                '
+đến ' .
+                (request('date_to') ? \Carbon\Carbon::parse(request('date_to'))->format('d/m/Y') : '...'),
+            default => 'Tháng này',
+        };
+    @endphp
+
+    <!-- Phoenix Admin Dashboard Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/phoenix@1.0.0/dist/css/phoenix.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/phoenix@1.0.0/dist/css/phoenix-sprockets.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        :root {
+            --phoenix-primary: #3874ff;
+            --phoenix-secondary: #6c757d;
+            --phoenix-success: #00d27a;
+            --phoenix-info: #39f;
+            --phoenix-warning: #f5a623;
+            --phoenix-danger: #e63757;
+            --phoenix-light: #f9fafd;
+            --phoenix-dark: #12263f;
+        }
+
+        .card-stat {
+            border: none;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 32px 0 rgba(56, 116, 255, 0.08);
+            background: linear-gradient(135deg, var(--phoenix-primary), #6c5ce7 80%);
+            color: #fff;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            min-height: 80px;
+            padding: 1rem 1.2rem 1rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-stat .icon-bg {
+            position: absolute;
+            right: 1.2rem;
+            top: 1rem;
+            font-size: 2.1rem;
+            opacity: 0.13;
+            z-index: 0;
+        }
+
+        .card-stat .stat-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.15rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .card-stat .stat-label {
+            font-size: 0.92rem;
+            color: rgba(255, 255, 255, 0.85);
+            z-index: 1;
+            position: relative;
+        }
+
+        .card-stat.stat-success {
+            background: linear-gradient(135deg, var(--phoenix-success), #00b894 80%);
+        }
+
+        .card-stat.stat-warning {
+            background: linear-gradient(135deg, var(--phoenix-warning), #f39c12 80%);
+        }
+
+        .card-stat.stat-danger {
+            background: linear-gradient(135deg, var(--phoenix-danger), #e74c3c 80%);
+        }
+
+        .card-stat.stat-primary {
+            background: linear-gradient(135deg, var(--phoenix-primary), #6c5ce7 80%);
+        }
+
+        .card-stat.stat-info {
+            background: linear-gradient(135deg, var(--phoenix-info), #00cfff 80%);
+        }
+
+        .card-stat.stat-purple {
+            background: linear-gradient(135deg, #a259ec, #6c5ce7 80%);
+        }
+
+        .card-stat.stat-pink {
+            background: linear-gradient(135deg, #ff6f91, #ff9472 80%);
+        }
+
+        .card-stat.stat-teal {
+            background: linear-gradient(135deg, #1abc9c, #16a085 80%);
+        }
+
+        .card-stat:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px 0 rgba(56, 116, 255, 0.18);
+            z-index: 2;
+        }
+
+        .phoenix-card {
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 32px 0 rgba(56, 116, 255, 0.08);
+            border: none;
+            margin-bottom: 32px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .phoenix-card:hover {
+            box-shadow: 0 8px 32px 0 rgba(56, 116, 255, 0.18);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .phoenix-card .card-header {
+            background: none;
+            border-bottom: 1px solid #f1f1f1;
+            padding: 1.25rem 1.5rem 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        .phoenix-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+            margin: 1rem 0;
+        }
+
+        .table th {
+            font-weight: 700;
+            background-color: #f8f9fa;
+        }
+
+        .table tr {
+            transition: background 0.2s;
+        }
+
+        .table tr:hover {
+            background: #f1f7ff;
+        }
+
+        .btn,
+        .phoenix-btn {
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        }
+
+        .btn:hover,
+        .phoenix-btn:hover {
+            box-shadow: 0 2px 8px 0 rgba(56, 116, 255, 0.12);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .product-image {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px 0 rgba(56, 116, 255, 0.10);
+            background: #f8f9fa;
+        }
+
+        .rating-stars {
+            color: var(--phoenix-warning);
+        }
+
         /* Đảm bảo toast hiện đúng màu và text rõ */
         .toast {
             color: #fff !important;
@@ -66,750 +246,588 @@
         </script>
     @endif
 
-    <div class="pb-5">
+
+    <div class="container-fluid pb-5">
         <div class="row g-4">
-            <div class="col-12 col-xxl-6">
-                <div class="mb-8">
+            <div class="col-12">
+                <div class="mb-4">
                     <h2 class="mb-2">Thống kê tổng quan</h2>
                     <h5 class="text-body-tertiary fw-semibold">Tổng quan về hoạt động kinh doanh của bạn</h5>
                 </div>
-                <div class="row align-items-center g-4 row-cols-auto flex-nowrap">
-                    <div class="col-md-auto">
-                        <div class="d-flex align-items-center">
-                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
-                                <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
-                                    data-fa-transform="down-4 rotate--10 left-4"></span>
-                                <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success"
-                                    data-fa-transform="up-4 right-3 grow-2"></span>
-                                <span class="fa-stack-1x fa-solid fa-shopping-cart text-success"
-                                    data-fa-transform="shrink-2 up-8 right-6"></span>
-                            </span>
-                            <div class="ms-3">
-                                <h4 class="mb-0">{{ $totalOrders }} đơn hàng</h4>
-                                <p class="text-body-secondary fs-9 mb-0">Tổng số đơn hàng</p>
-                            </div>
+                <!-- Bộ lọc khoảng thời gian đẹp -->
+                <div class="phoenix-card mb-4 p-4">
+                    <form method="GET" action="{{ route('admin.home') }}" class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold"><i class="fa fa-calendar-alt me-1"></i>Khoảng thời
+                                gian</label>
+                            <select class="form-select" name="quick_range" id="quick_range" onchange="toggleDateInputs()">
+                                <option value="today" {{ request('quick_range') == 'today' ? 'selected' : '' }}>Hôm nay
+                                </option>
+                                <option value="this_week" {{ request('quick_range') == 'this_week' ? 'selected' : '' }}>Tuần
+                                    này</option>
+                                <option value="this_month"
+                                    {{ request('quick_range') == 'this_month' || request('quick_range') == null ? 'selected' : '' }}>
+                                    Tháng này</option>
+                                <option value="this_year" {{ request('quick_range') == 'this_year' ? 'selected' : '' }}>Năm
+                                    nay</option>
+                                <option value="custom" {{ request('quick_range') == 'custom' ? 'selected' : '' }}>Tùy chọn
+                                </option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="col-md-auto">
-                        <div class="d-flex align-items-center">
-                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
-                                <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light"
-                                    data-fa-transform="down-4 rotate--10 left-4"></span>
-                                <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-warning"
-                                    data-fa-transform="up-4 right-3 grow-2"></span>
-                                <span class="fa-stack-1x fa-solid fa-clock text-warning"
-                                    data-fa-transform="shrink-2 up-8 right-6"></span>
-                            </span>
-                            <div class="ms-3">
-                                <h4 class="mb-0">{{ $pendingOrders }} đơn hàng</h4>
-                                <p class="text-body-secondary fs-9 mb-0">Đang chờ xử lý</p>
-                            </div>
+                        <div class="col-md-3" id="date_from_col" style="display:none;">
+                            <label class="form-label fw-semibold"><i class="fa fa-calendar-day me-1"></i>Từ ngày</label>
+                            <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
                         </div>
-                    </div>
-                    <div class="col-md-auto">
-                        <div class="d-flex align-items-center">
-                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
-                                <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
-                                    data-fa-transform="down-4 rotate--10 left-4"></span>
-                                <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success"
-                                    data-fa-transform="up-4 right-3 grow-2"></span>
-                                <span class="fa-stack-1x fa-solid fa-check text-success"
-                                    data-fa-transform="shrink-2 up-8 right-6"></span>
-                            </span>
-                            <div class="ms-3">
-                                <h4 class="mb-0">{{ $completedOrders }} đơn hàng</h4>
-                                <p class="text-body-secondary fs-9 mb-0">Đã hoàn thành</p>
-                            </div>
+                        <div class="col-md-3" id="date_to_col" style="display:none;">
+                            <label class="form-label fw-semibold"><i class="fa fa-calendar-day me-1"></i>Đến ngày</label>
+                            <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
                         </div>
-                    </div>
-                    <div class="col-md-auto">
-                        <div class="d-flex align-items-center">
-                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
-                                <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light"
-                                    data-fa-transform="down-4 rotate--10 left-4"></span>
-                                <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger"
-                                    data-fa-transform="up-4 right-3 grow-2"></span>
-                                <span class="fa-stack-1x fa-solid fa-box text-danger"
-                                    data-fa-transform="shrink-2 up-8 right-6"></span>
-                            </span>
-                            <div class="ms-3">
-                                <h4 class="mb-0">{{ $outOfStockProducts }} sản phẩm</h4>
-                                <p class="text-body-secondary fs-9 mb-0">Hết hàng</p>
-                            </div>
+                        <div class="col-md-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1"><i
+                                    class="fa fa-filter me-1"></i>Lọc</button>
+                            <a href="{{ route('admin.home') }}" class="btn btn-outline-secondary flex-grow-1"><i
+                                    class="fa fa-times me-1"></i>Xoá lọc</a>
                         </div>
-                    </div>
+                    </form>
                 </div>
-                <hr class="bg-body-secondary mb-6 mt-4" />
-                <div class="row flex-between-center mb-4 g-3">
-                    <div class="col-auto">
-                        <h3>Tổng doanh thu</h3>
-                        <p class="text-body-tertiary lh-sm mb-0">Doanh thu từ tất cả các đơn hàng</p>
-                    </div>
-                    <div class="col-8 col-sm-4">
-                        <select class="form-select form-select-sm" id="select-gross-revenue-month">
-                            <option>Tháng này</option>
-                            <option>Tháng trước</option>
-                            <option>3 tháng gần nhất</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="echart-total-sales-chart" style="min-height:320px;width:100%"></div>
+                <script>
+                    function toggleDateInputs() {
+                        var quickRange = document.getElementById('quick_range').value;
+                        var show = quickRange === 'custom';
+                        document.getElementById('date_from_col').style.display = show ? '' : 'none';
+                        document.getElementById('date_to_col').style.display = show ? '' : 'none';
+                    }
+                    document.addEventListener('DOMContentLoaded', toggleDateInputs);
+                </script>
             </div>
-            <div class="col-12 col-xxl-6">
-                <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <h5 class="mb-1">Tổng đơn hàng</h5>
-                                        <h6 class="text-body-tertiary">7 ngày gần nhất</h6>
-                                    </div>
-                                    <h4>{{ $totalOrders }}</h4>
-                                </div>
-                                <div class="d-flex justify-content-center px-4 py-6">
-                                    <div class="echart-total-orders" style="height:85px;width:115px"></div>
-                                </div>
-                                <div class="mt-2">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="bullet-item bg-primary me-2"></div>
-                                        <h6 class="text-body fw-semibold flex-1 mb-0">Hoàn thành</h6>
-                                        <h6 class="text-body fw-semibold mb-0">{{ $completedOrders }}</h6>
-                                    </div>
-                                    <div class="d-flex align-items-center">
-                                        <div class="bullet-item bg-primary-subtle me-2"></div>
-                                        <h6 class="text-body fw-semibold flex-1 mb-0">Đang chờ</h6>
-                                        <h6 class="text-body fw-semibold mb-0">{{ $pendingOrders }}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        </div>
+
+        <!-- Card thống kê nhỏ gọn -->
+        <div class="row g-2 mb-2">
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-primary">
+                    <div class="icon-bg"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-value">{{ $totalOrders }}</div>
+                    <div class="stat-label">Tổng đơn hàng {{ $rangeText }}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-warning">
+                    <div class="icon-bg"><i class="fas fa-user-plus"></i></div>
+                    <div class="stat-value">{{ $newCustomers }}</div>
+                    <div class="stat-label">Khách hàng mới</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-success">
+                    <div class="icon-bg"><i class="fas fa-box"></i></div>
+                    <div class="stat-value">{{ $totalProducts }}</div>
+                    <div class="stat-label">Tổng sản phẩm</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-danger">
+                    <div class="icon-bg"><i class="fas fa-cube"></i></div>
+                    <div class="stat-value">{{ $newProductsThisMonth }}</div>
+                    <div class="stat-label">Sản phẩm mới tháng này</div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-2 mb-2">
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-info">
+                    <div class="icon-bg"><i class="fas fa-truck"></i></div>
+                    <div class="stat-value">{{ $shippingOrders }}</div>
+                    <div class="stat-label">Đơn hàng đang giao</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-danger">
+                    <div class="icon-bg"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-value">{{ $cancelledOrders }}</div>
+                    <div class="stat-label">Đơn đã huỷ</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-warning">
+                    <div class="icon-bg"><i class="fas fa-box-open"></i></div>
+                    <div class="stat-value">{{ $lowStockProducts }}</div>
+                    <div class="stat-label">Sản phẩm sắp hết hàng</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card card-stat stat-purple">
+                    <div class="icon-bg"><i class="fas fa-user-tie"></i></div>
+                    <div class="stat-value">{{ $topCustomerName }}</div>
+                    <div class="stat-label">Khách hàng mua nhiều nhất</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ chia 2 cột nhỏ gọn -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="phoenix-card p-3" style="height:240px;">
+                    <div class="card-header py-2 px-3">Doanh thu</div>
+                    <div class="card-body py-2 px-3">
+                        <canvas id="revenueChart" style="height:160px"></canvas>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <h5 class="mb-1">Khách hàng mới</h5>
-                                        <h6 class="text-body-tertiary">7 ngày gần nhất</h6>
-                                    </div>
-                                    <h4>{{ $newCustomers }}</h4>
-                                </div>
-                                <div class="pb-0 pt-4">
-                                    <div class="echarts-new-customers" style="height:180px;width:100%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <h5 class="mb-2">Đánh giá sản phẩm</h5>
-                                        <h6 class="text-body-tertiary">Tổng quan</h6>
-                                    </div>
-                                </div>
-                                <div class="pb-4 pt-3">
-                                    <div class="echart-top-coupons" style="height:115px;width:100%;"></div>
-                                </div>
-                                <div>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="bullet-item bg-primary me-2"></div>
-                                        <h6 class="text-body fw-semibold flex-1 mb-0">Tổng số đánh giá</h6>
-                                        <h6 class="text-body fw-semibold mb-0">{{ $totalReviews }}</h6>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="bullet-item bg-primary-lighter me-2"></div>
-                                        <h6 class="text-body fw-semibold flex-1 mb-0">Đánh giá trung bình</h6>
-                                        <h6 class="text-body fw-semibold mb-0">{{ number_format($averageRating, 1) }}/5
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <h5 class="mb-2">Khách hàng</h5>
-                                        <h6 class="text-body-tertiary">Tổng quan</h6>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center pt-3 flex-1">
-                                    <div class="echarts-paying-customer-chart" style="height:100%;width:100%;">
-                                    </div>
-                                </div>
-                                <div class="mt-3">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="bullet-item bg-primary me-2"></div>
-                                        <h6 class="text-body fw-semibold flex-1 mb-0">Tổng khách hàng</h6>
-                                        <h6 class="text-body fw-semibold mb-0">{{ $totalCustomers }}</h6>
-                                    </div>
-                                    <div class="d-flex align-items-center">
-                                        <div class="bullet-item bg-primary-subtle me-2"></div>
-                                        <h6 class="text-body fw-semibold flex-1 mb-0">Khách hàng mới</h6>
-                                        <h6 class="text-body fw-semibold mb-0">{{ $newCustomers }}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="phoenix-card p-3" style="height:240px;">
+                    <div class="card-header py-2 px-3">Khách hàng mới</div>
+                    <div class="card-body py-2 px-3">
+                        <canvas id="customerChart" style="height:160px"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-7 border-y">
-        <div data-list='{"valueNames":["product","customer","rating","review","time"],"page":6}'>
-            <div class="row align-items-end justify-content-between pb-5 g-3">
-                <div class="col-auto">
-                    <h3>Đánh giá mới nhất</h3>
-                    <p class="text-body-tertiary lh-sm mb-0">Đánh giá mới nhất từ khách hàng</p>
-                </div>
-                <div class="col-12 col-md-auto">
-                    <div class="row g-2 gy-3">
-                        <div class="col-auto flex-1">
-                            <div class="search-box">
-                                <form class="position-relative"><input
-                                        class="form-control search-input search form-control-sm" type="search"
-                                        placeholder="Search" aria-label="Search" />
-                                    <span class="fas fa-search search-box-icon"></span>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-auto"><button
-                                class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2"
-                                type="button">All products</button><button
-                                class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover action-btn"
-                                type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                                aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h"
-                                    data-fa-transform="shrink-2"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="phoenix-card p-3" style="height:240px;">
+                    <div class="card-header py-2 px-3">Số lượng đơn hàng</div>
+                    <div class="card-body py-2 px-3">
+                        <canvas id="orderChart" style="height:160px"></canvas>
                     </div>
                 </div>
             </div>
-            <div class="table-responsive mx-n1 px-1 scrollbar">
-                <table class="table fs-9 mb-0 border-top border-translucent">
-                    <thead>
-                        <tr>
-                            <th class="white-space-nowrap fs-9 ps-0 align-middle">
-                                <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                        id="checkbox-bulk-reviews-select" type="checkbox"
-                                        data-bulk-select='{"body":"table-latest-review-body"}' /></div>
-                            </th>
-                            <th class="sort white-space-nowrap align-middle" scope="col"></th>
-                            <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:300px;"
-                                data-sort="product">SẢN PHẨM</th>
-                            <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:200px;">
-                                KHÁCH HÀNG
-                            </th>
-                            <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">
-                                ĐÁNH GIÁ
-                            </th>
-                            <th class="sort align-middle" scope="col" style="max-width:350px;" data-sort="review">
-                                NỘI DUNG
-                            </th>
-                            <th class="sort align-middle" scope="col" data-sort="time" style="min-width:110px;">
-                                THỜI GIAN
-                            </th>
-                            <th class="sort text-end pe-0 align-middle" scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="list" id="table-latest-review-body">
-                        @foreach ($latestReviews as $review)
-                            <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                <td class="fs-9 align-middle ps-0">
-                                    <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox" />
-                                    </div>
-                                </td>
-                                <td class="align-middle product white-space-nowrap py-0">
-                                    <a class="d-block rounded-2 border border-translucent" href="#">
-                                        @if ($review->product && $review->product->image)
-                                            <img src="{{ asset($review->product->image) }}" alt=""
-                                                width="53" />
-                                        @else
-                                            <img src="https://via.placeholder.com/53" alt="No image" width="53" />
-                                        @endif
-                                    </a>
-                                </td>
-                                <td class="align-middle product white-space-nowrap">
-                                    <a class="fw-semibold"
-                                        href="{{ route('admin.products.show', $review->product->id) }}">{{ $review->product->name ?? 'N/A' }}</a>
-                                </td>
-                                <td class="align-middle customer white-space-nowrap">
-                                    <a class="d-flex align-items-center text-body" href="#">
-                                        <div class="avatar avatar-l">
-                                            @if ($review->user && $review->user->avatar)
-                                                <img class="rounded-circle" src="{{ asset($review->user->avatar) }}"
-                                                    alt="" />
-                                            @else
-                                                <div class="avatar-name rounded-circle">
-                                                    <span>{{ strtoupper(substr($review->user->name ?? 'U', 0, 1)) }}</span>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <h6 class="mb-0 ms-3 text-body">{{ $review->user->name ?? 'N/A' }}</h6>
-                                    </a>
-                                </td>
-                                <td class="align-middle rating white-space-nowrap fs-10">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @if ($review->rating >= $i)
-                                            <span class="fa fa-star text-warning"></span>
-                                        @elseif($review->rating > $i - 1)
-                                            <span class="fa fa-star-half-alt star-icon text-warning"></span>
-                                        @else
-                                            <span class="fa-regular fa-star text-warning-light"
-                                                data-bs-theme="light"></span>
-                                        @endif
-                                    @endfor
-                                </td>
-                                <td class="align-middle review" style="min-width:350px;">
-                                    <p class="fs-9 fw-semibold text-body-highlight mb-0">{{ $review->content }}</p>
-                                </td>
-                                <td class="align-middle text-end time white-space-nowrap">
-                                    <div class="hover-hide">
-                                        <h6 class="text-body-highlight mb-0">{{ $review->created_at->diffForHumans() }}
-                                        </h6>
-                                    </div>
-                                </td>
-                                <td class="align-middle white-space-nowrap text-end pe-0">
-                                    <div class="position-relative">
-                                        <div class="hover-actions">
-                                            <a href="{{ route('admin.products.show', $review->product->id) }}" class="btn btn-sm btn-phoenix-secondary me-1 fs-10" title="Xem chi tiết">
-                                                <span class="fas fa-eye"></span>
-                                            </a>
-                                            <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xoá đánh giá này?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <input type="hidden" name="redirect" value="{{ request()->fullUrl() }}">
-                                                <button type="submit" class="btn btn-sm btn-phoenix-secondary fs-10" title="Xoá">
-                                                    <span class="fas fa-trash"></span>
-                                                </button>
-                                            </form>
+            <div class="col-md-6">
+                <div class="phoenix-card p-3" style="height:240px;">
+                    <div class="card-header py-2 px-3">Đánh giá sản phẩm</div>
+                    <div class="card-body py-2 px-3">
+                        <canvas id="reviewChart" style="height:160px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion cho bảng phụ và tổng hợp hệ thống -->
+        <div class="accordion mb-3" id="moreStatsAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMore">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseMore">
+                        Xem thêm thống kê
+                    </button>
+                </h2>
+                <div id="collapseMore" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <!-- Top sản phẩm bán chạy -->
+                                <div class="phoenix-card p-3 mb-3">
+                                    <div class="card-header py-2 px-3">Top sản phẩm bán chạy</div>
+                                    <div class="card-body py-2 px-3">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sản phẩm</th>
+                                                        <th class="text-end">Đã bán</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($topProducts as $product)
+                                                        @php $featuredImage = $product->images->where('is_featured', true)->first(); @endphp
+                                                        <tr>
+                                                            <td>
+                                                                <div class="d-flex align-items-center gap-3">
+                                                                    <img src="{{ $featuredImage ? asset('storage/' . $featuredImage->image_path) : asset('images/no-image.png') }}"
+                                                                        alt="{{ $product->name }}" class="product-image">
+                                                                    <div class="fw-semibold">{{ $product->name }}</div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <span class="badge bg-success">{{ $product->sold }}</span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div class="btn-reveal-trigger position-static"><button
-                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                            type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                            aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                                class="fas fa-ellipsis-h fs-10"></span></button>
+                                </div>
+                                <!-- Biểu đồ tổng hợp hệ thống nhỏ gọn -->
+                                <div class="phoenix-card p-3">
+                                    <div class="card-header py-2 px-3">Tổng hợp hệ thống</div>
+                                    <div class="card-body py-2 px-3">
+                                        <canvas id="summaryBarChart" style="height: 140px;"></canvas>
                                     </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="row align-items-center py-1">
-                <div class="pagination d-none"></div>
-                <div class="col d-flex fs-9">
-                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a
-                        class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
-                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a
-                        class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn</a>
-                </div>
-                <div class="col-auto d-flex">
-                    <button class="btn btn-link px-1 me-1" type="button" title="Previous"
-                        data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous</button><button
-                        class="btn btn-link px-1 ms-1" type="button" title="Next"
-                        data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row gx-6">
-        <div class="col-12 col-xl-6">
-            <div data-list='{"valueNames":["country","users","transactions","revenue","conv-rate"],"page":5}'>
-                <div class="mb-5 mt-7">
-                    <h3>Top regions by revenue</h3>
-                    <p class="text-body-tertiary">Where you generated most of the revenue</p>
-                </div>
-                <div class="table-responsive scrollbar">
-                    <table class="table fs-10 mb-0">
-                        <thead>
-                            <tr>
-                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col"
-                                    data-sort="country" style="width:32%">COUNTRY</th>
-                                <th class="sort border-top border-translucent align-middle" scope="col"
-                                    data-sort="users" style="width:17%">USERS</th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="transactions" style="width:16%">TRANSACTIONS</th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="revenue" style="width:20%">REVENUE</th>
-                                <th class="sort border-top border-translucent text-end pe-0 align-middle" scope="col"
-                                    data-sort="conv-rate" style="width:17%">CONV. RATE</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td></td>
-                            <td class="align-middle py-4">
-                                <h4 class="mb-0 fw-normal">377,620</h4>
-                            </td>
-                            <td class="align-middle text-end py-4">
-                                <h4 class="mb-0 fw-normal">236</h4>
-                            </td>
-                            <td class="align-middle text-end py-4">
-                                <h4 class="mb-0 fw-normal">$15,758</h4>
-                            </td>
-                            <td class="align-middle text-end py-4 pe-0">
-                                <h4 class="mb-0 fw-normal">10.32%</h4>
-                            </td>
-                        </tr>
-                        <tbody class="list" id="table-regions-by-revenue">
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">1. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/india.png') }} " alt=""
-                                                    width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">India</p>
-                                            </div>
-                                        </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Đánh giá mới nhất -->
+                                <div class="phoenix-card p-3">
+                                    <div class="card-header py-2 px-3">Đánh giá mới nhất</div>
+                                    <div class="card-body py-2 px-3">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sản phẩm</th>
+                                                        <th>Đánh giá</th>
+                                                        <th>Thời gian</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($latestReviews as $review)
+                                                        <tr>
+                                                            <td>
+                                                                <div class="d-flex align-items-center gap-3">
+                                                                    <div class="fw-semibold">
+                                                                        {{ $review->product->name ?? 'N/A' }}</div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="rating-stars">
+                                                                    @for ($i = 1; $i <= 5; $i++)
+                                                                        @if ($review->rating >= $i)
+                                                                            <i class="fas fa-star"></i>
+                                                                        @elseif($review->rating > $i - 1)
+                                                                            <i class="fas fa-star-half-alt"></i>
+                                                                        @else
+                                                                            <i class="far fa-star"></i>
+                                                                        @endif
+                                                                    @endfor
+                                                                </div>
+                                                            </td>
+                                                            <td>{{ $review->created_at->diffForHumans() }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">92896<span
-                                            class="text-body-tertiary fw-semibold ms-2">(41.6%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">67<span class="text-body-tertiary fw-semibold ms-2">(34.3%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$7560<span
-                                            class="text-body-tertiary fw-semibold ms-2">(36.9%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>14.01%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">2. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/china.png') }} " alt=""
-                                                    width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">China</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">50496<span
-                                            class="text-body-tertiary fw-semibold ms-2">(32.8%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">54<span class="text-body-tertiary fw-semibold ms-2">(23.8%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$6532<span
-                                            class="text-body-tertiary fw-semibold ms-2">(26.5%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>23.56%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">3. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/usa.png') }} " alt=""
-                                                    width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">USA</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">45679<span
-                                            class="text-body-tertiary fw-semibold ms-2">(24.3%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">35<span class="text-body-tertiary fw-semibold ms-2">(19.7%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$5432<span
-                                            class="text-body-tertiary fw-semibold ms-2">(16.9%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>10.23%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">4. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/south-korea.png') }} "
-                                                    alt="" width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">South Korea</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">36453<span
-                                            class="text-body-tertiary fw-semibold ms-2">(19.7%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">22<span class="text-body-tertiary fw-semibold ms-2">(9.54%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$4673<span
-                                            class="text-body-tertiary fw-semibold ms-2">(11.6%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>8.85%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">5. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/vietnam.png') }} "
-                                                    alt="" width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">Vietnam</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">15007<span
-                                            class="text-body-tertiary fw-semibold ms-2">(11.9%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">17<span class="text-body-tertiary fw-semibold ms-2">(6.91%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$2456<span
-                                            class="text-body-tertiary fw-semibold ms-2">(10.2%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>6.01%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">6. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/russia.png') }} " alt=""
-                                                    width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">Russia</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">54215<span
-                                            class="text-body-tertiary fw-semibold ms-2">(32.9%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">38<span class="text-body-tertiary fw-semibold ms-2">(7.91%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$3254<span
-                                            class="text-body-tertiary fw-semibold ms-2">(12.4%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>6.21%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">7. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/australia.png') }} "
-                                                    alt="" width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">Australia</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">54789<span
-                                            class="text-body-tertiary fw-semibold ms-2">(12.7%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">32<span class="text-body-tertiary fw-semibold ms-2">(14.0%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$3215<span
-                                            class="text-body-tertiary fw-semibold ms-2">(5.72%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>12.02%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">8. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/england.png') }} "
-                                                    alt="" width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">England</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">14785<span
-                                            class="text-body-tertiary fw-semibold ms-2">(12.9%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">11<span class="text-body-tertiary fw-semibold ms-2">(32.91%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$4745<span
-                                            class="text-body-tertiary fw-semibold ms-2">(10.2%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>8.01%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">9. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/indonesia.png') }} "
-                                                    alt="" width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">Indonesia</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">32156<span
-                                            class="text-body-tertiary fw-semibold ms-2">(32.2%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">89<span class="text-body-tertiary fw-semibold ms-2">(12.0%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$2456<span
-                                            class="text-body-tertiary fw-semibold ms-2">(23.2%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>9.07%</h6>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                    <div class="d-flex align-items-center">
-                                        <h6 class="mb-0 me-3">10. </h6><a href="#!">
-                                            <div class="d-flex align-items-center"><img
-                                                    src="{{ asset('v1/assets/img/country/japan.png') }} " alt=""
-                                                    width="24" />
-                                                <p class="mb-0 ps-3 text-primary fw-bold fs-9">Japan</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="align-middle users" style="width:17%">
-                                    <h6 class="mb-0">12547<span
-                                            class="text-body-tertiary fw-semibold ms-2">(12.7%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end transactions" style="width:17%">
-                                    <h6 class="mb-0">21<span class="text-body-tertiary fw-semibold ms-2">(14.91%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end revenue" style="width:17%">
-                                    <h6 class="mb-0">$2541<span
-                                            class="text-body-tertiary fw-semibold ms-2">(23.2%)</span>
-                                    </h6>
-                                </td>
-                                <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                    <h6>20.01%</h6>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row align-items-center py-1">
-                    <div class="pagination d-none"></div>
-                    <div class="col d-flex fs-9">
-                        <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
-                        </p>
-                    </div>
-                    <div class="col-auto d-flex">
-                        <button class="btn btn-link px-1 me-1" type="button" title="Previous"
-                            data-list-pagination="prev"><span
-                                class="fas fa-chevron-left me-2"></span>Previous</button><button
-                            class="btn btn-link px-1 ms-1" type="button" title="Next"
-                            data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-xl-6">
-            <div class="mx-n4 mx-lg-n6 ms-xl-0 h-100">
-                <div class="h-100 w-100">
-                    <div class="h-100 bg-body-emphasis" id="map" style="min-height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-6 pb-9 border-top">
-        <div class="row g-6">
-            <div class="col-12 col-xl-6">
-                <div class="me-xl-4">
-                    <div>
-                        <h3>Projection vs actual</h3>
-                        <p class="mb-1 text-body-tertiary">Actual earnings vs projected earnings</p>
-                    </div>
-                    <div class="echart-projection-actual" style="height:300px; width:100%"></div>
-                </div>
-            </div>
-            <div class="col-12 col-xl-6">
-                <div>
-                    <h3>Returning customer rate</h3>
-                    <p class="mb-1 text-body-tertiary">Rate of customers returning to your shop over time</p>
-                </div>
-                <div class="echart-returning-customer" style="height:300px;"></div>
             </div>
         </div>
     </div>
 
-
+    <!-- Script Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/phoenix@1.0.0/dist/js/phoenix.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Revenue Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($revenueLabels) !!},
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: {!! json_encode($revenueData) !!},
+                    borderColor: '#3874ff',
+                    backgroundColor: 'rgba(56, 116, 255, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#3874ff',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#12263f',
+                        bodyColor: '#12263f',
+                        borderColor: '#e9ecef',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        // Customer Chart
+        const cctx = document.getElementById('customerChart').getContext('2d');
+        const customerChart = new Chart(cctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($customerLabels) !!},
+                datasets: [{
+                    label: 'Khách hàng mới',
+                    data: {!! json_encode($customerData) !!},
+                    borderColor: '#00d27a',
+                    backgroundColor: 'rgba(0,210,122,0.08)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#00d27a',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#12263f',
+                        bodyColor: '#12263f',
+                        borderColor: '#e9ecef',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' khách';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        // Order Chart
+        const octx = document.getElementById('orderChart').getContext('2d');
+        const orderChart = new Chart(octx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($orderLabels) !!},
+                datasets: [{
+                    label: 'Đơn hàng',
+                    data: {!! json_encode($orderData) !!},
+                    backgroundColor: 'rgba(56, 116, 255, 0.7)',
+                    borderColor: '#3874ff',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    maxBarThickness: 32
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#12263f',
+                        bodyColor: '#12263f',
+                        borderColor: '#e9ecef',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' đơn';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        // Review Chart
+        const rctx = document.getElementById('reviewChart').getContext('2d');
+        const reviewChart = new Chart(rctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($reviewChartLabels) !!},
+                datasets: [{
+                    label: 'Đánh giá',
+                    data: {!! json_encode($reviewChartData) !!},
+                    borderColor: '#f5a623',
+                    backgroundColor: 'rgba(245,166,35,0.08)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#f5a623',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#12263f',
+                        bodyColor: '#12263f',
+                        borderColor: '#e9ecef',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' đánh giá';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        // Biểu đồ tổng hợp hệ thống
+        const summaryBarChart = new Chart(document.getElementById('summaryBarChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Đang khuyến mãi', 'Khách chưa từng mua', 'Đánh giá nhiều nhất', 'Bình luận mới tuần này',
+                    'Tổng biến thể', 'Biến thể sắp hết hàng', 'Thương hiệu', 'Danh mục'
+                ],
+                datasets: [{
+                    label: 'Số lượng',
+                    data: [
+                        {{ $promotionProducts }}, {{ $neverOrderedCustomers }},
+                        {{ $mostReviewedProductCount }}, {{ $newCommentsThisWeek }},
+                        {{ $totalVariations }}, {{ $lowStockVariations }}, {{ $totalBrands }},
+                        {{ $totalCategories }}
+                    ],
+                    backgroundColor: [
+                        '#f5a623', '#3874ff', '#e74c3c', '#39f', '#00d27a', '#e63757', '#6c5ce7',
+                        '#00b894'
+                    ],
+                    borderRadius: 8,
+                    maxBarThickness: 38
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#12263f',
+                        bodyColor: '#12263f',
+                        borderColor: '#e9ecef',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        },
+                        ticks: {
+                            color: '#12263f',
+                            font: {
+                                weight: 600
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#12263f',
+                            font: {
+                                weight: 600
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 @endsection

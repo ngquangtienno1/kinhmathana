@@ -105,7 +105,13 @@
 
         <div class="order-info">
             <h3>📦 Thông tin đơn hàng #{{ $order->order_number }}</h3>
-            <p><strong>Thời gian giao hàng:</strong> {{ $order->last_delivery_attempt->format('H:i d/m/Y') }}</p>
+            <p><strong>Thời gian giao hàng:</strong> 
+                @if($order->last_delivery_attempt)
+                    {{ $order->last_delivery_attempt->format('H:i d/m/Y') }}
+                @else
+                    Không xác định
+                @endif
+            </p>
             
             <table class="order-items">
                 <thead>
@@ -119,19 +125,19 @@
                 <tbody>
                     @foreach($order->items as $item)
                     <tr>
-                        <td>{{ $item->product_name }}</td>
-                        <td class="text-right">{{ $item->quantity }}</td>
-                        <td class="text-right">{{ number_format($item->price) }}đ</td>
-                        <td class="text-right">{{ number_format($item->subtotal) }}đ</td>
+                        <td>{{ $item->product_name ?? 'Sản phẩm không xác định' }}</td>
+                        <td class="text-right">{{ $item->quantity ?? 0 }}</td>
+                        <td class="text-right">{{ isset($item->price) ? number_format($item->price) : '0' }}đ</td>
+                        <td class="text-right">{{ isset($item->subtotal) ? number_format($item->subtotal) : '0' }}đ</td>
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-right"><strong>Tạm tính:</strong></td>
-                        <td class="text-right">{{ number_format($order->subtotal) }}đ</td>
+                        <td class="text-right">{{ isset($order->subtotal) ? number_format($order->subtotal) : '0' }}đ</td>
                     </tr>
-                    @if($order->discount_amount > 0)
+                    @if(isset($order->discount_amount) && $order->discount_amount > 0)
                     <tr>
                         <td colspan="3" class="text-right"><strong>Giảm giá:</strong></td>
                         <td class="text-right">-{{ number_format($order->discount_amount) }}đ</td>
@@ -139,11 +145,11 @@
                     @endif
                     <tr>
                         <td colspan="3" class="text-right"><strong>Phí vận chuyển:</strong></td>
-                        <td class="text-right">{{ number_format($order->shipping_fee) }}đ</td>
+                        <td class="text-right">{{ isset($order->shipping_fee) ? number_format($order->shipping_fee) : '0' }}đ</td>
                     </tr>
                     <tr>
                         <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
-                        <td class="text-right"><strong>{{ number_format($order->total_amount) }}đ</strong></td>
+                        <td class="text-right"><strong>{{ isset($order->total_amount) ? number_format($order->total_amount) : '0' }}đ</strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -151,10 +157,10 @@
             <div style="margin-top: 20px;">
                 <h4>📍 Thông tin người mua:</h4>
                 <p>
-                    <strong>Họ tên:</strong> {{ $order->user->name }}<br>
-                    <strong>Email:</strong> {{ $order->user->email }}<br>
-                    <strong>Số điện thoại:</strong> {{ $order->user->phone }}<br>
-                    <strong>Địa chỉ:</strong> {{ $order->user->address }}
+                    <strong>Họ tên:</strong> {{ $order->user->name ?? 'Ẩn danh' }}<br>
+                    <strong>Email:</strong> {{ $order->user->email ?? '-' }}<br>
+                    <strong>Số điện thoại:</strong> {{ $order->user->phone ?? '-' }}<br>
+                    <strong>Địa chỉ:</strong> {{ $order->user->address ?? '-' }}
                 </p>
             </div>
         </div>

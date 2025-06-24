@@ -13,6 +13,27 @@
             <h2 class="mb-0">Quản lý đánh giá</h2>
         </div>
     </div>
+    <!-- Tabs filter -->
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item">
+            <a class="nav-link {{ !request('reply_status') ? 'active' : '' }}" aria-current="page"
+                href="{{ route('admin.reviews.index', array_merge(request()->except(['reply_status', 'page']))) }}">
+                <span>Tất cả </span><span class="text-body-tertiary fw-semibold">({{ $reviews->count() }})</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request('reply_status') === 'replied' ? 'active' : '' }}"
+                href="{{ route('admin.reviews.index', array_merge(request()->except(['reply_status', 'page']), ['reply_status' => 'replied'])) }}">
+                <span>Đã trả lời </span><span class="text-body-tertiary fw-semibold">({{ $repliedCount }})</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request('reply_status') === 'not_replied' ? 'active' : '' }}"
+                href="{{ route('admin.reviews.index', array_merge(request()->except(['reply_status', 'page']), ['reply_status' => 'not_replied'])) }}">
+                <span>Chưa trả lời </span><span class="text-body-tertiary fw-semibold">({{ $notRepliedCount }})</span>
+            </a>
+        </li>
+    </ul>
     <div id="reviews"
         data-list='{"valueNames":["userId","userName","productName","rating","content","createdAt"],"page":10,"pagination":true}'>
         <div class="mb-4">
@@ -20,78 +41,66 @@
             <form action="{{ route('admin.reviews.index') }}" method="GET">
                 <div class="d-flex flex-wrap align-items-center gap-3">
                     {{-- Search Input --}}
-                    <div class="search-box" style="width: 200px;">
-                        <input class="form-control search-input" type="search" name="search"
+                    <div class="search-box">
+                        <input class="form-control search-input search" type="search" name="search"
                             placeholder="Tìm kiếm đánh giá" value="{{ request('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </div>
 
-                    {{-- Product Filter --}}
-                    <div style="width: 180px;">
-                        <select class="form-select" name="product_id">
-                            <option value="">Chọn Sản phẩm</option>
-                            @foreach ($products as $product)
-                                <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>
-                                    {{ $product->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- User Filter --}}
-                     <div style="width: 180px;">
-                        <select class="form-select" name="user_id">
-                            <option value="">Chọn Người dùng</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }} ({{ $user->email }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
                     {{-- Rating Filter --}}
-                    <div style="width: 180px;">
-                        <select class="form-select" name="rating">
-                            <option value="">Tất cả đánh giá</option>
-                            @for ($i = 5; $i >= 1; $i--)
-                                <option value="{{ $i }}" {{ request('rating') == $i ? 'selected' : '' }}>
-                                    {{ $i }} sao ({{ ${['zero', 'one', 'two', 'three', 'four', 'five'][$i] . 'StarCount'} }})
-                                </option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    {{-- Reply Status Filter --}}
-                    <div style="width: 180px;">
-                        <select class="form-select" name="reply_status">
-                            <option value="">Tất cả trạng thái trả lời</option>
-                            <option value="replied" {{ request('reply_status') === 'replied' ? 'selected' : '' }}>
-                                Đã trả lời ({{ $repliedCount }})
-                            </option>
-                            <option value="not_replied" {{ request('reply_status') === 'not_replied' ? 'selected' : '' }}>
-                                Chưa trả lời ({{ $notRepliedCount }})
-                            </option>
-                        </select>
+                    <div class="scrollbar overflow-hidden-y">
+                        <div class="btn-group position-static" role="group">
+                            <div class="btn-group position-static text-nowrap">
+                                <button class="btn btn-phoenix-secondary px-7 flex-shrink-0 " type="button"
+                                    data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                    aria-expanded="false" data-bs-reference="parent" style="background-color:white">
+                                    Đánh giá
+                                    <span class="fas fa-angle-down ms-2"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item {{ !request('rating') ? 'active' : '' }}"
+                                            href="{{ route('admin.reviews.index', array_merge(request()->except(['rating', 'page']), ['search' => request('search')])) }}">
+                                            Tất cả ({{ $reviews->count() }})
+                                        </a>
+                                    </li>
+                                    @for ($i = 5; $i >= 1; $i--)
+                                        <li>
+                                            <a class="dropdown-item {{ request('rating') == $i ? 'active' : '' }}"
+                                                href="{{ route('admin.reviews.index', array_merge(request()->except(['rating', 'page']), ['rating' => $i, 'search' => request('search')])) }}">
+                                                <span class="text-warning me-1">
+                                                    @for ($j = 1; $j <= 5; $j++)
+                                                        @if ($j <= $i)
+                                                            <i class="fas fa-star"></i>
+                                                        @else
+                                                            <i class="far fa-star"></i>
+                                                        @endif
+                                                    @endfor
+                                                </span>
+                                                ({{ ${['zero', 'one', 'two', 'three', 'four', 'five'][$i] . 'StarCount'} }})
+                                            </a>
+                                        </li>
+                                    @endfor
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Date Range Filter --}}
                     <div class="d-flex align-items-center gap-2">
-                        <input type="date" class="form-control" id="startDate" name="start_date" style="width: 150px;"
-                            value="{{ request('start_date') }}" placeholder="Từ ngày">
-                        <span>đến</span>
+                        <input type="date" class="form-control" id="startDate" name="start_date"
+                            style="width: 150px;" value="{{ request('start_date') }}" placeholder="Từ ngày">
+                        <span>-</span>
                         <input type="date" class="form-control" id="endDate" name="end_date" style="width: 150px;"
                             value="{{ request('end_date') }}" placeholder="Đến ngày">
                     </div>
-
                     {{-- Action Buttons --}}
                     <div class="d-flex align-items-center gap-2">
                         <button type="submit" class="btn btn-primary">Lọc</button>
-                        <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">Reset</a>
+                        <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">Xoá</a>
                     </div>
                 </div>
             </form>
-            {{-- End Combined Filter Form --}}
         </div>
 
         <div
@@ -126,7 +135,8 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:200px;">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                style="width:200px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'product_id', 'direction' => request('sort') === 'product_id' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Sản phẩm
@@ -136,7 +146,8 @@
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:100px;">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                style="width:100px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'rating', 'direction' => request('sort') === 'rating' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Đánh giá
@@ -146,7 +157,7 @@
                                     @endif
                                 </a>
                             </th>
-                         
+
                             <th class="sort align-middle ps-4" scope="col" style="min-width:300px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'content', 'direction' => request('sort') === 'content' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
@@ -206,7 +217,7 @@
                                         @endfor
                                     </div>
                                 </td>
-                                
+
                                 <td class="content align-middle ps-4">{{ $review->content }}</td>
                                 <td class="reply align-middle ps-4">
                                     {{ $review->reply ?? '' }}
@@ -266,79 +277,13 @@
             </div>
         </div>
     </div>
-    <form id="bulk-delete-form" action="{{ route('admin.reviews.bulkDestroy') }}" method="POST"
-        style="display:none;">
-        @csrf
-        @method('DELETE')
-        <input type="hidden" name="ids" id="bulk-delete-ids">
-    </form>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const bulkCheckbox = document.getElementById('checkbox-bulk-reviews-select');
-            const itemCheckboxes = document.querySelectorAll('.review-checkbox');
-            const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
-            const bulkDeleteForm = document.getElementById('bulk-delete-form');
-            const bulkDeleteIds = document.getElementById('bulk-delete-ids');
-
-            function updateBulkDeleteBtn() {
-                let checkedCount = 0;
-                itemCheckboxes.forEach(function(checkbox) {
-                    if (checkbox.checked) checkedCount++;
+            const filterForm = document.querySelector('form[action*="admin.reviews.index"]');
+            document.querySelectorAll('select.form-select').forEach(function(select) {
+                select.addEventListener('change', function() {
+                    if (filterForm) filterForm.submit();
                 });
-                if (checkedCount > 0) {
-                    bulkDeleteBtn.style.display = '';
-                } else {
-                    bulkDeleteBtn.style.display = 'none';
-                }
-            }
-
-            if (bulkCheckbox) {
-                bulkCheckbox.addEventListener('change', function() {
-                    itemCheckboxes.forEach(function(checkbox) {
-                        checkbox.checked = bulkCheckbox.checked;
-                    });
-                    updateBulkDeleteBtn();
-                });
-            }
-            itemCheckboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    updateBulkDeleteBtn();
-                });
-            });
-            updateBulkDeleteBtn(); // Initial state
-
-            // Xử lý submit xoá
-            bulkDeleteBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const checkedIds = Array.from(itemCheckboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-                if (checkedIds.length === 0) return;
-                if (!confirm('Bạn có chắc chắn muốn xóa các đánh giá đã chọn?')) return;
-                bulkDeleteIds.value = checkedIds.join(',');
-                bulkDeleteForm.submit();
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.querySelector('.search-input');
-            const filterForm = searchInput.closest('form');
-            let typingTimer;
-            const doneTypingInterval = 500; // milliseconds
-
-            searchInput.addEventListener('input', () => {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(() => {
-                    filterForm.submit();
-                }, doneTypingInterval);
-            });
-
-            // Optional: Prevent form submission on Enter key in search input to avoid double submission
-            searchInput.addEventListener('keypress', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                }
             });
         });
     </script>

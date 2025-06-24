@@ -9,24 +9,24 @@ use App\Models\Color;
 class ColorController extends Controller
 {
     public function index(Request $request)
-{
-    $query = Color::query();
+    {
+        $query = Color::query();
 
-    // Tìm kiếm không phân biệt hoa thường và hỗ trợ tiếng Việt
-    if ($request->filled('search')) {
-        $search = mb_strtolower(trim($request->search));
+        // Tìm kiếm không phân biệt hoa thường và hỗ trợ tiếng Việt
+        if ($request->filled('search')) {
+            $search = mb_strtolower(trim($request->search));
 
-        $query->where(function ($q) use ($search) {
-            $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('LOWER(hex_code) LIKE ?', ["%{$search}%"])
-              ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"]);
-        });
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(hex_code) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('CAST(id AS CHAR) LIKE ?', ["%{$search}%"]);
+            });
+        }
+
+        $colors = $query->orderBy('sort_order')->get();
+
+        return view('admin.colors.index', compact('colors'));
     }
-
-    $colors = $query->orderBy('sort_order')->paginate(15);
-
-    return view('admin.colors.index', compact('colors'));
-}
 
     public function create()
     {

@@ -39,30 +39,37 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,    // Tạo categories
             BrandSeeder::class,       // Tạo brands
 
-            // 4. Seeder cho sản phẩm và liên quan
+            // 4. Seeder cho các thuộc tính sản phẩm
+            SphericalSeeder::class,   // Tạo spherical
+            CylindricalSeeder::class, // Tạo cylindrical
+            ColorSeeder::class,       // Tạo colors
+            SizeSeeder::class,        // Tạo sizes
+
+            // 5. Seeder cho sản phẩm và biến thể
             ProductSeeder::class,     // Tạo products
             ProductImageSeeder::class, // Tạo product images
             VariationSeeder::class,   // Tạo variations
             VariationImageSeeder::class, // Tạo variation images
 
-            // 5. Seeder cho nội dung
+            // 6. Seeder cho nội dung
             NewsSeeder::class,        // Tạo tin tức
             CommentSeeder::class,     // Tạo bình luận
             SliderSeeder::class,      // Tạo slider
             FaqSeeder::class,         // Tạo FAQ
 
-            // 6. Seeder cho đơn hàng và thanh toán
+            // 7. Seeder cho đơn hàng và thanh toán
+            CancellationReasonSeeder::class,
             PromotionSeeder::class, // Tạo khuyến mãi
             PaymentMethodSeeder::class, // Tạo phương thức thanh toán
             ShippingProviderSeeder::class, // Tạo phương thức vận chuyển
             OrderSeeder::class,     // Tạo đơn hàng
             PaymentSeeder::class,   // Tạo thanh toán
 
-            // 7. Seeder cho lý do huỷ
-            CancellationReasonSeeder::class,
+            // 8. Seeder cho các bảng khác
             ReviewSeeder::class, // Tạo đánh giá
             CustomerSupportSeeder::class, // Tạo hỗ trợ khách hàng
-
+            TicketSeeder::class, // Tạo ticket
+            ContactMessageSeeder::class,
         ]);
     }
 
@@ -82,6 +89,10 @@ class DatabaseSeeder extends Seeder
             'product_images',
             'variations',
             'variation_images',
+            'sphericals',
+            'cylindricals',
+            'colors',
+            'sizes',
             'news',
             'comments',
             'sliders',

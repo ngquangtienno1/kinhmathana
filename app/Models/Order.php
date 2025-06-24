@@ -34,7 +34,8 @@ class Order extends Model
         'admin_note',
         'confirmed_at',
         'completed_at',
-        'cancelled_at'
+        'cancelled_at',
+        'cancellation_reason_id',
     ];
 
     protected $casts = [
@@ -87,32 +88,39 @@ class Order extends Model
         return $this->belongsTo(ShippingProvider::class);
     }
 
+    public function cancellationReason()
+    {
+        return $this->belongsTo(\App\Models\CancellationReason::class);
+    }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id', 'id');
+    }
+
+
     public function getStatusLabelAttribute()
     {
         return match ($this->status) {
-            'pending' => 'Chờ xử lý',
-            'awaiting_payment' => 'Chờ thanh toán',
+            'pending' => 'Chờ xác nhận',
             'confirmed' => 'Đã xác nhận',
-            'processing' => 'Đang xử lý',
-            'shipping' => 'Đang giao hàng',
+            'awaiting_pickup' => 'Chờ lấy hàng',
+            'shipping' => 'Đang giao',
             'delivered' => 'Đã giao hàng',
-            'returned' => 'Đã trả hàng',
-            'processing_return' => 'Đang xử lý trả hàng',
-            'refunded' => 'Đã hoàn tiền',
-            default => 'Không xác định'
+            'completed' => 'Đã hoàn thành',
+            'cancelled_by_customer' => 'Khách hủy đơn',
+            'cancelled_by_admin' => 'Admin hủy đơn',
+            'delivery_failed' => 'Giao thất bại',
+            default => 'Không xác định',
         };
     }
 
     public function getPaymentStatusLabelAttribute()
     {
         return match ($this->payment_status) {
-            'pending' => 'Chờ thanh toán',
+            'unpaid' => 'Chờ thanh toán',
             'paid' => 'Đã thanh toán',
-            'failed' => 'Thanh toán thất bại',
-            'refunded' => 'Đã hoàn tiền',
-            'cancelled' => 'Đã huỷ',
-            'partially_paid' => 'Thanh toán một phần',
-            'disputed' => 'Đang tranh chấp',
+            'cod' => 'Thanh toán khi nhận hàng',
+            'confirmed' => 'Đã xác nhận thanh toán',
             default => 'Không xác định'
         };
     }
@@ -121,29 +129,29 @@ class Order extends Model
     {
         return match ($this->status) {
             'pending' => 'secondary',
-            'awaiting_payment' => 'warning',
             'confirmed' => 'info',
-            'processing' => 'primary',
-            'shipping' => 'primary',
+            'awaiting_pickup' => 'primary',
+            'shipping' => 'warning',
             'delivered' => 'success',
+            'completed' => 'success',
             'returned' => 'danger',
             'processing_return' => 'warning',
             'refunded' => 'info',
             'cancelled' => 'secondary',
-            default => 'secondary'
+            'cancelled_by_customer' => 'danger',
+            'cancelled_by_admin' => 'danger',
+            'delivery_failed' => 'danger',
+            default => 'secondary',
         };
     }
 
     public function getPaymentStatusColorAttribute()
     {
         return match ($this->payment_status) {
-            'pending' => 'warning',
+            'unpaid' => 'warning',
             'paid' => 'success',
-            'failed' => 'danger',
-            'refunded' => 'info',
-            'cancelled' => 'secondary',
-            'partially_paid' => 'warning',
-            'disputed' => 'danger',
+            'cod' => 'info',
+            'confirmed' => 'primary',
             default => 'secondary'
         };
     }

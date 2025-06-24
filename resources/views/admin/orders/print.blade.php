@@ -1,5 +1,9 @@
 @php
     use SimpleSoftwareIO\QrCode\Facades\QrCode;
+    $calculatedSubtotal = $order->items->sum(function($item) {
+        return $item->price * $item->quantity;
+    });
+    $calculatedTotal = $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
 @endphp
 <!DOCTYPE html>
 <html lang="vi">
@@ -240,13 +244,13 @@
             <div class="hana-col-sep"></div>
             <div style="width: 49%;">
                 <div>Khối lượng ước tính:</div>
-                <div class="hana-highlight">{{ $order->weight ?? '---' }}g</div>
+                <div class="hana-highlight">{{ $order->weight ?? '100' }}g</div>
             </div>
         </div>
         <div class="hana-block hana-row">
             <div style="width: 49%;">
                 <div>Tiền thu người nhận:</div>
-                <div class="hana-cod">{{ number_format($order->total_amount) }}đ</div>
+                <div class="hana-cod">{{ number_format($calculatedTotal) }}đ</div>
             </div>
             <div class="hana-col-sep"></div>
             <div style="width: 49%;">
@@ -262,7 +266,7 @@
             <div>Chữ ký người nhận: __________________________</div>
         </div>
         <div class="hana-hotline">
-            Tuyến dụng Tài xế/Điều phối kho SPX - Thu nhập 8-20 triệu - Gọi 1900 6885
+            Tuyến dụng Tài xế/Điều phối kho Hana - Thu nhập 8-20 triệu - Gọi 1900 6677
         </div>
         <button onclick="window.print()"
             style="margin-top:12px;width:100%;font-size:1.1em;padding:8px 0;background:#e67e22;color:#fff;border:none;border-radius:6px;cursor:pointer;">In

@@ -43,10 +43,9 @@ class CheckAdminMiddleware
                 'role_id' => $user->role_id,
                 'ip' => $request->ip()
             ]);
-
-            return redirect()->route('login')
-                ->withErrors('message', 'Bạn không có quyền truy cập trang quản trị');
-
+            Auth::logout();
+            return redirect()->route('client.login')
+                ->withErrors(['message' => 'Bạn không có quyền truy cập trang quản trị']);
         }
 
         return $next($request);

@@ -32,9 +32,9 @@ class PaymentMethod extends Model
     public $timestamps = true;
     protected $dates = ['deleted_at'];
 
-    public function payments()
+      public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'payment_method_id');
     }
 
     // Scope để lấy các phương thức thanh toán đang hoạt động

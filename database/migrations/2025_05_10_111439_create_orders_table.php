@@ -39,29 +39,26 @@ return new class extends Migration
             $table->foreignId('payment_method_id')->nullable()->constrained('payment_methods')->nullOnDelete();
             $table->json('payment_details')->nullable();
             $table->enum('payment_status', [
-                'pending',      // Chưa thanh toán
+                'unpaid',      // Chưa thanh toán
                 'paid',        // Đã thanh toán
-                'cod',         // Thanh toán khi nhận hàng (COD)
-                'confirmed',   // Đã xác nhận thanh toán
-                'refunded',    // Đã hoàn tiền
-                'processing_refund', // Đang hoàn tiền
-                'failed'       // Thanh toán không thành công
-            ])->default('pending');
+                'failed'       // Thanh toán thất bại
+            ])->default('unpaid');
 
             // Trạng thái đơn hàng
             $table->enum('status', [
-                'pending',           // Chờ xác nhận
-                'confirmed',         // Đã xác nhận
-                'awaiting_pickup',   // Chờ lấy hàng
-                'shipping',          // Đang giao
-                'delivered',         // Đã giao hàng
-                'returned',          // Khách trả hàng
-                'processing_return', // Đang xử lý trả hàng
-                'cancelled',         // Đã hủy
-                'returned_refunded', // Trả hàng / Hoàn tiền
-                'completed',         // Đã hoàn thành
-                'refunded'           // Đã hoàn tiền
+                'pending',              // Chờ xác nhận
+                'confirmed',            // Đã xác nhận
+                'awaiting_pickup',      // Chờ lấy hàng
+                'shipping',             // Đang giao
+                'delivered',            // Đã giao hàng
+                'completed',            // Đã hoàn thành
+                'cancelled_by_customer', // Khách hủy đơn
+                'cancelled_by_admin',    // Admin hủy đơn
+                'delivery_failed'       // Giao thất bại
             ])->default('pending');
+
+            // Thêm trường cancellation_reason_id
+            $table->foreignId('cancellation_reason_id')->nullable()->constrained('cancellation_reasons')->nullOnDelete();
 
             // Thông tin bổ sung
             $table->text('note')->nullable()->comment('Ghi chú từ khách hàng');

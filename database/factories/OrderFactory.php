@@ -61,27 +61,27 @@ class OrderFactory extends Factory
         $totalAmount = max(0, $totalAmount);
 
         $paymentStatuses = [
-            'pending',
-            'paid',
-            'cod',
-            'confirmed',
-            'refunded',
-            'processing_refund',
-            'failed'
+            'unpaid',      // Chưa thanh toán
+            'paid',        // Đã thanh toán
+            'failed'       // Thanh toán thất bại
         ];
         $orderStatuses = [
-            'pending',           // Chờ xác nhận
-            'confirmed',         // Đã xác nhận
-            'awaiting_pickup',   // Chờ lấy hàng
-            'shipping',          // Đang giao
-            'delivered',         // Đã giao hàng
-            'returned',          // Khách trả hàng
-            'processing_return', // Đang xử lý trả hàng
-            'cancelled',         // Đã hủy
-            'returned_refunded', // Trả hàng / Hoàn tiền
-            'completed',         // Đã hoàn thành
-            'refunded'           // Đã hoàn tiền
+            'pending',              // Chờ xác nhận
+            'confirmed',            // Đã xác nhận
+            'awaiting_pickup',      // Chờ lấy hàng
+            'shipping',             // Đang giao
+            'delivered',            // Đã giao hàng
+            'completed',            // Đã hoàn thành
+            'cancelled_by_customer', // Khách hủy đơn
+            'cancelled_by_admin',    // Admin hủy đơn
+            'delivery_failed'       // Giao thất bại
         ];
+
+        $status = $this->faker->randomElement($orderStatuses);
+        $cancellationReasonId = null;
+        if (in_array($status, ['cancelled_by_customer', 'cancelled_by_admin']) && \App\Models\CancellationReason::where('type', 'admin')->count() > 0) {
+            $cancellationReasonId = \App\Models\CancellationReason::where('type', 'admin')->inRandomOrder()->first()->id;
+        }
 
         return [
             'order_number'      => 'ORD-' . $this->faker->unique()->numberBetween(10000, 99999),
@@ -103,7 +103,8 @@ class OrderFactory extends Factory
             'shipping_fee'      => $shippingFee,
             'payment_details'   => null,
             'payment_status'    => $this->faker->randomElement($paymentStatuses),
-            'status'            => $this->faker->randomElement($orderStatuses),
+            'status'            => $status,
+            'cancellation_reason_id' => $cancellationReasonId,
             'note'              => $this->faker->boolean(30) ? $this->faker->sentence() : null,
             'admin_note'        => $this->faker->boolean(10) ? $this->faker->sentence() : null,
             'confirmed_at'      => $this->faker->optional()->dateTimeBetween('-6 months', 'now'),
@@ -115,7 +116,7 @@ class OrderFactory extends Factory
         ];
     }
 
-    // Nếu muốn sinh luôn order_items, order_histories, order_status_logs khi dùng seeder:
+    // Nếu muốn sinh luôn order_items, order_histories khi dùng seeder:
     public function configure()
     {
         return $this->afterCreating(function (Order $order) {
@@ -123,8 +124,7 @@ class OrderFactory extends Factory
             \App\Models\OrderItem::factory()->count(rand(1, 5))->create(['order_id' => $order->id]);
             // Sinh 1-3 order_histories
             \App\Models\OrderHistory::factory()->count(rand(1, 3))->create(['order_id' => $order->id]);
-            // Sinh 1-2 order_status_logs
-            \App\Models\OrderStatusLog::factory()->count(rand(1, 2))->create(['order_id' => $order->id]);
         });
     }
+
 }

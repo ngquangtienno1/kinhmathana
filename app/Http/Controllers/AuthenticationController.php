@@ -73,10 +73,8 @@ class AuthenticationController extends BaseController
             if (in_array($user->role_id, [1, 2])) { // 1 là admin, 2 là staff
                 return redirect()->route('admin.home')
                     ->with('message', 'Đăng nhập thành công');
-            } else if ($user->role_id === 3) {
-                Auth::logout(); // Đăng xuất ngay lập tức
-                return redirect()->route('login')
-                    ->withErrors(['email' => 'Bạn không có quyền truy cập trang quản trị']);
+            } else if ($user->role_id == 3) {
+                return redirect()->route('client');
             } else {
                 Auth::logout(); // Đăng xuất ngay lập tức
                 return redirect()->route('login')
@@ -132,11 +130,12 @@ class AuthenticationController extends BaseController
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => 3,
+            'status_user' => 'active',
             'created_at' => Carbon::now(),
         ]);
 
         if ($user) {
-            return redirect()->route('login')->with([
+            return redirect()->route('client.login')->with([
                 'message' => 'Đăng ký thành công. Vui lòng đăng nhập'
             ]);
         }

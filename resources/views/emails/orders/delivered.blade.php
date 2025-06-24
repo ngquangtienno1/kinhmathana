@@ -98,7 +98,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Hana Eyewear" class="logo">
+            <img src="{{ getLogoUrl() }}" alt="Hana Eyewear" class="logo">
             <h2>Xin chào {{ $order->user->name }},</h2>
             <p>Đơn hàng của bạn đã được giao thành công!</p>
             <div class="status-badge">Đã giao hàng</div>
@@ -128,23 +128,29 @@
                     @endforeach
                 </tbody>
                 <tfoot>
+                    @php
+                        $subtotal = $order->items->sum('subtotal');
+                        $discountAmount = $order->discount_amount ?? 0;
+                        $shippingFee = $order->shipping_fee ?? 0;
+                        $total = $subtotal - $discountAmount + $shippingFee;
+                    @endphp
                     <tr>
                         <td colspan="3" class="text-right"><strong>Tạm tính:</strong></td>
-                        <td class="text-right">{{ number_format($order->subtotal) }}đ</td>
+                        <td class="text-right">{{ number_format($subtotal) }}đ</td>
                     </tr>
-                    @if($order->discount_amount > 0)
+                    @if($discountAmount > 0)
                     <tr>
                         <td colspan="3" class="text-right"><strong>Giảm giá:</strong></td>
-                        <td class="text-right">-{{ number_format($order->discount_amount) }}đ</td>
+                        <td class="text-right">-{{ number_format($discountAmount) }}đ</td>
                     </tr>
                     @endif
                     <tr>
                         <td colspan="3" class="text-right"><strong>Phí vận chuyển:</strong></td>
-                        <td class="text-right">{{ number_format($order->shipping_fee) }}đ</td>
+                        <td class="text-right">{{ number_format($shippingFee) }}đ</td>
                     </tr>
                     <tr>
                         <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
-                        <td class="text-right"><strong>{{ number_format($order->total_amount) }}đ</strong></td>
+                        <td class="text-right"><strong>{{ number_format($total) }}đ</strong></td>
                     </tr>
                 </tfoot>
             </table>

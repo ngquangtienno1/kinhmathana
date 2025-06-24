@@ -12,9 +12,20 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'description_short', 'description_long', 'product_type', 'sku',
-        'stock_quantity', 'price', 'sale_price', 'slug', 'brand_id', 'status',
-        'is_featured', 'views', 'video_path',
+        'name',
+        'description_short',
+        'description_long',
+        'product_type',
+        'sku',
+        'stock_quantity',
+        'price',
+        'sale_price',
+        'slug',
+        'brand_id',
+        'status',
+        'is_featured',
+        'views',
+        'video_path',
     ];
 
     protected $appends = ['total_stock_quantity'];
@@ -39,6 +50,11 @@ class Product extends Model
         return $this->hasMany(Variation::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'product_tags');
@@ -49,9 +65,26 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'entity_id')->where('entity_type', 'product');
+    }
+
     public function getTotalStockQuantityAttribute()
     {
         return $this->variations->sum('stock_quantity') ?? $this->stock_quantity ?? 0;
+    }
+
+    public function getFeaturedMedia()
+    {
+        $featured = $this->images()->where('is_featured', true)->first();
+        if ($featured) {
+            return (object) [
+                'path' => Storage::url($featured->image_path),
+                'is_video' => $featured->is_video,
+            ];
+        }
+        return null;
     }
 
     protected static function booted()

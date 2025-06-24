@@ -147,7 +147,7 @@ class BrandController extends Controller
 
     public function bin()
     {
-        $brands = Brand::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        $brands = Brand::onlyTrashed()->orderBy('deleted_at', 'asc')->get();
         return view('admin.brands.bin', compact('brands'));
     }
 

@@ -44,7 +44,7 @@ class OrderSeeder extends Seeder
 
         foreach ($users as $user) {
             // Create 1-5 orders for each customer
-            $orders = Order::factory()->count(rand(1, 5))->create([
+            $orders = Order::factory()->count(rand(1, 10))->create([
                 'user_id' => $user->id,
                 'customer_name' => $user->name,
                 'customer_email' => $user->email,
