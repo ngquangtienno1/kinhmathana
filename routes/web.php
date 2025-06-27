@@ -4,6 +4,8 @@
 use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\OrderController;
 
 
 // ================== Admin Controllers ===================
@@ -15,7 +17,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SliderController;
@@ -87,6 +89,25 @@ Route::prefix('client')->name('client.')->group(function () {
 
     Route::prefix('product')->name('product.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('add', [CartController::class, 'add'])->name('add');
+        Route::post('update/{id}', [CartController::class, 'update'])->name('update');
+        Route::delete('remove/{id}', [CartController::class, 'remove'])->name('remove');
+        Route::get('checkout', [CartController::class, 'showCheckoutForm'])->name('checkout.form');
+        Route::post('checkout', [CartController::class, 'checkout'])->name('checkout');
+        Route::post('apply-voucher', [CartController::class, 'applyVoucher'])->name('apply-voucher');
+    });
+
+    Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::patch('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+        Route::patch('/{id}/confirm-received', [OrderController::class, 'confirmReceived'])->name('confirm-received');
+        Route::get('/{order}/review/{item}', [OrderController::class, 'reviewForm'])->name('review.form');
+        Route::post('/{order}/review/{item}', [OrderController::class, 'submitReview'])->name('review.submit');
     });
 });
 
