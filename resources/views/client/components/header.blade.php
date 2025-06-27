@@ -254,7 +254,8 @@
                                             <div
                                                 class="my-2 text-center fw-bold fs-10 text-body-tertiary text-opactity-85">
                                                 <a class="fw-bolder" href="/pages/notifications.html">Notification
-                                                    history</a></div>
+                                                    history</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -293,10 +294,12 @@
                                                             class="me-2 text-body align-bottom"
                                                             data-feather="settings"></span>Settings &amp; Privacy </a>
                                                 </li>
-                                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
+                                                <li class="nav-item"><a class="nav-link px-3 d-block" href="{{ route('client.faq.index') }}"> <span
                                                             class="me-2 text-body align-bottom"
                                                             data-feather="help-circle"></span>Help Center</a></li>
-                                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!"> <span
+
+                                                <li class="nav-item"><a class="nav-link px-3 d-block"
+                                                        href=""> <span
                                                             class="me-2 text-body align-bottom"
                                                             data-feather="globe"></span>Language</a></li>
                                             </ul>
@@ -506,8 +509,6 @@
                     order</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link pe-0"
                     href="checkout.html">Checkout</a></li>
-            <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link pe-0"
-                    href="{{ route('client.faq.index') }}">Faq</a></li>
             <li class="nav-item dropdown" data-nav-item="data-nav-item" data-more-item="data-more-item"><a
                     class="nav-link dropdown-toggle dropdown-caret-none fw-bold pe-0" href="javascript: void(0)"
                     id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"

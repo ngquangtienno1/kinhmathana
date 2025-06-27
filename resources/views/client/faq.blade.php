@@ -26,27 +26,23 @@
                 </div>
             </div>
         </div>
-        <div class="row gx-xl-8 gx-xxl-11 gy-6 faq pt-5">
+        <div class="row gx-xl-8 gx-xxl-11 gy-6 faq pt-5" style="margin-top: 50px;">
             <div class="col-md-6 col-xl-5 col-xxl-4">
                 <!-- GỠ bỏ 'offcanvas offcanvas-start' để sidebar cuộn bình thường -->
                 <div class="faq-sidebar bg-body w-100">
 
                     <!-- Tabs cấp 1: Popular / All -->
                     <ul class="faq-category-tab nav nav-tabs mb-4 pb-3 pt-2 w-100 w-sm-75 w-md-100 mx-auto">
-                        <li class="nav-item">
-                            <button class="nav-link fw-semibold me-3 fs-8" id="popular" type="button"
-                                data-bs-toggle="tab" data-category-filter="popular">Danh mục phổ biến</button>
-                        </li>
+
                         <li class="nav-item">
                             <button class="nav-link fw-semibold fs-8 active" id="all" type="button" data-bs-toggle="tab"
                                 data-category-filter="all">Tất cả danh mục</button>
                         </li>
                     </ul>
 
-                    <!-- Tabs cấp 2: Subcategories -->
-                    <div class="faq-subcategory-tab nav nav-tabs w-100 mx-auto mb-4" id="faq-subcategory-tab"
-                        style="max-width: 90%;">
-
+                    <!-- Tabs danh mục (dọc trên desktop) -->
+                    <div class="faq-subcategory-tab nav nav-tabs w-100 mx-auto mb-4 d-none d-md-block"
+                        id="faq-subcategory-tab">
                         @php
                         $iconMap = [
                         'Sản phẩm' => 'fa-chart-pie',
@@ -58,7 +54,6 @@
                         ];
                         @endphp
 
-                        <!-- Mỗi danh mục -->
                         @foreach($categories as $index => $category)
                         @php
                         $icon = $iconMap[$category] ?? $iconMap['default'];
@@ -72,13 +67,21 @@
                                 role="tab" aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
                                 <span class="category-icon text-body-secondary fs-6 fa-solid {{ $icon }}"></span>
                                 <span class="d-block fs-6 fw-bolder lh-1 text-body mt-3 mb-2">{{ $category }}</span>
-                                <span class="d-block text-body fw-normal mb-0 fs-9">Trả lời các câu hỏi thường gặp nhất
-                                    về sản phẩm & dịch vụ của bạn tại đây.</span>
                             </button>
                         </div>
                         @endforeach
-
                     </div>
+
+                    <!-- Dạng dropdown trên mobile -->
+                    <div class="d-md-none px-3 mb-4">
+                        <select class="form-select" id="faq-category-select" onchange="changeFaqCategory(this.value)">
+                            @foreach($categories as $index => $category)
+                                @php $slug = \Str::slug($category); @endphp
+                                <option value="{{ $slug }}">{{ $category }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                 </div>
             </div>
 
@@ -136,7 +139,7 @@
             <div class="modal-header border-0 pb-0">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body px-4 pb-4">
+            <div class="modal-body px-2 px-md-4 pb-3 pb-md-4">
                 <div id="faqBlogContent">
                     <!-- Content will be loaded here -->
                 </div>
@@ -237,6 +240,28 @@
             alert('Đã sao chép link vào clipboard!');
         }
     }
+
+    function changeFaqCategory(slug) {
+        // Ẩn tất cả tab-pane
+        document.querySelectorAll('.faq-subcategory-content .tab-pane').forEach(function(tab) {
+            tab.classList.remove('active', 'show');
+        });
+        // Hiện tab-pane tương ứng
+        var target = document.getElementById(slug);
+        if (target) {
+            target.classList.add('active', 'show');
+            // Cuộn lên đầu phần nội dung nếu cần
+            target.scrollIntoView({behavior: "smooth", block: "start"});
+        }
+    }
+
+    // Nếu muốn khi load trang sẽ chọn đúng tab đầu tiên
+    document.addEventListener('DOMContentLoaded', function() {
+        var select = document.getElementById('faq-category-select');
+        if (select) {
+            changeFaqCategory(select.value);
+        }
+    });
 </script>
 
 @endsection
@@ -244,6 +269,153 @@
 <style>
     .faq-category-tab {
         position: static !important;
-        /* hoặc 'relative' nếu bạn cần */
+    }
+
+    /* Responsive cho header */
+    .faq-header {
+        min-height: 120px;
+    }
+    @media (max-width: 576px) {
+        .faq-title-box h2 {
+            font-size: 1.1rem;
+        }
+        .faq-title-box p {
+            font-size: 0.9rem;
+        }
+        .faq-header {
+            min-height: 60px;
+        }
+    }
+
+    /* Ẩn background màu ở mobile */
+    @media (max-width: 768px) {
+        .bg-holder {
+            display: none !important;
+        }
+        .mx-n4, .mx-lg-n6 {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .mt-n5 {
+            margin-top: 0 !important;
+        }
+        .mb-md-9 {
+            margin-bottom: 1rem !important;
+        }
+        .faq-subcategory-tab {
+            display: none !important;
+        }
+        #mobile-category-tabs, .category-scroll-wrapper {
+            display: none !important;
+        }
+    }
+
+    /* Danh sách danh mục cuộn ngang */
+    .faq-subcategory-tab {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        scrollbar-width: none;
+    }
+    .faq-subcategory-tab::-webkit-scrollbar {
+        display: none;
+    }
+    .faq-subcategory-tab .nav-item {
+        flex: 0 0 auto;
+        min-width: 140px;
+    }
+
+    /* Sidebar không dính cố định */
+    @media (max-width: 768px) {
+        .faq-sidebar {
+            position: relative !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+    }
+
+    /* Ẩn nút 'Danh mục' ở mobile nếu không dùng offcanvas */
+    @media (max-width: 768px) {
+        .faq-subcategory-content .btn.btn-link.d-md-none {
+            display: none;
+        }
+    }
+
+    /* Tối ưu khoảng cách và cỡ chữ các phần khác */
+    @media (max-width: 576px) {
+        .faq .nav-tabs .nav-link {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.6rem;
+        }
+        .faq-subcategory-tab .nav-link {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        .faq-subcategory-content h4,
+        .faq-subcategory-content h5 {
+            font-size: 0.95rem;
+        }
+        .faq-subcategory-content .fa-circle,
+        .faq-subcategory-content .fa-star {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Search box icon trong input */
+    .search-box {
+        position: relative;
+    }
+    .search-box-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #ccc;
+        pointer-events: none;
+    }
+
+    #mobile-category-tabs {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    #mobile-category-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    #mobile-category-tabs>button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    /* Wrapper để có thể scroll ngang */
+    .category-scroll-wrapper {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 0.5rem;
+        padding-bottom: 4px;
+    }
+    .category-scroll-wrapper::-webkit-scrollbar {
+        display: none;
+    }
+    .category-scroll-wrapper > button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 576px) {
+        .modal-dialog.modal-xl {
+            max-width: 95vw !important;
+            margin: 0.5rem auto;
+        }
+        .modal-content {
+            border-radius: 12px;
+        }
+        .modal-body {
+            padding: 1rem !important;
+        }
     }
 </style>
