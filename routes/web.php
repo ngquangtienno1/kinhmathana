@@ -55,6 +55,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+
 // Authentication routes
 Route::get('login', [AuthenticationController::class, 'login'])->name('login');
 Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
@@ -68,14 +69,6 @@ Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallb
 Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
 
-// Client routes group
-Route::prefix('client')->name('client.')->group(function () {
-    Route::get('/', [ClientHomeController::class, 'index'])->name('home');
-    
-    Route::prefix('product')->name('product.')->group(function () {
-        Route::get('/', [ClientProductController::class, 'index'])->name('index');
-    });
-});
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
@@ -645,3 +638,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:gui-email-lien-he']);
     });
 });
+// Clinet
+use App\Http\Controllers\Client\FaqClientController;
+
+// Client routes group
+Route::prefix('client')->name('client.')->group(function () {
+    Route::get('/', [ClientHomeController::class, 'index'])->name('home');
+
+    Route::prefix('product')->name('product.')->group(function () {
+        Route::get('/', [ClientProductController::class, 'index'])->name('index');
+    });
+    Route::prefix('faq')->name('faq.')->group(function () {
+        Route::get('/', [FaqClientController::class, 'index'])->name('index');
+    });
+});
+
+
