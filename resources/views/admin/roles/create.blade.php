@@ -80,7 +80,7 @@
                             @enderror
                         </div>
 
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 justify-content-end">
                             <button class="btn btn-primary" type="submit">Lưu</button>
                             <a class="btn btn-phoenix-secondary" href="{{ route('admin.roles.index') }}">Hủy</a>
                         </div>

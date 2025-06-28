@@ -20,6 +20,9 @@ class FaqFactory extends Factory
             'question' => $this->faker->sentence(),
             'answer' => $this->faker->paragraph(),
             'image' => null,
+            'images' => null,
+            'rating' => $this->faker->randomFloat(2, 0, 5),
+            'rating_count' => $this->faker->numberBetween(0, 50),
             'category' => $this->faker->randomElement(['Chung', 'Sản phẩm', 'Vận chuyển', 'Thanh toán', 'Bảo hành']),
             'sort_order' => $this->faker->numberBetween(0, 100),
             'is_active' => true

@@ -163,7 +163,8 @@
                                                                 <p
                                                                     class="fs-9 text-body-highlight mb-2 mb-sm-3 fw-normal">
                                                                     <span class='me-1 fs-10'>💬</span>Mentioned you in
-                                                                    a comment.<span
+                                                                    a
+                                                                    comment.<span
                                                                         class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10"></span>
                                                                 </p>
                                                                 <p class="text-body-secondary fs-9 mb-0"><span
@@ -300,10 +301,12 @@
                                                         <span class="me-2 text-body align-bottom"
                                                             data-feather="settings"></span>Settings &amp; Privacy </a>
                                                 </li>
-                                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!">
-                                                        <span class="me-2 text-body align-bottom"
+                                                <li class="nav-item"><a class="nav-link px-3 d-block"
+                                                        href="{{ route('client.faq.index') }}"> <span
+                                                            class="me-2 text-body align-bottom"
                                                             data-feather="help-circle"></span>Help Center</a></li>
-                                                <li class="nav-item"><a class="nav-link px-3 d-block" href="#!">
+
+                                                <li class="nav-item"><a class="nav-link px-3 d-block" href="">
                                                         <span class="me-2 text-body align-bottom"
                                                             data-feather="globe"></span>Language</a></li>
                                             </ul>
@@ -318,13 +321,14 @@
                                             <hr />
                                             <div class="px-3"> <a
                                                     class="btn btn-phoenix-secondary d-flex flex-center w-100"
-                                                    href="{{ route('client.logout') }}"> <span class="me-2"
-                                                        data-feather="log-out"> </span>Đăng xuất</a></div>
+                                                    href="#!"> <span class="me-2" data-feather="log-out">
+                                                    </span>Sign
+                                                    out</a></div>
                                             <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a
-                                                    class="text-body-quaternary me-1" href="#!">Quyền riêng
-                                                    tư</a>&bull;<a class="text-body-quaternary mx-1"
-                                                    href="#!">Điều khoản</a>&bull;<a
-                                                    class="text-body-quaternary ms-1" href="#!">Cookie</a></div>
+                                                    class="text-body-quaternary me-1" href="#!">Privacy
+                                                    policy</a>&bull;<a class="text-body-quaternary mx-1"
+                                                    href="#!">Terms</a>&bull;<a class="text-body-quaternary ms-1"
+                                                    href="#!">Cookies</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -492,15 +496,16 @@
                             </div>
                         </div>
                         <div class="text-center border-top border-translucent pt-3"><a class="fw-bold"
-                                href="#!">See all Categories<span class="fas fa-angle-right ms-1"
-                                    data-fa-transform="down-1"></span></a></div>
+                                href="#!">See all
+                                Categories<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <ul class="navbar-nav justify-content-end align-items-center">
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link ps-0 active"
-                    href="homepage.html">Home</a></li>
+                    href="{{ route('client.home') }}">Trang chủ</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.brand.index') }}">Thương hiệu</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
