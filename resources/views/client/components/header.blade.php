@@ -502,7 +502,7 @@
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link ps-0 active"
                     href="homepage.html">Home</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
-                    href="favourite-stores.html">Thương hiệu</a></li>
+                    href="{{ route('client.brand.index') }}">Thương hiệu</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.product.index') }}">Products</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"

@@ -116,6 +116,10 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
         Route::post('/{slug}/comment', [BlogController::class, 'comment'])->name('comment');
     });
+
+    Route::prefix('brand')->name('brand.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Client\BrandController::class, 'index'])->name('index');
+    });
 });
 
 // Admin routes group
