@@ -6,6 +6,7 @@ use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\OrderController;
+use App\Http\Controllers\Client\BlogController;
 
 
 // ================== Admin Controllers ===================
@@ -108,6 +109,12 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::patch('/{id}/confirm-received', [OrderController::class, 'confirmReceived'])->name('confirm-received');
         Route::get('/{order}/review/{item}', [OrderController::class, 'reviewForm'])->name('review.form');
         Route::post('/{order}/review/{item}', [OrderController::class, 'submitReview'])->name('review.submit');
+    });
+
+    Route::prefix('blog')->name('blog.')->group(function () {
+        Route::get('/', [BlogController::class, 'index'])->name('index');
+        Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
+        Route::post('/{slug}/comment', [BlogController::class, 'comment'])->name('comment');
     });
 });
 

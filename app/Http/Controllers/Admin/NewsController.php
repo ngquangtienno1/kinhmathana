@@ -73,9 +73,9 @@ class NewsController extends Controller
         // Tăng lượt xem
         $news->increment('views');
         $news->refresh(); // Refresh để lấy giá trị views mới nhất
-        
+
         $news->load(['category', 'author']);
-        
+
         // Lấy các bài viết liên quan cùng danh mục
         $relatedNews = News::with(['category', 'author'])
             ->where('category_id', $news->category_id)

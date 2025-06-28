@@ -501,10 +501,12 @@
         <ul class="navbar-nav justify-content-end align-items-center">
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link ps-0 active"
                     href="homepage.html">Home</a></li>
-            <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link" href="favourite-stores.html">My
-                    Favourite Stores</a></li>
+            <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
+                    href="favourite-stores.html">Thương hiệu</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.product.index') }}">Products</a></li>
+            <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
+                    href="{{ route('client.blog.index') }}">Blog</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link" href="wishlist.html">Wishlist</a>
             </li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
