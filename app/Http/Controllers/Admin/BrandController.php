@@ -61,14 +61,13 @@ class BrandController extends Controller
                 'name.max' => 'Tên thương hiệu không được vượt quá 125 ký tự',
                 'image.required' => 'Vui lòng chọn hình ảnh',
                 'image.image' => 'File phải là hình ảnh',
-                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
-                'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB'
+                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif'
             ];
 
             $dataNew = $request->validate([
                 'name' => 'required|string|max:125',
                 'description' => 'nullable|string',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif',
                 'is_active' => 'nullable|boolean'
             ], $messages);
 
@@ -102,14 +101,13 @@ class BrandController extends Controller
                 'name.required' => 'Vui lòng nhập tên thương hiệu',
                 'name.max' => 'Tên thương hiệu không được vượt quá 125 ký tự',
                 'image.image' => 'File phải là hình ảnh',
-                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
-                'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB'
+                'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif'
             ];
 
             $dataNew = $request->validate([
                 'name' => 'required|string|max:125',
                 'description' => 'nullable|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'is_active' => 'nullable|boolean'
             ], $messages);
 

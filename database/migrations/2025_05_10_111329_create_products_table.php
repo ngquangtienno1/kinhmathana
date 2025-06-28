@@ -12,6 +12,7 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name', 125)->notNull();
             $table->string('sku', 125)->nullable()->unique();
+            $table->text('description')->nullable();
             $table->text('description_short')->nullable();
             $table->text('description_long')->nullable();
             $table->string('product_type', 20)->notNull()->default('simple');

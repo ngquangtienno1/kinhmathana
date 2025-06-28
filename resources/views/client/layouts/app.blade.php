@@ -207,6 +207,7 @@
     </a>
 
     @include('client.components.script')
+    @stack('scripts')
 </body>
 
 </html>
