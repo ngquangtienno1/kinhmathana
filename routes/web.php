@@ -1,55 +1,56 @@
 <?php
 
 // ================== Client Controllers ==================
-use App\Http\Controllers\AuthenticationClientController;
-use App\Http\Controllers\Client\HomeController as ClientHomeController;
-use App\Http\Controllers\Client\ProductController as ClientProductController;
-use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\OrderController;
-use App\Http\Controllers\Client\BlogController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\Admin\FaqController;
 
 
 // ================== Admin Controllers ===================
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Client\BlogController;
+use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SphericalController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Admin\CylindricalController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
+use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
-use App\Http\Controllers\Admin\CancellationReasonController;
-use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
 
 // Authentication
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SocialController;
-use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Admin\CancellationReasonController;
+use App\Http\Controllers\Admin\OrderStatusHistoryController;
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 // Redirect login
 Route::get('/', function () {
@@ -63,6 +64,7 @@ Route::get('/', function () {
     }
     return redirect()->route('client.login');
 });
+
 
 // Authentication routes
 Route::get('login', [AuthenticationController::class, 'login'])->name('login');
@@ -119,6 +121,9 @@ Route::prefix('client')->name('client.')->group(function () {
 
     Route::prefix('brand')->name('brand.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Client\BrandController::class, 'index'])->name('index');
+    });
+    Route::prefix('faq')->name('faq.')->group(function () {
+        Route::get('/', [FaqClientController::class, 'index'])->name('index');
     });
 });
 
