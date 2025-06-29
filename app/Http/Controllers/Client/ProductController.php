@@ -12,6 +12,4 @@ class ProductController extends Controller
     {
         return view('client.product');
     }
-
-    
 }
