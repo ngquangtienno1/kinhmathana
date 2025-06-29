@@ -1,7 +1,6 @@
 <?php
 
 // ================== Client Controllers ==================
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -90,9 +89,16 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
-    Route::prefix('product')->name('product.')->group(function () {
-        Route::get('/', [ClientProductController::class, 'index'])->name('index');
-    });
+      // Product routes
+        Route::prefix('products')->name('products.')->group(function () {
+            Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
+            Route::get('list', [ClientProductController::class, 'list'])->name('list'); // Dạng bảng
+            Route::get('{slug}', [ClientProductController::class, 'show'])->name('show'); // Chi tiết
+            // Wishlist
+            Route::post('wishlist/add/{product}', [ClientProductController::class, 'addToWishlist'])->name('wishlist.add');
+            // Đánh giá
+            Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
+        });
 
     Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -129,15 +135,13 @@ Route::prefix('client')->name('client.')->group(function () {
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
-
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
-    Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])
+    Route::get('/settings', [SettingController::class, 'index'])
         ->name('settings.index')
         ->middleware(['permission:xem-cai-dat']);
-    Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])
+    Route::post('/settings', [SettingController::class, 'update'])
         ->name('settings.update')
         ->middleware(['permission:cap-nhat-cai-dat']);
-
 
     Route::get('/product/{slug}', [AdminProductController::class, 'showBySlug'])->name('product.show');
 
@@ -213,31 +217,31 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
     // Shipping routes
     Route::prefix('shipping')->middleware(['permission:xem-don-vi-van-chuyen'])->group(function () {
-        Route::get('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'index'])
+        Route::get('/providers', [ShippingProviderController::class, 'index'])
             ->name('shipping.providers.index');
-        Route::post('/providers', [App\Http\Controllers\Admin\ShippingProviderController::class, 'store'])
+        Route::post('/providers', [ShippingProviderController::class, 'store'])
             ->name('shipping.providers.store')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
-        Route::put('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'update'])
+        Route::put('/providers/{provider}', [ShippingProviderController::class, 'update'])
             ->name('shipping.providers.update')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
-        Route::delete('/providers/{provider}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroy'])
+        Route::delete('/providers/{provider}', [ShippingProviderController::class, 'destroy'])
             ->name('shipping.providers.destroy')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
-        Route::post('/providers/{provider}/status', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateStatus'])
+        Route::post('/providers/{provider}/status', [ShippingProviderController::class, 'updateStatus'])
             ->name('shipping.providers.status')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
 
-        // Shipping fees routess
-        Route::get('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'fees'])
+        // Shipping fees routes
+        Route::get('/providers/{provider}/fees', [ShippingProviderController::class, 'fees'])
             ->name('shipping.fees');
-        Route::post('/providers/{provider}/fees', [App\Http\Controllers\Admin\ShippingProviderController::class, 'storeFee'])
+        Route::post('/providers/{provider}/fees', [ShippingProviderController::class, 'storeFee'])
             ->name('shipping.fees.store')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
-        Route::put('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'updateFee'])
+        Route::put('/providers/{provider}/fees/{fee}', [ShippingProviderController::class, 'updateFee'])
             ->name('shipping.fees.update')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
-        Route::delete('/providers/{provider}/fees/{fee}', [App\Http\Controllers\Admin\ShippingProviderController::class, 'destroyFee'])
+        Route::delete('/providers/{provider}/fees/{fee}', [ShippingProviderController::class, 'destroyFee'])
             ->name('shipping.fees.destroy')
             ->middleware(['permission:sua-don-vi-van-chuyen']);
     });
@@ -267,7 +271,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::post('/bulk-restore', [AdminProductController::class, 'bulkRestore'])->name('bulkRestore');
         Route::delete('/bulk-force-delete', [AdminProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
-
 
     // Color
     Route::prefix('colors')->name('colors.')->middleware(['permission:xem-mau-sac'])->group(function () {
@@ -345,26 +348,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/bulk-force-delete', [CategoryController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
-    //Slider
+    // Slider
     Route::prefix('sliders')->name('sliders.')->middleware(['permission:xem-danh-sach-slider'])->group(function () {
-        Route::get('/',                [SliderController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [SliderController::class, 'show'])->name('show');
-        Route::get('/create',          [SliderController::class, 'create'])->name('create')
+        Route::get('/', [SliderController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [SliderController::class, 'show'])->name('show');
+        Route::get('/create', [SliderController::class, 'create'])->name('create')
             ->middleware(['permission:them-slider']);
-        Route::post('/store',          [SliderController::class, 'store'])->name('store')
+        Route::post('/store', [SliderController::class, 'store'])->name('store')
             ->middleware(['permission:them-slider']);
-        Route::get('/{id}/edit',       [SliderController::class, 'edit'])->name('edit')
+        Route::get('/{id}/edit', [SliderController::class, 'edit'])->name('edit')
             ->middleware(['permission:sua-slider']);
-        Route::put('/{id}/update',     [SliderController::class, 'update'])->name('update')
+        Route::put('/{id}/update', [SliderController::class, 'update'])->name('update')
             ->middleware(['permission:sua-slider']);
         Route::delete('/{id}/destroy', [SliderController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-slider']);
-        Route::get('/bin',             [SliderController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [SliderController::class, 'restore'])->name('restore')
+        Route::get('/bin', [SliderController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [SliderController::class, 'restore'])->name('restore')
             ->middleware(['permission:sua-slider']);
-        Route::delete('/{id}/forceDelete',   [SliderController::class, 'forceDelete'])->name('forceDelete')
-            ->middleware(['permission:xoa-slider']);
-        Route::delete('/bulk-delete', [SliderController::class, 'bulkDelete'])->name('bulk-delete')
+        Route::delete('/{id}/forceDelete', [SliderController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-slider']);
         Route::delete('/bulk-delete', [SliderController::class, 'bulkDestroy'])->name('bulkDestroy')
             ->middleware(['permission:xoa-nhieu-slider']);
@@ -397,7 +398,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/bulk-force-delete', [NewsController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
 
-    //News Categories
+    // News Categories
     Route::prefix('news/categories')->name('news.categories.')->middleware(['permission:xem-danh-muc-tin-tuc'])->group(function () {
         Route::get('/', [NewsCategoryController::class, 'index'])->name('index');
         Route::get('/create', [NewsCategoryController::class, 'create'])->name('create')
@@ -423,10 +424,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:xoa-vinh-vien-danh-muc-tin-tuc']);
     });
 
-    Route::get('/admin/notifications/dropdown', [NotificationController::class, 'getDropdownNotifications'])
-        ->name('admin.notifications.dropdown')
+    Route::get('/notifications/dropdown', [NotificationController::class, 'getDropdownNotifications'])
+        ->name('notifications.dropdown')
         ->middleware(['auth', 'checkAdmin']);
-    //Notifications
+
+    // Notifications
     Route::prefix('notifications')->name('notifications.')->middleware(['permission:xem-danh-sach-thong-bao'])->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
@@ -444,24 +446,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         }
     });
 
-    //Brands
+    // Brands
     Route::prefix('brands')->name('brands.')->middleware(['permission:xem-danh-sach-thuong-hieu'])->group(function () {
         Route::get('/', [BrandController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [BrandController::class, 'show'])->name('show');
-        Route::get('/create',          [BrandController::class, 'create'])->name('create')
+        Route::get('/{id}/show', [BrandController::class, 'show'])->name('show');
+        Route::get('/create', [BrandController::class, 'create'])->name('create')
             ->middleware(['permission:them-thuong-hieu']);
-        Route::post('/store',          [BrandController::class, 'store'])->name('store')
+        Route::post('/store', [BrandController::class, 'store'])->name('store')
             ->middleware(['permission:them-thuong-hieu']);
-        Route::get('/{id}/edit',       [BrandController::class, 'edit'])->name('edit')
+        Route::get('/{id}/edit', [BrandController::class, 'edit'])->name('edit')
             ->middleware(['permission:sua-thuong-hieu']);
-        Route::put('/{id}/update',     [BrandController::class, 'update'])->name('update')
+        Route::put('/{id}/update', [BrandController::class, 'update'])->name('update')
             ->middleware(['permission:sua-thuong-hieu']);
         Route::delete('/{id}/destroy', [BrandController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-thuong-hieu']);
-        Route::get('/bin',             [BrandController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [BrandController::class, 'restore'])->name('restore')
+        Route::get('/bin', [BrandController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [BrandController::class, 'restore'])->name('restore')
             ->middleware(['permission:sua-thuong-hieu']);
-        Route::delete('/{id}/forceDelete',   [BrandController::class, 'forceDelete'])->name('forceDelete')
+        Route::delete('/{id}/forceDelete', [BrandController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-thuong-hieu']);
         Route::delete('/bulk-delete', [BrandController::class, 'bulkDestroy'])->name('bulkDestroy')
             ->middleware(['permission:xoa-nhieu-thuong-hieu']);
@@ -521,14 +523,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::put('/{review}/reply', [ReviewController::class, 'reply'])->name('reply');
     });
 
-    //Quản lý thanh toán
+    // Quản lý thanh toán
     Route::prefix('payments')->name('payments.')->middleware(['permission:xem-thanh-toan'])->group(function () {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
         Route::get('/{id}', [PaymentController::class, 'show'])->name('show');
         Route::patch('/{id}/status', [PaymentController::class, 'updateStatus'])->name('updateStatus')
             ->middleware(['permission:cap-nhat-trang-thai-thanh-toan']);
-        // Route::get('/{id}/invoice', [PaymentController::class, 'printInvoice'])->name('invoice')
-        //     ->middleware(['permission:in-hoa-don']);
         Route::delete('/{id}', [PaymentController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-thanh-toan']);
     });
@@ -581,9 +581,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
     });
 
-
-
-
     // Quản lý ticket
     Route::prefix('tickets')->name('tickets.')->middleware(['permission:xem-ticket'])->group(function () {
         // Danh sách và xem chi tiết
@@ -630,7 +627,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     // Customer Management
     Route::prefix('customers')->name('customers.')->middleware(['permission:xem-danh-sach-khach-hang'])->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('index');
-        // Customers Export Route
         Route::get('export', [CustomerController::class, 'export'])->name('export');
         Route::get('/{customer}', [CustomerController::class, 'show'])->name('show');
         Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')
@@ -642,21 +638,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
     // Global search route
     Route::get('/search', [SearchController::class, 'search'])->name('search');
     Route::get('/search/results', [SearchController::class, 'searchResults'])->name('search.results');
+
     // Payment Methods
     Route::prefix('payment-methods')->name('payment_methods.')->middleware(['permission:xem-danh-sach-phuong-thuc-thanh-toan'])->group(function () {
         Route::get('/', [PaymentMethodController::class, 'index'])->name('index');
-        Route::get('/{id}/show',       [PaymentMethodController::class, 'show'])->name('show');
-        Route::get('/create',          [PaymentMethodController::class, 'create'])->name('create')->middleware(['permission:them-phuong-thuc-thanh-toan']);
-        Route::post('/store',          [PaymentMethodController::class, 'store'])->name('store')->middleware(['permission:them-phuong-thuc-thanh-toan']);
-        Route::get('/{id}/edit',       [PaymentMethodController::class, 'edit'])->name('edit')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
-        Route::put('/{id}/update',     [PaymentMethodController::class, 'update'])->name('update')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::get('/{id}/show', [PaymentMethodController::class, 'show'])->name('show');
+        Route::get('/create', [PaymentMethodController::class, 'create'])->name('create')->middleware(['permission:them-phuong-thuc-thanh-toan']);
+        Route::post('/store', [PaymentMethodController::class, 'store'])->name('store')->middleware(['permission:them-phuong-thuc-thanh-toan']);
+        Route::get('/{id}/edit', [PaymentMethodController::class, 'edit'])->name('edit')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::put('/{id}/update', [PaymentMethodController::class, 'update'])->name('update')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
         Route::delete('/{id}/destroy', [PaymentMethodController::class, 'destroy'])->name('destroy')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
-        Route::get('/bin',             [PaymentMethodController::class, 'bin'])->name('bin');
-        Route::put('/{id}/restore',    [PaymentMethodController::class, 'restore'])->name('restore')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
-        Route::delete('/{id}/forceDelete',   [PaymentMethodController::class, 'forceDelete'])->name('forceDelete')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
+        Route::get('/bin', [PaymentMethodController::class, 'bin'])->name('bin');
+        Route::put('/{id}/restore', [PaymentMethodController::class, 'restore'])->name('restore')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
+        Route::delete('/{id}/forceDelete', [PaymentMethodController::class, 'forceDelete'])->name('forceDelete')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
         Route::delete('/bulk-delete', [PaymentMethodController::class, 'bulkDestroy'])->name('bulkDestroy')->middleware(['permission:xoa-nhieu-phuong-thuc-thanh-toan']);
         Route::post('/bulk-restore', [PaymentMethodController::class, 'bulkRestore'])->name('bulkRestore')->middleware(['permission:sua-phuong-thuc-thanh-toan']);
-        Route::delete('/bulk-force-delete', [PaymentMethodController::class, 'bulkForceDelete'])->name('bulkForceDelete')->middleware(['permission:xoa-phuong-thuc-thanh-toan']);
+        Route::delete('/bulk-force-delete', [PaymentMethodController::class, 'bulkForceDelete'])->name('bulkForceDelete')->middleware(['permission:xoa-nhieu-phuong-thuc-thanh-toan']);
     });
 
     // User profile routes
@@ -683,7 +680,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:sua-lien-he']);
         Route::put('/{contact}', [ContactController::class, 'update'])->name('update')
             ->middleware(['permission:sua-lien-he']);
-        Route::delete('/{contact}', action: [ContactController::class, 'destroy'])->name('destroy')
+        Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy')
             ->middleware(['permission:xoa-lien-he']);
         Route::post('/{contact}/restore', [ContactController::class, 'restore'])->name('restore')
             ->middleware(['permission:khoi-phuc-lien-he']);
@@ -695,3 +692,4 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:gui-email-lien-he']);
     });
 });
+
