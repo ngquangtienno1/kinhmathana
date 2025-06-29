@@ -508,8 +508,7 @@
                     href="{{ route('client.home') }}">Trang chủ</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.brand.index') }}">Thương hiệu</a></li>
-            <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
-                    href="{{ route('client.product.index') }}">Products</a></li>
+            <li class="nav-item" data-nav-item="products"><a class="nav-link" href="{{ route('client.products.index') }}">Sản phẩm</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.blog.index') }}">Blog</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link" href="wishlist.html">Wishlist</a>

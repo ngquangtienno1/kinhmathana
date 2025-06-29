@@ -263,6 +263,7 @@
                                         <button type="button" id="set-variations-price"
                                             class="btn btn-warning btn-sm" style="display: none;">Thêm giá
                                             gốc</button>
+                                        <button type="button" id="set-variations-sale-price" class="btn btn-success btn-sm" style="display: none;">Thêm giá khuyến mãi</button>
                                     </div>
                                 </div>
                                 <div id="variations-container" class="mt-3"

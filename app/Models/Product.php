@@ -70,25 +70,58 @@ class Product extends Model
         return $this->hasMany(Comment::class, 'entity_id')->where('entity_type', 'product');
     }
 
+    // Scope để lấy sản phẩm hoạt động
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'Hoạt động');
+    }
+    public function getMinimumPriceAttribute()
+    {
+        if ($this->product_type === 'variable') {
+            $prices = $this->variations->pluck('sale_price')->filter();
+            $regularPrices = $this->variations->pluck('price')->filter();
+            return $prices->min() ?? $regularPrices->min() ?? 0;
+        }
+        return $this->sale_price ?? $this->price ?? 0;
+    }
+
+
     public function getTotalStockQuantityAttribute()
     {
         return $this->variations->sum('stock_quantity') ?? $this->stock_quantity ?? 0;
     }
 
     public function getFeaturedMedia()
-    {
-        $featured = $this->images()->where('is_featured', true)->first();
-        if ($featured) {
-            return (object) [
-                'path' => Storage::url($featured->image_path),
-                'is_video' => $featured->is_video,
-            ];
-        }
-        return null;
+{
+    $featured = $this->images()->where('is_featured', true)->first();
+    \Log::info('Featured image for product ID ' . $this->id . ': ' . ($featured ? $featured->image_path : 'null'));
+    if ($featured) {
+        return (object) [
+            'path' => $featured->image_path,
+            'is_video' => $featured->is_video,
+        ];
     }
+    $defaultImage = $this->images()->first();
+    \Log::info('Default image for product ID ' . $this->id . ': ' . ($defaultImage ? $defaultImage->image_path : 'null'));
+    if ($defaultImage) {
+        return (object) [
+            'path' => $defaultImage->image_path,
+            'is_video' => $defaultImage->is_video,
+        ];
+    }
+    return (object) [
+        'path' => 'path/to/default-image.jpg',
+        'is_video' => false,
+    ];
+}
 
     protected static function booted()
     {
+        static::creating(function ($product) {
+        if (empty($product->slug)) {
+            $product->slug = \Illuminate\Support\Str::slug($product->name);
+        }
+    });
         static::deleting(function ($product) {
             if ($product->isForceDeleting()) {
                 foreach ($product->images as $image) {
@@ -106,4 +139,5 @@ class Product extends Model
             }
         });
     }
+
 }
