@@ -68,134 +68,124 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="d-flex flex-column justify-content-between h-100">
-                            <div>
-                                <div class="d-flex flex-wrap">
-                                    <div class="me-2">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <span class="fa {{ $i <= floor($product->reviews->avg('rating') ?? 0) ? 'fa-star text-warning' : 'fa-regular fa-star text-warning-light' }}"></span>
-                                        @endfor
-                                    </div>
-                                    <p class="text-primary fw-semibold mb-2">{{ $product->reviews->count() }} People rated and reviewed</p>
-                                </div>
-                                <h3 class="mb-3 lh-sm">{{ $product->name }}</h3>
-                                <div class="d-flex flex-wrap align-items-start mb-3">
-                                    @if ($product->views > 150)
-                                        <span class="badge text-bg-success fs-9 rounded-pill me-2 fw-semibold">Đạt sản phẩm được xem nhiều nhất</span>
+                   <div class="col-12 col-lg-6">
+    <div class="d-flex flex-column justify-content-between h-100">
+        <div>
+            <div class="d-flex flex-wrap">
+                <div class="me-2">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <span class="fa {{ $i <= floor($product->reviews->avg('rating') ?? 0) ? 'fa-star text-warning' : 'fa-regular fa-star text-warning-light' }}"></span>
+                    @endfor
+                </div>
+                <p class="text-primary fw-semibold mb-2">{{ $product->reviews->count() }} People rated and reviewed</p>
+            </div>
+            <h3 class="mb-3 lh-sm">{{ $product->name }}</h3>
+            <div class="d-flex flex-wrap align-items-start mb-3">
+                @if ($product->views > 150)
+                    <span class="badge text-bg-success fs-9 rounded-pill me-2 fw-semibold">Đạt sản phẩm được xem nhiều nhất</span>
+                @endif
+                <a class="fw-semibold" href="#!">{{ $product->views }} lượt xem</a>
+            </div>
+            <div class="d-flex flex-wrap align-items-center">
+                @if ($selectedVariation && $selectedVariation->sale_price > 0 && $selectedVariation->sale_price < $selectedVariation->price)
+                    <h1 class="me-3 text-success">{{ number_format($selectedVariation->sale_price, 2) }}đ</h1>
+                    <p class="text-body-quaternary text-decoration-line-through fs-6 mb-0 me-3">{{ number_format($selectedVariation->price, 2) }}đ</p>
+                @elseif ($selectedVariation)
+                    <h1 class="me-3">{{ number_format($selectedVariation->price, 2) }}đ</h1>
+                    @if ($product->sale_price > 0 && $product->sale_price < $product->price)
+                        <p class="text-body-quaternary text-decoration-line-through fs-6 mb-0 me-3">{{ number_format($product->price, 2) }}đ</p>
+                    @endif
+                @else
+                    <h1 class="me-3">{{ number_format($product->price ?? 0, 2) }}đ</h1> <!-- Fallback nếu không có biến thể -->
+                @endif
+            </div>
+            <p class="text-success fw-semibold fs-7 mb-2">
+                @if ($product->total_stock_quantity <= 0)
+                    Hết hàng
+                @else
+                    Còn hàng
+                @endif
+            </p>
+            <p class="mb-2 text-body-secondary">{!! $product->description_short !!}</p>
+        </div>
+        <div>
+            <div class="mb-3">
+                <p class="fw-semibold mb-2 text-body">Color : <span class="text-body-emphasis" data-product-color="data-product-color">
+                    {{ $activeColor }}
+                </span></p>
+                <div class="d-flex product-color-variants" data-product-color-variants="data-product-color-variants">
+                    @foreach ($product->variations->unique('color_id') as $variation)
+                        @if ($variation->color)
+                            <a href="{{ route('client.products.show', ['slug' => $product->slug, 'variant' => $variation->color_id, 'size' => $selectedVariation->size_id ?? $variation->size_id, 'spherical' => $selectedVariation->spherical_id ?? $variation->spherical_id]) }}"
+                               class="rounded-1 border border-translucent me-2 {{ $variation->color->name === $activeColor ? 'active' : '' }}">
+                                <img src="{{ $variation->images && $variation->images->first() ? Storage::url($variation->images->first()->image_path) : '/v1/assets/img/products/details/blue_front.png' }}" alt="" width="38" />
+                            </a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            <div class="row g-3 g-sm-5 align-items-end">
+                <div class="col-12 col-sm-auto">
+                    <p class="fw-semibold mb-2 text-body">Size : </p>
+                    <div class="d-flex align-items-center">
+                        <select name="size" class="form-select w-auto" onchange="window.location.href='{{ route('client.products.show', $product->slug) }}?variant={{ $selectedVariation->color_id ?? $product->variations->first()->color_id ?? '' }}&size=' + this.value + '&spherical={{ $selectedVariation->spherical_id ?? $product->variations->first()->spherical_id ?? '' }}'">
+                            @foreach ($product->variations->unique('size_id') as $variation)
+                                @if ($variation->size)
+                                    <option value="{{ $variation->size->id }}" {{ $selectedVariation && $selectedVariation->size_id == $variation->size_id ? 'selected' : '' }}>
+                                        {{ $variation->size->name }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                @if ($product->variations->whereNotNull('spherical_id')->count() > 0)
+                    <div class="mb-3">
+                        <p class="fw-semibold mb-2 text-body">Độ cận :</p>
+                        <div class="d-flex align-items-center">
+                            <select name="spherical" class="form-select w-auto" onchange="window.location.href='{{ route('client.products.show', $product->slug) }}?variant={{ $selectedVariation->color_id ?? $product->variations->first()->color_id ?? '' }}&size={{ $selectedVariation->size_id ?? $product->variations->first()->size_id ?? '' }}&spherical=' + this.value">
+                                @foreach ($product->variations->unique('spherical_id') as $variation)
+                                    @if ($variation->spherical)
+                                        <option value="{{ $variation->spherical->id }}" {{ $selectedVariation && $selectedVariation->spherical_id == $variation->spherical_id ? 'selected' : '' }}>
+                                            {{ $variation->spherical->name ?? 'Không xác định' }}
+                                        </option>
                                     @endif
-                                    <a class="fw-semibold" href="#!">{{ $product->views }} lượt xem</a>
-                                </div>
-                                <div class="d-flex flex-wrap align-items-center">
-                                    @if ($selectedVariation && $selectedVariation->sale_price > 0 && $selectedVariation->sale_price < $selectedVariation->price)
-                                        <h1 class="me-3 text-success">{{ number_format($selectedVariation->sale_price, 2) }}đ</h1>
-                                        <p class="text-body-quaternary text-decoration-line-through fs-6 mb-0 me-3">{{ number_format($selectedVariation->price, 2) }}đ</p>
-
-                                    @else
-                                        <h1 class="me-3">{{ number_format($selectedVariation->price, 2) }}đ</h1>
-                                        @if ($product->sale_price > 0 && $product->sale_price < $product->price)
-                                            <p class="text-body-quaternary text-decoration-line-through fs-6 mb-0 me-3">{{ number_format($product->price, 2) }}đ</p>
-                                           
-                                        @endif
-                                    @endif
-                                </div>
-                                <p class="text-success fw-semibold fs-7 mb-2">
-                                    @if ($product->total_stock_quantity <= 0)
-                                        Hết hàng
-                                    @else
-                                        Còn hàng
-                                    @endif
-                                </p>
-                                <p class="mb-2 text-body-secondary">{!! $product->description_short !!}</p>
-                            </div>
-                            <div>
-                                <div class="mb-3">
-                                    <p class="fw-semibold mb-2 text-body">Color : <span class="text-body-emphasis" data-product-color="data-product-color">
-                                        {{ $activeColor }}
-                                    </span></p>
-                                    <div class="d-flex product-color-variants" data-product-color-variants="data-product-color-variants">
-                                        @foreach ($product->variations->unique('color_id') as $variation)
-                                            @if ($variation->color)
-                                                <a href="{{ route('client.products.show', ['slug' => $product->slug, 'variant' => $variation->color_id, 'size' => $selectedSizeId, 'spherical' => $selectedSphericalId]) }}"
-                                                   class="rounded-1 border border-translucent me-2 {{ $variation->color->name === $activeColor ? 'active' : '' }}">
-                                                    <img src="{{ $variation->images && $variation->images->first() ? Storage::url($variation->images->first()->image_path) : '/v1/assets/img/products/details/blue_front.png' }}" alt="" width="38" />
-                                                </a>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <div class="row g-3 g-sm-5 align-items-end">
-                                    <div class="col-12 col-sm-auto">
-                                        <p class="fw-semibold mb-2 text-body">Size : </p>
-                                        <div class="d-flex align-items-center">
-                                            <select name="size" class="form-select w-auto" onchange="window.location.href='{{ route('client.products.show', $product->slug) }}?variant={{ $selectedColorId }}&size=' + this.value + '&spherical={{ $selectedSphericalId ?? '' }}'">
-                                                @foreach ($product->variations->unique('size_id') as $variation)
-                                                    @if ($variation->size)
-                                                        <option value="{{ $variation->size->id }}" {{ $selectedSizeId == $variation->size_id ? 'selected' : '' }}>
-                                                            {{ $variation->size->name }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    @php
-                                        $selectedVariation = $product->variations
-                                            ->where('color_id', $selectedColorId)
-                                            ->when($selectedSizeId, fn($query) => $query->where('size_id', $selectedSizeId))
-                                            ->when($selectedSphericalId, fn($query) => $query->where('spherical_id', $selectedSphericalId))
-                                            ->first() ?? $product->variations->first();
-                                    @endphp
-
-                                    @if ($product->variations->whereNotNull('spherical_id')->count() > 0)
-                                        <div class="mb-3">
-                                            <p class="fw-semibold mb-2 text-body">Độ cận :</p>
-                                            <div class="d-flex align-items-center">
-                                                <select name="spherical" class="form-select w-auto" onchange="window.location.href='{{ route('client.products.show', $product->slug) }}?variant={{ $selectedColorId }}&size={{ $selectedSizeId ?? '' }}&spherical=' + this.value">
-                                                    @foreach ($product->variations->unique('spherical_id') as $variation)
-                                                        @if ($variation->spherical)
-                                                            <option value="{{ $variation->spherical->id }}" {{ $selectedSphericalId == $variation->spherical_id ? 'selected' : '' }}>
-                                                                {{ $variation->spherical->name ?? 'Không xác định' }}
-                                                            </option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    @if ($product->variations->whereNotNull('cylindrical_id')->count() > 0)
-                                        <div class="mb-3">
-                                            <p class="fw-semibold mb-2 text-body">Độ loạn :</p>
-                                            <div class="d-flex align-items-center">
-                                                <select class="form-select w-auto">
-                                                    @foreach ($product->variations->unique('cylindrical_id') as $variation)
-                                                        @if ($variation->cylindrical)
-                                                            <option value="{{ $variation->cylindrical->id }}" {{ $selectedVariation && $selectedVariation->cylindrical_id == $variation->cylindrical_id ? 'selected' : '' }}>
-                                                                {{ $variation->cylindrical->name ?? 'Không xác định' }}
-                                                            </option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <div class="col-12 col-sm">
-                                        <p class="fw-semibold mb-2 text-body">Quantity : </p>
-                                        <div class="d-flex justify-content-between align-items-end">
-                                            <div class="d-flex flex-between-center" data-quantity="data-quantity">
-                                                <button class="btn btn-phoenix-primary px-3" data-type="minus"><span class="fas fa-minus"></span></button>
-                                                <input class="form-control text-center input-spin-none bg-transparent border-0 outline-none" style="width:50px;" type="number" min="1" value="1" />
-                                                <button class="btn btn-phoenix-primary px-3" data-type="plus"><span class="fas fa-plus"></span></button>
-                                            </div>
-                                            <button class="btn btn-phoenix-primary px-3 border-0"><span class="fas fa-share-alt fs-7"></span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
+                @endif
+                @if ($product->variations->whereNotNull('cylindrical_id')->count() > 0)
+                    <div class="mb-3">
+                        <p class="fw-semibold mb-2 text-body">Độ loạn :</p>
+                        <div class="d-flex align-items-center">
+                            <select class="form-select w-auto">
+                                @foreach ($product->variations->unique('cylindrical_id') as $variation)
+                                    @if ($variation->cylindrical)
+                                        <option value="{{ $variation->cylindrical->id }}" {{ $selectedVariation && $selectedVariation->cylindrical_id == $variation->cylindrical_id ? 'selected' : '' }}>
+                                            {{ $variation->cylindrical->name ?? 'Không xác định' }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                @endif
+                <div class="col-12 col-sm">
+                    <p class="fw-semibold mb-2 text-body">Quantity : </p>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <div class="d-flex flex-between-center" data-quantity="data-quantity">
+                            <button class="btn btn-phoenix-primary px-3" data-type="minus"><span class="fas fa-minus"></span></button>
+                            <input class="form-control text-center input-spin-none bg-transparent border-0 outline-none" style="width:50px;" type="number" min="1" value="1" />
+                            <button class="btn btn-phoenix-primary px-3" data-type="plus"><span class="fas fa-plus"></span></button>
+                        </div>
+                        <button class="btn btn-phoenix-primary px-3 border-0"><span class="fas fa-share-alt fs-7"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 </div>
             </div><!-- end of .container-->
         </section><!-- <section> close ============================-->
@@ -352,28 +342,74 @@
                                 <div class="w-75">
                                     <p class="text-body-tertiary fs-9 fw-bold line-clamp-1">with {{ $product->name }}</p>
                                 </div>
-                                <div class="border-dashed border-y border-translucent py-4">
-                                    @php
-                                        $relatedProducts = $related_products->take(3);
-                                    @endphp
-                                    @foreach ($relatedProducts as $related)
-                                        <div class="d-flex align-items-center mb-5">
-                                            <div class="form-check mb-0"><input class="form-check-input" type="checkbox" checked="checked" /><label class="form-check-label"></label></div>
-                                            <a href="{{ route('client.products.show', $related->slug) }}">
-                                                <img class="border border-translucent rounded" src="{{ $related->images && $related->images->first() ? Storage::url($related->images->first()->image_path) : asset('v1/assets/img/products/15.png') }}" width="53" alt="" />
-                                            </a>
-                                            <div class="ms-2">
-                                                <a class="fs-9 fw-bold line-clamp-2 mb-2" href="{{ route('client.products.show', $related->slug) }}">{{ $related->name }}</a>
-                                                @if ($related->sale_price > 0 && $related->sale_price < $related->price)
-                                                    <h5 class="text-success">{{ number_format($related->sale_price, 2) }}đ</h5>
-                                                    <p class="text-body-quaternary text-decoration-line-through fs-6 mb-0">{{ number_format($related->price, 2) }}đ</p>
-                                                @else
-                                                    <h5>{{ number_format($related->price, 2) }}đ</h5>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                               <!-- Trong phần "Usually Bought Together" -->
+<div class="border-dashed border-y border-translucent py-4">
+    @php
+        $relatedProducts = $related_products->take(3);
+    @endphp
+    @foreach ($relatedProducts as $related)
+        <div class="d-flex align-items-center mb-5">
+            <div class="form-check mb-0"><input class="form-check-input" type="checkbox" checked="checked" /><label class="form-check-label"></label></div>
+            <a href="{{ route('client.products.show', $related->slug) }}">
+                <img class="border border-translucent rounded" src="{{ $related->images && $related->images->first() ? Storage::url($related->images->first()->image_path) : asset('v1/assets/img/products/15.png') }}" width="53" alt="" />
+            </a>
+            <div class="ms-2">
+                <a class="fs-9 fw-bold line-clamp-2 mb-2" href="{{ route('client.products.show', $related->slug) }}">{{ $related->name }}</a>
+                @php
+                    $relatedVariation = $related->variations->first(); // Lấy biến thể đầu tiên
+                @endphp
+                @if ($relatedVariation && $relatedVariation->sale_price > 0 && $relatedVariation->sale_price < $relatedVariation->price)
+                    <h5 class="text-success">{{ number_format($relatedVariation->sale_price, 2) }}đ</h5>
+                    <p class="text-body-quaternary text-decoration-line-through fs-6 mb-0">{{ number_format($relatedVariation->price, 2) }}đ</p>
+                @elseif ($relatedVariation)
+                    <h5>{{ number_format($relatedVariation->price, 2) }}đ</h5>
+                @else
+                    <h5>{{ number_format($related->price ?? 0, 2) }}đ</h5> <!-- Fallback nếu không có biến thể -->
+                @endif
+            </div>
+        </div>
+    @endforeach
+</div>
+
+<!-- Trong phần "Sản phẩm liên quan" -->
+@foreach ($relatedProducts as $related)
+    <div class="swiper-slide">
+        <a href="{{ route('client.products.show', $related->slug) }}" class="position-relative text-decoration-none product-card h-100">
+            <div class="d-flex flex-column justify-content-between h-100">
+                <div>
+                    <div class="border border-1 border-translucent rounded-3 position-relative mb-3">
+                        <button class="btn btn-wish btn-wish-primary z-2 d-toggle-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to wishlist">
+                            <span class="fas fa-heart d-block-hover" data-fa-transform="down-1"></span>
+                            <span class="far fa-heart d-none-hover" data-fa-transform="down-1"></span>
+                        </button>
+                        <img class="img-fluid" src="{{ $related->images && $related->images->first() ? Storage::url($related->images->first()->image_path) : asset('v1/assets/img/products/1.png') }}" alt="" />
+                    </div>
+                    <h6 class="mb-2 lh-sm line-clamp-3 product-name">{{ $related->name }}</h6>
+                    <p class="fs-9">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <span class="fa {{ $i <= floor($related->reviews->avg('rating') ?? 0) ? 'fa-star text-warning' : 'fa-regular fa-star text-warning-light' }}"></span>
+                        @endfor
+                        <span class="text-body-quaternary fw-semibold ms-1">({{ $related->reviews->count() }} people rated)</span>
+                    </p>
+                    <div class="d-flex align-items-center mb-1">
+                        @php
+                            $relatedVariation = $related->variations->first();
+                        @endphp
+                        @if ($relatedVariation && $relatedVariation->sale_price > 0 && $relatedVariation->sale_price < $relatedVariation->price)
+                            <p class="me-2 text-body text-decoration-line-through mb-0">{{ number_format($relatedVariation->price, 2) }}đ</p>
+                            <h3 class="text-body-emphasis mb-0 text-success">{{ number_format($relatedVariation->sale_price, 2) }}đ</h3>
+                        @elseif ($relatedVariation)
+                            <h3 class="text-body-emphasis mb-0">{{ number_format($relatedVariation->price, 2) }}đ</h3>
+                        @else
+                            <h3 class="text-body-emphasis mb-0">{{ number_format($related->price ?? 0, 2) }}đ</h3>
+                        @endif
+                    </div>
+                    <p class="text-body-tertiary fw-semibold fs-9 lh-1 mb-0">{{ $related->variations->unique('color_id')->count() }} colors</p>
+                </div>
+            </div>
+        </a>
+    </div>
+@endforeach
                                 <div class="d-flex align-items-end justify-content-between pt-3">
                                     <div>
                                         <h5 class="mb-2 text-body-tertiary text-opacity-85">Total</h5>

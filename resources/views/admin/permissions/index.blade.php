@@ -56,6 +56,7 @@
                         <th class="sort white-space-nowrap" scope="col" data-sort="name">Tên quyền</th>
                         <th class="sort white-space-nowrap" scope="col" data-sort="slug">Slug</th>
                         <th class="sort white-space-nowrap" scope="col" data-sort="description">Mô tả</th>
+                        <th class="sort white-space-nowrap" scope="col" data-sort="group_permissions">Nhóm quyền</th>
                         <th class="text-end" scope="col">Thao tác</th>
                     </tr>
                 </thead>
@@ -72,6 +73,7 @@
                             <td class="name align-middle">{{ $permission->name }}</td>
                             <td class="slug align-middle">{{ $permission->slug }}</td>
                             <td class="description align-middle">{{ $permission->description }}</td>
+                            <td class="group_permissions align-middle">{{ $permission->group_permissions ?: 'Khác' }}</td>
                             <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                 <div class="btn-reveal-trigger position-static">
                                     <button

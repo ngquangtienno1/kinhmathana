@@ -24,13 +24,17 @@ class SocialController extends Controller
                 [
                     'name' => $googleUser->getName() ?? $googleUser->getNickname(),
                     'password' => bcrypt(Str::random(24)),
-                    'role_id' => 2,
+                    'role_id' => 3,
                 ]
             );
 
             Auth::login($user);
 
-            return redirect()->route('admin.home')->with('message', 'Đăng nhập Google thành công');
+            if ($user->role_id == 3) {
+                return redirect()->route('client.home')->with('message', 'Đăng nhập Google thành công');
+            } else {
+                return redirect()->route('admin.home')->with('message', 'Đăng nhập Google thành công');
+            }
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Đăng nhập Google thất bại: ' . $e->getMessage());
         }
@@ -50,13 +54,17 @@ class SocialController extends Controller
                 [
                     'name' => $facebookUser->getName() ?? $facebookUser->getNickname(),
                     'password' => bcrypt(Str::random(24)),
-                    'role_id' => 1,
+                    'role_id' => 3,
                 ]
             );
 
             Auth::login($user);
 
-            return redirect()->route('admin.home')->with('message', 'Đăng nhập Facebook thành công');
+            if ($user->role_id == 3) {
+                return redirect()->route('client.home')->with('message', 'Đăng nhập Facebook thành công');
+            } else {
+                return redirect()->route('admin.home')->with('message', 'Đăng nhập Facebook thành công');
+            }
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Đăng nhập Facebook thất bại: ' . $e->getMessage());
         }

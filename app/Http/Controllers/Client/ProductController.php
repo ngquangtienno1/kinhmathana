@@ -176,28 +176,41 @@ class ProductController extends Controller
     /**
      * Hiển thị chi tiết sản phẩm (client/products/show.blade.php)
      */
-    public function show($slug)
-    {
-        $product = Product::with(['categories', 'brand', 'images', 'reviews.user', 'variations.color', 'variations.size', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
-            ->active()
-            ->where('slug', $slug)
-            ->firstOrFail();
+public function show($slug)
+{
+    $product = Product::with(['categories', 'brand', 'images', 'reviews.user', 'variations.color', 'variations.size', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
+        ->active()
+        ->where('slug', $slug)
+        ->firstOrFail();
 
-        // Tăng lượt xem
-        $product->increment('views');
+    // Tăng lượt xem
+    $product->increment('views');
 
-        $related_products = Product::with(['images', 'reviews', 'variations.color'])
-            ->active()
-            ->where('id', '!=', $product->id)
-            ->whereHas('categories', function ($q) use ($product) {
-                $q->whereIn('categories.id', $product->categories->pluck('id'));
-            })
-            ->take(4)
-            ->get();
+    // Tính toán $selectedVariation
+    $selectedColorId = request()->has('variant') ? request()->input('variant') : ($product->variations->first()->color_id ?? null);
+    $selectedSizeId = request()->has('size') ? request()->input('size') : ($product->variations->first()->size_id ?? null);
+    $selectedSphericalId = request()->has('spherical') ? request()->input('spherical') : ($product->variations->first()->spherical_id ?? null);
 
-        return view('client.products.detail', compact('product', 'related_products'));
-    }
+    $selectedVariation = $product->variations
+        ->where('color_id', $selectedColorId)
+        ->when($selectedSizeId, fn($query) => $query->where('size_id', $selectedSizeId))
+        ->when($selectedSphericalId, fn($query) => $query->where('spherical_id', $selectedSphericalId))
+        ->first() ?? $product->variations->first();
 
+    $activeColor = $selectedVariation ? ($selectedVariation->color->name ?? 'Blue') : 'Blue';
+    $featuredImage = $selectedVariation && $selectedVariation->images ? $selectedVariation->images->where('is_featured', true)->first() : ($product->images->where('is_featured', true)->first() ?? null);
+
+    $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size', 'variations.spherical', 'variations.cylindrical'])
+        ->active()
+        ->where('id', '!=', $product->id)
+        ->whereHas('categories', function ($q) use ($product) {
+            $q->whereIn('categories.id', $product->categories->pluck('id'));
+        })
+        ->take(4)
+        ->get();
+
+    return view('client.products.detail', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage'));
+}
     public function addToWishlist($productId)
     {
         $user = Auth::user();

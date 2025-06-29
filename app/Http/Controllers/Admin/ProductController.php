@@ -25,10 +25,10 @@ class ProductController extends Controller
         $query = Product::query()->with(['categories', 'brand', 'variations']);
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = mb_strtolower(trim($request->search));
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description_short', 'like', "%{$search}%");
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$search}%"]);
             });
         }
 
@@ -591,7 +591,7 @@ class ProductController extends Controller
                             }
                         } elseif ($attribute['type'] === 'size') {
                             $sizeExists = Size::where('name', $value)->exists();
-                            if (!$colorExists) {
+                            if (!$sizeExists) {
                                 $errorKey = "attributes.$index.values.$valueIndex";
                                 $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách kích thước.";
                             }

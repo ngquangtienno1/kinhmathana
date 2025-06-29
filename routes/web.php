@@ -1,76 +1,95 @@
-    <?php
+<?php
 
-    // ================== Client Controllers ==================
-    use App\Http\Controllers\Client\HomeController as ClientHomeController;
-    use App\Http\Controllers\Client\ProductController as ClientProductController;
+// ================== Client Controllers ==================
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\Admin\FaqController;
 
-    // ================== Admin Controllers ===================
-    use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-    use App\Http\Controllers\Admin\ProductController as AdminProductController;
-    use App\Http\Controllers\Admin\FaqController;
-    use App\Http\Controllers\Admin\NewsController;
-    use App\Http\Controllers\Admin\RoleController;
-    use App\Http\Controllers\Admin\SizeController;
-    use App\Http\Controllers\Admin\BrandController;
-    use App\Http\Controllers\Admin\ColorController;
-    use App\Http\Controllers\Admin\OrderController;
-    use App\Http\Controllers\Admin\ReviewController;
-    use App\Http\Controllers\Admin\SearchController;
-    use App\Http\Controllers\Admin\SliderController;
-    use App\Http\Controllers\Admin\TicketController;
-    use App\Http\Controllers\Admin\CommentController;
-    use App\Http\Controllers\Admin\ContactController;
-    use App\Http\Controllers\Admin\PaymentController;
-    use App\Http\Controllers\Admin\SettingController;
-    use App\Http\Controllers\Admin\CategoryController;
-    use App\Http\Controllers\Admin\CustomerController;
-    use App\Http\Controllers\Admin\InventoryController;
-    use App\Http\Controllers\Admin\PromotionController;
-    use App\Http\Controllers\Admin\SphericalController;
-    use App\Http\Controllers\Admin\PermissionController;
-    use App\Http\Controllers\Admin\CylindricalController;
-    use App\Http\Controllers\Admin\NewsCategoryController;
-    use App\Http\Controllers\Admin\NotificationController;
-    use App\Http\Controllers\Admin\PaymentMethodController;
-    use App\Http\Controllers\Admin\CustomerSupportController;
-    use App\Http\Controllers\Admin\ShippingProviderController;
-    use App\Http\Controllers\Admin\CancellationReasonController;
-    use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
-    // Authentication
-    use App\Models\User;
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\UserController;
-    use App\Http\Controllers\SocialController;
-    use App\Http\Controllers\AuthenticationController;
+// ================== Admin Controllers ===================
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Client\BlogController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Client\OrderController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\SphericalController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Client\FaqClientController;
+use App\Http\Controllers\Admin\CylindricalController;
+use App\Http\Controllers\Admin\NewsCategoryController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\PaymentMethodController;
+use App\Http\Controllers\AuthenticationClientController;
+use App\Http\Controllers\Admin\CustomerSupportController;
+use App\Http\Controllers\Admin\ShippingProviderController;
 
-    // Redirect login
-    Route::get('/', function () {
-        if (Auth::check()) {
+
+// Authentication
+use App\Http\Controllers\Admin\CancellationReasonController;
+use App\Http\Controllers\Admin\OrderStatusHistoryController;
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
+
+// Redirect login
+Route::get('/', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        if (in_array($user->role_id, [1, 2])) {
             return redirect()->route('admin.home');
+        } else if ($user->role_id == 3) {
+            return redirect()->route('client.home');
         }
-        return redirect()->route('login');
-    });
+    }
+    return redirect()->route('client.login');
+});
 
-    // Authentication routes
-    Route::get('login', [AuthenticationController::class, 'login'])->name('login');
-    Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
-    Route::get('logout', [AuthenticationController::class, 'logout'])->name('logout');
-    Route::get('register', [AuthenticationController::class, 'register'])->name('register');
-    Route::post('postRegister', [AuthenticationController::class, 'postRegister'])->name('postRegister');
 
-    // Social login routes
-    Route::get('/auth/google', [SocialController::class, 'redirectToGoogle'])->name('login.google');
-    Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
-    Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
-    Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
+// Authentication routes
+Route::get('login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('postLogin', [AuthenticationController::class, 'postLogin'])->name('postLogin');
+Route::get('logout', [AuthenticationController::class, 'logout'])->name('logout');
+Route::get('register', [AuthenticationController::class, 'register'])->name('register');
+Route::post('postRegister', [AuthenticationController::class, 'postRegister'])->name('postRegister');
 
-    // Client routes group
-    Route::prefix('client')->name('client.')->group(function () {
-        Route::get('/', [ClientHomeController::class, 'index'])->name('home');
 
-        // Product routes
+// Social login routes
+Route::get('/auth/google', [SocialController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
+Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->name('login.facebook');
+Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
+
+// Client routes group
+Route::prefix('client')->name('client.')->group(function () {
+    Route::get('/', [ClientHomeController::class, 'index'])->name('home');
+
+    Route::get('login', [AuthenticationClientController::class, 'login'])->name('login');
+    Route::post('postLogin', [AuthenticationClientController::class, 'postLogin'])->name('postLogin');
+    Route::get('logout', [AuthenticationClientController::class, 'logout'])->name('logout');
+    Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
+    Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
+
+      // Product routes
         Route::prefix('products')->name('products.')->group(function () {
             Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
             Route::get('list', [ClientProductController::class, 'list'])->name('list'); // Dạng bảng
@@ -80,7 +99,39 @@
             // Đánh giá
             Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
         });
+
+    Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('add', [CartController::class, 'add'])->name('add');
+        Route::post('update/{id}', [CartController::class, 'update'])->name('update');
+        Route::delete('remove/{id}', [CartController::class, 'remove'])->name('remove');
+        Route::get('checkout', [CartController::class, 'showCheckoutForm'])->name('checkout.form');
+        Route::post('checkout', [CartController::class, 'checkout'])->name('checkout');
+        Route::post('apply-voucher', [CartController::class, 'applyVoucher'])->name('apply-voucher');
     });
+
+    Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::patch('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+        Route::patch('/{id}/confirm-received', [OrderController::class, 'confirmReceived'])->name('confirm-received');
+        Route::get('/{order}/review/{item}', [OrderController::class, 'reviewForm'])->name('review.form');
+        Route::post('/{order}/review/{item}', [OrderController::class, 'submitReview'])->name('review.submit');
+    });
+
+    Route::prefix('blog')->name('blog.')->group(function () {
+        Route::get('/', [BlogController::class, 'index'])->name('index');
+        Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
+        Route::post('/{slug}/comment', [BlogController::class, 'comment'])->name('comment');
+    });
+
+    Route::prefix('brand')->name('brand.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Client\BrandController::class, 'index'])->name('index');
+    });
+    Route::prefix('faq')->name('faq.')->group(function () {
+        Route::get('/', [FaqClientController::class, 'index'])->name('index');
+    });
+});
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {

@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 simpleProduct.style.display = "none";
                 variableProduct.style.display = "block";
                 const { sku, slug } = generateSkuAndSlug(
-                    nameInput.value || "product",
+                    `nameInput`.value || "product",
                     "VAR-"
                 );
                 variableSkuInput.value = sku;
@@ -415,7 +415,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][name]" value="${name}" class="form-control" placeholder="Tên biến thể" readonly>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${name
                 .toLowerCase()
                 .replace(

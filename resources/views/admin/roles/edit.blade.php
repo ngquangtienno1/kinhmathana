@@ -24,7 +24,7 @@
     @endif
 
     <div class="row g-0">
-        <div class="col-lg-8">
+        <div class="col-12">
             <div class="card mb-5">
                 <div class="card-body">
                     <form action="{{ route('admin.roles.update', $role) }}" method="POST">
@@ -49,21 +49,38 @@
                             @enderror
                         </div>
 
+                        <div class="mb-2">
+                            <input type="checkbox" id="select-all-permissions">
+                            <label for="select-all-permissions" style="font-weight: bold;">Chọn tất cả quyền</label>
+                        </div>
+
                         <div class="mb-4">
                             <label class="form-label">Quyền hạn <span class="text-danger">*</span></label>
                             <div class="row g-3">
-                                @foreach($permissions as $permission)
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                            id="permission_{{ $permission->id }}" name="permissions[]"
-                                            value="{{ $permission->id }}" {{ in_array($permission->id,
-                                        old('permissions', $role->permissions->pluck('id')->toArray())) ? 'checked' : ''
-                                        }}>
-                                        <label class="form-check-label" for="permission_{{ $permission->id }}">
-                                            {{ $permission->name }}
-                                        </label>
+                                @foreach($permissions as $group => $perms)
+                                <div class="mb-2">
+                                    <input type="checkbox" class="select-group"
+                                        data-group="{{ Str::slug($group ?: 'khac') }}"
+                                        id="select-group-{{ Str::slug($group ?: 'khac') }}">
+                                    <strong>{{ $group ?: 'Khác' }}</strong>
+                                    <label for="select-group-{{ Str::slug($group ?: 'khac') }}"
+                                        style="font-weight: normal; cursor:pointer;"></label>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    @foreach($perms as $permission)
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input group-{{ Str::slug($group ?: 'khac') }}"
+                                                type="checkbox" id="permission_{{ $permission->id }}"
+                                                name="permissions[]" value="{{ $permission->id }}" {{
+                                                in_array($permission->id, old('permissions', $rolePermissions ?? [])) ?
+                                            'checked' : '' }}>
+                                            <label class="form-check-label" for="permission_{{ $permission->id }}">
+                                                {{ $permission->name }}
+                                            </label>
+                                        </div>
                                     </div>
+                                    @endforeach
                                 </div>
                                 @endforeach
                             </div>
@@ -82,4 +99,53 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAll = document.getElementById('select-all-permissions');
+        const checkboxes = document.querySelectorAll('input[name="permissions[]"]');
+
+        selectAll.addEventListener('change', function () {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+
+        // Nếu tất cả quyền đã được chọn, tự động check "Chọn tất cả"
+        function updateSelectAll() {
+            selectAll.checked = Array.from(checkboxes).every(cb => cb.checked);
+        }
+        checkboxes.forEach(cb => cb.addEventListener('change', updateSelectAll));
+        updateSelectAll();
+
+        document.querySelectorAll('.select-group').forEach(function(groupCheckbox) {
+            groupCheckbox.addEventListener('change', function() {
+                let group = this.getAttribute('data-group');
+                let checked = this.checked;
+                document.querySelectorAll('.group-' + group).forEach(function(cb) {
+                    cb.checked = checked;
+                });
+            });
+        });
+
+        document.querySelectorAll('[class^="group-"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                let classes = Array.from(cb.classList).filter(c => c.startsWith('group-'));
+                classes.forEach(function(groupClass) {
+                    let group = groupClass.replace('group-', '');
+                    let all = document.querySelectorAll('.' + groupClass);
+                    let allChecked = Array.from(all).every(x => x.checked);
+                    let groupCheckbox = document.querySelector('#select-group-' + group);
+                    if (groupCheckbox) groupCheckbox.checked = allChecked;
+                });
+            });
+        });
+
+        // --- ĐOẠN MỚI: cập nhật trạng thái "Chọn tất cả" cho từng nhóm khi load trang ---
+        document.querySelectorAll('.select-group').forEach(function(groupCheckbox) {
+            let group = groupCheckbox.getAttribute('data-group');
+            let all = document.querySelectorAll('.group-' + group);
+            let allChecked = Array.from(all).length > 0 && Array.from(all).every(x => x.checked);
+            groupCheckbox.checked = allChecked;
+        });
+    });
+</script>
 @endsection

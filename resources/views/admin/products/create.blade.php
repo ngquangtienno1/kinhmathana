@@ -278,7 +278,7 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-2">
                                                 <input type="text" name="variations[{{ $index }}][sku]"
                                                     value="{{ $variation['sku'] ?? '' }}" class="form-control"
                                                     placeholder="Mã sản phẩm">
