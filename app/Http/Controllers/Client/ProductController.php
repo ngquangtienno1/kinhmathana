@@ -165,7 +165,7 @@ class ProductController extends Controller
             });
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(10);
+        $products = $query->orderBy('created_at', 'desc')->paginate(12);
         $categories = Category::all();
         $colors = Color::all();
         $brands = Brand::all();
