@@ -500,12 +500,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
     // Order Management
     Route::prefix('orders')->name('orders.')->middleware(['permission:xem-danh-sach-don-hang'])->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/{order}/show', [OrderController::class, 'show'])->name('show');
-        Route::get('/{order}/print', [OrderController::class, 'print'])->name('print');
-        Route::put('{order}/status', [OrderController::class, 'updateStatus'])->name('update-status')
+        Route::get('/', [AdminOrderController::class, 'index'])->name('index');
+        Route::get('/{order}/show', [AdminOrderController::class, 'show'])->name('show');
+        Route::get('/{order}/print', [AdminOrderController::class, 'print'])->name('print');
+        Route::put('{order}/status', [AdminOrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
-        Route::put('{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
+        Route::put('{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
 
         // Order Status History Routes

@@ -10,11 +10,12 @@
                         FAQ </h1>
                     <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
                             href="{{ route('client.home') }}"><span itemprop="title">Home</span></a>
-                            <span class="qodef-breadcrumbs-separator"></span>
-                            <span itemprop="title" class="qodef-breadcrumbs-current">Page</span>
-                            <span itemprop="title" class="qodef-breadcrumbs-separator"></span>
-                            <span itemprop="title" class="qodef-breadcrumbs-current">FAQ</span></div>
-                </div>  
+                        <span class="qodef-breadcrumbs-separator"></span>
+                        <span itemprop="title" class="qodef-breadcrumbs-current">Page</span>
+                        <span itemprop="title" class="qodef-breadcrumbs-separator"></span>
+                        <span itemprop="title" class="qodef-breadcrumbs-current">FAQ</span>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="qodef-page-inner" class="qodef-content-full-width">
@@ -217,7 +218,7 @@
                                                         <div class="qodef-m-image">
                                                             <img fetchpriority="high" fetchpriority="high"
                                                                 decoding="async" width="1405" height="645"
-                                                                src="../wp-content/uploads/2021/08/Faq-page-img.jpg"
+                                                                src="{{ asset('v1/wp-content/uploads/2021/08/Faq-page-img.jpg') }}"
                                                                 class="attachment-full size-full qodef-list-image"
                                                                 alt="m"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/Faq-page-img.jpg 1405w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/Faq-page-img-600x275.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/Faq-page-img-800x367.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/Faq-page-img-300x138.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/Faq-page-img-1024x470.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/Faq-page-img-768x353.jpg 768w"
@@ -244,8 +245,7 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--center ">
                                                         <h3 class="qodef-m-title">
-                                                            <a itemprop="url" href="../contact-us/index.html"
-                                                                target="_self">
+                                                            <a itemprop="url" href="" target="_self">
                                                                 If you cannot find the answer to your question, please
                                                                 contact us </a>
                                                         </h3>
@@ -255,7 +255,7 @@
                                                             vitae purus in</p>
                                                         <div class="qodef-m-button">
                                                             <a class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--small qodef-html--link "
-                                                                href="../contact-us/index.html" target="_self"
+                                                                href="" target="_self"
                                                                 style="margin: 21px 0px;padding: 13px 70px"> <span
                                                                     class="qodef-m-text">Contact us</span></a>
                                                         </div>
@@ -294,7 +294,7 @@
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-01-hover.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-hover.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -309,14 +309,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-02-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-02-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -331,14 +331,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-03-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-03-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -353,14 +353,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-04-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-04-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -375,14 +375,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-05-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-05-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -401,6 +401,6 @@
                     </div>
                 </div>
             </main>
-        </div><!-- close #qodef-page-inner div from header.php -->
+        </div>
     </div>
 @endsection

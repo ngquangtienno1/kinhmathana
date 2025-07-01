@@ -5,14 +5,12 @@
                 class="widget widget_neoocular_core_social_icons_group qodef-top-bar-widget">
                 <div class="qodef-social-icons-group">
                     <span class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                        style="margin: 2px 13px 0 0"> <a itemprop="url"
-                            href="https://www.facebook.com/QodeInteractive/" target="_blank"> <span
-                                class="qodef-icon-elegant-icons social_facebook qodef-icon qodef-e"
+                        style="margin: 2px 13px 0 0"> <a itemprop="url" href="https://www.facebook.com/QodeInteractive/"
+                            target="_blank"> <span class="qodef-icon-elegant-icons social_facebook qodef-icon qodef-e"
                                 style="font-size: 12px"></span> </a> </span><span
                         class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                        style="margin: 2px 16px 0 0 "> <a itemprop="url"
-                            href="https://twitter.com/qodeinteractive" target="_blank"> <span
-                                class="qodef-icon-elegant-icons social_twitter qodef-icon qodef-e"
+                        style="margin: 2px 16px 0 0 "> <a itemprop="url" href="https://twitter.com/qodeinteractive"
+                            target="_blank"> <span class="qodef-icon-elegant-icons social_twitter qodef-icon qodef-e"
                                 style="font-size: 12px"></span> </a> </span><span
                         class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                         style="margin: 2px 15px 0 0 "> <a itemprop="url"
@@ -20,9 +18,8 @@
                                 class="qodef-icon-elegant-icons social_instagram qodef-icon qodef-e"
                                 style="font-size: 12px"></span> </a> </span><span
                         class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                        style="margin: 2px 1px 0 0"> <a itemprop="url"
-                            href="https://www.pinterest.com/qodeinteractive/" target="_blank"> <span
-                                class="qodef-icon-elegant-icons social_pinterest qodef-icon qodef-e"
+                        style="margin: 2px 1px 0 0"> <a itemprop="url" href="https://www.pinterest.com/qodeinteractive/"
+                            target="_blank"> <span class="qodef-icon-elegant-icons social_pinterest qodef-icon qodef-e"
                                 style="font-size: 12px"></span> </a> </span>
                 </div>
             </div>
@@ -34,8 +31,8 @@
                             target="_self"> <span class="qodef-e-title-inner"> <span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal">
                                     <span class="qodef-icon-elegant-icons icon_mail_alt qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span
-                                    class="qodef-e-title-text"><span class="__cf_email__"
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text"><span
+                                        class="__cf_email__"
                                         data-cfemail="a7c9c2c8c8c4d2cbc6d5e7c2dfc6cad7cbc289c4c8ca">[email&#160;protected]</span></span>
                             </span> </a> </p>
                 </div>
@@ -51,8 +48,8 @@
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 7px 0 0"> <span
                                         class="qodef-icon-elegant-icons icon_pin_alt qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span
-                                    class="qodef-e-title-text">235 N Edison St, Arlington, VA 22203, USA</span>
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">235 N
+                                    Edison St, Arlington, VA 22203, USA</span>
                             </span> </a> </p>
                 </div>
             </div>
@@ -64,8 +61,8 @@
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 5px 0 -2px"> <span
                                         class="qodef-icon-elegant-icons icon_mobile qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span
-                                    class="qodef-e-title-text">Call us: +34936915450</span> </span> </a> </p>
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Call
+                                    us: +34936915450</span> </span> </a> </p>
                 </div>
             </div>
             <div id="neoocular_core_icon_list_item-5"
@@ -74,8 +71,8 @@
                     <p class="qodef-e-title"> <span class="qodef-e-title-inner"> <span
                                 class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"> <span
                                     class="qodef-icon-elegant-icons icon_clock_alt qodef-icon qodef-e"
-                                    style="font-size: 13px"></span> </span> <span
-                                class="qodef-e-title-text">Mon-Sat: 9AM-9PM</span> </span> </p>
+                                    style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Mon-Sat:
+                                9AM-9PM</span> </span> </p>
                 </div>
             </div>
         </div>
@@ -87,9 +84,8 @@
             <div class="qodef-header-logo">
                 <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--svg-path"
                     href="index.html" rel="home">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                        y="0px" stroke="none" viewBox="0 0 118 48" enable-background="new 0 0 118 48"
-                        xml:space="preserve">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        stroke="none" viewBox="0 0 118 48" enable-background="new 0 0 118 48" xml:space="preserve">
                         <g>
                             <g>
                                 <path
@@ -164,8 +160,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3710">
-                                        <a href="optician-home/index.html"><span
-                                                class="qodef-menu-item-text">Optician Home</span></a>
+                                        <a href="optician-home/index.html"><span class="qodef-menu-item-text">Optician
+                                                Home</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3711">
@@ -179,8 +175,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3440">
-                                        <a href="eyewear-home/index.html"><span
-                                                class="qodef-menu-item-text">Eyewear Home</span></a>
+                                        <a href="eyewear-home/index.html"><span class="qodef-menu-item-text">Eyewear
+                                                Home</span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -218,8 +214,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4642">
-                                        <a href="meet-the-doctor/index.html"><span
-                                                class="qodef-menu-item-text">Meet The Doctor</span></a>
+                                        <a href="meet-the-doctor/index.html"><span class="qodef-menu-item-text">Meet
+                                                The Doctor</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
@@ -228,8 +224,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3536">
-                                        <a href="pricing-plans/index.html"><span
-                                                class="qodef-menu-item-text">Pricing Plans</span></a>
+                                        <a href="pricing-plans/index.html"><span class="qodef-menu-item-text">Pricing
+                                                Plans</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3439">
@@ -243,13 +239,14 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="contact-us/index.html"><span
-                                                class="qodef-menu-item-text">Contact Us</span></a>
+                                        <a href="contact-us/index.html"><span class="qodef-menu-item-text">Contact
+                                                Us</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4643">
-                                        <a href="faq-page/index.html"><span class="qodef-menu-item-text">FAQ
-                                                Page</span></a>
+                                        <a href="{{ route('client.faq.index') }}"><span
+                                                class="qodef-menu-item-text">FAQ
+                                            </span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -272,9 +269,8 @@
                                 <ul class="sub-menu">
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-370 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Types<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Types<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -287,8 +283,8 @@
                                         <ul class="sub-menu">
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-346">
-                                                <a href="shop/index.html"><span
-                                                        class="qodef-menu-item-text">Shop Grid</span></a>
+                                                <a href="shop/index.html"><span class="qodef-menu-item-text">Shop
+                                                        Grid</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2696">
@@ -339,9 +335,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-347 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Singles<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Singles<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -402,9 +397,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-117 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Layouts<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Layouts<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -454,9 +448,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7770 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Pages<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Pages<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -479,13 +472,12 @@
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2684">
-                                                <a href="my-account/index.html"><span
-                                                        class="qodef-menu-item-text">My Account</span></a>
+                                                <a href="my-account/index.html"><span class="qodef-menu-item-text">My
+                                                        Account</span></a>
                                             </li>
                                         </ul>
                                     </li>
-                                    <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7769">
+                                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7769">
                                         <div class="qodef-mega-menu-widget-holder">
                                             <div class="widget widget_neoocular_core_single_image"
                                                 data-area="wide-menu">
@@ -494,8 +486,9 @@
                                                     <div class="qodef-m-image"> <a itemprop="url"
                                                             href="shop/index.html" target="_blank"> <img
                                                                 loading="lazy" itemprop="image"
-                                                                src="{{asset('v1/wp-content/uploads/2021/09/wide-menu-banner-img-0001.jpg')}}"
-                                                                width="400" height="274" alt="" /> </a> </div>
+                                                                src="{{ asset('v1/wp-content/uploads/2021/09/wide-menu-banner-img-0001.jpg') }}"
+                                                                width="400" height="274" alt="" /> </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -506,7 +499,7 @@
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-114 qodef--hide-link qodef-menu-item--narrow">
-                        <a href="{{route('client.blog.index')}}"><span class="qodef-menu-item-text">Tin tức<svg
+                        <a href="{{ route('client.blog.index') }}"><span class="qodef-menu-item-text">Tin tức<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -530,18 +523,18 @@
                         <form id="searchform" class="qodef-search-form" method="get"
                             action="https://neoocular.qodeinteractive.com/">
                             <div class="qodef-search-form-inner clear">
-                                <input type="text" class="search-field" name="s" placeholder="Search" value="">
+                                <input type="text" class="search-field" name="s" placeholder="Search"
+                                    value="">
                                 <span class="qodef-m-underline"></span>
                                 <button type="submit" class="qodef-search-form-button"><svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                        width="15.22px" height="15.1px" viewBox="0 0 15.22 15.1"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        x="0px" y="0px" width="15.22px" height="15.1px" viewBox="0 0 15.22 15.1"
                                         enable-background="new 0 0 15.22 15.1" xml:space="preserve">
                                         <circle fill="none" stroke="currentColor" stroke-miterlimit="10"
                                             cx="9.053" cy="6.167" r="5.667" />
                                         <line fill="none" stroke="currentColor" stroke-width="1.2"
-                                            stroke-linecap="round" stroke-miterlimit="10" x1="0.6" y1="14.5"
-                                            x2="4.746" y2="10.354" />
+                                            stroke-linecap="round" stroke-miterlimit="10" x1="0.6"
+                                            y1="14.5" x2="4.746" y2="10.354" />
                                     </svg></button>
                             </div>
                         </form>
@@ -553,13 +546,11 @@
                     data-area="header-widget-one">
                     <div class="qodef-wishlist-widget-holder">
                         <div class="qodef-wishlist-inner" style="margin: 0 6px 0 0">
-                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link"
-                                title="View Wishlist">
+                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link" title="View Wishlist">
                                 <span class="qodef-wishlist-icon-count-holder">
-                                    <span class="qodef-wishlist-widget-icon"><svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            width="18px" height="15.453px" viewBox="0 0 18 15.453"
+                                    <span class="qodef-wishlist-widget-icon"><svg xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px"
+                                            height="15.453px" viewBox="0 0 18 15.453"
                                             enable-background="new 0 0 18 15.453" xml:space="preserve">
                                             <g>
                                                 <path
@@ -577,8 +568,8 @@
                     data-area="header-widget-one">
                     <div class="qodef-login-opener-widget qodef-user-logged--out">
                         <a href="#" class="qodef-login-opener">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                x="0px" y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
                                 enable-background="new 0 0 16.289 16.087" xml:space="preserve">
                                 <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
                                     cy="4.594" r="4.094" />
@@ -594,10 +585,9 @@
                     <div class="qodef-widget-side-area-cart-inner">
                         <a itemprop="url" class="qodef-m-opener" href="cart/index.html">
                             <span class="qodef-m-opener-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="13.5px"
-                                    height="18px" viewBox="0 0 13.5 18" enable-background="new 0 0 13.5 18"
-                                    xml:space="preserve">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    x="0px" y="0px" width="13.5px" height="18px" viewBox="0 0 13.5 18"
+                                    enable-background="new 0 0 13.5 18" xml:space="preserve">
                                     <g>
                                         <path fill="currentColor" d="M0.334,17.666C0.111,17.443,0,17.179,0,16.875V4.5c0-0.304,0.111-0.568,0.334-0.791
             C0.557,3.486,0.82,3.375,1.125,3.375h2.25c0.023-0.937,0.363-1.734,1.02-2.391C5.05,0.329,5.836,0,6.75,0s1.699,0.329,2.355,0.984
@@ -630,9 +620,8 @@
         <div class="qodef-header-sticky-inner ">
             <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--svg-path"
                 href="index.html" rel="home">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                    y="0px" stroke="none" viewBox="0 0 118 48" enable-background="new 0 0 118 48"
-                    xml:space="preserve">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    stroke="none" viewBox="0 0 118 48" enable-background="new 0 0 118 48" xml:space="preserve">
                     <g>
                         <g>
                             <path
@@ -706,8 +695,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3710">
-                                        <a href="optician-home/index.html"><span
-                                                class="qodef-menu-item-text">Optician Home</span></a>
+                                        <a href="optician-home/index.html"><span class="qodef-menu-item-text">Optician
+                                                Home</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3711">
@@ -721,8 +710,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3440">
-                                        <a href="eyewear-home/index.html"><span
-                                                class="qodef-menu-item-text">Eyewear Home</span></a>
+                                        <a href="eyewear-home/index.html"><span class="qodef-menu-item-text">Eyewear
+                                                Home</span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -760,18 +749,18 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4642">
-                                        <a href="meet-the-doctor/index.html"><span
-                                                class="qodef-menu-item-text">Meet The Doctor</span></a>
+                                        <a href="meet-the-doctor/index.html"><span class="qodef-menu-item-text">Meet
+                                                The Doctor</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
-                                        <a href="vouchers/index.html"><span
-                                                class="qodef-menu-item-text">Vouchers</span></a>
+                                        <a href="{{ route('client.voucher.index') }}"><span
+                                                class="qodef-menu-item-text">Mã giảm giá</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3536">
-                                        <a href="pricing-plans/index.html"><span
-                                                class="qodef-menu-item-text">Pricing Plans</span></a>
+                                        <a href="pricing-plans/index.html"><span class="qodef-menu-item-text">Pricing
+                                                Plans</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3439">
@@ -785,13 +774,14 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="contact-us/index.html"><span
-                                                class="qodef-menu-item-text">Contact Us</span></a>
+                                        <a href="contact-us/index.html"><span class="qodef-menu-item-text">Contact
+                                                Us</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4643">
-                                        <a href="faq-page/index.html"><span class="qodef-menu-item-text">FAQ
-                                                Page</span></a>
+                                        <a href="{{ route('client.faq.index') }}"><span
+                                                class="qodef-menu-item-text">FAQ
+                                            </span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -799,7 +789,7 @@
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-113 qodef--hide-link qodef-menu-item--wide">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop<svg
+                        <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Cửa hàng<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -814,9 +804,8 @@
                                 <ul class="sub-menu">
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-370 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Types<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Types<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -829,8 +818,8 @@
                                         <ul class="sub-menu">
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-346">
-                                                <a href="shop/index.html"><span
-                                                        class="qodef-menu-item-text">Shop Grid</span></a>
+                                                <a href="shop/index.html"><span class="qodef-menu-item-text">Shop
+                                                        Grid</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2696">
@@ -881,9 +870,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-347 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Singles<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Singles<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -944,9 +932,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-117 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Layouts<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Layouts<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -996,9 +983,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7770 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Shop Pages<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
+                                                Pages<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -1021,13 +1007,12 @@
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2684">
-                                                <a href="my-account/index.html"><span
-                                                        class="qodef-menu-item-text">My Account</span></a>
+                                                <a href="my-account/index.html"><span class="qodef-menu-item-text">My
+                                                        Account</span></a>
                                             </li>
                                         </ul>
                                     </li>
-                                    <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7769">
+                                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7769">
                                         <div class="qodef-mega-menu-widget-holder">
                                             <div class="widget widget_neoocular_core_single_image"
                                                 data-area="wide-menu">
@@ -1036,8 +1021,9 @@
                                                     <div class="qodef-m-image"> <a itemprop="url"
                                                             href="shop/index.html" target="_blank"> <img
                                                                 loading="lazy" itemprop="image"
-                                                                src="{{asset('v1/wp-content/uploads/2021/09/wide-menu-banner-img-0001.jpg')}}"
-                                                                width="400" height="274" alt="" /> </a> </div>
+                                                                src="{{ asset('v1/wp-content/uploads/2021/09/wide-menu-banner-img-0001.jpg') }}"
+                                                                width="400" height="274" alt="" /> </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1068,19 +1054,18 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4009">
-                                        <a href="blog-left-sidebar/index.html"><span
-                                                class="qodef-menu-item-text">Left Sidebar</span></a>
+                                        <a href="blog-left-sidebar/index.html"><span class="qodef-menu-item-text">Left
+                                                Sidebar</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4008">
-                                        <a href="blog-no-sidebar/index.html"><span
-                                                class="qodef-menu-item-text">No Sidebar</span></a>
+                                        <a href="blog-no-sidebar/index.html"><span class="qodef-menu-item-text">No
+                                                Sidebar</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-116 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span
-                                                class="qodef-menu-item-text">Post Types<svg
-                                                    class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Post
+                                                Types<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -1141,13 +1126,11 @@
                     class="widget widget_neoocular_core_qode_wishlist qodef-sticky-right">
                     <div class="qodef-wishlist-widget-holder">
                         <div class="qodef-wishlist-inner" style="margin: 0 6px 0 0">
-                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link"
-                                title="View Wishlist">
+                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link" title="View Wishlist">
                                 <span class="qodef-wishlist-icon-count-holder">
-                                    <span class="qodef-wishlist-widget-icon"><svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            width="18px" height="15.453px" viewBox="0 0 18 15.453"
+                                    <span class="qodef-wishlist-widget-icon"><svg xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px"
+                                            height="15.453px" viewBox="0 0 18 15.453"
                                             enable-background="new 0 0 18 15.453" xml:space="preserve">
                                             <g>
                                                 <path
@@ -1164,8 +1147,8 @@
                     class="widget widget_neoocular_membership_login_opener qodef-sticky-right">
                     <div class="qodef-login-opener-widget qodef-user-logged--out">
                         <a href="#" class="qodef-login-opener">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                x="0px" y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
                                 enable-background="new 0 0 16.289 16.087" xml:space="preserve">
                                 <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
                                     cy="4.594" r="4.094" />
@@ -1180,10 +1163,9 @@
                     <div class="qodef-widget-side-area-cart-inner">
                         <a itemprop="url" class="qodef-m-opener" href="cart/index.html">
                             <span class="qodef-m-opener-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="13.5px"
-                                    height="18px" viewBox="0 0 13.5 18" enable-background="new 0 0 13.5 18"
-                                    xml:space="preserve">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    x="0px" y="0px" width="13.5px" height="18px" viewBox="0 0 13.5 18"
+                                    enable-background="new 0 0 13.5 18" xml:space="preserve">
                                     <g>
                                         <path fill="currentColor" d="M0.334,17.666C0.111,17.443,0,17.179,0,16.875V4.5c0-0.304,0.111-0.568,0.334-0.791
             C0.557,3.486,0.82,3.375,1.125,3.375h2.25c0.023-0.937,0.363-1.734,1.02-2.391C5.05,0.329,5.836,0,6.75,0s1.699,0.329,2.355,0.984
