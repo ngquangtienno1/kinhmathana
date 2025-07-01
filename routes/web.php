@@ -40,6 +40,10 @@ use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+use App\Http\Controllers\Client\ContactController as ClientContactController;
+
+
+
 
 
 // Authentication
@@ -130,6 +134,10 @@ Route::prefix('client')->name('client.')->group(function () {
     });
     Route::prefix('faq')->name('faq.')->group(function () {
         Route::get('/', [FaqClientController::class, 'index'])->name('index');
+    });
+      Route::prefix('contact')->name('contact.')->group(function () {
+        Route::get('/', [ClientContactController::class, 'index'])->name('index');
+        Route::post('/', [ClientContactController::class, 'create'])->name('create');
     });
 });
 

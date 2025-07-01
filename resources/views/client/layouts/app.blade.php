@@ -23,6 +23,8 @@
             </div><button class="btn btn-phoenix-secondary w-100" data-theme-control="reset"><span
                     class="fas fa-arrows-rotate me-2 fs-10"></span>Reset to default</button>
         </div>
+       
+
         <div class="offcanvas-body scrollbar px-card" id="themeController">
             <div class="setting-panel-item mt-0">
                 <h5 class="setting-panel-item-title">Color Scheme</h5>

@@ -274,14 +274,38 @@
                                     aria-labelledby="navbarDropdownUser">
                                     <div class="card position-relative border-0">
                                         <div class="card-body p-0">
-                                            <div class="text-center pt-4 pb-3">
-                                                <div class="avatar avatar-xl ">
-                                                    <img class="rounded-circle "
-                                                        src="{{ asset('v1/assets/img/team/72x72/57.webp') }}"
-                                                        alt="" />
+                                            @auth
+                                                <div class="text-center pt-4 pb-3">
+                                                    <div class="avatar avatar-xl ">
+                                                        <img class="rounded-circle"
+                                                            src="{{ auth()->user()->avatar ?? asset('images/default-avatar.png') }}"
+                                                            alt="Avatar" />
+                                                    </div>
+                                                    <h6 class="mt-2 text-body-emphasis">{{ auth()->user()->name }}</h6>
                                                 </div>
-                                                <h6 class="mt-2 text-body-emphasis">Jerry Seinfield</h6>
-                                            </div>
+                                                <div class="px-3">
+                                                    <a class="btn btn-phoenix-secondary d-flex flex-center w-100"
+                                                        href="{{ route('client.logout') }}">
+                                                        <span class="me-2" data-feather="log-out"></span>Đăng xuất
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="text-center pt-4 pb-3">
+                                                    <div class="avatar avatar-xl ">
+                                                        <img class="rounded-circle"
+                                                            src="{{ asset('images/default-avatar.png') }}"
+                                                            alt="Khách" />
+                                                    </div>
+                                                    <h6 class="mt-2 text-body-emphasis">Khách</h6>
+                                                </div>
+                                                <div class="px-3">
+                                                    <a class="btn btn-phoenix-primary d-flex flex-center w-100"
+                                                        href="{{ route('client.login') }}">
+                                                        <span class="me-2" data-feather="log-in"></span>Đăng nhập
+                                                    </a>
+                                                </div>
+                                            @endauth
+
                                             <div class="mb-3 mx-3"><input class="form-control form-control-sm"
                                                     id="statusUpdateInput" type="text"
                                                     placeholder="Update your status" /></div>
@@ -508,7 +532,8 @@
                     href="{{ route('client.home') }}">Trang chủ</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.brand.index') }}">Thương hiệu</a></li>
-            <li class="nav-item" data-nav-item="products"><a class="nav-link" href="{{ route('client.products.index') }}">Sản phẩm</a></li>
+            <li class="nav-item" data-nav-item="products"><a class="nav-link"
+                    href="{{ route('client.products.index') }}">Sản phẩm</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link"
                     href="{{ route('client.blog.index') }}">Blog</a></li>
             <li class="nav-item" data-nav-item="data-nav-item"><a class="nav-link" href="wishlist.html">Wishlist</a>

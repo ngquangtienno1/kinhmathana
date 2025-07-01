@@ -527,14 +527,14 @@
         document.getElementById('verifyCurrentPassword').addEventListener('click', function() {
             const currentPassword = document.getElementById('current_password').value;
             const currentPasswordInput = document.getElementById('current_password');
-            
+
             // Xóa thông báo lỗi cũ nếu có
             currentPasswordInput.classList.remove('is-invalid');
             const oldFeedback = currentPasswordInput.parentNode.querySelector('.invalid-feedback');
             if (oldFeedback) {
                 oldFeedback.remove();
             }
-            
+
             // Gửi request kiểm tra mật khẩu hiện tại
             fetch('{{ route("admin.users.verifyPassword") }}', {
                 method: 'POST',
@@ -572,13 +572,13 @@
         document.getElementById('changePasswordModal').addEventListener('hidden.bs.modal', function () {
             const form = document.getElementById('changePasswordForm');
             const currentPasswordInput = document.getElementById('current_password');
-            
+
             form.reset();
             document.getElementById('newPasswordFields').style.display = 'none';
             currentPasswordInput.readOnly = false;
             document.getElementById('verifyCurrentPassword').style.display = 'block';
             document.getElementById('submitNewPassword').style.display = 'none';
-            
+
             // Xóa tất cả thông báo lỗi
             currentPasswordInput.classList.remove('is-invalid');
             const feedbacks = form.querySelectorAll('.invalid-feedback');
