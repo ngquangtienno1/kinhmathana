@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 
-    <title>Eyewear Home &#8211; Neo Ocular</title>
+    <title>Neo Ocular &#8211; Optician and Optical Store</title>
     <style type="text/css" media="screen">
         #ui-datepicker-div.booked_custom_date_picker table.ui-datepicker-calendar tbody td a.ui-state-active,
         #ui-datepicker-div.booked_custom_date_picker table.ui-datepicker-calendar tbody td a.ui-state-active:hover,
@@ -115,9 +115,10 @@
     <link rel='dns-prefetch' href='http://export.qodethemes.com/' />
     <link rel='dns-prefetch' href='http://static.zdassets.com/' />
     <link rel='dns-prefetch' href='http://fonts.googleapis.com/' />
-    <link rel="alternate" type="application/rss+xml" title="Neo Ocular &raquo; Feed" href="{{asset('v1/feed/index.html')}}" />
+    <link rel="alternate" type="application/rss+xml" title="Neo Ocular &raquo; Feed"
+        href="{{ asset('v1/feed/index.html') }}" />
     <link rel="alternate" type="application/rss+xml" title="Neo Ocular &raquo; Comments Feed"
-        href="{{asset('v1/comments/feed/index.html')}}" />
+        href="{{ asset('v1/comments/feed/index.html') }}" />
     <script type="text/javascript">
         /* <![CDATA[ */
         window._wpemojiSettings = {
@@ -237,25 +238,25 @@
         /* ]]> */
     </script>
     <link rel='stylesheet' id='sbi_styles-css'
-        href='{{asset('v1/wp-content/plugins/instagram-feed/css/sbi-styles.mine6df.css?ver=6.5.0')}}' type='text/css'
+        href='{{ asset('v1/wp-content/plugins/instagram-feed/css/sbi-styles.mine6df.css?ver=6.5.0') }}' type='text/css'
         media='all' />
     <link rel='stylesheet' id='dripicons-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/icons/dripicons/assets/css/dripicons.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/dripicons/assets/css/dripicons.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='elegant-icons-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/icons/elegant-icons/assets/css/elegant-icons.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/elegant-icons/assets/css/elegant-icons.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='font-awesome-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/icons/font-awesome/assets/css/all.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/font-awesome/assets/css/all.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='ionicons-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/icons/ionicons/assets/css/ionicons.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/ionicons/assets/css/ionicons.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='linea-icons-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/icons/linea-icons/assets/css/linea-icons.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/linea-icons/assets/css/linea-icons.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='linear-icons-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/icons/linear-icons/assets/css/linear-icons.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/linear-icons/assets/css/linear-icons.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <style id='wp-emoji-styles-inline-css' type='text/css'>
         img.wp-smiley,
@@ -289,26 +290,29 @@
             text-decoration: none
         }
     </style>
-    <link rel='stylesheet' id='booked-icons-css' href='{{asset('v1/wp-content/plugins/booked/assets/css/icons25b6.css?ver=2.3.5')}}'
-        type='text/css' media='all' />
-    <link rel='stylesheet' id='booked-tooltipster-css'
-        href='{{asset('v1/wp-content/plugins/booked/assets/js/tooltipster/css/tooltipster9b70.css?ver=3.3.0')}}' type='text/css'
+    <link rel='stylesheet' id='booked-icons-css'
+        href='{{ asset('v1/wp-content/plugins/booked/assets/css/icons25b6.css?ver=2.3.5') }}' type='text/css'
         media='all' />
+    <link rel='stylesheet' id='booked-tooltipster-css'
+        href='{{ asset('v1/wp-content/plugins/booked/assets/js/tooltipster/css/tooltipster9b70.css?ver=3.3.0') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='booked-tooltipster-theme-css'
-        href='{{asset('v1/wp-content/plugins/booked/assets/js/tooltipster/css/themes/tooltipster-light9b70.css?ver=3.3.0')}}'
+        href='{{ asset('v1/wp-content/plugins/booked/assets/js/tooltipster/css/themes/tooltipster-light9b70.css?ver=3.3.0') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='booked-animations-css'
-        href='{{asset('v1/wp-content/plugins/booked/assets/css/animations25b6.css?ver=2.3.5')}}' type='text/css' media='all' />
-    <link rel='stylesheet' id='booked-css-css' href='{{asset('v1/wp-content/plugins/booked/dist/booked25b6.css?ver=2.3.5')}}'
-        type='text/css' media='all' />
+        href='{{ asset('v1/wp-content/plugins/booked/assets/css/animations25b6.css?ver=2.3.5') }}' type='text/css'
+        media='all' />
+    <link rel='stylesheet' id='booked-css-css'
+        href='{{ asset('v1/wp-content/plugins/booked/dist/booked25b6.css?ver=2.3.5') }}' type='text/css'
+        media='all' />
     <link rel='stylesheet' id='contact-form-7-css'
-        href='{{asset('v1/wp-content/plugins/contact-form-7/includes/css/stylese2db.css?ver=5.9.8')}}' type='text/css'
-        media='all' />
+        href='{{ asset('v1/wp-content/plugins/contact-form-7/includes/css/stylese2db.css?ver=5.9.8') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='ctf_styles-css'
-        href='{{asset('v1/wp-content/plugins/custom-twitter-feeds/css/ctf-styles.min605a.css?ver=2.2.2')}}' type='text/css'
-        media='all' />
+        href='{{ asset('v1/wp-content/plugins/custom-twitter-feeds/css/ctf-styles.min605a.css?ver=2.2.2') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='rabbit_css-css'
-        href='../../export.qodethemes.com/_toolbar/assets/css/rbt-modules0899.css?ver=6.8.1' type='text/css'
+        href='../export.qodethemes.com/_toolbar/assets/css/rbt-modules0899.css?ver=6.8.1' type='text/css'
         media='all' />
     <style id='woocommerce-inline-inline-css' type='text/css'>
         .woocommerce form .form-row .required {
@@ -316,91 +320,69 @@
         }
     </style>
     <link rel='stylesheet' id='swiper-css'
-        href='{{asset('v1/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min94a4.css?ver=8.4.5')}}' type='text/css'
-        media='all' />
+        href='{{ asset('v1/wp-content/plugins/elementor/assets/lib/swiper/v8/css/swiper.min94a4.css?ver=8.4.5') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='neoocular-main-css'
-        href='{{asset('v1/wp-content/themes/neoocular/assets/css/main.min0899.css?ver=6.8.1')}}' type='text/css' media='all' />
-    <link rel='stylesheet' id='neoocular-core-style-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/assets/css/neoocular-core.min0899.css?ver=6.8.1')}}' type='text/css'
+        href='{{ asset('v1/wp-content/themes/neoocular/assets/css/main.min0899.css?ver=6.8.1') }}' type='text/css'
         media='all' />
+    <link rel='stylesheet' id='neoocular-core-style-css'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/assets/css/neoocular-core.min0899.css?ver=6.8.1') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='neoocular-membership-style-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-membership/assets/css/neoocular-membership.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-membership/assets/css/neoocular-membership.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='qode-quick-view-for-woocommerce-main-css'
-        href='{{asset('v1/wp-content/plugins/qode-quick-view-for-woocommerce/assets/css/main.min4b68.css?ver=1.0.4')}}'
+        href='{{ asset('v1/wp-content/plugins/qode-quick-view-for-woocommerce/assets/css/main.min4b68.css?ver=1.0.4') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='qode-wishlist-for-woocommerce-main-css'
-        href='{{asset('v1/wp-content/plugins/qode-wishlist-for-woocommerce/assets/css/main.min62ea.css?ver=1.2')}}' type='text/css'
-        media='all' />
+        href='{{ asset('v1/wp-content/plugins/qode-wishlist-for-woocommerce/assets/css/main.min62ea.css?ver=1.2') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='qode-variation-swatches-for-woocommerce-premium-main-css'
-        href='{{asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce-premium/assets/css/main.min4bf4.css?ver=1.0.3')}}'
+        href='{{ asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce-premium/assets/css/main.min4bf4.css?ver=1.0.3') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='neoocular-google-fonts-css'
         href='https://fonts.googleapis.com/css?family=Heebo%3A100%2C300%2C400%2C500%2C600%2C700%7CWork+Sans%3A100%2C300%2C400%2C500%2C600%2C700&amp;subset=latin-ext&amp;display=swap&amp;ver=1.0.0'
         type='text/css' media='all' />
     <link rel='stylesheet' id='neoocular-grid-css'
-        href='{{asset('v1/wp-content/themes/neoocular/assets/css/grid.min0899.css?ver=6.8.1')}}' type='text/css' media='all' />
-    <link rel='stylesheet' id='neoocular-style-css' href='{{asset('v1/wp-content/themes/neoocular/style0899.css?ver=6.8.1')}}'
-        type='text/css' media='all' />
+        href='{{ asset('v1/wp-content/themes/neoocular/assets/css/grid.min0899.css?ver=6.8.1') }}' type='text/css'
+        media='all' />
+    <link rel='stylesheet' id='neoocular-style-css'
+        href='{{ asset('v1/wp-content/themes/neoocular/style0899.css?ver=6.8.1') }}' type='text/css'
+        media='all' />
     <style id='neoocular-style-inline-css' type='text/css'>
-        #qodef-page-outer {
-            margin-top: -142px;
-        }
-
-        @media only screen and (max-width: 1024px) {
-            #qodef-page-outer {
-                margin-top: -70px;
-            }
-        }
-
-        #qodef-page-footer-top-area {
-            background-color: #000000;
-        }
-
         #qodef-page-footer-top-area-inner {
             padding-top: 80px;
             padding-bottom: 35px;
         }
 
-        #qodef-page-footer-bottom-area {
-            background-color: #000000;
-        }
-
         #qodef-page-footer-bottom-area-inner {
             padding-top: 17px;
             padding-bottom: 4px;
-            border-top-color: rgba(255, 255, 255, 0.3);
+            border-top-color: #f9f9f9;
             border-top-width: 1px;
-            border-top-style: solid;
         }
 
         .qodef-fullscreen-menu>ul>li>a {
             color: #ffffff;
         }
 
-        #qodef-page-inner {
-            padding: 0px;
-        }
 
         @media only screen and (max-width: 1024px) {
             #qodef-page-inner {
-                padding: 0px;
+                padding: 140px 0px 60px;
             }
         }
 
         #qodef-top-area {
-            background-color: #faf9f5;
+            background-color: #000000;
         }
 
         #qodef-top-area-inner {
             height: 32px;
-            border-bottom-color: rgba(86, 86, 86, 0.2);
-            border-bottom-width: 1px;
-            border-bottom-style: solid;
         }
 
         #qodef-page-header .qodef-header-logo-link {
-            height: 76px;
+            height: 48px;
         }
 
         #qodef-page-mobile-header .qodef-mobile-header-logo-link {
@@ -413,48 +395,39 @@
 
         .qodef-page-title {
             height: 155px;
-            background-image: url({{asset('v1/wp-content/uploads/2021/08/Whislist-cart-title-img.jpg')}});
-        }
-
-        .qodef-page-title .qodef-m-content {
-            padding-top: 142px;
-        }
-
-        @media only screen and (max-width: 1024px) {
-            .qodef-page-title .qodef-m-content {
-                padding-top: 70px;
-            }
+            background-color: #f9f9f9;
         }
 
         .qodef-header--standard #qodef-page-header {
             height: 110px;
-            background-color: rgba(250, 249, 245, 0);
         }
     </style>
     <link rel='stylesheet' id='booked-wc-fe-styles-css'
-        href='{{asset('v1/wp-content/plugins/booked/includes/add-ons/woocommerce-payments/css/frontend-style0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/booked/includes/add-ons/woocommerce-payments/css/frontend-style0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='neoocular-core-elementor-css'
-        href='{{asset('v1/wp-content/plugins/neoocular-core/inc/plugins/elementor/assets/css/elementor.min0899.css?ver=6.8.1')}}'
+        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/plugins/elementor/assets/css/elementor.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='elementor-icons-css'
-        href='{{asset('v1/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.mine94d.css?ver=5.30.0')}}'
+        href='{{ asset('v1/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.mine94d.css?ver=5.30.0') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='elementor-frontend-css'
-        href='{{asset('v1/wp-content/plugins/elementor/assets/css/frontend.min28fc.css?ver=3.23.3')}}' type='text/css'
-        media='all' />
+        href='{{ asset('v1/wp-content/plugins/elementor/assets/css/frontend.min28fc.css?ver=3.23.3') }}'
+        type='text/css' media='all' />
     <link rel='stylesheet' id='elementor-post-6-css'
-        href='{{asset('v1/wp-content/uploads/elementor/css/post-6be08.css?ver=1722417191')}}' type='text/css' media='all' />
-    <link rel='stylesheet' id='sbistyles-css'
-        href='{{asset('v1/wp-content/plugins/instagram-feed/css/sbi-styles.mine6df.css?ver=6.5.0')}}' type='text/css'
+        href='{{ asset('v1/wp-content/uploads/elementor/css/post-6be08.css?ver=1722417191') }}' type='text/css'
         media='all' />
-    <link rel='stylesheet' id='elementor-post-3100-css'
-        href='{{asset('v1/wp-content/uploads/elementor/css/post-310007f1.css?ver=1722417192')}}' type='text/css' media='all' />
+    <link rel='stylesheet' id='sbistyles-css'
+        href='{{ asset('v1/wp-content/plugins/instagram-feed/css/sbi-styles.mine6df.css?ver=6.5.0') }}'
+        type='text/css' media='all' />
+    <link rel='stylesheet' id='elementor-post-65-css'
+        href='{{ asset('v1/wp-content/uploads/elementor/css/post-6567a5.css?ver=1722417931') }}' type='text/css'
+        media='all' />
     <link rel='stylesheet' id='qode-variation-swatches-for-woocommerce-main-css'
-        href='{{asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce/assets/css/main.min4bf4.css?ver=1.0.3')}}'
+        href='{{ asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce/assets/css/main.min4bf4.css?ver=1.0.3') }}'
         type='text/css' media='all' />
     <link rel='stylesheet' id='qode-zendesk-chat-css'
-            href='{{asset('v1/wp-content/plugins/qode-zendesk-chat/assets/main0899.css?ver=6.8.1')}}' type='text/css'
+        href='{{ asset('v1/wp-content/plugins/qode-zendesk-chat/assets/main0899.css?ver=6.8.1') }}' type='text/css'
         media='all' />
     <link rel='stylesheet' id='google-fonts-1-css'
         href='https://fonts.googleapis.com/css?family=Roboto%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CRoboto+Slab%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic&amp;display=auto&amp;ver=6.8.1'
@@ -465,14 +438,18 @@
     <script type="text/template" id="tmpl-unavailable-variation-template">
 	<p>Sorry, this product is unavailable. Please choose a different combination.</p>
 </script>
-    <script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/jquery.minf43b.js?ver=3.7.1')}}" id="jquery-core-js"></script>
-    <script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/jquery-migrate.min5589.js?ver=3.4.1')}}"
+    <script type="text/javascript" src="{{ asset('v1/wp-includes/js/jquery/jquery.minf43b.js?ver=3.7.1') }}"
+        id="jquery-core-js"></script>
+    <script type="text/javascript" src="{{ asset('v1/wp-includes/js/jquery/jquery-migrate.min5589.js?ver=3.4.1') }}"
         id="jquery-migrate-js"></script>
-    <script type="text/javascript" src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/js/rbtools.mine9af.js?ver=6.7.15')}}"
-        id="tp-tools-js"></script>
-    <script type="text/javascript" src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/js/rs6.mine9af.js?ver=6.7.15')}}"
-        id="revmin-js"></script>
-    <script type="text/javascript" src="{{asset('v1/wp-includes/js/underscore.min3ab8.js?ver=1.13.7')}}" id="underscore-js"></script>
+    <script type="text/javascript"
+        src="{{ asset('v1/wp-content/plugins/revslider/sr6/assets/js/rbtools.mine9af.js?ver=6.7.15') }}" id="tp-tools-js">
+    </script>
+    <script type="text/javascript"
+        src="{{ asset('v1/wp-content/plugins/revslider/sr6/assets/js/rs6.mine9af.js?ver=6.7.15') }}" id="revmin-js">
+    </script>
+    <script type="text/javascript" src="{{ asset('v1/wp-includes/js/underscore.min3ab8.js?ver=1.13.7') }}"
+        id="underscore-js"></script>
     <script type="text/javascript" id="wp-util-js-extra">
         /* <![CDATA[ */
         var _wpUtilSettings = {
@@ -482,9 +459,10 @@
         };
         /* ]]> */
     </script>
-    <script type="text/javascript" src="{{asset('v1/wp-includes/js/wp-util.min0899.js?ver=6.8.1')}}" id="wp-util-js"></script>
+    <script type="text/javascript" src="{{ asset('v1/wp-includes/js/wp-util.min0899.js?ver=6.8.1') }}" id="wp-util-js">
+    </script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minb152.js?ver=2.7.0-wc.9.1.4')}}"
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minb152.js?ver=2.7.0-wc.9.1.4') }}"
         id="jquery-blockui-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript" id="wc-add-to-cart-variation-js-extra">
         /* <![CDATA[ */
@@ -497,7 +475,7 @@
         /* ]]> */
     </script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.min4615.js?ver=9.1.4')}}"
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.min4615.js?ver=9.1.4') }}"
         id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript" id="wc-add-to-cart-js-extra">
         /* <![CDATA[ */
@@ -512,10 +490,10 @@
         /* ]]> */
     </script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min4615.js?ver=9.1.4')}}" id="wc-add-to-cart-js"
-        defer="defer" data-wp-strategy="defer"></script>
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min4615.js?ver=9.1.4') }}"
+        id="wc-add-to-cart-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.minf31e.js?ver=2.1.4-wc.9.1.4')}}"
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.minf31e.js?ver=2.1.4-wc.9.1.4') }}"
         id="js-cookie-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript" id="woocommerce-js-extra">
         /* <![CDATA[ */
@@ -526,11 +504,11 @@
         /* ]]> */
     </script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min4615.js?ver=9.1.4')}}" id="woocommerce-js"
-        defer="defer" data-wp-strategy="defer"></script>
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min4615.js?ver=9.1.4') }}"
+        id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/select2/select2.full.minffdd.js?ver=4.0.3-wc.9.1.4')}}" id="select2-js"
-        defer="defer" data-wp-strategy="defer"></script>
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/select2/select2.full.minffdd.js?ver=4.0.3-wc.9.1.4') }}"
+        id="select2-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript" id="booked-wc-fe-functions-js-extra">
         /* <![CDATA[ */
         var booked_wc_variables = {
@@ -546,22 +524,23 @@
         /* ]]> */
     </script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/booked/includes/add-ons/woocommerce-payments/js/frontend-functions0899.js?ver=6.8.1')}}"
+        src="{{ asset('v1/wp-content/plugins/booked/includes/add-ons/woocommerce-payments/js/frontend-functions0899.js?ver=6.8.1') }}"
         id="booked-wc-fe-functions-js"></script>
     <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/flexslider/jquery.flexslider.min75ae.js?ver=2.7.2-wc.9.1.4')}}"
+        src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/flexslider/jquery.flexslider.min75ae.js?ver=2.7.2-wc.9.1.4') }}"
         id="flexslider-js" defer="defer" data-wp-strategy="defer"></script>
-    <link rel="https://api.w.org/" href="{{asset('v1/wp-json/index.html')}}" />
-    <link rel="alternate" title="JSON" type="application/json" href="{{asset('v1/wp-json/wp/v2/pages/3100.json')}}" />
-    <link rel="EditURI" type="application/rsd+xml" title="RSD" href="{{asset('v1/xmlrpc0db0.html?rsd')}}" />
+    <link rel="https://api.w.org/" href="{{ asset('v1/wp-json/index.html') }}" />
+    <link rel="alternate" title="JSON" type="application/json"
+        href="{{ asset('v1/wp-json/wp/v2/pages/65.json') }}" />
+    <link rel="EditURI" type="application/rsd+xml" title="RSD" href="{{ asset('v1/xmlrpc0db0.html?rsd') }}" />
     <meta name="generator" content="WordPress 6.8.1" />
     <meta name="generator" content="WooCommerce 9.1.4" />
-    <link rel="canonical" href="index.html" />
-    <link rel='shortlink' href='{{asset('v1/index4f1b.html?p=3100')}}' />
+    <link rel="canonical" href="{{ asset('v1/index.html') }}" />
+    <link rel='shortlink' href='{{ asset('v1/index.html') }}' />
     <link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed"
-        href="{{asset('v1/wp-json/oembed/1.0/embed5edb.json?url=https%3A%2F%2Fneoocular.qodeinteractive.com%2Feyewear-home%2F')}}" />
+        href="{{ asset('v1/wp-json/oembed/1.0/embedadb3.json?url=https%3A%2F%2Fneoocular.qodeinteractive.com%2F') }}" />
     <link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed"
-        href="{{asset('v1/wp-json/oembed/1.0/embedb7e6?url=https%3A%2F%2Fneoocular.qodeinteractive.com%2Feyewear-home%2F&amp;format=xml')}}" />
+        href="{{ asset('v1/wp-json/oembed/1.0/embed8ba4?url=https%3A%2F%2Fneoocular.qodeinteractive.com%2F&amp;format=xml') }}" />
 
 
     <!-- Open Graph data is managed by Alex MacArthur's Complete Open Graph plugin. (v3.4.5) -->
@@ -581,14 +560,14 @@
     <meta name='twitter:image'
         content='https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/open-graph.png' />
     <meta name='twitter:description' content='Optician and Optical Store' />
-    <!-- End Complete Open Graph. | 0.002924919128418s -->
+    <!-- End Complete Open Graph. | 0.00331711769104s -->
 
 
     <!-- Google Tag Manager for WordPress by gtm4wp.com -->
     <!-- GTM Container placement set to footer -->
     <script data-cfasync="false" data-pagespeed-no-defer>
         var dataLayer_content = {
-            "pagePostType": "page",
+            "pagePostType": "frontpage",
             "pagePostType2": "single-page",
             "pagePostAuthor": "admin"
         };
@@ -606,7 +585,7 @@
                 dl = l != 'dataLayer' ? '&l=' + l : '';
             j.async = true;
             j.src =
-                '../../www.googletagmanager.com/gtm5445.html?id=' + i + dl;
+                '../www.googletagmanager.com/gtm5445.html?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-KLJLSX7');
     </script>
@@ -649,7 +628,7 @@
             font-style: normal;
             font-weight: 300 900;
             font-display: fallback;
-            src: url('{{asset('v1/wp-content/plugins/woocommerce/assets/fonts/Inter-VariableFont_slnt%2cwght.woff2')}}') format('woff2');
+            src: url('{{ asset('v1/wp-content/plugins/woocommerce/assets/fonts/Inter-VariableFont_slnt%2cwght.woff2') }}') format('woff2');
             font-stretch: normal;
         }
 
@@ -658,12 +637,14 @@
             font-style: normal;
             font-weight: 400;
             font-display: fallback;
-            src: url('{{asset('v1/wp-content/plugins/woocommerce/assets/fonts/cardo_normal_400.woff2')}}') format('woff2');
+            src: url('{{ asset('v1/wp-content/plugins/woocommerce/assets/fonts/cardo_normal_400.woff2') }}') format('woff2');
         }
     </style>
-    <link rel="icon" href="{{asset('v1/wp-content/uploads/2021/10/cropped-fav-1-32x32.png')}}" sizes="32x32" />
-    <link rel="icon" href="{{asset('v1/wp-content/uploads/2021/10/cropped-fav-1-192x192.png')}}" sizes="192x192" />
-    <link rel="apple-touch-icon" href="{{asset('v1/wp-content/uploads/2021/10/cropped-fav-1-180x180.png')}}" />
+    <link rel="icon" href="{{ asset('v1/wp-content/uploads/2021/10/cropped-fav-1-32x32.png') }}"
+        sizes="32x32" />
+    <link rel="icon" href="{{ asset('v1/wp-content/uploads/2021/10/cropped-fav-1-192x192.png') }}"
+        sizes="192x192" />
+    <link rel="apple-touch-icon" href="{{ asset('v1/wp-content/uploads/2021/10/cropped-fav-1-180x180.png') }}" />
     <meta name="msapplication-TileImage"
         content="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/cropped-fav-1-270x270.png" />
     <script>

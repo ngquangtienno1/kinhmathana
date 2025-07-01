@@ -9,8 +9,8 @@
 <script type="speculationrules">
 {"prefetch":[{"source":"document","where":{"and":[{"href_matches":"\/*"},{"not":{"href_matches":["\/wp-*.php","\/wp-admin\/*","\/wp-content\/uploads\/*","\/wp-content\/*","\/wp-content\/plugins\/*","\/wp-content\/themes\/neoocular\/*","\/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
 </script>
-<div class="rbt-toolbar" data-theme="Neo Ocular" data-featured="" data-button-position="32%" data-button-horizontal="right"
-    data-button-alt="no"></div>
+<div class="rbt-toolbar" data-theme="Neo Ocular" data-featured="" data-button-position="32%"
+    data-button-horizontal="right" data-button-alt="no"></div>
 <!-- GTM Container placement set to footer -->
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLJLSX7" height="0" width="0"
@@ -63,9 +63,7 @@
                     lazyloadBackgroundObserver.unobserve(entry.target);
                 }
             });
-        }, {
-            rootMargin: '200px 0px 200px 0px'
-        });
+        }, { rootMargin: '200px 0px 200px 0px' });
         lazyloadBackgrounds.forEach((lazyloadBackground) => {
             lazyloadBackgroundObserver.observe(lazyloadBackground);
         });
@@ -95,7 +93,7 @@
     </div>
 </div>
 <input type="hidden" class="qqvfw-hidden-type" data-quick-view-type="pop-up" data-quick-view-type-mobile="pop-up"
-    data-quick-view-page-id="3100" value="">
+    data-quick-view-page-id="65" value="">
 <div id="qode-wishlist-for-woocommerce-modal" class="qwfw-m">
     <div class="qwfw-m-overlay"></div>
     <div class="qwfw-m-content">
@@ -108,32 +106,54 @@
         <div class="qwfw-m-product"></div>
     </div>
 </div>
-<link href="http://fonts.googleapis.com/css?family=Work+Sans:600%7CHeebo:300%2C400%7CRoboto:400&amp;display=swap"
+<link href="http://fonts.googleapis.com/css?family=Roboto:400%7CWork+Sans:600%7CHeebo:300&amp;display=swap"
     rel="stylesheet" property="stylesheet" media="all" type="text/css">
 
 <script type='text/javascript'>
-    (function() {
+    (function () {
         var c = document.body.className;
         c = c.replace(/woocommerce-no-js/, 'woocommerce-js');
         document.body.className = c;
     })();
 </script>
 <script>
-    if (typeof revslider_showDoubleJqueryError === "undefined") {
-        function revslider_showDoubleJqueryError(sliderID) {
-            console.log(
-                "You have some jquery.js library include that comes after the Slider Revolution files js inclusion."
-                );
-            console.log("To fix this, you can:");
-            console.log(
-                "1. Set 'Module General Options' -> 'Advanced' -> 'jQuery & OutPut Filters' -> 'Put JS to Body' to on"
-                );
-            console.log("2. Find the double jQuery.js inclusion and remove it");
-            return "Double Included jQuery Library";
-        }
-    }
+    if (typeof revslider_showDoubleJqueryError === "undefined") { function revslider_showDoubleJqueryError(sliderID) { console.log("You have some jquery.js library include that comes after the Slider Revolution files js inclusion."); console.log("To fix this, you can:"); console.log("1. Set 'Module General Options' -> 'Advanced' -> 'jQuery & OutPut Filters' -> 'Put JS to Body' to on"); console.log("2. Find the double jQuery.js inclusion and remove it"); return "Double Included jQuery Library"; } }
 </script>
 
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" aria-label="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" aria-label="Share"></button>
+                <button class="pswp__button pswp__button--fs" aria-label="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" aria-label="Zoom in/out"></button>
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" aria-label="Previous (arrow left)"></button>
+            <button class="pswp__button pswp__button--arrow--right" aria-label="Next (arrow right)"></button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
 <link rel='stylesheet' id='wc-blocks-style-css'
     href='{{asset('v1/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocksbbf5.css?ver=wc-9.1.4')}}' type='text/css'
     media='all' />
@@ -148,389 +168,6 @@
     media='all' />
 <link rel='stylesheet' id='wp-mediaelement-css'
     href='{{asset('v1/wp-includes/js/mediaelement/wp-mediaelement.min0899.css?ver=6.8.1')}}' type='text/css' media='all' />
-<style id='wp-block-image-inline-css' type='text/css'>
-    .wp-block-image>a,
-    .wp-block-image>figure>a {
-        display: inline-block
-    }
-
-    .wp-block-image img {
-        box-sizing: border-box;
-        height: auto;
-        max-width: 100%;
-        vertical-align: bottom
-    }
-
-    @media not (prefers-reduced-motion) {
-        .wp-block-image img.hide {
-            visibility: hidden
-        }
-
-        .wp-block-image img.show {
-            animation: show-content-image .4s
-        }
-    }
-
-    .wp-block-image[style*=border-radius] img,
-    .wp-block-image[style*=border-radius]>a {
-        border-radius: inherit
-    }
-
-    .wp-block-image.has-custom-border img {
-        box-sizing: border-box
-    }
-
-    .wp-block-image.aligncenter {
-        text-align: center
-    }
-
-    .wp-block-image.alignfull>a,
-    .wp-block-image.alignwide>a {
-        width: 100%
-    }
-
-    .wp-block-image.alignfull img,
-    .wp-block-image.alignwide img {
-        height: auto;
-        width: 100%
-    }
-
-    .wp-block-image .aligncenter,
-    .wp-block-image .alignleft,
-    .wp-block-image .alignright,
-    .wp-block-image.aligncenter,
-    .wp-block-image.alignleft,
-    .wp-block-image.alignright {
-        display: table
-    }
-
-    .wp-block-image .aligncenter>figcaption,
-    .wp-block-image .alignleft>figcaption,
-    .wp-block-image .alignright>figcaption,
-    .wp-block-image.aligncenter>figcaption,
-    .wp-block-image.alignleft>figcaption,
-    .wp-block-image.alignright>figcaption {
-        caption-side: bottom;
-        display: table-caption
-    }
-
-    .wp-block-image .alignleft {
-        float: left;
-        margin: .5em 1em .5em 0
-    }
-
-    .wp-block-image .alignright {
-        float: right;
-        margin: .5em 0 .5em 1em
-    }
-
-    .wp-block-image .aligncenter {
-        margin-left: auto;
-        margin-right: auto
-    }
-
-    .wp-block-image :where(figcaption) {
-        margin-bottom: 1em;
-        margin-top: .5em
-    }
-
-    .wp-block-image.is-style-circle-mask img {
-        border-radius: 9999px
-    }
-
-    @supports ((-webkit-mask-image:none) or (mask-image:none)) or (-webkit-mask-image:none) {
-        .wp-block-image.is-style-circle-mask img {
-            border-radius: 0;
-            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50"/></svg>');
-            mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50"/></svg>');
-            mask-mode: alpha;
-            -webkit-mask-position: center;
-            mask-position: center;
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-            -webkit-mask-size: contain;
-            mask-size: contain
-        }
-    }
-
-    :root :where(.wp-block-image.is-style-rounded img, .wp-block-image .is-style-rounded img) {
-        border-radius: 9999px
-    }
-
-    .wp-block-image figure {
-        margin: 0
-    }
-
-    .wp-lightbox-container {
-        display: flex;
-        flex-direction: column;
-        position: relative
-    }
-
-    .wp-lightbox-container img {
-        cursor: zoom-in
-    }
-
-    .wp-lightbox-container img:hover+button {
-        opacity: 1
-    }
-
-    .wp-lightbox-container button {
-        align-items: center;
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
-        backdrop-filter: blur(16px) saturate(180%);
-        background-color: #5a5a5a40;
-        border: none;
-        border-radius: 4px;
-        cursor: zoom-in;
-        display: flex;
-        height: 20px;
-        justify-content: center;
-        opacity: 0;
-        padding: 0;
-        position: absolute;
-        right: 16px;
-        text-align: center;
-        top: 16px;
-        width: 20px;
-        z-index: 100
-    }
-
-    @media not (prefers-reduced-motion) {
-        .wp-lightbox-container button {
-            transition: opacity .2s ease
-        }
-    }
-
-    .wp-lightbox-container button:focus-visible {
-        outline: 3px auto #5a5a5a40;
-        outline: 3px auto -webkit-focus-ring-color;
-        outline-offset: 3px
-    }
-
-    .wp-lightbox-container button:hover {
-        cursor: pointer;
-        opacity: 1
-    }
-
-    .wp-lightbox-container button:focus {
-        opacity: 1
-    }
-
-    .wp-lightbox-container button:focus,
-    .wp-lightbox-container button:hover,
-    .wp-lightbox-container button:not(:hover):not(:active):not(.has-background) {
-        background-color: #5a5a5a40;
-        border: none
-    }
-
-    .wp-lightbox-overlay {
-        box-sizing: border-box;
-        cursor: zoom-out;
-        height: 100vh;
-        left: 0;
-        overflow: hidden;
-        position: fixed;
-        top: 0;
-        visibility: hidden;
-        width: 100%;
-        z-index: 100000
-    }
-
-    .wp-lightbox-overlay .close-button {
-        align-items: center;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        min-height: 40px;
-        min-width: 40px;
-        padding: 0;
-        position: absolute;
-        right: calc(env(safe-area-inset-right) + 16px);
-        top: calc(env(safe-area-inset-top) + 16px);
-        z-index: 5000000
-    }
-
-    .wp-lightbox-overlay .close-button:focus,
-    .wp-lightbox-overlay .close-button:hover,
-    .wp-lightbox-overlay .close-button:not(:hover):not(:active):not(.has-background) {
-        background: none;
-        border: none
-    }
-
-    .wp-lightbox-overlay .lightbox-image-container {
-        height: var(--wp--lightbox-container-height);
-        left: 50%;
-        overflow: hidden;
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        transform-origin: top left;
-        width: var(--wp--lightbox-container-width);
-        z-index: 9999999999
-    }
-
-    .wp-lightbox-overlay .wp-block-image {
-        align-items: center;
-        box-sizing: border-box;
-        display: flex;
-        height: 100%;
-        justify-content: center;
-        margin: 0;
-        position: relative;
-        transform-origin: 0 0;
-        width: 100%;
-        z-index: 3000000
-    }
-
-    .wp-lightbox-overlay .wp-block-image img {
-        height: var(--wp--lightbox-image-height);
-        min-height: var(--wp--lightbox-image-height);
-        min-width: var(--wp--lightbox-image-width);
-        width: var(--wp--lightbox-image-width)
-    }
-
-    .wp-lightbox-overlay .wp-block-image figcaption {
-        display: none
-    }
-
-    .wp-lightbox-overlay button {
-        background: none;
-        border: none
-    }
-
-    .wp-lightbox-overlay .scrim {
-        background-color: #fff;
-        height: 100%;
-        opacity: .9;
-        position: absolute;
-        width: 100%;
-        z-index: 2000000
-    }
-
-    .wp-lightbox-overlay.active {
-        visibility: visible
-    }
-
-    @media not (prefers-reduced-motion) {
-        .wp-lightbox-overlay.active {
-            animation: turn-on-visibility .25s both
-        }
-
-        .wp-lightbox-overlay.active img {
-            animation: turn-on-visibility .35s both
-        }
-
-        .wp-lightbox-overlay.show-closing-animation:not(.active) {
-            animation: turn-off-visibility .35s both
-        }
-
-        .wp-lightbox-overlay.show-closing-animation:not(.active) img {
-            animation: turn-off-visibility .25s both
-        }
-
-        .wp-lightbox-overlay.zoom.active {
-            animation: none;
-            opacity: 1;
-            visibility: visible
-        }
-
-        .wp-lightbox-overlay.zoom.active .lightbox-image-container {
-            animation: lightbox-zoom-in .4s
-        }
-
-        .wp-lightbox-overlay.zoom.active .lightbox-image-container img {
-            animation: none
-        }
-
-        .wp-lightbox-overlay.zoom.active .scrim {
-            animation: turn-on-visibility .4s forwards
-        }
-
-        .wp-lightbox-overlay.zoom.show-closing-animation:not(.active) {
-            animation: none
-        }
-
-        .wp-lightbox-overlay.zoom.show-closing-animation:not(.active) .lightbox-image-container {
-            animation: lightbox-zoom-out .4s
-        }
-
-        .wp-lightbox-overlay.zoom.show-closing-animation:not(.active) .lightbox-image-container img {
-            animation: none
-        }
-
-        .wp-lightbox-overlay.zoom.show-closing-animation:not(.active) .scrim {
-            animation: turn-off-visibility .4s forwards
-        }
-    }
-
-    @keyframes show-content-image {
-        0% {
-            visibility: hidden
-        }
-
-        99% {
-            visibility: hidden
-        }
-
-        to {
-            visibility: visible
-        }
-    }
-
-    @keyframes turn-on-visibility {
-        0% {
-            opacity: 0
-        }
-
-        to {
-            opacity: 1
-        }
-    }
-
-    @keyframes turn-off-visibility {
-        0% {
-            opacity: 1;
-            visibility: visible
-        }
-
-        99% {
-            opacity: 0;
-            visibility: visible
-        }
-
-        to {
-            opacity: 0;
-            visibility: hidden
-        }
-    }
-
-    @keyframes lightbox-zoom-in {
-        0% {
-            transform: translate(calc((-100vw + var(--wp--lightbox-scrollbar-width))/2 + var(--wp--lightbox-initial-left-position)), calc(-50vh + var(--wp--lightbox-initial-top-position))) scale(var(--wp--lightbox-scale))
-        }
-
-        to {
-            transform: translate(-50%, -50%) scale(1)
-        }
-    }
-
-    @keyframes lightbox-zoom-out {
-        0% {
-            transform: translate(-50%, -50%) scale(1);
-            visibility: visible
-        }
-
-        99% {
-            visibility: visible
-        }
-
-        to {
-            transform: translate(calc((-100vw + var(--wp--lightbox-scrollbar-width))/2 + var(--wp--lightbox-initial-left-position)), calc(-50vh + var(--wp--lightbox-initial-top-position))) scale(var(--wp--lightbox-scale));
-            visibility: hidden
-        }
-    }
-</style>
 <style id='global-styles-inline-css' type='text/css'>
     :root {
         --wp--preset--aspect-ratio--square: 1;
@@ -849,72 +486,44 @@
 <link rel='stylesheet' id='rs-plugin-settings-css'
     href='{{asset('v1/wp-content/plugins/revslider/sr6/assets/css/rs6e9af.css?ver=6.7.15')}}' type='text/css' media='all' />
 <style id='rs-plugin-settings-inline-css' type='text/css'>
-    #rev_slider_5_1_wrapper .custom_light.tp-bullets {
-        background-color: transparent
+    #rev_slider_9_1_wrapper .qodef-rev-nav {
+        background: none !important;
+        width: 36px;
+        height: auto
     }
 
-    #rev_slider_5_1_wrapper .custom_light .tp-bullet {
-        counter-increment: count;
-        background-color: transparent;
-        position: relative;
-        height: auto;
-        line-height: 1
+    #rev_slider_9_1_wrapper .qodef-rev-nav:before {
+        display: none !Important
     }
 
-    #rev_slider_5_1_wrapper .custom_light .tp-bullet:after {
-        content: '';
-        height: 0px;
-        left: 50%;
-        top: 15px;
-        width: 1px;
-        content: '';
-        position: relative;
-        display: inline-block;
-        background-color: rgba(255, 255, 255, .2);
-        transition: height .3s ease-out
+    #rev_slider_9_1_wrapper .qodef-rev-nav.tp-leftarrow .qodef-rev-slider-arrow svg {
+        transform: rotate(180deg)
     }
 
-    #rev_slider_5_1_wrapper .custom_light .tp-bullet.selected:after {
-        height: 95px
+    .qodef-rev-slider-arrow svg polyline {
+        display: block;
+        fill: none;
+        stroke: #ffffff;
+        stroke-miterlimit: 10;
+        transition: stroke-dashoffset 1.2s ease
     }
 
-    #rev_slider_5_1_wrapper .custom_light .tp-bullet:before {
-        position: relative;
-        cursor: pointer;
-        content: counter(count, decimal-leading-zero);
-        color: #fff;
-        font-weight: 600;
-        font-size: 15px;
-        font-family: 'Work Sans', sans-serif;
-        letter-spacing: .02em
+    .qodef-rev-slider-arrow svg polyline {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 0
+    }
+
+    .qodef-rev-slider-arrow:hover svg polyline {
+        stroke-dashoffset: 200
     }
 </style>
-<script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/ui/core.minb37e.js?ver=1.13.3')}}" id="jquery-ui-core-js">
-</script>
+<script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/ui/core.minb37e.js?ver=1.13.3')}}"
+    id="jquery-ui-core-js"></script>
 <script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/ui/datepicker.minb37e.js?ver=1.13.3')}}"
     id="jquery-ui-datepicker-js"></script>
 <script type="text/javascript" id="jquery-ui-datepicker-js-after">
     /* <![CDATA[ */
-    jQuery(function(jQuery) {
-        jQuery.datepicker.setDefaults({
-            "closeText": "Close",
-            "currentText": "Today",
-            "monthNames": ["January", "February", "March", "April", "May", "June", "July", "August",
-                "September", "October", "November", "December"
-            ],
-            "monthNamesShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
-                "Nov", "Dec"
-            ],
-            "nextText": "Next",
-            "prevText": "Previous",
-            "dayNames": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            "dayNamesShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-            "dayNamesMin": ["S", "M", "T", "W", "T", "F", "S"],
-            "dateFormat": "M d",
-            "firstDay": 1,
-            "isRTL": false
-        });
-    });
+    jQuery(function (jQuery) { jQuery.datepicker.setDefaults({ "closeText": "Close", "currentText": "Today", "monthNames": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], "monthNamesShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "nextText": "Next", "prevText": "Previous", "dayNames": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "dayNamesShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "dayNamesMin": ["S", "M", "T", "W", "T", "F", "S"], "dateFormat": "M d", "firstDay": 1, "isRTL": false }); });
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/booked/assets/js/spin.min7406.js?ver=2.0.1')}}"
@@ -926,84 +535,37 @@
     id="booked-tooltipster-js"></script>
 <script type="text/javascript" id="booked-functions-js-extra">
     /* <![CDATA[ */
-    var booked_js_vars = {
-        "ajax_url": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php",
-        "profilePage": "",
-        "publicAppointments": "",
-        "i18n_confirm_appt_delete": "Are you sure you want to cancel this appointment?",
-        "i18n_please_wait": "Please wait ...",
-        "i18n_wrong_username_pass": "Wrong username\/password combination.",
-        "i18n_fill_out_required_fields": "Please fill out all required fields.",
-        "i18n_guest_appt_required_fields": "Please enter your name to book an appointment.",
-        "i18n_appt_required_fields": "Please enter your name, your email address and choose a password to book an appointment.",
-        "i18n_appt_required_fields_guest": "Please fill in all \"Information\" fields.",
-        "i18n_password_reset": "Please check your email for instructions on resetting your password.",
-        "i18n_password_reset_error": "That username or email is not recognized."
-    };
+    var booked_js_vars = { "ajax_url": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php", "profilePage": "", "publicAppointments": "", "i18n_confirm_appt_delete": "Are you sure you want to cancel this appointment?", "i18n_please_wait": "Please wait ...", "i18n_wrong_username_pass": "Wrong username\/password combination.", "i18n_fill_out_required_fields": "Please fill out all required fields.", "i18n_guest_appt_required_fields": "Please enter your name to book an appointment.", "i18n_appt_required_fields": "Please enter your name, your email address and choose a password to book an appointment.", "i18n_appt_required_fields_guest": "Please fill in all \"Information\" fields.", "i18n_password_reset": "Please check your email for instructions on resetting your password.", "i18n_password_reset_error": "That username or email is not recognized." };
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/booked/assets/js/functions25b6.js?ver=2.3.5')}}"
     id="booked-functions-js"></script>
-<script type="text/javascript" src="{{asset('v1/wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6')}}" id="wp-hooks-js">
-</script>
-<script type="text/javascript" src="{{asset('v1/wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6')}}" id="wp-i18n-js">
-</script>
+<script type="text/javascript" src="{{asset('v1/wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6')}}"
+    id="wp-hooks-js"></script>
+<script type="text/javascript" src="{{asset('v1/wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6')}}"
+    id="wp-i18n-js"></script>
 <script type="text/javascript" id="wp-i18n-js-after">
     /* <![CDATA[ */
-    wp.i18n.setLocaleData({
-        'text direction\u0004ltr': ['ltr']
-    });
+    wp.i18n.setLocaleData({ 'text direction\u0004ltr': ['ltr'] });
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/contact-form-7/includes/swv/js/indexe2db.js?ver=5.9.8')}}"
     id="swv-js"></script>
 <script type="text/javascript" id="contact-form-7-js-extra">
     /* <![CDATA[ */
-    var wpcf7 = {
-        "api": {
-            "root": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/",
-            "namespace": "contact-form-7\/v1"
-        }
-    };
+    var wpcf7 = { "api": { "root": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/", "namespace": "contact-form-7\/v1" } };
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/contact-form-7/includes/js/indexe2db.js?ver=5.9.8')}}"
     id="contact-form-7-js"></script>
-<script type="text/javascript" src="{{asset('v1/export.qodethemes.com/_toolbar/assets/js/rbt-modules0899.js?ver=6.8.1')}}"
+<script type="text/javascript" src="../export.qodethemes.com/_toolbar/assets/js/rbt-modules0899.js?ver=6.8.1"
     id="rabbit_js-js"></script>
 <script type="text/javascript"
     src="{{asset('v1/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min4615.js?ver=9.1.4')}}"
     id="sourcebuster-js-js"></script>
 <script type="text/javascript" id="wc-order-attribution-js-extra">
     /* <![CDATA[ */
-    var wc_order_attribution = {
-        "params": {
-            "lifetime": 1.0000000000000000818030539140313095458623138256371021270751953125e-5,
-            "session": 30,
-            "base64": false,
-            "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php",
-            "prefix": "wc_order_attribution_",
-            "allowTracking": true
-        },
-        "fields": {
-            "source_type": "current.typ",
-            "referrer": "current_add.rf",
-            "utm_campaign": "current.cmp",
-            "utm_source": "current.src",
-            "utm_medium": "current.mdm",
-            "utm_content": "current.cnt",
-            "utm_id": "current.id",
-            "utm_term": "current.trm",
-            "utm_source_platform": "current.plt",
-            "utm_creative_format": "current.fmt",
-            "utm_marketing_tactic": "current.tct",
-            "session_entry": "current_add.ep",
-            "session_start_time": "current_add.fd",
-            "session_pages": "session.pgs",
-            "session_count": "udata.vst",
-            "user_agent": "udata.uag"
-        }
-    };
+    var wc_order_attribution = { "params": { "lifetime": 1.0000000000000000818030539140313095458623138256371021270751953125e-5, "session": 30, "base64": false, "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php", "prefix": "wc_order_attribution_", "allowTracking": true }, "fields": { "source_type": "current.typ", "referrer": "current_add.rf", "utm_campaign": "current.cmp", "utm_source": "current.src", "utm_medium": "current.mdm", "utm_content": "current.cnt", "utm_id": "current.id", "utm_term": "current.trm", "utm_source_platform": "current.plt", "utm_creative_format": "current.fmt", "utm_marketing_tactic": "current.tct", "session_entry": "current_add.ep", "session_start_time": "current_add.fd", "session_pages": "session.pgs", "session_count": "udata.vst", "user_agent": "udata.uag" } };
     /* ]]> */
 </script>
 <script type="text/javascript"
@@ -1011,11 +573,7 @@
     id="wc-order-attribution-js"></script>
 <script type="text/javascript" id="booked-fea-js-js-extra">
     /* <![CDATA[ */
-    var booked_fea_vars = {
-        "ajax_url": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php",
-        "i18n_confirm_appt_delete": "Are you sure you want to cancel this appointment?",
-        "i18n_confirm_appt_approve": "Are you sure you want to approve this appointment?"
-    };
+    var booked_fea_vars = { "ajax_url": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php", "i18n_confirm_appt_delete": "Are you sure you want to cancel this appointment?", "i18n_confirm_appt_approve": "Are you sure you want to approve this appointment?" };
     /* ]]> */
 </script>
 <script type="text/javascript"
@@ -1023,33 +581,14 @@
     id="booked-fea-js-js"></script>
 <script type="text/javascript" src="{{asset('v1/wp-includes/js/hoverIntent.min3e5a.js?ver=1.10.2')}}" id="hoverIntent-js"></script>
 <script type="text/javascript"
-    src="{{asset('v1/wp-content/plugins/neoocular-core/assets/plugins/modernizr/modernizr0899.js?ver=6.8.1')}}" id="modernizr-js">
-</script>
+    src="{{asset('v1/wp-content/plugins/neoocular-core/assets/plugins/modernizr/modernizr0899.js?ver=6.8.1')}}"
+    id="modernizr-js"></script>
 <script type="text/javascript"
     src="{{asset('v1/wp-content/plugins/neoocular-core/assets/plugins/parallax-scroll/jquery.parallax-scroll0899.js?ver=6.8.1')}}"
     id="parallax-scroll-js"></script>
 <script type="text/javascript" id="neoocular-main-js-js-extra">
     /* <![CDATA[ */
-    var qodefGlobal = {
-        "vars": {
-            "adminBarHeight": 0,
-            "iconArrowLeft": "<svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 26 50.9\" xml:space=\"preserve\"><polyline points=\"25.6,0.4 0.7,25.5 25.6,50.6 \"\/><\/svg>",
-            "iconArrowRight": "<svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 26 50.9\" xml:space=\"preserve\"><polyline points=\"0.4,50.6 25.3,25.5 0.4,0.4 \"\/><\/svg>",
-            "iconClose": "<svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><g><path d=\"M 10.050,23.95c 0.39,0.39, 1.024,0.39, 1.414,0L 17,18.414l 5.536,5.536c 0.39,0.39, 1.024,0.39, 1.414,0 c 0.39-0.39, 0.39-1.024,0-1.414L 18.414,17l 5.536-5.536c 0.39-0.39, 0.39-1.024,0-1.414c-0.39-0.39-1.024-0.39-1.414,0 L 17,15.586L 11.464,10.050c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 15.586,17l-5.536,5.536 C 9.66,22.926, 9.66,23.56, 10.050,23.95z\"><\/path><\/g><\/svg>",
-            "qodefStickyHeaderScrollAmount": 1100,
-            "topAreaHeight": 32,
-            "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/",
-            "restNonce": "ca0059bf63",
-            "wishlistRestRoute": "neoocular\/v1\/wishlist",
-            "loginModalRestRoute": "neoocular\/v1\/login-modal",
-            "loginModalGetRestRoute": "neoocular\/v1\/login-modal-get",
-            "paginationRestRoute": "neoocular\/v1\/get-posts",
-            "wishlistDropdownRestRoute": "neoocular\/v1\/wishlistdropdown",
-            "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php",
-            "headerHeight": 110,
-            "mobileHeaderHeight": 70
-        }
-    };
+    var qodefGlobal = { "vars": { "adminBarHeight": 0, "iconArrowLeft": "<svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 26 50.9\" xml:space=\"preserve\"><polyline points=\"25.6,0.4 0.7,25.5 25.6,50.6 \"\/><\/svg>", "iconArrowRight": "<svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 26 50.9\" xml:space=\"preserve\"><polyline points=\"0.4,50.6 25.3,25.5 0.4,0.4 \"\/><\/svg>", "iconClose": "<svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><g><path d=\"M 10.050,23.95c 0.39,0.39, 1.024,0.39, 1.414,0L 17,18.414l 5.536,5.536c 0.39,0.39, 1.024,0.39, 1.414,0 c 0.39-0.39, 0.39-1.024,0-1.414L 18.414,17l 5.536-5.536c 0.39-0.39, 0.39-1.024,0-1.414c-0.39-0.39-1.024-0.39-1.414,0 L 17,15.586L 11.464,10.050c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 15.586,17l-5.536,5.536 C 9.66,22.926, 9.66,23.56, 10.050,23.95z\"><\/path><\/g><\/svg>", "qodefStickyHeaderScrollAmount": 1100, "topAreaHeight": 32, "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/", "restNonce": "ca0059bf63", "wishlistRestRoute": "neoocular\/v1\/wishlist", "loginModalRestRoute": "neoocular\/v1\/login-modal", "loginModalGetRestRoute": "neoocular\/v1\/login-modal-get", "paginationRestRoute": "neoocular\/v1\/get-posts", "wishlistDropdownRestRoute": "neoocular\/v1\/wishlistdropdown", "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php", "headerHeight": 110, "mobileHeaderHeight": 70 } };
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-content/themes/neoocular/assets/js/main.min0899.js?ver=6.8.1')}}"
@@ -1065,143 +604,16 @@
     id="markerclusterer-js"></script>
 <script type="text/javascript" id="neoocular-core-google-map-js-extra">
     /* <![CDATA[ */
-    var qodefMapsVariables = {
-        "global": {
-            "mapStyle": [{
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#e9e9e9"
-                }, {
-                    "lightness": 17
-                }]
-            }, {
-                "featureType": "landscape",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#f5f5f5"
-                }, {
-                    "lightness": 20
-                }]
-            }, {
-                "featureType": "road.highway",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#ffffff"
-                }, {
-                    "lightness": 17
-                }]
-            }, {
-                "featureType": "road.highway",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                    "color": "#ffffff"
-                }, {
-                    "lightness": 29
-                }, {
-                    "weight": 0.200000000000000011102230246251565404236316680908203125
-                }]
-            }, {
-                "featureType": "road.arterial",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#ffffff"
-                }, {
-                    "lightness": 18
-                }]
-            }, {
-                "featureType": "road.local",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#ffffff"
-                }, {
-                    "lightness": 16
-                }]
-            }, {
-                "featureType": "poi",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#f5f5f5"
-                }, {
-                    "lightness": 21
-                }]
-            }, {
-                "featureType": "poi.park",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#dedede"
-                }, {
-                    "lightness": 21
-                }]
-            }, {
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#ffffff"
-                }, {
-                    "lightness": 16
-                }]
-            }, {
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                    "saturation": 36
-                }, {
-                    "color": "#333333"
-                }, {
-                    "lightness": 40
-                }]
-            }, {
-                "elementType": "labels.icon",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "transit",
-                "elementType": "geometry",
-                "stylers": [{
-                    "color": "#f2f2f2"
-                }, {
-                    "lightness": 19
-                }]
-            }, {
-                "featureType": "administrative",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#fefefe"
-                }, {
-                    "lightness": 20
-                }]
-            }, {
-                "featureType": "administrative",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                    "color": "#fefefe"
-                }, {
-                    "lightness": 17
-                }, {
-                    "weight": 1.1999999999999999555910790149937383830547332763671875
-                }]
-            }],
-            "mapZoom": 12,
-            "mapScrollable": false,
-            "mapDraggable": true,
-            "streetViewControl": true,
-            "zoomControl": true,
-            "mapTypeControl": true,
-            "fullscreenControl": true,
-            "geolocationTitle": "Your location is here"
-        },
-        "multiple": []
-    };
+    var qodefMapsVariables = { "global": { "mapStyle": [{ "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#e9e9e9" }, { "lightness": 17 }] }, { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 20 }] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#ffffff" }, { "lightness": 17 }] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#ffffff" }, { "lightness": 29 }, { "weight": 0.200000000000000011102230246251565404236316680908203125 }] }, { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 18 }] }, { "featureType": "road.local", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 16 }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 21 }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#dedede" }, { "lightness": 21 }] }, { "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#ffffff" }, { "lightness": 16 }] }, { "elementType": "labels.text.fill", "stylers": [{ "saturation": 36 }, { "color": "#333333" }, { "lightness": 40 }] }, { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#f2f2f2" }, { "lightness": 19 }] }, { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [{ "color": "#fefefe" }, { "lightness": 20 }] }, { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#fefefe" }, { "lightness": 17 }, { "weight": 1.1999999999999999555910790149937383830547332763671875 }] }], "mapZoom": 12, "mapScrollable": false, "mapDraggable": true, "streetViewControl": true, "zoomControl": true, "mapTypeControl": true, "fullscreenControl": true, "geolocationTitle": "Your location is here" }, "multiple": [] };
     /* ]]> */
 </script>
-<script type="text/javascript" src="{{asset('v1/wp-content/plugins/neoocular-core/inc/maps/assets/js/google-map0899.js?ver=6.8.1')}}"
+<script type="text/javascript"
+    src="{{asset('v1/wp-content/plugins/neoocular-core/inc/maps/assets/js/google-map0899.js?ver=6.8.1')}}"
     id="neoocular-core-google-map-js"></script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/neoocular-core/assets/js/neoocular-core.min0899.js?ver=6.8.1')}}"
     id="neoocular-core-script-js"></script>
-<script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/ui/tabs.minb37e.js?ver=1.13.3')}}" id="jquery-ui-tabs-js">
-</script>
+<script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/ui/tabs.minb37e.js?ver=1.13.3')}}"
+    id="jquery-ui-tabs-js"></script>
 <script type="text/javascript" id="neoocular-membership-script-js-extra">
     /* <![CDATA[ */
     var neoocularMembershipGlobal = [];
@@ -1212,21 +624,7 @@
     id="neoocular-membership-script-js"></script>
 <script type="text/javascript" id="qode-quick-view-for-woocommerce-main-js-extra">
     /* <![CDATA[ */
-    var qodeQuickViewForWooCommerceGlobal = {
-        "adminBarHeight": "0",
-        "protectedDataMessage": "Something went wrong",
-        "makeASelectionText": "Please select some product options before adding this product to your cart.",
-        "unavailableText": "Sorry, this product is unavailable. Please choose a different combination.",
-        "emptyQuantityText": "Please choose the quantity of items you wish to add to your cart...",
-        "inStockText": "In stock",
-        "checkoutUrl": "https:\/\/neoocular.qodeinteractive.com\/checkout\/",
-        "arrowLeft": "<svg class=\"qqvfw-svg--arrow-left\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"9\" height=\"15\"><path d=\"M7.821 15 .001 7.5l.684-.656L7.822 0l1.18 1.312L2.549 7.5l6.453 6.188Z\"\/><\/svg>",
-        "arrowRight": "<svg class=\"qqvfw-svg--arrow-right\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"9\" height=\"15\"><path d=\"M1.18 15 9 7.5l-.684-.656L1.179 0l-1.18 1.312L6.452 7.5l-6.453 6.188Z\"\/><\/svg>",
-        "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/",
-        "restNonce": "ca0059bf63",
-        "quickViewRestRouteName": "quick-view",
-        "quickViewRestRoute": "qode-quick-view-for-woocommerce\/v1\/quick-view"
-    };
+    var qodeQuickViewForWooCommerceGlobal = { "adminBarHeight": "0", "protectedDataMessage": "Something went wrong", "makeASelectionText": "Please select some product options before adding this product to your cart.", "unavailableText": "Sorry, this product is unavailable. Please choose a different combination.", "emptyQuantityText": "Please choose the quantity of items you wish to add to your cart...", "inStockText": "In stock", "checkoutUrl": "https:\/\/neoocular.qodeinteractive.com\/checkout\/", "arrowLeft": "<svg class=\"qqvfw-svg--arrow-left\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"9\" height=\"15\"><path d=\"M7.821 15 .001 7.5l.684-.656L7.822 0l1.18 1.312L2.549 7.5l6.453 6.188Z\"\/><\/svg>", "arrowRight": "<svg class=\"qqvfw-svg--arrow-right\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"9\" height=\"15\"><path d=\"M1.18 15 9 7.5l-.684-.656L1.179 0l-1.18 1.312L6.452 7.5l-6.453 6.188Z\"\/><\/svg>", "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/", "restNonce": "ca0059bf63", "quickViewRestRouteName": "quick-view", "quickViewRestRoute": "qode-quick-view-for-woocommerce\/v1\/quick-view" };
     /* ]]> */
 </script>
 <script type="text/javascript"
@@ -1234,16 +632,7 @@
     id="qode-quick-view-for-woocommerce-main-js"></script>
 <script type="text/javascript" id="qode-wishlist-for-woocommerce-main-js-extra">
     /* <![CDATA[ */
-    var qodeWishlistForWooCommerceGlobal = {
-        "adminBarHeight": "0",
-        "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/",
-        "restNonce": "ca0059bf63",
-        "addToWishlistRestRoute": "qode-wishlist-for-woocommerce\/v1\/add-to-wishlist",
-        "wishlistTableRestRoute": "qode-wishlist-for-woocommerce\/v1\/wishlist-table",
-        "hideWishlistModalTime": "2500",
-        "confirmModalHTML": "<div class=\"qwfw-confirm-modal qwfw-m qwfw--opened\">\n\t<div id=\"qwfw-confirm-modal-overlay\" class=\"qwfw-m-overlay\"><\/div>\n\t<div class=\"qwfw-m-content\">\n\t\t<a id=\"qwfw-confirm-close-icon\" class=\"qwfw-m-close\" href=\"#\" rel=\"noopener noreferrer\"><svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"18.1213\" height=\"18.1213\" viewBox=\"0 0 18.1213 18.1213\" stroke-miterlimit=\"10\" stroke-width=\"2\"><line x1=\"1.0607\" y1=\"1.0607\" x2=\"17.0607\" y2=\"17.0607\"\/><line x1=\"17.0607\" y1=\"1.0607\" x2=\"1.0607\" y2=\"17.0607\"\/><\/svg><\/a>\n\t\t<div class=\"qwfw-m-form-wrapper\">\n\t\t\t<p class=\"qwfw-m-form-title\"><\/p>\n\t\t\t<div class=\"qwfw-m-form-actions\">\n\t\t\t\t<button id=\"qwfw-confirm-button-false\" class=\"qwfw-m-form-button button qwfw--no\">Cancel<\/button>\n\t\t\t\t<button id=\"qwfw-confirm-button-true\" class=\"qwfw-m-form-button button qwfw--yes\">Delete<\/button>\n\t\t\t<\/div>\n\t\t<\/div>\n\t<\/div>\n<\/div>\n",
-        "confirmSimpleModalHTML": "<div class=\"qwfw-confirm-modal qwfw-m qwfw--simple qwfw--opened\">\n\t<div id=\"qwfw-confirm-modal-overlay\" class=\"qwfw-m-overlay\"><\/div>\n\t<div class=\"qwfw-m-content\">\n\t\t<a id=\"qwfw-confirm-close-icon\" class=\"qwfw-m-close\" href=\"#\" rel=\"noopener noreferrer\"><svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"18.1213\" height=\"18.1213\" viewBox=\"0 0 18.1213 18.1213\" stroke-miterlimit=\"10\" stroke-width=\"2\"><line x1=\"1.0607\" y1=\"1.0607\" x2=\"17.0607\" y2=\"17.0607\"\/><line x1=\"17.0607\" y1=\"1.0607\" x2=\"1.0607\" y2=\"17.0607\"\/><\/svg><\/a>\n\t\t<div class=\"qwfw-m-form-wrapper\">\n\t\t\t<p class=\"qwfw-m-form-title\"><\/p>\n\t\t<\/div>\n\t<\/div>\n<\/div>\n"
-    };
+    var qodeWishlistForWooCommerceGlobal = { "adminBarHeight": "0", "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/", "restNonce": "ca0059bf63", "addToWishlistRestRoute": "qode-wishlist-for-woocommerce\/v1\/add-to-wishlist", "wishlistTableRestRoute": "qode-wishlist-for-woocommerce\/v1\/wishlist-table", "hideWishlistModalTime": "2500", "confirmModalHTML": "<div class=\"qwfw-confirm-modal qwfw-m qwfw--opened\">\n\t<div id=\"qwfw-confirm-modal-overlay\" class=\"qwfw-m-overlay\"><\/div>\n\t<div class=\"qwfw-m-content\">\n\t\t<a id=\"qwfw-confirm-close-icon\" class=\"qwfw-m-close\" href=\"#\" rel=\"noopener noreferrer\"><svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"18.1213\" height=\"18.1213\" viewBox=\"0 0 18.1213 18.1213\" stroke-miterlimit=\"10\" stroke-width=\"2\"><line x1=\"1.0607\" y1=\"1.0607\" x2=\"17.0607\" y2=\"17.0607\"\/><line x1=\"17.0607\" y1=\"1.0607\" x2=\"1.0607\" y2=\"17.0607\"\/><\/svg><\/a>\n\t\t<div class=\"qwfw-m-form-wrapper\">\n\t\t\t<p class=\"qwfw-m-form-title\"><\/p>\n\t\t\t<div class=\"qwfw-m-form-actions\">\n\t\t\t\t<button id=\"qwfw-confirm-button-false\" class=\"qwfw-m-form-button button qwfw--no\">Cancel<\/button>\n\t\t\t\t<button id=\"qwfw-confirm-button-true\" class=\"qwfw-m-form-button button qwfw--yes\">Delete<\/button>\n\t\t\t<\/div>\n\t\t<\/div>\n\t<\/div>\n<\/div>\n", "confirmSimpleModalHTML": "<div class=\"qwfw-confirm-modal qwfw-m qwfw--simple qwfw--opened\">\n\t<div id=\"qwfw-confirm-modal-overlay\" class=\"qwfw-m-overlay\"><\/div>\n\t<div class=\"qwfw-m-content\">\n\t\t<a id=\"qwfw-confirm-close-icon\" class=\"qwfw-m-close\" href=\"#\" rel=\"noopener noreferrer\"><svg  xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"18.1213\" height=\"18.1213\" viewBox=\"0 0 18.1213 18.1213\" stroke-miterlimit=\"10\" stroke-width=\"2\"><line x1=\"1.0607\" y1=\"1.0607\" x2=\"17.0607\" y2=\"17.0607\"\/><line x1=\"17.0607\" y1=\"1.0607\" x2=\"1.0607\" y2=\"17.0607\"\/><\/svg><\/a>\n\t\t<div class=\"qwfw-m-form-wrapper\">\n\t\t\t<p class=\"qwfw-m-form-title\"><\/p>\n\t\t<\/div>\n\t<\/div>\n<\/div>\n" };
     /* ]]> */
 </script>
 <script type="text/javascript"
@@ -1256,44 +645,26 @@
     id="swiper-js"></script>
 <script type="text/javascript" id="qode-variation-swatches-for-woocommerce-main-js-extra">
     /* <![CDATA[ */
-    var qodeVariationSwatchesForWooCommerceGlobal = {
-        "adminBarHeight": "0",
-        "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php",
-        "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/",
-        "restNonce": "ca0059bf63",
-        "notifyModalRestRouteName": "notify-modal",
-        "notifyModalRestRoute": "qode-variation-swatches-for-woocommerce\/v1\/notify-modal",
-        "changeImageOnHoverOption": "no",
-        "productAvailabilityOption": "no",
-        "disableOutOfStockOption": "yes",
-        "generateVariationUrlOption": "no",
-        "enableAjaxInLoop": "no",
-        "enableSelectedValueName": "no",
-        "iconNotify": "<svg class=\"\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"10.2139\" height=\"11\" viewBox=\"0 0 10.2139 11\"><path d=\"M10.2139,8.6426a.7963.7963,0,0,1-.7856.7861h-2.75A1.5712,1.5712,0,0,1,5.1069,11,1.5712,1.5712,0,0,1,3.5356,9.4287H.7856a.757.757,0,0,1-.5527-.2334A.7557.7557,0,0,1,0,8.6426a5.3877,5.3877,0,0,0,.5586-.54A4.8583,4.8583,0,0,0,1.08,7.3691a5.5234,5.5234,0,0,0,.4575-.9727,7.172,7.172,0,0,0,.3066-1.2646,10.0089,10.0089,0,0,0,.12-1.5957,2.5545,2.5545,0,0,1,.7183-1.7344A3.0328,3.0328,0,0,1,4.5669.8291.6156.6156,0,0,1,4.5176.59a.5694.5694,0,0,1,.1719-.418.593.593,0,0,1,.835,0A.5713.5713,0,0,1,5.6963.59.6156.6156,0,0,1,5.647.8291a3.0328,3.0328,0,0,1,1.8848.9727A2.5545,2.5545,0,0,1,8.25,3.5361a10.0089,10.0089,0,0,0,.12,1.5957,7.172,7.172,0,0,0,.3066,1.2646,5.5234,5.5234,0,0,0,.4575.9727,4.8583,4.8583,0,0,0,.5215.7334A5.3877,5.3877,0,0,0,10.2139,8.6426ZM5.2051,10.4111a.0871.0871,0,0,0-.0981-.0986.89.89,0,0,1-.8838-.8838.0984.0984,0,1,0-.1968,0,1.0786,1.0786,0,0,0,1.0806,1.08A.0864.0864,0,0,0,5.2051,10.4111Z\"\/><\/svg>",
-        "loopImageSelectors": "img.wp-post-image,img.attachment-woocommerce_thumbnail, img.qodef-list-image",
-        "isWooPage": "",
-        "setSrcsetOnLoopImage": "1",
-        "setSrcsetOnWooPagesLoopImage": ""
-    };
+    var qodeVariationSwatchesForWooCommerceGlobal = { "adminBarHeight": "0", "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php", "restUrl": "https:\/\/neoocular.qodeinteractive.com\/wp-json\/", "restNonce": "ca0059bf63", "notifyModalRestRouteName": "notify-modal", "notifyModalRestRoute": "qode-variation-swatches-for-woocommerce\/v1\/notify-modal", "changeImageOnHoverOption": "no", "productAvailabilityOption": "no", "disableOutOfStockOption": "yes", "generateVariationUrlOption": "no", "enableAjaxInLoop": "no", "enableSelectedValueName": "no", "iconNotify": "<svg class=\"\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"10.2139\" height=\"11\" viewBox=\"0 0 10.2139 11\"><path d=\"M10.2139,8.6426a.7963.7963,0,0,1-.7856.7861h-2.75A1.5712,1.5712,0,0,1,5.1069,11,1.5712,1.5712,0,0,1,3.5356,9.4287H.7856a.757.757,0,0,1-.5527-.2334A.7557.7557,0,0,1,0,8.6426a5.3877,5.3877,0,0,0,.5586-.54A4.8583,4.8583,0,0,0,1.08,7.3691a5.5234,5.5234,0,0,0,.4575-.9727,7.172,7.172,0,0,0,.3066-1.2646,10.0089,10.0089,0,0,0,.12-1.5957,2.5545,2.5545,0,0,1,.7183-1.7344A3.0328,3.0328,0,0,1,4.5669.8291.6156.6156,0,0,1,4.5176.59a.5694.5694,0,0,1,.1719-.418.593.593,0,0,1,.835,0A.5713.5713,0,0,1,5.6963.59.6156.6156,0,0,1,5.647.8291a3.0328,3.0328,0,0,1,1.8848.9727A2.5545,2.5545,0,0,1,8.25,3.5361a10.0089,10.0089,0,0,0,.12,1.5957,7.172,7.172,0,0,0,.3066,1.2646,5.5234,5.5234,0,0,0,.4575.9727,4.8583,4.8583,0,0,0,.5215.7334A5.3877,5.3877,0,0,0,10.2139,8.6426ZM5.2051,10.4111a.0871.0871,0,0,0-.0981-.0986.89.89,0,0,1-.8838-.8838.0984.0984,0,1,0-.1968,0,1.0786,1.0786,0,0,0,1.0806,1.08A.0864.0864,0,0,0,5.2051,10.4111Z\"\/><\/svg>", "loopImageSelectors": "img.wp-post-image,img.attachment-woocommerce_thumbnail, img.qodef-list-image", "isWooPage": "", "setSrcsetOnLoopImage": "1", "setSrcsetOnWooPagesLoopImage": "" };
     /* ]]> */
 </script>
 <script type="text/javascript"
     src="{{asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce/assets/js/main.min4bf4.js?ver=1.0.3')}}"
     id="qode-variation-swatches-for-woocommerce-main-js"></script>
 <script type="text/javascript"
-    src="../../static.zdassets.com/ekr/snippet7f99.js?key=af3078fd-a5ae-40da-bee0-e589b98c8603&amp;ver=6.8.1"
+    src="../static.zdassets.com/ekr/snippet7f99.js?key=af3078fd-a5ae-40da-bee0-e589b98c8603&amp;ver=6.8.1"
     id="ze-snippet"></script>
 <script type="text/javascript">
-    zE(function() {
-        $zopim(function() {
+    zE(function () {
+        $zopim(function () {
             var isChatEnabled = sessionStorage.getItem("qodeChatEnabled"),
                 appearingTime = 15000;
 
             if (isChatEnabled !== "no" && window.innerWidth > 1024) {
-                setTimeout(function() {
+                setTimeout(function () {
                     $zopim.livechat.window.show();
 
-                    $zopim.livechat.window.onHide(function() {
+                    $zopim.livechat.window.onHide(function () {
                         sessionStorage.setItem("qodeChatEnabled", "no");
                     });
                 }, appearingTime);
@@ -1314,90 +685,16 @@
     src="{{asset('v1/wp-content/themes/neoocular/inc/masonry/assets/js/plugins/packery-mode.pkgd.min0899.js?ver=6.8.1')}}"
     id="packery-js"></script>
 <script type="text/javascript"
+    src="{{asset('v1/wp-content/plugins/neoocular-core/assets/plugins/appear/jquery.appear0899.js?ver=6.8.1')}}"
+    id="jquery-appear-js"></script>
+<script type="text/javascript"
     src="{{asset('v1/wp-content/plugins/neoocular-core/assets/plugins/magnific-popup/jquery.magnific-popup.min0899.js?ver=6.8.1')}}"
     id="jquery-magnific-popup-js"></script>
-<script type="text/javascript"
-    src="{{asset('v1/wp-content/plugins/neoocular-core/inc/shortcodes/progress-bar/assets/js/plugins/jquery.lineProgressbar68b3.js?ver=1')}}"
-    id="progress-bar-line-js"></script>
+<script type="text/javascript" src="{{asset('v1/wp-includes/js/jquery/ui/accordion.minb37e.js?ver=1.13.3')}}"
+    id="jquery-ui-accordion-js"></script>
 <script type="text/javascript" id="mediaelement-core-js-before">
     /* <![CDATA[ */
-    var mejsL10n = {
-        "language": "en",
-        "strings": {
-            "mejs.download-file": "Download File",
-            "mejs.install-flash": "You are using a browser that does not have Flash player enabled or installed. Please turn on your Flash player plugin or download the latest version from https:\/\/get.adobe.com\/flashplayer\/",
-            "mejs.fullscreen": "Fullscreen",
-            "mejs.play": "Play",
-            "mejs.pause": "Pause",
-            "mejs.time-slider": "Time Slider",
-            "mejs.time-help-text": "Use Left\/Right Arrow keys to advance one second, Up\/Down arrows to advance ten seconds.",
-            "mejs.live-broadcast": "Live Broadcast",
-            "mejs.volume-help-text": "Use Up\/Down Arrow keys to increase or decrease volume.",
-            "mejs.unmute": "Unmute",
-            "mejs.mute": "Mute",
-            "mejs.volume-slider": "Volume Slider",
-            "mejs.video-player": "Video Player",
-            "mejs.audio-player": "Audio Player",
-            "mejs.captions-subtitles": "Captions\/Subtitles",
-            "mejs.captions-chapters": "Chapters",
-            "mejs.none": "None",
-            "mejs.afrikaans": "Afrikaans",
-            "mejs.albanian": "Albanian",
-            "mejs.arabic": "Arabic",
-            "mejs.belarusian": "Belarusian",
-            "mejs.bulgarian": "Bulgarian",
-            "mejs.catalan": "Catalan",
-            "mejs.chinese": "Chinese",
-            "mejs.chinese-simplified": "Chinese (Simplified)",
-            "mejs.chinese-traditional": "Chinese (Traditional)",
-            "mejs.croatian": "Croatian",
-            "mejs.czech": "Czech",
-            "mejs.danish": "Danish",
-            "mejs.dutch": "Dutch",
-            "mejs.english": "English",
-            "mejs.estonian": "Estonian",
-            "mejs.filipino": "Filipino",
-            "mejs.finnish": "Finnish",
-            "mejs.french": "French",
-            "mejs.galician": "Galician",
-            "mejs.german": "German",
-            "mejs.greek": "Greek",
-            "mejs.haitian-creole": "Haitian Creole",
-            "mejs.hebrew": "Hebrew",
-            "mejs.hindi": "Hindi",
-            "mejs.hungarian": "Hungarian",
-            "mejs.icelandic": "Icelandic",
-            "mejs.indonesian": "Indonesian",
-            "mejs.irish": "Irish",
-            "mejs.italian": "Italian",
-            "mejs.japanese": "Japanese",
-            "mejs.korean": "Korean",
-            "mejs.latvian": "Latvian",
-            "mejs.lithuanian": "Lithuanian",
-            "mejs.macedonian": "Macedonian",
-            "mejs.malay": "Malay",
-            "mejs.maltese": "Maltese",
-            "mejs.norwegian": "Norwegian",
-            "mejs.persian": "Persian",
-            "mejs.polish": "Polish",
-            "mejs.portuguese": "Portuguese",
-            "mejs.romanian": "Romanian",
-            "mejs.russian": "Russian",
-            "mejs.serbian": "Serbian",
-            "mejs.slovak": "Slovak",
-            "mejs.slovenian": "Slovenian",
-            "mejs.spanish": "Spanish",
-            "mejs.swahili": "Swahili",
-            "mejs.swedish": "Swedish",
-            "mejs.tagalog": "Tagalog",
-            "mejs.thai": "Thai",
-            "mejs.turkish": "Turkish",
-            "mejs.ukrainian": "Ukrainian",
-            "mejs.vietnamese": "Vietnamese",
-            "mejs.welsh": "Welsh",
-            "mejs.yiddish": "Yiddish"
-        }
-    };
+    var mejsL10n = { "language": "en", "strings": { "mejs.download-file": "Download File", "mejs.install-flash": "You are using a browser that does not have Flash player enabled or installed. Please turn on your Flash player plugin or download the latest version from https:\/\/get.adobe.com\/flashplayer\/", "mejs.fullscreen": "Fullscreen", "mejs.play": "Play", "mejs.pause": "Pause", "mejs.time-slider": "Time Slider", "mejs.time-help-text": "Use Left\/Right Arrow keys to advance one second, Up\/Down arrows to advance ten seconds.", "mejs.live-broadcast": "Live Broadcast", "mejs.volume-help-text": "Use Up\/Down Arrow keys to increase or decrease volume.", "mejs.unmute": "Unmute", "mejs.mute": "Mute", "mejs.volume-slider": "Volume Slider", "mejs.video-player": "Video Player", "mejs.audio-player": "Audio Player", "mejs.captions-subtitles": "Captions\/Subtitles", "mejs.captions-chapters": "Chapters", "mejs.none": "None", "mejs.afrikaans": "Afrikaans", "mejs.albanian": "Albanian", "mejs.arabic": "Arabic", "mejs.belarusian": "Belarusian", "mejs.bulgarian": "Bulgarian", "mejs.catalan": "Catalan", "mejs.chinese": "Chinese", "mejs.chinese-simplified": "Chinese (Simplified)", "mejs.chinese-traditional": "Chinese (Traditional)", "mejs.croatian": "Croatian", "mejs.czech": "Czech", "mejs.danish": "Danish", "mejs.dutch": "Dutch", "mejs.english": "English", "mejs.estonian": "Estonian", "mejs.filipino": "Filipino", "mejs.finnish": "Finnish", "mejs.french": "French", "mejs.galician": "Galician", "mejs.german": "German", "mejs.greek": "Greek", "mejs.haitian-creole": "Haitian Creole", "mejs.hebrew": "Hebrew", "mejs.hindi": "Hindi", "mejs.hungarian": "Hungarian", "mejs.icelandic": "Icelandic", "mejs.indonesian": "Indonesian", "mejs.irish": "Irish", "mejs.italian": "Italian", "mejs.japanese": "Japanese", "mejs.korean": "Korean", "mejs.latvian": "Latvian", "mejs.lithuanian": "Lithuanian", "mejs.macedonian": "Macedonian", "mejs.malay": "Malay", "mejs.maltese": "Maltese", "mejs.norwegian": "Norwegian", "mejs.persian": "Persian", "mejs.polish": "Polish", "mejs.portuguese": "Portuguese", "mejs.romanian": "Romanian", "mejs.russian": "Russian", "mejs.serbian": "Serbian", "mejs.slovak": "Slovak", "mejs.slovenian": "Slovenian", "mejs.spanish": "Spanish", "mejs.swahili": "Swahili", "mejs.swedish": "Swedish", "mejs.tagalog": "Tagalog", "mejs.thai": "Thai", "mejs.turkish": "Turkish", "mejs.ukrainian": "Ukrainian", "mejs.vietnamese": "Vietnamese", "mejs.welsh": "Welsh", "mejs.yiddish": "Yiddish" } };
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-includes/js/mediaelement/mediaelement-and-player.min1f61.js?ver=4.2.17')}}"
@@ -1406,13 +703,7 @@
     id="mediaelement-migrate-js"></script>
 <script type="text/javascript" id="mediaelement-js-extra">
     /* <![CDATA[ */
-    var _wpmejsSettings = {
-        "pluginPath": "\/wp-includes\/js\/mediaelement\/",
-        "classPrefix": "mejs-",
-        "stretching": "responsive",
-        "audioShortcodeLibrary": "mediaelement",
-        "videoShortcodeLibrary": "mediaelement"
-    };
+    var _wpmejsSettings = { "pluginPath": "\/wp-includes\/js\/mediaelement\/", "classPrefix": "mejs-", "stretching": "responsive", "audioShortcodeLibrary": "mediaelement", "videoShortcodeLibrary": "mediaelement" };
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-includes/js/mediaelement/wp-mediaelement.min0899.js?ver=6.8.1')}}"
@@ -1430,32 +721,7 @@
     id="photoswipe-ui-default-js" defer="defer" data-wp-strategy="defer"></script>
 <script type="text/javascript" id="wc-single-product-js-extra">
     /* <![CDATA[ */
-    var wc_single_product_params = {
-        "i18n_required_rating_text": "Please select a rating",
-        "review_rating_required": "yes",
-        "flexslider": {
-            "rtl": false,
-            "animation": "slide",
-            "smoothHeight": true,
-            "directionNav": false,
-            "controlNav": "thumbnails",
-            "slideshow": false,
-            "animationSpeed": 500,
-            "animationLoop": false,
-            "allowOneSlide": false
-        },
-        "zoom_enabled": "1",
-        "zoom_options": [],
-        "photoswipe_enabled": "1",
-        "photoswipe_options": {
-            "shareEl": false,
-            "closeOnScroll": false,
-            "history": false,
-            "hideAnimationDuration": 0,
-            "showAnimationDuration": 0
-        },
-        "flexslider_enabled": ""
-    };
+    var wc_single_product_params = { "i18n_required_rating_text": "Please select a rating", "review_rating_required": "yes", "flexslider": { "rtl": false, "animation": "slide", "smoothHeight": true, "directionNav": false, "controlNav": "thumbnails", "slideshow": false, "animationSpeed": 500, "animationLoop": false, "allowOneSlide": false }, "zoom_enabled": "1", "zoom_options": [], "photoswipe_enabled": "1", "photoswipe_options": { "shareEl": false, "closeOnScroll": false, "history": false, "hideAnimationDuration": 0, "showAnimationDuration": 0 }, "flexslider_enabled": "" };
     /* ]]> */
 </script>
 <script type="text/javascript"
@@ -1468,155 +734,19 @@
     id="elementor-webpack-runtime-js"></script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/elementor/assets/js/frontend-modules.min28fc.js?ver=3.23.3')}}"
     id="elementor-frontend-modules-js"></script>
-<script type="text/javascript" src="{{asset('v1/wp-content/plugins/elementor/assets/lib/waypoints/waypoints.min05da.js?ver=4.0.2')}}"
+<script type="text/javascript"
+    src="{{asset('v1/wp-content/plugins/elementor/assets/lib/waypoints/waypoints.min05da.js?ver=4.0.2')}}"
     id="elementor-waypoints-js"></script>
 <script type="text/javascript" id="elementor-frontend-js-before">
     /* <![CDATA[ */
-    var elementorFrontendConfig = {
-        "environmentMode": {
-            "edit": false,
-            "wpPreview": false,
-            "isScriptDebug": false
-        },
-        "i18n": {
-            "shareOnFacebook": "Share on Facebook",
-            "shareOnTwitter": "Share on Twitter",
-            "pinIt": "Pin it",
-            "download": "Download",
-            "downloadImage": "Download image",
-            "fullscreen": "Fullscreen",
-            "zoom": "Zoom",
-            "share": "Share",
-            "playVideo": "Play Video",
-            "previous": "Previous",
-            "next": "Next",
-            "close": "Close",
-            "a11yCarouselWrapperAriaLabel": "Carousel | Horizontal scrolling: Arrow Left & Right",
-            "a11yCarouselPrevSlideMessage": "Previous slide",
-            "a11yCarouselNextSlideMessage": "Next slide",
-            "a11yCarouselFirstSlideMessage": "This is the first slide",
-            "a11yCarouselLastSlideMessage": "This is the last slide",
-            "a11yCarouselPaginationBulletMessage": "Go to slide"
-        },
-        "is_rtl": false,
-        "breakpoints": {
-            "xs": 0,
-            "sm": 480,
-            "md": 768,
-            "lg": 1025,
-            "xl": 1440,
-            "xxl": 1600
-        },
-        "responsive": {
-            "breakpoints": {
-                "mobile": {
-                    "label": "Mobile Portrait",
-                    "value": 767,
-                    "default_value": 767,
-                    "direction": "max",
-                    "is_enabled": true
-                },
-                "mobile_extra": {
-                    "label": "Mobile Landscape",
-                    "value": 880,
-                    "default_value": 880,
-                    "direction": "max",
-                    "is_enabled": false
-                },
-                "tablet": {
-                    "label": "Tablet Portrait",
-                    "value": 1024,
-                    "default_value": 1024,
-                    "direction": "max",
-                    "is_enabled": true
-                },
-                "tablet_extra": {
-                    "label": "Tablet Landscape",
-                    "value": 1200,
-                    "default_value": 1200,
-                    "direction": "max",
-                    "is_enabled": false
-                },
-                "laptop": {
-                    "label": "Laptop",
-                    "value": 1366,
-                    "default_value": 1366,
-                    "direction": "max",
-                    "is_enabled": false
-                },
-                "widescreen": {
-                    "label": "Widescreen",
-                    "value": 2400,
-                    "default_value": 2400,
-                    "direction": "min",
-                    "is_enabled": false
-                }
-            }
-        },
-        "version": "3.23.3",
-        "is_static": false,
-        "experimentalFeatures": {
-            "additional_custom_breakpoints": true,
-            "container_grid": true,
-            "e_swiper_latest": true,
-            "e_nested_atomic_repeaters": true,
-            "e_onboarding": true,
-            "home_screen": true,
-            "ai-layout": true,
-            "landing-pages": true,
-            "e_lazyload": true
-        },
-        "urls": {
-            "assets": "https:\/\/neoocular.qodeinteractive.com\/wp-content\/plugins\/elementor\/assets\/",
-            "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php"
-        },
-        "nonces": {
-            "floatingButtonsClickTracking": "ba0918763b"
-        },
-        "swiperClass": "swiper",
-        "settings": {
-            "page": [],
-            "editorPreferences": []
-        },
-        "kit": {
-            "active_breakpoints": ["viewport_mobile", "viewport_tablet"],
-            "lightbox_enable_counter": "yes",
-            "lightbox_enable_fullscreen": "yes",
-            "lightbox_enable_zoom": "yes",
-            "lightbox_enable_share": "yes",
-            "lightbox_title_src": "title",
-            "lightbox_description_src": "description"
-        },
-        "post": {
-            "id": 3100,
-            "title": "Eyewear%20Home%20%E2%80%93%20Neo%20Ocular",
-            "excerpt": "",
-            "featuredImage": false
-        }
-    };
+    var elementorFrontendConfig = { "environmentMode": { "edit": false, "wpPreview": false, "isScriptDebug": false }, "i18n": { "shareOnFacebook": "Share on Facebook", "shareOnTwitter": "Share on Twitter", "pinIt": "Pin it", "download": "Download", "downloadImage": "Download image", "fullscreen": "Fullscreen", "zoom": "Zoom", "share": "Share", "playVideo": "Play Video", "previous": "Previous", "next": "Next", "close": "Close", "a11yCarouselWrapperAriaLabel": "Carousel | Horizontal scrolling: Arrow Left & Right", "a11yCarouselPrevSlideMessage": "Previous slide", "a11yCarouselNextSlideMessage": "Next slide", "a11yCarouselFirstSlideMessage": "This is the first slide", "a11yCarouselLastSlideMessage": "This is the last slide", "a11yCarouselPaginationBulletMessage": "Go to slide" }, "is_rtl": false, "breakpoints": { "xs": 0, "sm": 480, "md": 768, "lg": 1025, "xl": 1440, "xxl": 1600 }, "responsive": { "breakpoints": { "mobile": { "label": "Mobile Portrait", "value": 767, "default_value": 767, "direction": "max", "is_enabled": true }, "mobile_extra": { "label": "Mobile Landscape", "value": 880, "default_value": 880, "direction": "max", "is_enabled": false }, "tablet": { "label": "Tablet Portrait", "value": 1024, "default_value": 1024, "direction": "max", "is_enabled": true }, "tablet_extra": { "label": "Tablet Landscape", "value": 1200, "default_value": 1200, "direction": "max", "is_enabled": false }, "laptop": { "label": "Laptop", "value": 1366, "default_value": 1366, "direction": "max", "is_enabled": false }, "widescreen": { "label": "Widescreen", "value": 2400, "default_value": 2400, "direction": "min", "is_enabled": false } } }, "version": "3.23.3", "is_static": false, "experimentalFeatures": { "additional_custom_breakpoints": true, "container_grid": true, "e_swiper_latest": true, "e_nested_atomic_repeaters": true, "e_onboarding": true, "home_screen": true, "ai-layout": true, "landing-pages": true, "e_lazyload": true }, "urls": { "assets": "https:\/\/neoocular.qodeinteractive.com\/wp-content\/plugins\/elementor\/assets\/", "ajaxurl": "https:\/\/neoocular.qodeinteractive.com\/wp-admin\/admin-ajax.php" }, "nonces": { "floatingButtonsClickTracking": "ba0918763b" }, "swiperClass": "swiper", "settings": { "page": [], "editorPreferences": [] }, "kit": { "active_breakpoints": ["viewport_mobile", "viewport_tablet"], "lightbox_enable_counter": "yes", "lightbox_enable_fullscreen": "yes", "lightbox_enable_zoom": "yes", "lightbox_enable_share": "yes", "lightbox_title_src": "title", "lightbox_description_src": "description" }, "post": { "id": 65, "title": "Neo%20Ocular%20%E2%80%93%20Optician%20and%20Optical%20Store", "excerpt": "", "featuredImage": false } };
     /* ]]> */
 </script>
 <script type="text/javascript" src="{{asset('v1/wp-content/plugins/elementor/assets/js/frontend.min28fc.js?ver=3.23.3')}}"
     id="elementor-frontend-js"></script>
 <script type="text/javascript" id="neoocular-core-elementor-js-extra">
     /* <![CDATA[ */
-    var qodefElementorGlobal = {
-        "vars": {
-            "elementorSectionHandler": {
-                "924c8f9": [{
-                    "parallax_type": "parallax",
-                    "parallax_image": {
-                        "url": "https:\/\/neoocular.qodeinteractive.com\/wp-content\/uploads\/2021\/09\/h4-paralax-img-02.jpg",
-                        "id": 9494,
-                        "size": "",
-                        "alt": "c",
-                        "source": "library"
-                    }
-                }]
-            },
-            "elementorColumnHandler": ""
-        }
-    };
+    var qodefElementorGlobal = { "vars": { "elementorSectionHandler": { "162e224": [{ "parallax_type": "parallax", "parallax_image": { "url": "https:\/\/neoocular.qodeinteractive.com\/wp-content\/uploads\/2021\/10\/h1-paralax-img-00001.jpg", "id": 11167, "size": "", "alt": "c", "source": "library" } }] }, "elementorColumnHandler": "" } };
     /* ]]> */
 </script>
 <script type="text/javascript"
@@ -1626,74 +756,61 @@
     src="{{asset('v1/wp-content/plugins/qode-quick-view-for-woocommerce/inc/plugins/elementor/assets/js/elementor0899.js?ver=6.8.1')}}"
     id="qode-quick-view-for-woocommerce-elementor-js"></script>
 <script type="text/javascript"
-        src="{{asset('v1/wp-content/plugins/qode-wishlist-for-woocommerce/inc/plugins/elementor/assets/js/elementor0899.js?ver=6.8.1')}}"
+    src="{{asset('v1/wp-content/plugins/qode-wishlist-for-woocommerce/inc/plugins/elementor/assets/js/elementor0899.js?ver=6.8.1')}}"
     id="qode-wishlist-for-woocommerce-elementor-js"></script>
 <script id="rs-initialisation-scripts">
     var tpj = jQuery;
 
-    var revapi5;
+    var revapi9;
 
     if (window.RS_MODULES === undefined) window.RS_MODULES = {};
     if (RS_MODULES.modules === undefined) RS_MODULES.modules = {};
-    RS_MODULES.modules["revslider51"] = {
-        once: RS_MODULES.modules["revslider51"] !== undefined ? RS_MODULES.modules["revslider51"].once : undefined,
-        init: function() {
-            window.revapi5 = window.revapi5 === undefined || window.revapi5 === null || window.revapi5
-                .length === 0 ? document.getElementById("rev_slider_5_1") : window.revapi5;
-            if (window.revapi5 === null || window.revapi5 === undefined || window.revapi5.length == 0) {
-                window.revapi5initTry = window.revapi5initTry === undefined ? 0 : window.revapi5initTry + 1;
-                if (window.revapi5initTry < 20) requestAnimationFrame(function() {
-                    RS_MODULES.modules["revslider51"].init()
-                });
-                return;
-            }
-            window.revapi5 = jQuery(window.revapi5);
-            if (window.revapi5.revolution == undefined) {
-                revslider_showDoubleJqueryError("rev_slider_5_1");
-                return;
-            }
-            revapi5.revolutionInit({
-                revapi: "revapi5",
+    RS_MODULES.modules["revslider91"] = {
+        once: RS_MODULES.modules["revslider91"] !== undefined ? RS_MODULES.modules["revslider91"].once : undefined, init: function () {
+            window.revapi9 = window.revapi9 === undefined || window.revapi9 === null || window.revapi9.length === 0 ? document.getElementById("rev_slider_9_1") : window.revapi9;
+            if (window.revapi9 === null || window.revapi9 === undefined || window.revapi9.length == 0) { window.revapi9initTry = window.revapi9initTry === undefined ? 0 : window.revapi9initTry + 1; if (window.revapi9initTry < 20) requestAnimationFrame(function () { RS_MODULES.modules["revslider91"].init() }); return; }
+            window.revapi9 = jQuery(window.revapi9);
+            if (window.revapi9.revolution == undefined) { revslider_showDoubleJqueryError("rev_slider_9_1"); return; }
+            revapi9.revolutionInit({
+                revapi: "revapi9",
                 DPR: "dpr",
                 sliderLayout: "fullscreen",
-                duration: "3500ms",
                 visibilityLevels: "1920,1700,1025,680",
                 gridwidth: "1300,1100,600,300",
-                gridheight: "1100,640,800,500",
+                gridheight: "900,600,820,600",
                 lazyType: "smart",
                 perspective: 600,
                 perspectiveType: "global",
-                editorheight: "1100,640,800,500",
+                editorheight: "900,600,820,600",
                 responsiveLevels: "1920,1700,1025,680",
-                progressBar: {
-                    disableProgressBar: true
-                },
+                fullScreenOffset: "30px",
+                progressBar: { disableProgressBar: true },
                 navigation: {
-                    mouseScrollNavigation: "on",
-                    threshold: 10,
-                    wheelViewPort: "10%",
-                    wheelCallDelay: 100,
+                    wheelCallDelay: 1000,
                     onHoverStop: false,
                     touch: {
                         touchenabled: true
                     },
-                    bullets: {
+                    arrows: {
                         enable: true,
-                        tmp: "",
-                        style: "custom_light",
+                        tmp: "<div class=\"qodef-rev-slider-arrow\"><svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"	 width=\"35.667px\" height=\"69.083px\" viewBox=\"0 0 35.667 69.083\" enable-background=\"new 0 0 35.667 69.083\" xml:space=\"preserve\"><polyline points=\"0.917,0.583 34.752,34.417 0.752,68.417 \"/></svg></div>",
+                        style: "qodef-rev-nav",
                         hide_onmobile: true,
-                        hide_under: 778,
-                        h_align: "right",
-                        v_align: "center",
-                        h_offset: 70,
-                        v_offset: 0,
-                        direction: "vertical"
+                        hide_under: "1250px",
+                        left: {
+                            h_offset: 30,
+                            v_offset: 70
+                        },
+                        right: {
+                            h_offset: 30,
+                            v_offset: 70
+                        }
                     }
                 },
                 viewPort: {
                     global: true,
                     globalDist: "-200px",
-                    enable: true,
+                    enable: false,
                     visible_area: "1px"
                 },
                 fallbacks: {
@@ -1704,7 +821,5 @@
         }
     } // End of RevInitScript
 
-    if (window.RS_MODULES.checkMinimal !== undefined) {
-        window.RS_MODULES.checkMinimal();
-    };
+    if (window.RS_MODULES.checkMinimal !== undefined) { window.RS_MODULES.checkMinimal(); };
 </script>
