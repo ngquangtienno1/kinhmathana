@@ -17,14 +17,14 @@ class BlogController extends Controller
             ->active()
             ->published();
         if ($query) {
-            $newsQuery->where(function($q) use ($query) {
+            $newsQuery->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%$query%")
-                  ->orWhere('summary', 'like', "%$query%") ;
+                    ->orWhere('summary', 'like', "%$query%");
             });
         }
         $news = $newsQuery->orderByDesc('published_at')->paginate(5)->withQueryString();
         $categories = NewsCategory::where('is_active', true)
-            ->withCount(['news' => function($q) {
+            ->withCount(['news' => function ($q) {
                 $q->active()->published();
             }])
             ->orderBy('name')

@@ -462,8 +462,8 @@
                                         <ul class="sub-menu">
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2686">
-                                                <a href="cart/index.html"><span
-                                                        class="qodef-menu-item-text">Cart</span></a>
+                                                <a href="{{ route('client.cart.index') }}"><span
+                                                        class="qodef-menu-item-text">Giỏ hàng</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
@@ -997,8 +997,8 @@
                                         <ul class="sub-menu">
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2686">
-                                                <a href="cart/index.html"><span
-                                                        class="qodef-menu-item-text">Cart</span></a>
+                                                <a href="{{ route('client.cart.index') }}"><span
+                                                        class="qodef-menu-item-text">Giỏ hàng</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
