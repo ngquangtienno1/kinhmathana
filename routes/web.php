@@ -6,50 +6,49 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
-
+use App\Http\Controllers\Client\VoucherController;
+use App\Http\Controllers\Client\BlogController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\OrderController;
+use App\Http\Controllers\Client\FaqClientController;
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 // ================== Admin Controllers ===================
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Client\BlogController;
-use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TicketController;
-use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
-use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SphericalController;
 use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Admin\CylindricalController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
-use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
-
-
-// Authentication
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Client\HomeController as ClientHomeController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Client\ProductController as ClientProductController;
+
+// Authentication
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\AuthenticationClientController;
 
 // Redirect login
 Route::get('/', function () {
@@ -89,16 +88,16 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
-      // Product routes
-        Route::prefix('products')->name('products.')->group(function () {
-            Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
-            Route::get('list', [ClientProductController::class, 'list'])->name('list'); // Dạng bảng
-            Route::get('{slug}', [ClientProductController::class, 'show'])->name('show'); // Chi tiết
-            // Wishlist
-            Route::post('wishlist/add/{product}', [ClientProductController::class, 'addToWishlist'])->name('wishlist.add');
-            // Đánh giá
-            Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
-        });
+    // Product routes
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
+        Route::get('list', [ClientProductController::class, 'list'])->name('list'); // Dạng bảng
+        Route::get('{slug}', [ClientProductController::class, 'show'])->name('show'); // Chi tiết
+        // Wishlist
+        Route::post('wishlist/add/{product}', [ClientProductController::class, 'addToWishlist'])->name('wishlist.add');
+        // Đánh giá
+        Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
+    });
 
     Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -121,8 +120,8 @@ Route::prefix('client')->name('client.')->group(function () {
 
     Route::prefix('blog')->name('blog.')->group(function () {
         Route::get('/', [BlogController::class, 'index'])->name('index');
-        Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
         Route::post('/{slug}/comment', [BlogController::class, 'comment'])->name('comment');
+        Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
     });
 
     Route::prefix('brand')->name('brand.')->group(function () {
@@ -130,6 +129,9 @@ Route::prefix('client')->name('client.')->group(function () {
     });
     Route::prefix('faq')->name('faq.')->group(function () {
         Route::get('/', [FaqClientController::class, 'index'])->name('index');
+    });
+    Route::prefix('voucher')->name('voucher.')->group(function () {
+        Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
 });
 
@@ -692,4 +694,3 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:gui-email-lien-he']);
     });
 });
-

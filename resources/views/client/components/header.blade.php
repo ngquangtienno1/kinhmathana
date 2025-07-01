@@ -144,7 +144,7 @@
                 <ul id="menu-main-menu-1" class="menu">
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Home<svg
+                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Home<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -223,8 +223,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
-                                        <a href="vouchers/index.html"><span
-                                                class="qodef-menu-item-text">Vouchers</span></a>
+                                        <a href="{{ route('client.voucher.index') }}"><span
+                                                class="qodef-menu-item-text">Mã giảm giá</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3536">
@@ -257,7 +257,7 @@
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-113 qodef--hide-link qodef-menu-item--wide">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop<svg
+                        <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Sản phẩm<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
