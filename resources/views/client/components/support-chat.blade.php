@@ -1,33 +1,166 @@
-<div class="support-chat-container">
-  <div class="container-fluid support-chat">
-    <div class="card bg-body-emphasis">
-      <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom border-translucent">
-        <h5 class="mb-0 d-flex align-items-center gap-2">Demo widget<span class="fa-solid fa-circle text-success fs-11"></span></h5>
-        <div class="btn-reveal-trigger"><button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-body"></span></button>
-          <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item" href="#">Request a callback</a><a class="dropdown-item" href="#">Search in chat</a><a class="dropdown-item" href="#">Show history</a><a class="dropdown-item" href="#">Report to Admin</a><a class="dropdown-item btn-support-chat" href="#">Close Support</a></div>
+<a id="qodef-back-to-top" href="#" class="qodef--predefined">
+    <span class="qodef-back-to-top-icon">
+        <span class="qodef-icon-elegant-icons arrow_carrot-up"></span> </span>
+</a>
+<div id="qodef-subscribe-popup-modal" class="qodef-sp-holder qodef-sp-prevent-session">
+    <div class="qodef-sp-inner">
+        <a class="qodef-sp-close" href="javascript:void(0)">
+            <span class="qodef-icon-elegant-icons icon_close"></span> </a>
+        <div class="qodef-sp-image-container">
+            <img src="{{asset('v1/wp-content/uploads/2021/08/Newsletter-backgrounf-img.jpg')}}" />
         </div>
-      </div>
-      <div class="card-body chat p-0">
-        <div class="d-flex flex-column-reverse scrollbar h-100 p-3">
-          <div class="text-end mt-6"><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#">
-              <p class="mb-0 fw-semibold fs-9">I need help with something</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#">
-              <p class="mb-0 fw-semibold fs-9">I can't reorder a product I previously ordered</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#">
-              <p class="mb-0 fw-semibold fs-9">How do I place an order?</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-            </a><a class="false d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#">
-              <p class="mb-0 fw-semibold fs-9">My payment method not working</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-            </a></div>
-          <div class="text-center mt-auto">
-            <div class="avatar avatar-3xl status-online"><img class="rounded-circle border border-3 border-light-subtle" src="{{ asset('v1/assets/img/team/30.webp') }}" alt="" /></div>
-            <h5 class="mt-2 mb-3">Eric</h5>
-            <p class="text-center text-body-emphasis mb-0">Ask us anything – we'll get back to you here or by email within 24 hours.</p>
-          </div>
+        <div class="qodef-sp-content-container">
+            <h4 class="qodef-sp-title">Đăng ký nhận bản tin của chúng tôi để được giảm giá 20%</h4>
+            <p class="qodef-sp-subtitle">Mua online và nhận ưu đãi</p>
+
+
+            <div class="wpcf7 no-js" id="wpcf7-f676-o1" lang="en-US" dir="ltr">
+                <div class="screen-reader-response">
+                    <p role="status" aria-live="polite" aria-atomic="true"></p>
+                    <ul></ul>
+                </div>
+                <form action="https://neoocular.qodeinteractive.com/eyewear-home/#wpcf7-f676-o1" method="post"
+                    class="wpcf7-form init demo" aria-label="Contact form" novalidate="novalidate" data-status="init">
+                    <div style="display: none;">
+                        <input type="hidden" name="_wpcf7" value="676" />
+                        <input type="hidden" name="_wpcf7_version" value="5.9.8" />
+                        <input type="hidden" name="_wpcf7_locale" value="en_US" />
+                        <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f676-o1" />
+                        <input type="hidden" name="_wpcf7_container_post" value="0" />
+                        <input type="hidden" name="_wpcf7_posted_data_hash" value="" />
+                    </div>
+                    <div class="qodef-subscribe">
+                        <p><span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40"
+                                    maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                                    aria-required="true" aria-invalid="false" placeholder="Họ và tên" value=""
+                                    type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap"
+                                data-name="your-email"><input size="40" maxlength="400"
+                                    class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email"
+                                    aria-required="true" aria-invalid="false" placeholder="Email" value=""
+                                    type="email" name="your-email" /></span><br />
+                            <button
+                                class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
+                                type="submit"><span class="qodef-m-text">Đăng ký</span></button>
+                        </p>
+                    </div>
+                    <div class="wpcf7-response-output" aria-hidden="true"></div>
+                </form>
+            </div>
+
+            <div class="qodef-sp-prevent">
+                <div class="qodef-sp-prevent-inner">
+                    <span class="qodef-sp-prevent-input" data-value="no">
+                        <svg x="0px" y="0px" width="10.656px" height="10.692px" viewBox="0 0 10.656 10.692"
+                            enable-background="new 0 0 10.656 10.692" xml:space="preserve">
+                            <path
+                                d="M10.415,9.752c0.252,0.254,0.303,0.611,0.114,0.8l0,0c-0.188,0.188-0.545,0.136-0.798-0.118L0.242,0.913 C-0.011,0.658-0.062,0.3,0.127,0.111l0,0C0.316-0.075,0.673-0.023,0.926,0.23L10.415,9.752z" />
+                            <path
+                                d="M0.229,9.779c-0.253,0.253-0.305,0.609-0.117,0.799l0,0c0.188,0.189,0.545,0.138,0.799-0.115l9.515-9.495 c0.253-0.254,0.305-0.611,0.117-0.801l0,0C10.355-0.021,9.998,0.03,9.744,0.283L0.229,9.779z" />
+                        </svg>
+                    </span>
+                    <label class="qodef-sp-prevent-label">Không hiển thị lại</label>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="card-footer d-flex align-items-center gap-2 border-top border-translucent ps-3 pe-4 py-3">
-        <div class="d-flex align-items-center flex-1 gap-3 border border-translucent rounded-pill px-4"><input class="form-control outline-none border-0 flex-1 fs-9 px-0" type="text" placeholder="Write message" /><label class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0" for="supportChatPhotos"><span class="fa-solid fa-image"></span></label><input class="d-none" type="file" accept="image/*" id="supportChatPhotos" /><label class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0" for="supportChatAttachment"> <span class="fa-solid fa-paperclip"></span></label><input class="d-none" type="file" id="supportChatAttachment" /></div><button class="btn p-0 border-0 send-btn"><span class="fa-solid fa-paper-plane fs-9"></span></button>
-      </div>
     </div>
-  </div><button class="btn btn-support-chat p-0 border border-translucent"><span class="fs-8 btn-text text-primary text-nowrap">Chat demo</span><span class="ping-icon-wrapper mt-n4 ms-n6 mt-sm-0 ms-sm-2 position-absolute position-sm-relative"><span class="ping-icon-bg"></span><span class="fa-solid fa-circle ping-icon"></span></span><span class="fa-solid fa-headset text-primary fs-8 d-sm-none"></span><span class="fa-solid fa-chevron-down text-primary fs-7"></span></button>
-</div> 
+</div>
+<div id="qodef-membership-login-modal">
+    <div class="qodef-membership-login-modal-overlay"></div>
+    <div class="qodef-membership-login-modal-content">
+        <ul class="qodef-membership-login-modal-navigation qodef-m">
+            <li class="qodef-m-navigation-item qodef-e qodef--login">
+                <a class="qodef-e-link" href="#qodef-membership-login-modal-part">
+                    <span class="qodef-e-label">Đăng nhập</span>
+                </a>
+            </li>
+            <li class="qodef-m-navigation-item qodef-e qodef--register">
+                <a class="qodef-e-link" href="#qodef-membership-register-modal-part">
+                    <span class="qodef-e-label">Đăng ký</span>
+                </a>
+            </li>
+            <li class="qodef-m-navigation-item qodef-e qodef--reset-password">
+                <a class="qodef-e-link" href="#qodef-membership-reset-password-modal-part">
+                    <span class="qodef-e-label">Quên mật khẩu</span>
+                </a>
+            </li>
+        </ul>
+        <form id="qodef-membership-login-modal-part" class="qodef-m" method="GET">
+            <div class="qodef-m-fields">
+                <input type="text" class="qodef-m-user-name" name="user_name" placeholder="User Name *"
+                    value="" required pattern=".{3,}" autocomplete="username" />
+                <input type="password" class="qodef-m-user-password" name="user_password" placeholder="Password *"
+                    required autocomplete="current-password" />
+            </div>
+            <div class="qodef-m-links">
+                <div class="qodef-m-links-remember-me">
+                    <input type="checkbox" id="qodef-m-links-remember" class="qodef-m-links-remember"
+                        name="remember" value="forever" />
+                    <label for="qodef-m-links-remember" class="qodef-m-links-remember-label">Remember me</label>
+                </div>
+            </div>
+            <div class="qodef-m-action">
+                <a href="#" class="qodef-m-links-reset-password">Quên mật khẩu?</a>
+                <button type="submit"
+                    class="qodef-shortcode qodef-m qodef-m-action-button qodef-button qodef-layout--filled   ">
+                    <span class="qodef-btn-text">Đăng nhập</span></button><span
+                    class="qodef-shortcode qodef-m qodef-m-action-spinner fa-spin qodef-icon-holder  qodef-layout--normal">
+                    <span class="qodef-icon-font-awesome fa fa-spinner qodef-icon qodef-e" style=""></span>
+                </span>
+            </div>
+            <div class="qodef-m-response"></div>
+            <input type="hidden" class="qodef-m-request-type" name="request_type" value="login" />
+            <input type="hidden" class="qodef-m-redirect" name="redirect" value="../user-profile/index.html" />
+            <input type="hidden" id="neoocular-membership-ajax-login-nonce"
+                name="neoocular-membership-ajax-login-nonce" value="7f08a3f2ea" /><input type="hidden"
+                name="_wp_http_referer" value="/eyewear-home/" />
+        </form>
+        <form id="qodef-membership-register-modal-part" class="qodef-m" method="POST">
+            <div class="qodef-m-fields">
+                <input type="text" class="qodef-m-user-name" name="user_name" placeholder="Tên người dùng *"
+                    value="" required pattern=".{3,}" autocomplete="username" />
+                <input type="email" class="qodef-m-user-email" name="user_email" placeholder="Email *"
+                    value="" required autocomplete="email" />
+                <input type="password" class="qodef-m-user-password" name="user_password" placeholder="Mật khẩu *"
+                    required pattern=".{5,}" autocomplete="new-password" />
+                <input type="password" class="qodef-m-user-confirm-password" name="user_confirm_password"
+                    placeholder="Nhập lại mật khẩu *" required pattern=".{5,}" autocomplete="new-password" />
+            </div>
+
+            <div class="qodef-m-action">
+                <button type="submit"
+                    class="qodef-shortcode qodef-m qodef-m-action-button qodef-button qodef-layout--filled   ">
+                    <span class="qodef-btn-text">Đăng ký</span></button><span
+                    class="qodef-shortcode qodef-m qodef-m-action-spinner fa-spin qodef-icon-holder  qodef-layout--normal">
+                    <span class="qodef-icon-font-awesome fa fa-spinner qodef-icon qodef-e" style=""></span>
+                </span>
+            </div>
+            <div class="qodef-m-response"></div>
+            <input type="hidden" class="qodef-m-request-type" name="request_type" value="register" />
+            <input type="hidden" class="qodef-m-redirect" name="redirect" value="../user-profile/index.html" />
+            <input type="hidden" id="neoocular-membership-ajax-register-nonce"
+                name="neoocular-membership-ajax-register-nonce" value="495adf0a7a" /><input type="hidden"
+                name="_wp_http_referer" value="/eyewear-home/" />
+        </form>
+        <form id="qodef-membership-reset-password-modal-part" class="qodef-m" method="POST">
+            <div class="qodef-m-fields">
+                <label>Quên mật khẩu? Vui lòng nhập tên người dùng hoặc địa chỉ email. Bạn sẽ nhận được liên kết để tạo mật khẩu mới qua email.</label>
+                <input type="text" class="qodef-m-user-login" name="user_login" placeholder="Tên người dùng hoặc email"
+                    value="" required />
+            </div>
+            <div class="qodef-m-action">
+                <button type="submit"
+                    class="qodef-shortcode qodef-m qodef-m-action-button qodef-button qodef-layout--filled   ">
+                    <span class="qodef-btn-text">Quên mật khẩu</span></button><span
+                    class="qodef-shortcode qodef-m qodef-m-action-spinner fa-spin qodef-icon-holder  qodef-layout--normal">
+                    <span class="qodef-icon-font-awesome fa fa-spinner qodef-icon qodef-e" style=""></span>
+                </span>
+            </div>
+            <div class="qodef-m-response"></div>
+            <input type="hidden" class="qodef-m-request-type" name="request_type" value="reset-password" />
+            <input type="hidden" class="qodef-m-redirect" name="redirect" value="../user-profile/index.html" />
+            <input type="hidden" id="neoocular-membership-ajax-reset-password-nonce"
+                name="neoocular-membership-ajax-reset-password-nonce" value="26478ee8ec" /><input type="hidden"
+                name="_wp_http_referer" value="/eyewear-home/" />
+        </form>
+    </div>
+</div>
