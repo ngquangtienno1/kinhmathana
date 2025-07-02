@@ -1,153 +1,415 @@
 @extends('client.layouts.app')
 
 @section('content')
-    <section class="pt-5 pb-9">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="mb-4">
-                        <h1 class="fw-bold mb-3">{{ $news->title }}</h1>
-                        <div class="d-flex align-items-center mb-3 text-muted small">
-                            <span class="me-3"><i class="fas fa-calendar-alt me-1"></i>
-                                {{ $news->published_at ? $news->published_at->format('d/m/Y') : '' }}</span>
-                            <span class="me-3"><i class="fas fa-user me-1"></i>
-                                {{ $news->author->name ?? 'Unknown' }}</span>
-                            @if ($news->category)
-                                <span class="badge bg-secondary me-3">{{ $news->category->name }}</span>
-                            @endif
-                            <span><i class="fas fa-eye me-1"></i> {{ $news->views }} lượt xem</span>
-                        </div>
-                    </div>
-                    @if ($news->image)
-                        <div class="mb-4 text-center">
-                            <img src="{{ asset('storage/' . $news->image) }}" alt="{{ $news->title }}"
-                                class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
-                        </div>
-                    @endif
-                    <div class="mb-4 fs-5 lh-lg text-body">
-                        {!! $news->content !!}
-                    </div>
-                    <div class="mb-5">
-                        <h3 class="fw-bold mb-4">Bài viết xem nhiều</h3>
-                        <div class="swiper most-viewed-swiper" style="padding-bottom: 32px;">
-                            <div class="swiper-wrapper">
-                                @foreach ($mostViewed as $item)
-                                    <div class="swiper-slide" style="max-width:220px;">
-                                        <a href="{{ route('client.blog.show', $item->slug) }}"
-                                            class="text-decoration-none text-reset">
-                                            <div class="card h-100 border-0 shadow-sm">
-                                                <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://via.placeholder.com/400x300?text=Blog+Image' }}"
-                                                    class="card-img-top" alt="{{ $item->title }}"
-                                                    style="height:140px; object-fit:cover;">
-                                                <div class="card-body p-2">
-                                                    <div class="small text-muted mb-1">
-                                                        {{ $item->published_at ? $item->published_at->format('d/m/Y') : '' }}
-                                                    </div>
-                                                    <div class="fw-semibold line-clamp-2" style="font-size:15px;">
-                                                        {{ $item->title }}</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="swiper-pagination mt-2"></div>
-                        </div>
-                    </div>
-                    <div class="mb-5">
-                        <h3 class="fw-bold mb-3">Bình Luận</h3>
-                        <div class="mb-4">
-                            <form method="POST" action="{{ route('client.blog.comment', $news->slug) }}"
-                                id="comment-form">
-                                @csrf
-                                <div class="mb-3">
-                                    <textarea class="form-control" name="content" rows="4" placeholder="Nhập bình luận..."></textarea>
-                                </div>
-                                <div class="row g-2 mb-3">
-                                    <div class="col-md-4"><input type="text" class="form-control" name="name"
-                                            placeholder="Nhập tên*" required></div>
-                                    <div class="col-md-4"><input type="email" class="form-control" name="email"
-                                            placeholder="admin@gmail.com" required></div>
-                                    <div class="col-md-4"><input type="text" class="form-control" name="website"
-                                            placeholder="Website"></div>
-                                </div>
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="saveInfo">
-                                    <label class="form-check-label small" for="saveInfo">Lưu tên của tôi, email, và trang
-                                        web trong
-                                        trình duyệt này cho lần bình luận kế tiếp của tôi.</label>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Bình luận</button>
-                            </form>
-                        </div>
-                        @if (session('success'))
-                            <div class="alert alert-success mt-3">{{ session('success') }}</div>
-                        @endif
-                        <div class="mt-4">
-                            @forelse($comments as $comment)
-                                <div class="mb-4 border-bottom pb-3">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <span class="fw-bold me-2">{{ $comment->user->name ?? 'Ẩn danh' }}</span>
-                                        <span
-                                            class="text-muted small">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
-                                    </div>
-                                    <div class="mb-2">{!! nl2br(e($comment->content)) !!}</div>
-                                    @if ($comment->replies->count())
-                                        <div class="ms-4 border-start ps-3">
-                                            @foreach ($comment->replies as $reply)
-                                                <div class="mb-2">
-                                                    <span
-                                                        class="fw-semibold text-primary">{{ $reply->user->name ?? 'Ẩn danh' }}:</span>
-                                                    <span>{!! nl2br(e($reply->content)) !!}</span>
-                                                    <span
-                                                        class="text-muted small ms-2">{{ $reply->created_at->format('d/m/Y H:i') }}</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-                            @empty
-                                <div class="text-muted">Chưa có bình luận nào.</div>
-                            @endforelse
-                        </div>
+    <div id="qodef-page-outer">
+        <div
+            class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
+            <div class="qodef-m-inner">
+                <div class="qodef-m-content qodef-content-grid">
+                    <h1 class="qodef-m-title entry-title">
+                        {{ $news->title }} </h1>
+                    <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
+                            href="{{ route('client.home') }}">
+                            <span itemprop="title">Trang chủ</span>
+                        </a>
+                        <span class="qodef-breadcrumbs-separator"></span>
+                        <span itemprop="title" class="qodef-breadcrumbs-current">{{ $news->category->name ?? '' }}</span>
+                        <span class="qodef-breadcrumbs-separator"></span>
+                        <span itemprop="title" class="qodef-breadcrumbs-current">{{ $news->title }}</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-@endsection
+        <div id="qodef-page-inner" class="qodef-content-grid">
+            <main id="qodef-page-content" class="qodef-grid qodef-layout--template qodef-gutter--big" role="main">
+                <div class="qodef-grid-inner clear">
+                    <div class="qodef-grid-item qodef-page-content-section qodef-col--9">
+                        <div class="qodef-blog qodef-m qodef--single">
+                            <article
+                                class="qodef-blog-item qodef-e post-2646 post type-post status-publish format-standard has-post-thumbnail hentry category-frame category-optic tag-brands tag-design tag-sight tag-trends">
+                                <div class="qodef-e-inner">
+                                    <div class="qodef-e-media">
+                                        <div class="qodef-e-media-image">
+                                            <img src="{{ $news->image ? asset('storage/' . $news->image) : asset('default-news.jpg') }}"
+                                                alt="{{ $news->title }}" style="max-width:100%;height:auto;" />
+                                        </div>
+                                    </div>
+                                    <div class="qodef-e-content">
+                                        <div class="qodef-e-top-holder">
+                                            <div class="post-meta-custom"
+                                                style="display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 15px; color: #555; margin-bottom: 18px;">
+                                                <span>
+                                                    <i class="fa fa-calendar"></i>
+                                                    {{ optional($news->published_at)->format('d/m/Y') }}
+                                                </span>
+                                                <span style="font-size: 18px; color: #bbb;">&bull;</span>
+                                                <span>
+                                                    <i class="fa fa-folder-open"></i>
+                                                    {{ $news->category->name ?? '' }}
+                                                </span>
+                                                <span style="font-size: 18px; color: #bbb;">&bull;</span>
+                                                <span>
+                                                    <i class="fa fa-user"></i>
+                                                    {{ $news->author->name ?? '' }}
+                                                </span>
+                                                <span style="font-size: 18px; color: #bbb;">&bull;</span>
+                                                <span>
+                                                    <i class="fa fa-eye"></i>
+                                                    Lượt xem: {{ $news->views }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="qodef-e-text">
+                                            <h1 class="qodef-e-title entry-title">{{ $news->title }}</h1>
+                                            <p class="qodef-e-excerpt">{{ $news->summary }}</p>
+                                            <div class="qodef-e-content-detail">{!! $news->content !!}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                            <div id="qodef-single-post-navigation" class="qodef-m">
+                                <div class="qodef-m-inner">
+                                    <a itemprop="url" class="qodef-m-nav qodef--next"
+                                        href="../what-is-blue-light/index.html">
+                                        <span class="qodef-m-nav-image">
+                                            <img loading="lazy" width="150" height="150"
+                                                src="../wp-content/uploads/2021/07/b-single-img-1-150x150.jpg"
+                                                class="attachment-thumbnail size-thumbnail wp-post-image" alt="c"
+                                                decoding="async"
+                                                srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/b-single-img-1-150x150.jpg 150w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/b-single-img-1-100x100.jpg 100w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/b-single-img-1-650x650.jpg 650w"
+                                                sizes="(max-width: 150px) 100vw, 150px" /> </span>
+                                        <span class="qodef-m-nav-info">
+                                            <span class="qodef-m-top">
+                                                <span class="qodef-m-nav-date">
+                                                    Jul 30 </span>
+                                                <span class="qodef-m-nav-cat">
+                                                    Frame, Optic </span>
+                                            </span>
+                                            <span class="qodef-m-nav-title">
+                                                What is blue light? </span>
+                                        </span>
 
-@push('scripts')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            new Swiper('.most-viewed-swiper', {
-                slidesPerView: 2,
-                spaceBetween: 16,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                breakpoints: {
-                    768: {
-                        slidesPerView: 3
-                    },
-                    992: {
-                        slidesPerView: 4
-                    },
-                    1200: {
-                        slidesPerView: 4
-                    },
-                },
-            });
-        });
-    </script>
-    <style>
-        .most-viewed-swiper .swiper-pagination {
-            position: static !important;
-            margin-top: 8px;
-            text-align: center;
-        }
-    </style>
-@endpush
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="qodef-author-info" class="qodef-m">
+                                <div class="qodef-m-inner">
+                                    @if ($relatedNews)
+                                        <div class="qodef-m-image">
+                                            <a href="{{ route('client.blog.show', $relatedNews->slug) }}">
+                                                <img loading="lazy"
+                                                    src="{{ $relatedNews->image ? asset('storage/' . $relatedNews->image) : asset('default-news.jpg') }}"
+                                                    width="193" height="198" alt="{{ $relatedNews->title }}"
+                                                    class="avatar avatar-198 wp-user-avatar wp-user-avatar-198 alignnone photo" />
+                                            </a>
+                                        </div>
+                                        <div class="qodef-m-content">
+                                            <h4 class="qodef-m-author vcard author">
+                                                <a href="{{ route('client.blog.show', $relatedNews->slug) }}">
+                                                    <span class="fn">{{ $relatedNews->author->name }}</span>
+                                                </a>
+                                            </h4>
+                                            <p class="qodef-m-description">{{ $relatedNews->summary }}</p>
+                                            <div style="font-size:13px;color:#888;margin-bottom:4px;">
+                                                <i class="fa fa-calendar"></i>
+                                                {{ optional($relatedNews->published_at)->format('d/m/Y') }}
+                                            </div>
+                                            <div style="margin-top:8px;">
+                                                <a href="{{ route('client.blog.show', $relatedNews->slug) }}"
+                                                    class="qodef-shortcode qodef-m qodef-button qodef-layout--textual qodef-html--link"
+                                                    style="font-size:13px;">Đọc bài viết</a>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div>Không có bài viết cùng danh mục.</div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div id="qodef-page-comments">
+                                <div id="qodef-page-comments-list" class="qodef-m">
+                                    <h3 class="qodef-m-title">Bình luận</h3>
+                                    <ul class="qodef-m-comments">
+                                        @forelse($comments as $comment)
+                                            <li class="qodef-comment-item qodef-e">
+                                                <div class="qodef-e-inner">
+                                                    <div class="qodef-e-image">
+                                                        <img loading="lazy"
+                                                            src="{{ $comment->user->avatar ?? asset('default-avatar.png') }}"
+                                                            width="64" height="64"
+                                                            alt="{{ $comment->user->name }}"
+                                                            class="avatar avatar-64 alignnone photo" />
+                                                    </div>
+                                                    <div class="qodef-e-content">
+                                                        <div class="qodef-e-date commentmetadata">
+                                                            <span>{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                                        </div>
+                                                        <h5 class="qodef-e-title vcard"><span
+                                                                class="fn">{{ $comment->user->name }}</span></h5>
+                                                        <div class="qodef-e-text">
+                                                            <p>{{ $comment->content }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @if ($comment->replies && $comment->replies->count())
+                                                    <ul class="children">
+                                                        @foreach ($comment->replies as $reply)
+                                                            <li class="qodef-comment-item qodef-e">
+                                                                <div class="qodef-e-inner">
+                                                                    <div class="qodef-e-image">
+                                                                        <img loading="lazy"
+                                                                            src="{{ $reply->user->avatar ?? asset('default-avatar.png') }}"
+                                                                            width="48" height="48"
+                                                                            alt="{{ $reply->user->name }}"
+                                                                            class="avatar avatar-48 alignnone photo" />
+                                                                    </div>
+                                                                    <div class="qodef-e-content">
+                                                                        <div class="qodef-e-date commentmetadata">
+                                                                            <span>{{ $reply->created_at->format('d/m/Y H:i') }}</span>
+                                                                        </div>
+                                                                        <h5 class="qodef-e-title vcard"><span
+                                                                                class="fn">{{ $reply->user->name }}</span>
+                                                                        </h5>
+                                                                        <div class="qodef-e-text">
+                                                                            <p>{{ $reply->content }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </li>
+                                        @empty
+                                            <li>
+                                                <div class="alert alert-info">Chưa có bình luận nào.</div>
+                                            </li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                                <div id="qodef-page-comments-form">
+                                    <div id="respond" class="comment-respond">
+                                        <h3 id="reply-title" class="comment-reply-title">Gửi bình luận</h3>
+                                        @if (session('success'))
+                                            <div class="alert alert-success"
+                                                style="background: #e6f9ed; border: 1.5px solid #2ecc71; color: #218c5a; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
+                                                <span style="font-size: 22px;">&#10003;</span>
+                                                <span>{{ session('success') }}</span>
+                                            </div>
+                                        @endif
+                                        @if ($errors->any())
+                                            <div class="alert alert-danger">
+                                                <ul style="margin-bottom:0;">
+                                                    @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+                                        @auth
+                                            <form action="{{ route('client.blog.comment', $news->slug) }}" method="POST"
+                                                id="commentform" class="qodef-comment-form">
+                                                @csrf
+                                                <p class="comment-notes">
+                                                    <span id="email-notes">Email của bạn sẽ không được công khai.</span>
+                                                    <span class="required-field-message">Các trường bắt buộc được đánh dấu
+                                                        <span class="required">*</span></span>
+                                                </p>
+                                                <p class="comment-form-comment">
+                                                    <textarea id="content" name="content" placeholder="Bình luận của bạn *" cols="45" rows="8"
+                                                        maxlength="2000" required></textarea>
+                                                    @error('content')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </p>
+                                                <p class="form-submit">
+                                                    <button name="submit" type="submit" id="submit"
+                                                        class="qodef-button qodef-layout--outlined" value="Gửi bình luận">
+                                                        <span class="qodef-m-text">Gửi bình luận</span>
+                                                    </button>
+                                                </p>
+                                            </form>
+                                        @else
+                                            <div class="alert alert-warning">Bạn cần <a
+                                                    href="{{ route('client.login') }}">đăng nhập</a> để gửi bình luận.</div>
+                                        @endauth
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="qodef-grid-item qodef-page-sidebar-section qodef-col--3">
+                        <aside id="qodef-page-sidebar" role="complementary">
+                            <div id="neoocular_core_title_widget-2" class="widget widget_neoocular_core_title_widget"
+                                data-area="qodef-main-sidebar">
+                                <h5 class="qodef-widget-title" style="margin-bottom: -10px">
+                                    Danh mục</h5>
+                            </div>
+                            <div id="block-6" class="widget widget_block widget_categories"
+                                data-area="qodef-main-sidebar">
+                                <ul class="wp-block-categories-list wp-block-categories">
+                                    @foreach ($categories as $cat)
+                                        <li class="cat-item">
+                                            <a href="{{ route('client.blog.index', ['category' => $cat->slug]) }}">{{ strtoupper($cat->name) }}
+                                                ({{ $cat->news_count }})
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <div id="neoocular_core_separator-2" class="widget widget_neoocular_core_separator"
+                                data-area="qodef-main-sidebar">
+                                <div class="qodef-shortcode qodef-m  qodef-separator clear ">
+                                    <div class="qodef-m-line" style="border-color: #ffffff;margin-top: 3px"></div>
+                                </div>
+                            </div>
+                            <div id="neoocular_core_title_widget-5" class="widget widget_neoocular_core_title_widget"
+                                data-area="qodef-main-sidebar">
+                                <h5 class="qodef-widget-title" style="margin-bottom: -3px">
+                                    Bài viết mới nhất </h5>
+                            </div>
+                            <div id="neoocular_core_simple_blog_list-3"
+                                class="widget widget_neoocular_core_simple_blog_list" data-area="qodef-main-sidebar">
+                                <div
+                                    class="qodef-shortcode qodef-m  qodef-blog qodef-item-layout--minimal  qodef-item-layout--minimal-image qodef-grid qodef-layout--columns  qodef-gutter--no qodef-col-num--1 qodef-item-layout--minimal qodef--no-bottom-space qodef-pagination--off qodef-responsive--predefined qodef-swiper-pagination--on">
+                                    <div class="qodef-grid-inner clear">
+                                        @foreach ($latestNews as $item)
+                                            <article class="qodef-e qodef-blog-item qodef-grid-item qodef-item--thumbnail">
+                                                <div class="qodef-e-inner">
+                                                    <div class="qodef-e-media">
+                                                        <div class="qodef-e-media-image">
+                                                            <a href="{{ route('client.blog.show', $item->slug) }}">
+                                                                <img loading="lazy" width="150" height="150"
+                                                                    src="{{ $item->image ? asset('storage/' . $item->image) : asset('default-news.jpg') }}"
+                                                                    class="attachment-thumbnail size-thumbnail qodef-list-image"
+                                                                    alt="" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="qodef-e-content">
+                                                        <div class="qodef-e-top-holder" style="margin: 0 0 1px 0">
+                                                            <div class="qodef-e-info">
+                                                                <span
+                                                                    class="entry-date published updated">{{ optional($item->published_at)->format('d/m/Y') }}</span>
+                                                                <div class="qodef-info-separator-end"></div>
+                                                                <a href="#">{{ $item->category->name ?? '' }}</a>
+                                                                <div class="qodef-info-separator-end"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="qodef-e-text">
+                                                            <h6 class="qodef-e-title entry-title">
+                                                                <a
+                                                                    href="{{ route('client.blog.show', $item->slug) }}">{{ $item->title }}</a>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="block-16" class="widget widget_block" data-area="qodef-main-sidebar">
+                                <div style="margin-bottom:-27px; margin-top:7px;">
+                                    <h5> Tags</h5>
+                                </div>
+                            </div>
+                            <div id="block-8" class="widget widget_block widget_tag_cloud"
+                                data-area="qodef-main-sidebar">
+                                <p class="wp-block-tag-cloud"><a href="../tag/brands/index.html"
+                                        class="tag-cloud-link tag-link-60 tag-link-position-1" style="font-size: 22pt;"
+                                        aria-label="Brands (17 items)">Brands<span class="tag-link-count"> (17)</span></a>
+                                    <a href="../tag/design/index.html"
+                                        class="tag-cloud-link tag-link-61 tag-link-position-2"
+                                        style="font-size: 20.30303030303pt;" aria-label="Design (14 items)">Design<span
+                                            class="tag-link-count"> (14)</span></a>
+                                    <a href="../tag/glasses/index.html"
+                                        class="tag-cloud-link tag-link-63 tag-link-position-3" style="font-size: 8pt;"
+                                        aria-label="Glasses (3 items)">Glasses<span class="tag-link-count"> (3)</span></a>
+                                    <a href="../tag/sight/index.html"
+                                        class="tag-cloud-link tag-link-64 tag-link-position-4"
+                                        style="font-size: 18.181818181818pt;" aria-label="Sight (11 items)">Sight<span
+                                            class="tag-link-count"> (11)</span></a>
+                                    <a href="../tag/trends/index.html"
+                                        class="tag-cloud-link tag-link-59 tag-link-position-5" style="font-size: 22pt;"
+                                        aria-label="Trends (17 items)">Trends<span class="tag-link-count"> (17)</span></a>
+                                    <a href="../tag/vibrant/index.html"
+                                        class="tag-cloud-link tag-link-62 tag-link-position-6"
+                                        style="font-size: 13.30303030303pt;" aria-label="Vibrant (6 items)">Vibrant<span
+                                            class="tag-link-count"> (6)</span></a>
+                                </p>
+                            </div>
+                            <div id="neoocular_core_separator-9" class="widget widget_neoocular_core_separator"
+                                data-area="qodef-main-sidebar">
+                                <div class="qodef-shortcode qodef-m  qodef-separator clear ">
+                                    <div class="qodef-m-line"
+                                        style="width: 0px;border-bottom-width: 0px;margin-top: 3px;margin-bottom: 0px">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="neoocular_core_title_widget-8" class="widget widget_neoocular_core_title_widget"
+                                data-area="qodef-main-sidebar">
+                                <h5 class="qodef-widget-title" style="margin-bottom: -12px">
+                                    Instagram </h5>
+                            </div>
+                            <div id="neoocular_core_instagram_list-2" class="widget widget_neoocular_core_instagram_list"
+                                data-area="qodef-main-sidebar">
+                                <div class="qodef-shortcode qodef-m  qodef-instagram-list qodef-instagram-columns"> </div>
+                            </div>
+                            <div id="neoocular_core_separator-5" class="widget widget_neoocular_core_separator"
+                                data-area="qodef-main-sidebar">
+                                <div class="qodef-shortcode qodef-m  qodef-separator clear ">
+                                    <div class="qodef-m-line"
+                                        style="width: 0px;border-bottom-width: 0px;margin-top: 14px"></div>
+                                </div>
+                            </div>
+                            <div id="block-25" class="widget widget_block widget_search" data-area="qodef-main-sidebar">
+                                <form role="search" method="get"
+                                    class="wp-block-search__button-outside wp-block-search__text-button qodef-search-form wp-block-search"
+                                    action="https://neoocular.qodeinteractive.com/"><label for="qodef-search-form-1"
+                                        class="qodef-search-form-label screen-reader-text">Search</label>
+                                    <div class="qodef-search-form-inner "><input type="search" id="qodef-search-form-1"
+                                            class="qodef-search-form-field " name="s" value=""
+                                            placeholder="Search" required /><button type="submit"
+                                            class="qodef-search-form-button  qodef--button-outside ">Search</button></div>
+                                </form>
+                            </div>
+                            <div id="neoocular_core_separator-8" class="widget widget_neoocular_core_separator"
+                                data-area="qodef-main-sidebar">
+                                <div class="qodef-shortcode qodef-m  qodef-separator clear ">
+                                    <div class="qodef-m-line"
+                                        style="width: 0px;border-bottom-width: 0px;margin-top: 19px"></div>
+                                </div>
+                            </div>
+                            <div id="neoocular_core_social_icons_group-8"
+                                class="widget widget_neoocular_core_social_icons_group" data-area="qodef-main-sidebar">
+                                <h5 class="qodef-widget-title">Follow Us</h5>
+                                <div class="qodef-social-icons-group">
+                                    <span class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
+                                        data-hover-color="#000000" style="margin: -1px 22px 0 0"> <a itemprop="url"
+                                            href="https://www.facebook.com/QodeInteractive/" target="_blank"> <span
+                                                class="qodef-icon-elegant-icons social_facebook qodef-icon qodef-e"
+                                                style="color: #1c1c1c"></span> </a> </span><span
+                                        class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
+                                        data-hover-color="#000000" style="margin: -1px 22px 0 0 "> <a itemprop="url"
+                                            href="https://twitter.com/qodeinteractive" target="_blank"> <span
+                                                class="qodef-icon-elegant-icons social_twitter qodef-icon qodef-e"
+                                                style="color: #1c1c1c"></span> </a> </span><span
+                                        class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
+                                        data-hover-color="#000000" style="margin: -1px 23px 0 0 "> <a itemprop="url"
+                                            href="https://www.instagram.com/qodeinteractive/" target="_blank"> <span
+                                                class="qodef-icon-elegant-icons social_instagram qodef-icon qodef-e"
+                                                style="color: #1c1c1c"></span> </a> </span><span
+                                        class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
+                                        data-hover-color="#000000" style="margin: -1px 0px 0px 0px"> <a itemprop="url"
+                                            href="https://www.pinterest.com/qodeinteractive/" target="_blank"> <span
+                                                class="qodef-icon-elegant-icons social_pinterest qodef-icon qodef-e"
+                                                style="color: #1c1c1c"></span> </a> </span>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </main>
+        </div><!-- close #qodef-page-inner div from header.php -->
+    </div><!-- close #qodef-page-outer div from header.php -->
+@endsection

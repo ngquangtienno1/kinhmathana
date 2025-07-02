@@ -1,0 +1,107 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="-10 -10 120 120">
+	<style>
+		g {
+			animation: qodef-rot 3s infinite;
+			transform-box: fill-box;
+			transform-origin: 50% 50%
+		}
+		svg {	
+			transform-origin: 50% 50%;
+			overflow: visible
+		}
+		circle {
+			transform-box: fill-box;
+			transform-origin: 50% 50%
+		}
+		circle:nth-child(1) {
+			fill: currentColor;
+			animation: qodef-breath 3s infinite
+		}
+		circle:nth-child(2) {
+			fill: #fff;
+			animation: qodef-toBig2 3s infinite
+		}
+		circle:nth-child(3) {
+			fill: #fff;
+			animation: qodef-toBig 3s infinite -1.5s
+		}
+
+@keyframes qodef-rot {
+    0% {
+        transform: rotate(0)
+    }
+
+    30% {
+        transform: rotate(360deg)
+    }
+
+    50% {
+        transform: rotate(360deg)
+    }
+
+    80% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(0)
+    }
+}
+
+@keyframes qodef-toBig {
+    0% {
+		transform: scale(1) translateX(0px);
+	}
+	30% {
+		transform: scale(1) translateX(0px);
+	}
+	50% {
+		transform: translateX(-47px) scale(22);
+	}
+	80% {
+		transform: translateX(-47px) scale(22);
+	}
+	100% {
+		transform: scale(1) translateX(0px);
+	}
+}
+
+@keyframes qodef-toBig2 {
+    0% {
+		transform: scale(1) translateX(0px);
+	}
+	30% {
+		transform: scale(1) translateX(0px);
+	}
+	50% {
+		transform: translateX(47px) scale(22);
+	}
+	80% {
+		transform: translateX(47px) scale(22);
+	}
+	100% {
+		transform: scale(1) translateX(0px);
+	}
+}
+
+@keyframes qodef-breath {
+    15% {
+		transform: scale(1);
+	}
+	40% {
+		transform: scale(1.05);
+	}
+	65% {
+		transform: scale(1);
+	}
+	90% {
+		transform: scale(1.05);
+	}
+}
+	</style>
+	<g>
+		<circle cx="50" cy="50" r="50"/>
+        <circle cx="3" cy="50" r="2"/>
+        <circle cx="97" cy="50" r="2"/>
+	</g>
+</svg>

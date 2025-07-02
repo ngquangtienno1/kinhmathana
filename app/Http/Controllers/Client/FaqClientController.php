@@ -36,6 +36,6 @@ class FaqClientController extends Controller
         // FAQ nổi bật (có rating cao)
         $featuredFaqs = $faqs->where('rating', '>=', 4)->take(5);
 
-        return view('client.faq', compact('faqs', 'faqsByCategory', 'categories', 'featuredFaqs'));
+        return view('client.faq.index', compact('faqs', 'faqsByCategory', 'categories', 'featuredFaqs'));
     }
 }
