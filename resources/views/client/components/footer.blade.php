@@ -7,34 +7,35 @@
                     <div class="qodef-grid-item">
                         <div id="media_image-2" class="widget widget_media_image"
                             data-area="qodef-footer-top-area-column-1"><a href="index.html"><img loading="lazy"
-                                    width="188" height="89" src="{{asset('v1/wp-content/uploads/2021/08/logo-footer-img.jpg')}}"
+                                    width="188" height="89"
+                                    src="{{ asset('v1/wp-content/uploads/2021/08/logo-footer-img.jpg') }}"
                                     class="image wp-image-6507  attachment-full size-full" alt="c"
                                     style="max-width: 100%; height: auto;" decoding="async" /></a></div>
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-2" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-2">
-                            <h5 class="qodef-widget-title">Services</h5>
+                            <h5 class="qodef-widget-title">Dịch vụ</h5>
                             <div class="menu-footer-menu-column-2-container">
                                 <ul id="menu-footer-menu-column-2" class="menu">
                                     <li id="menu-item-121"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-121">
-                                        <a href="book-an-appointment/index.html">Book eye test</a>
+                                        <a href="book-an-appointment/index.html">Khám mắt miễn phí</a>
                                     </li>
                                     <li id="menu-item-122"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-122">
-                                        <a href="our-staff/index.html">Vision therapy</a>
+                                        <a href="our-staff/index.html">Bảo hành</a>
                                     </li>
                                     <li id="menu-item-123"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-123">
-                                        <a href="vouchers/index.html">Vouchers</a>
+                                        <a href="vouchers/index.html">Đổi trả</a>
                                     </li>
                                     <li id="menu-item-124"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-124">
-                                        <a href="pricing-plans/index.html">Lenses &#038; prices</a>
+                                        <a href="pricing-plans/index.html">Vận chuyển</a>
                                     </li>
                                     <li id="menu-item-125"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-125">
-                                        <a href="latest-lens-technology/index.html">Eye health</a>
+                                        <a href="latest-lens-technology/index.html">Thu cũ - Đổi mới</a>
                                     </li>
                                 </ul>
                             </div>
@@ -142,9 +143,9 @@
                     <div class="qodef-grid-item">
                         <div id="text-2" class="widget widget_text" data-area="qodef-footer-bottom-area-column-2">
                             <div class="textwidget">
-                                <div style="font-size:14px">@ 2021 <a href="https://qodeinteractive.com/"
-                                        target="_blank" rel="noopener" style="font-size:14px">Qode
-                                        Interactive</a>, All Rights Reserved</div>
+                                <div style="font-size:14px">@ 2025 <a href="https://qodeinteractive.com/"
+                                        target="_blank" rel="noopener" style="font-size:14px">Kính Mắt Hana</a>, All
+                                    Rights Reserved</div>
                             </div>
                         </div>
                     </div>

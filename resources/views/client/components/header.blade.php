@@ -33,7 +33,7 @@
                                     <span class="qodef-icon-elegant-icons icon_mail_alt qodef-icon qodef-e"
                                         style="font-size: 13px"></span> </span> <span class="qodef-e-title-text"><span
                                         class="__cf_email__"
-                                        data-cfemail="a7c9c2c8c8c4d2cbc6d5e7c2dfc6cad7cbc289c4c8ca">[email&#160;protected]</span></span>
+                                        data-cfemail="a7c9c2c8c8c4d2cbc6d5e7c2dfc6cad7cbc289c4c8ca">hanaeyewear@gmail.com</span></span>
                             </span> </a> </p>
                 </div>
             </div>
@@ -48,8 +48,8 @@
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 7px 0 0"> <span
                                         class="qodef-icon-elegant-icons icon_pin_alt qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">235 N
-                                    Edison St, Arlington, VA 22203, USA</span>
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Trịnh
+                                    Văn Bô, Nam Từ Liêm, Hà Nội</span>
                             </span> </a> </p>
                 </div>
             </div>
@@ -61,8 +61,8 @@
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 5px 0 -2px"> <span
                                         class="qodef-icon-elegant-icons icon_mobile qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Call
-                                    us: +34936915450</span> </span> </a> </p>
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">SĐT:
+                                    +84936915450</span> </span> </a> </p>
                 </div>
             </div>
             <div id="neoocular_core_icon_list_item-5"
@@ -71,8 +71,8 @@
                     <p class="qodef-e-title"> <span class="qodef-e-title-inner"> <span
                                 class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"> <span
                                     class="qodef-icon-elegant-icons icon_clock_alt qodef-icon qodef-e"
-                                    style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Mon-Sat:
-                                9AM-9PM</span> </span> </p>
+                                    style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Thứ Hai -
+                                Thứ Bảy: 9AM - 9PM</span> </span> </p>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
                 <ul id="menu-main-menu-1" class="menu">
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow">
-                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Home<svg
+                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Trang chủ<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -150,41 +150,10 @@
                                         </path>
                                     </g>
                                 </svg></span></a>
-                        <div class="qodef-drop-down-second">
-                            <div class="qodef-drop-down-second-inner">
-                                <ul class="sub-menu">
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-65 current_page_item menu-item-2340">
-                                        <a href="index.html"><span class="qodef-menu-item-text">Main
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3710">
-                                        <a href="optician-home/index.html"><span class="qodef-menu-item-text">Optician
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3711">
-                                        <a href="ophthalmology-home/index.html"><span
-                                                class="qodef-menu-item-text">Ophthalmology Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5023">
-                                        <a href="shop-home/index.html"><span class="qodef-menu-item-text">Shop
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3440">
-                                        <a href="eyewear-home/index.html"><span class="qodef-menu-item-text">Eyewear
-                                                Home</span></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-112 qodef--hide-link qodef-menu-item--narrow">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Pages<svg
+                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Trang<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -511,7 +480,7 @@
                                 </svg></span></a>
                     </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747"><a
-                            href="landing/index.html"><span class="qodef-menu-item-text">Landing</span></a></li>
+                            href="landing/index.html"><span class="qodef-menu-item-text">Liên Hệ</span></a></li>
                 </ul>
             </nav>
             <div class="qodef-widget-holder qodef--one">

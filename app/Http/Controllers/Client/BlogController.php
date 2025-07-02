@@ -68,7 +68,21 @@ class BlogController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('client.blog.show', compact('news', 'mostViewed', 'comments', 'relatedNews'));
+        // Lấy danh mục và bài viết mới nhất cho sidebar
+        $categories = NewsCategory::where('is_active', true)
+            ->withCount(['news' => function ($q) {
+                $q->active()->published();
+            }])
+            ->orderBy('name')
+            ->get();
+        $latestNews = News::with(['category', 'author'])
+            ->active()
+            ->published()
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get();
+
+        return view('client.blog.show', compact('news', 'mostViewed', 'comments', 'relatedNews', 'categories', 'latestNews'));
     }
 
     public function comment(Request $request, $slug)
