@@ -90,13 +90,8 @@ Route::prefix('client')->name('client.')->group(function () {
 
     // Product routes
     Route::prefix('products')->name('products.')->group(function () {
-        Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
-        Route::get('list', [ClientProductController::class, 'list'])->name('list'); // Dạng bảng
-        Route::get('{slug}', [ClientProductController::class, 'show'])->name('show'); // Chi tiết
-        // Wishlist
-        Route::post('wishlist/add/{product}', [ClientProductController::class, 'addToWishlist'])->name('wishlist.add');
-        // Đánh giá
-        Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
+        Route::get('/', [ClientProductController::class, 'index'])->name('index');
+        Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
     });
 
     Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {

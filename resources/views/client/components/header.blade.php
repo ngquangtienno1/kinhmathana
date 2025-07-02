@@ -515,7 +515,7 @@
                     data-area="header-widget-one">
                     <div class="qodef-wishlist-widget-holder">
                         <div class="qodef-wishlist-inner" style="margin: 0 6px 0 0">
-                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link" title="View Wishlist">
+                            <a href="#" class="qodef-wishlist-widget-link" title="View Wishlist">
                                 <span class="qodef-wishlist-icon-count-holder">
                                     <span class="qodef-wishlist-widget-icon"><svg xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px"
