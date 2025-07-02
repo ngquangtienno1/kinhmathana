@@ -20,7 +20,7 @@
                 class="qodef-grid qodef-layout--template qodef--no-bottom-space qodef-gutter--medium" role="main">
                 <div class="qodef-grid-inner clear">
                     <div id="qodef-woo-page"
-                        class="qodef-grid-item qodef-page-content-section qodef-col--9 qodef-col-push--3 qodef--list">
+                        class="qodef-grid-item qodef-pag e-content-section qodef-col--9 qodef-col-push--3 qodef--list">
                         <header class="woocommerce-products-header">
 
                         </header>

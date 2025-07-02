@@ -12,13 +12,13 @@
                             href="{{ route('client.home') }}"><span itemprop="title">Trang chủ</span></a>
                         <span class="qodef-breadcrumbs-separator"></span>
                         <span itemprop="title" class="qodef-breadcrumbs-current">Sản phẩm</span>
-                    </div>
+                                    </div>
                     <span class="qodef-breadcrumbs-separator"></span>
                     <span itemprop="title" class="qodef-breadcrumbs-current">{{ $product->name }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
     <div id="qodef-page-inner" class="qodef-content-grid">
 
         <main id="qodef-page-content" class="qodef-grid qodef-layout--template qodef--no-bottom-space qodef-gutter--medium"
@@ -89,10 +89,10 @@
                                                         decoding="async"
                                                         srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/product-05-02-gallery-img-3.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/product-05-02-gallery-img-3-100x100.jpg 100w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/product-05-02-gallery-img-3-300x300.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/product-05-02-gallery-img-3-150x150.jpg 150w"
                                                         sizes="(max-width: 600px) 100vw, 600px" /></a></div>
-                                        </div>
-                                    </div>
+                                </div>
                                 </div>
                             </div>
+                                    </div>
                             <div class="summary entry-summary">
                                 <h1 class="qodef-woo-product-title product_title entry-title">Aviator Paris</h1>
                                 <p class="price"><span class="woocommerce-Price-amount amount"><bdi><span
@@ -153,7 +153,7 @@
                                                                     </span>
                                                                 </span>
                                                             </span>
-                                                        </div>
+                                    </div>
 
                                                     </td>
                                                 </tr>
@@ -190,7 +190,7 @@
                                                                     <span class="qvsfw-select-value">L</span>
                                                                 </span>
                                                             </span>
-                                                        </div>
+                                        </div>
 
                                                         <a class="reset_variations" href="#">Clear</a>
                                                     </td>
@@ -212,7 +212,7 @@
                                                         title="Qty" size="4" placeholder=""
                                                         inputmode="numeric" />
                                                     <span class="qodef-quantity-plus"></span>
-                                                </div>
+                                    </div>
 
                                                 <button type="submit" class="single_add_to_cart_button button alt">Add to
                                                     cart</button>
@@ -222,12 +222,12 @@
                                                 <input type="hidden" name="product_id" value="921" />
                                                 <input type="hidden" name="variation_id" class="variation_id"
                                                     value="0" />
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
 
                                     </form>
 
-                                </div>
+                        </div>
                                 <div
                                     class="qwfw-add-to-wishlist-wrapper qwfw--single qwfw-position--after-add-to-cart qwfw-item-type--icon-with-text qodef-neoocular-theme">
                                     <a role="button" tabindex="0"
@@ -248,7 +248,7 @@
                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                 </g>
                                             </svg> </span> <span class="qwfw-m-text">Add to wishlist</span> </a>
-                                </div>
+                    </div>
                                 <div class="product_meta">
 
                                     <span class="sku_wrapper">
@@ -317,8 +317,8 @@
                                     aria-controls="tab-reviews">
                                     <a href="#tab-reviews">
                                         Reviews (0) </a>
-                                </li>
-                            </ul>
+                    </li>
+                </ul>
                             <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab"
                                 id="tab-description" role="tabpanel" aria-labelledby="tab-title-description">
 
@@ -344,27 +344,27 @@
                                         class="woocommerce-product-attributes-item woocommerce-product-attributes-item--weight">
                                         <th class="woocommerce-product-attributes-item__label">Weight</th>
                                         <td class="woocommerce-product-attributes-item__value">0.5 kg</td>
-                                    </tr>
+                                        </tr>
                                     <tr
                                         class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
                                         <th class="woocommerce-product-attributes-item__label">Dimensions</th>
                                         <td class="woocommerce-product-attributes-item__value">1 &times; 2 &times; 3 cm
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     <tr
                                         class="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_pa_color">
                                         <th class="woocommerce-product-attributes-item__label">Color</th>
                                         <td class="woocommerce-product-attributes-item__value">
                                             <p>Silver, Bronze, Orange, Purple, Gold</p>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     <tr
                                         class="woocommerce-product-attributes-item woocommerce-product-attributes-item--attribute_pa_size">
                                         <th class="woocommerce-product-attributes-item__label">Size</th>
                                         <td class="woocommerce-product-attributes-item__value">
                                             <p>M, S, L</p>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                 </table>
                             </div>
                             <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--reviews panel entry-content wc-tab"
@@ -375,7 +375,7 @@
                                             Reviews </h2>
 
                                         <p class="woocommerce-noreviews">There are no reviews yet.</p>
-                                    </div>
+                                                </div>
 
                                     <div id="review_form_wrapper">
                                         <div id="review_form">
@@ -447,7 +447,7 @@
                                                             <option value="2">Not that bad</option>
                                                             <option value="1">Very poor</option>
                                                         </select>
-                                                    </div>
+                                            </div>
                                                     <p class="comment-form-comment">
                                                         <textarea id="comment" name="comment" placeholder="Your Review *" cols="45" rows="8"
                                                             maxlength="65525" required="required"></textarea>
@@ -461,7 +461,7 @@
                                                                         value="" size="30" maxlength="245"
                                                                         required="required" />
                                                                 </p>
-                                                            </div>
+                                        </div>
                                                             <div class="qodef-grid-item">
                                                                 <p class="comment-form-email">
                                                                     <input id="email" name="email"
@@ -470,9 +470,9 @@
                                                                         aria-describedby="email-notes"
                                                                         required="required" />
                                                                 </p>
-                                                            </div>
                                                         </div>
-                                                    </div>
+                                                        </div>
+                                                            </div>
                                                     <p class="comment-form-cookies-consent"><input
                                                             id="wp-comment-cookies-consent"
                                                             name="wp-comment-cookies-consent" type="checkbox"
@@ -513,14 +513,14 @@
                                                     </div><!--\End Anti-spam plugin -->
                                                 </form>
                                             </div><!-- #respond -->
-                                        </div>
-                                    </div>
+                                                    </div>
+                                                </div>
 
                                     <div class="clear"></div>
-                                </div>
-                            </div>
+                                            </div>
+                                        </div>
 
-                        </div>
+                                    </div>
 
 
                         <section class="related products">
@@ -542,7 +542,7 @@
                                                     alt="m" decoding="async"
                                                     srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img-600x431.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img-300x216.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img-768x552.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img.jpg 800w"
                                                     sizes="(max-width: 600px) 100vw, 600px" />
-                                            </div>
+                                                </div>
                                             <div class="qodef-woo-product-content">
                                                 <h6 class="qodef-woo-product-title woocommerce-loop-product__title"><a
                                                         href="../transparent-lennons/index.html"
@@ -555,7 +555,7 @@
                                                         href="../../product-category/round/index.html"
                                                         rel="tag">Round</a>
                                                     <div class="qodef-info-separator-end"></div>
-                                                </div>
+                                            </div>
                                                 <span class="price"><del aria-hidden="true"><span
                                                             class="woocommerce-Price-amount amount"><bdi><span
                                                                     class="woocommerce-Price-currencySymbol">&#36;</span>235.00</bdi></span></del>
@@ -589,7 +589,7 @@
                                                                             d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                     </g>
                                                                 </svg> </span> </a>
-                                                    </div>
+                                        </div>
                                                     <div
                                                         class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                         <a role="button" tabindex="0"
@@ -619,10 +619,10 @@
                                                         id="woocommerce_loop_add_to_cart_link_describedby_607"
                                                         class="screen-reader-text">
                                                     </span>
-                                                </div>
+                                        </div>
                                             </div><a href="../transparent-lennons/index.html"
                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                        </div>
+                                            </div>
                                     </li>
 
 
@@ -647,7 +647,7 @@
                                                         href="../../product-category/round/index.html"
                                                         rel="tag">Round</a>
                                                     <div class="qodef-info-separator-end"></div>
-                                                </div>
+                                        </div>
                                                 <span class="price"><span
                                                         class="woocommerce-Price-amount amount"><bdi><span
                                                                 class="woocommerce-Price-currencySymbol">&#36;</span>152.00</bdi></span></span>
@@ -675,7 +675,7 @@
                                                                             d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                     </g>
                                                                 </svg> </span> </a>
-                                                    </div>
+                                    </div>
                                                     <div
                                                         class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                         <a role="button" tabindex="0"
@@ -708,7 +708,7 @@
                                                 </div>
                                             </div><a href="../wild-round-glasses/index.html"
                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                        </div>
+                                            </div>
                                     </li>
 
 
@@ -733,7 +733,7 @@
                                                         href="../../product-category/round/index.html"
                                                         rel="tag">Round</a>
                                                     <div class="qodef-info-separator-end"></div>
-                                                </div>
+                                        </div>
                                                 <span class="price"><span
                                                         class="woocommerce-Price-amount amount"><bdi><span
                                                                 class="woocommerce-Price-currencySymbol">&#36;</span>152.00</bdi></span></span>
@@ -761,7 +761,7 @@
                                                                             d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                     </g>
                                                                 </svg> </span> </a>
-                                                    </div>
+                                    </div>
                                                     <div
                                                         class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                         <a role="button" tabindex="0"
@@ -794,7 +794,7 @@
                                                 </div>
                                             </div><a href="../shinny-glasses/index.html"
                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                        </div>
+                                            </div>
                                     </li>
 
 
@@ -819,7 +819,7 @@
                                                         href="../../product-category/round/index.html"
                                                         rel="tag">Round</a>
                                                     <div class="qodef-info-separator-end"></div>
-                                                </div>
+                                        </div>
                                                 <span class="price"><span
                                                         class="woocommerce-Price-amount amount"><bdi><span
                                                                 class="woocommerce-Price-currencySymbol">&#36;</span>152.00</bdi></span></span>
@@ -847,7 +847,7 @@
                                                                             d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                     </g>
                                                                 </svg> </span> </a>
-                                                    </div>
+                                    </div>
                                                     <div
                                                         class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                         <a role="button" tabindex="0"
@@ -880,21 +880,21 @@
                                                 </div>
                                             </div><a href="../thalia-round/index.html"
                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                        </div>
-                                    </li>
+                                            </div>
+                                                </li>
 
 
-                                </ul>
-                            </div>
+                                            </ul>
+                                    </div>
                         </section>
-                    </div>
+                                </div>
 
 
 
-                </div>
             </div>
+                                    </div>
         </main>
 
     </div><!-- close #qodef-page-inner div from header.php -->
-    </div>
+                                        </div>
 @endsection
