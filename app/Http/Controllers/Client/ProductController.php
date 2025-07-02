@@ -24,11 +24,11 @@ class ProductController extends Controller
             $query->where(function ($q) use ($availabilities) {
                 if (in_array('in_stock', $availabilities)) {
                     $q->orWhere('stock_quantity', '>', 0)
-                      ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '>', 0));
+                        ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '>', 0));
                 }
                 if (in_array('out_of_stock', $availabilities)) {
                     $q->orWhere('stock_quantity', '=', 0)
-                      ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '=', 0));
+                        ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '=', 0));
                 }
             });
         }
@@ -51,11 +51,11 @@ class ProductController extends Controller
             $maxPrice = $request->input('max_price', 999999);
             $query->where(function ($q) use ($minPrice, $maxPrice) {
                 $q->whereBetween('sale_price', [$minPrice, $maxPrice])
-                  ->orWhereBetween('price', [$minPrice, $maxPrice])
-                  ->orWhereHas('variations', function ($qv) use ($minPrice, $maxPrice) {
-                      $qv->whereBetween('sale_price', [$minPrice, $maxPrice])
-                         ->orWhereBetween('price', [$minPrice, $maxPrice]);
-                  });
+                    ->orWhereBetween('price', [$minPrice, $maxPrice])
+                    ->orWhereHas('variations', function ($qv) use ($minPrice, $maxPrice) {
+                        $qv->whereBetween('sale_price', [$minPrice, $maxPrice])
+                            ->orWhereBetween('price', [$minPrice, $maxPrice]);
+                    });
             });
         }
 
@@ -80,39 +80,39 @@ class ProductController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
+                    ->orWhere('sku', 'like', "%{$search}%");
             });
         }
 
         $orderby = $request->input('orderby', 'menu_order');
-    switch ($orderby) {
-        case 'popularity':
-            $query->withCount('orderItems')->orderBy('order_items_count', 'desc');
-            break;
-        case 'rating':
-            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
-            break;
-        case 'date':
-            $query->orderBy('created_at', 'desc');
-            break;
-        case 'price':
-            $query->orderBy('price', 'asc');
-            break;
-        case 'price-desc':
-            $query->orderBy('price', 'desc');
-            break;
-        default:
-            $query->orderBy('id', 'asc');
-            break;
-    }
+        switch ($orderby) {
+            case 'popularity':
+                $query->withCount('orderItems')->orderBy('order_items_count', 'desc');
+                break;
+            case 'rating':
+                $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
+                break;
+            case 'date':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'price':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price-desc':
+                $query->orderBy('price', 'desc');
+                break;
+            default:
+                $query->orderBy('id', 'asc');
+                break;
+        }
 
-    // Phân trang
-    $products = $query->paginate(6); // 6 sản phẩm mỗi trang
-    $categories = Category::with('children')->where('is_active', true)->get();
-    $colors = Color::all();
-    $brands = Brand::where('is_active', true)->get();
+        // Phân trang
+        $products = $query->paginate(6); // 6 sản phẩm mỗi trang
+        $categories = Category::with('children')->where('is_active', true)->get();
+        $colors = Color::all();
+        $brands = Brand::where('is_active', true)->get();
 
-    return view('client.products.index', compact('products', 'categories', 'colors', 'brands'));
+        return view('client.products.index', compact('products', 'categories', 'colors', 'brands'));
     }
 
     /**
@@ -127,6 +127,12 @@ class ProductController extends Controller
 
         // Tăng lượt xem
         $product->increment('views');
+
+        // Lấy các thuộc tính variations
+        $colors = $product->variations->whereNotNull('color')->pluck('color')->unique('id');
+        $sizes = $product->variations->whereNotNull('size')->pluck('size')->unique('id');
+        $sphericals = $product->variations->whereNotNull('spherical')->pluck('spherical')->unique('id');
+        $cylindricals = $product->variations->whereNotNull('cylindrical')->pluck('cylindrical')->unique('id');
 
         // Tính toán $selectedVariation
         $selectedColorId = request()->input('variant', $product->variations->first()->color_id ?? null);
@@ -153,6 +159,6 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage'));
+        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals'));
     }
 }
