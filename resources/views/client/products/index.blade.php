@@ -12,9 +12,9 @@
                             href="{{ route('client.home') }}"><span itemprop="title">Home</span></a><span
                             class="qodef-breadcrumbs-separator"></span><span itemprop="title"
                             class="qodef-breadcrumbs-current">Sản phẩm</span></div>
-                </div>  
-            </div>
-        </div>
+              </div>
+              </div>
+              </div>
         <div id="qodef-page-inner" class="qodef-content-grid">
             <main id="qodef-page-content"
                 class="qodef-grid qodef-layout--template qodef--no-bottom-space qodef-gutter--medium" role="main">
@@ -39,7 +39,7 @@
                                 </select>
                                 <input type="hidden" name="paged" value="1" />
                             </form>
-                        </div>
+              </div>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
                             <ul class="products columns-3">
                                 <li
@@ -62,7 +62,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>199.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -115,10 +115,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_253"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/gold-glasses/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-607 status-publish instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail sale shipping-taxable purchasable product-type-simple">
@@ -131,7 +131,7 @@
                                                 alt="m" decoding="async"
                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img-600x431.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img-300x216.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img-768x552.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-02-img.jpg 800w"
                                                 sizes="(max-width: 600px) 100vw, 600px" />
-                                        </div>
+              </div>
                                         <div class="qodef-woo-product-content">
                                             <h6 class="qodef-woo-product-title woocommerce-loop-product__title"><a
                                                     href="../product/transparent-lennons/index.html"
@@ -142,7 +142,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><del aria-hidden="true"><span
                                                         class="woocommerce-Price-amount amount"><bdi><span
                                                                 class="woocommerce-Price-currencySymbol">&#36;</span>235.00</bdi></span></del>
@@ -202,10 +202,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_607"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/transparent-lennons/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-295 status-publish last instock product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -225,7 +225,7 @@
                                             <div class="qodef-woo-product-categories qodef-e-info"><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>311.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -278,10 +278,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_295"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/aviator-classic/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-329 status-publish first instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail virtual purchasable product-type-simple">
@@ -303,7 +303,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>437.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -355,10 +355,10 @@
                                                     to cart</a><span id="woocommerce_loop_add_to_cart_link_describedby_329"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/gold-pilot/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-332 status-publish instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail sale shipping-taxable purchasable product-type-simple">
@@ -371,7 +371,7 @@
                                                 alt="m" decoding="async"
                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-05-img-600x431.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-05-img-300x216.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-05-img-768x552.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/Shop-Single-05-img.jpg 800w"
                                                 sizes="(max-width: 600px) 100vw, 600px" />
-                                        </div>
+              </div>
                                         <div class="qodef-woo-product-content">
                                             <h6 class="qodef-woo-product-title woocommerce-loop-product__title"><a
                                                     href="../product/way-glasses/index.html"
@@ -382,7 +382,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><del aria-hidden="true"><span
                                                         class="woocommerce-Price-amount amount"><bdi><span
                                                                 class="woocommerce-Price-currencySymbol">&#36;</span>214.00</bdi></span></del>
@@ -441,10 +441,10 @@
                                                     to cart</a><span id="woocommerce_loop_add_to_cart_link_describedby_332"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/way-glasses/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-609 status-publish last instock product_cat-round product_cat-summer-sale product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -468,7 +468,7 @@
                                                     href="../product-category/summer-sale/index.html"
                                                     rel="tag">Summer Sale</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>200.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -521,10 +521,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_609"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/slim-frame-black/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-335 status-publish first instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -546,7 +546,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+              </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>152.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -599,10 +599,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_335"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+              </div>
                                         </div><a href="../product/thalia-round/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-339 status-publish instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -624,7 +624,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+            </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>287.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -677,10 +677,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_339"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+          </div>
                                         </div><a href="../product/dark-aviator/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+        </div>
                                 </li>
                                 <li
                                     class="product type-product post-342 status-publish last instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -702,7 +702,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+                    </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>152.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -755,10 +755,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_342"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+                      </div>
                                         </div><a href="../product/shinny-glasses/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+                    </div>
                                 </li>
                                 <li
                                     class="product type-product post-402 status-publish first outofstock product_cat-cat-eye product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -782,7 +782,7 @@
                                                     class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+                  </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>234.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -834,10 +834,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_402"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+                </div>
                                         </div><a href="../product/optical-dark/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+              </div>
                                 </li>
                                 <li
                                     class="product type-product post-235 status-publish instock product_cat-classic product_cat-round product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-simple">
@@ -859,7 +859,7 @@
                                                     style</a><span class="qodef-info-separator-single"></span><a
                                                     href="../product-category/round/index.html" rel="tag">Round</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+            </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>152.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -912,10 +912,10 @@
                                                     id="woocommerce_loop_add_to_cart_link_describedby_235"
                                                     class="screen-reader-text">
                                                 </span>
-                                            </div>
+                    </div>
                                         </div><a href="../product/wild-round-glasses/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+                      </div>
                                 </li>
                                 <li
                                     class="product type-product post-135 status-publish last instock product_cat-cat-eye product_tag-frame product_tag-stripe has-post-thumbnail shipping-taxable purchasable product-type-variable">
@@ -936,7 +936,7 @@
                                                     href="../product-category/cat-eye/index.html"
                                                     rel="tag">Cat-Eye</a>
                                                 <div class="qodef-info-separator-end"></div>
-                                            </div>
+                    </div>
                                             <span class="price"><span class="woocommerce-Price-amount amount"><bdi><span
                                                             class="woocommerce-Price-currencySymbol">&#36;</span>256.00</bdi></span></span>
                                             <div class="qodef-woo-product-image-inner">
@@ -990,13 +990,13 @@
                                                     class="screen-reader-text">
                                                     This product has multiple variants. The options may be chosen on the
                                                     product page</span>
-                                            </div>
+                  </div>
                                         </div><a href="../product/marshal-glasses/index.html"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
-                                    </div>
+                </div>
                                 </li>
                             </ul>
-                        </div>
+              </div>
                         <nav class="woocommerce-pagination">
                             <span aria-current="page" class="page-numbers current">01</span>
                             <a class="page-numbers" href="page/2/index.html">02</a>
@@ -1013,7 +1013,7 @@
                                     </g>
                                 </svg></a>
                         </nav>
-                    </div>
+            </div>
                     <div class="qodef-grid-item qodef-page-sidebar-section qodef-col--3 qodef-col-pull--9">
                         <aside id="qodef-page-sidebar" role="complementary">
                             <div class="widget woocommerce widget_product_categories" data-area="shop-sidebar">
@@ -1053,7 +1053,7 @@
                                         </ul>
                                     </li>
                                 </ul>
-                            </div>
+                    </div>
                             <div class="widget woocommerce widget_price_filter" data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Filter by price</h5>
                                 <form method="get" action="https://neoocular.qodeinteractive.com/shop/">
@@ -1069,13 +1069,13 @@
                                             <button type="submit" class="button">Filter</button>
                                             <div class="price_label" style="display:none;">
                                                 Price: <span class="from"></span> &mdash; <span class="to"></span>
-                                            </div>
+                      </div>
                                             <div class="clear"></div>
-                                        </div>
-                                    </div>
+                    </div>
+                  </div>
                                 </form>
 
-                            </div>
+                </div>
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
                                 data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Filter by gender</h5>
@@ -1093,7 +1093,7 @@
                                             href="indexee24.html?filter_gender=female&amp;query_type_gender=or">Female</a>
                                         <span class="count">(20)</span></li>
                                 </ul>
-                            </div>
+              </div>
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
                                 data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Filter by color</h5>
@@ -1127,7 +1127,7 @@
                                             href="indexc3cf.html?filter_color=silver&amp;query_type_color=or">Silver</a>
                                         <span class="count">(16)</span></li>
                                 </ul>
-                            </div>
+            </div>
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
                                 data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Filter by size</h5>
@@ -1153,7 +1153,7 @@
                                             href="index8160.html?filter_size=l&amp;query_type_size=or">L</a> <span
                                             class="count">(22)</span></li>
                                 </ul>
-                            </div>
+                    </div>
                             <div class="widget widget_block" data-area="shop-sidebar">
                                 <div data-block-name="woocommerce/product-search" data-label=""
                                     data-form-id="wc-block-product-search-0"
@@ -1175,10 +1175,10 @@
                                                 </svg>
                                             </button>
                                             <input type="hidden" name="post_type" value="product" />
-                                        </div>
+                      </div>
                                     </form>
-                                </div>
-                            </div>
+                    </div>
+                  </div>
                             <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
                                 <figure class="wp-block-image size-large"><a href="../vouchers/index.html"><img
                                             fetchpriority="high" fetchpriority="high" decoding="async"
@@ -1187,10 +1187,10 @@
                                             class="wp-image-7903"
                                             srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-1024x690.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-600x404.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-800x539.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-300x202.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-768x517.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner.jpg 1100w"
                                             sizes="(max-width: 1024px) 100vw, 1024px" /></a></figure>
-                            </div>
-                        </aside>
-                    </div>
                 </div>
+                        </aside>
+              </div>
+            </div>
             </main>
         </div><!-- close #qodef-page-inner div from header.php -->
     </div><!-- close #qodef-page-outer div from header.php -->

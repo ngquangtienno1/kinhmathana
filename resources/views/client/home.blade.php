@@ -28,34 +28,20 @@
                                                             <rs-module id="rev_slider_9_1" style=""
                                                                 data-version="6.7.15">
                                                                 <rs-slides style="overflow: hidden; position: absolute;">
-                                                                    <rs-slide style="position: absolute;" data-key="rs-13"
-                                                                        data-title="Slide" data-anim="adpr:false;"
+                                                                    @foreach($sliders as $index => $slider)
+                                                                    @if($slider->image)
+                                                                    <rs-slide style="position: absolute;" data-key="rs-{{ $index + 1 }}"
+                                                                        data-title="{{ $slider->title }}" data-anim="adpr:false;"
                                                                         data-in="o:0;" data-out="a:false;">
                                                                         <img decoding="async"
                                                                             src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                            alt="Slide" title="Main Home"
+                                                                            alt="{{ $slider->title }}" title="{{ $slider->title }}"
                                                                             class="rev-slidebg tp-rs-img rs-lazyload"
                                                                             data-lazyload="//neoocular.qodeinteractive.com/wp-content/plugins/revslider/sr6/assets/assets/transparent.png"
                                                                             data-no-retina>
-                                                                        <!--
-                        --><rs-layer id="slider-9-slide-13-layer-0" data-type="image" data-rsp_ch="on"
-                                                                            data-xy="x:c;xo:-482px,-346px,0,0;y:m;yo:32px,29px,-24px,-28px;"
-                                                                            data-text="w:normal;s:20,16,8,4;l:0,21,11,6;"
-                                                                            data-dim="w:265px,224px,216px,189px;h:307px,259px,250px,219px;"
-                                                                            data-basealign="slide"
-                                                                            data-frame_0="y:50,42,22,11;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:20;"><img fetchpriority="high"
-                                                                                fetchpriority="high" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a" class="tp-rs-img rs-lazyload"
-                                                                                width="265" height="307"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-19.png"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-4" data-type="image"
+                                                                        
+                                                                        <!-- Main Image Layer -->
+                                                                        <rs-layer id="slider-9-slide-{{ $index + 1 }}-layer-4" data-type="image"
                                                                             data-xy="x:l,l,c,c;xo:-15px,-15px,0,0;y:t,m,b,b;yo:0,0,-220px,-220px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:50%,50%,1028px,1028px;h:auto,auto,1414px,1414px;"
@@ -63,31 +49,17 @@
                                                                             data-rsp_bd="off"
                                                                             data-frame_1="e:power4.inOut;sp:1000;"
                                                                             data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
-                                                                            style="z-index:9;"><img decoding="async"
+                                                                            style="z-index:9;">
+                                                                            <img decoding="async"
                                                                                 src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a" class="tp-rs-img rs-lazyload"
+                                                                                alt="{{ $slider->title }}" class="tp-rs-img rs-lazyload"
                                                                                 width="945" height="1300"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img1.jpg"
+                                                                                data-lazyload="{{ asset('uploads/sliders/images/sliders/' . $slider->image) }}"
                                                                                 data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-12" data-type="image"
-                                                                            data-xy="x:r;xo:-15px,-15px,1054px,1054px;y:m;yo:0,0,-3px,-3px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:[&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;];"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_1="e:power4.inOut;sp:1000;"
-                                                                            data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
-                                                                            style="z-index:8;"><img decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a" class="tp-rs-img rs-lazyload"
-                                                                                width="945" height="1300"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-2.jpg"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-13" data-type="shape"
+                                                                        </rs-layer>
+                                                    
+                                                                        <!-- White Background Shape -->
+                                                                        <rs-layer id="slider-9-slide-{{ $index + 1 }}-layer-13" data-type="shape"
                                                                             data-xy="x:c;xo:-481px,-345px,-1px,0;y:m;yo:71px,70px,19px,19px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:400px,340px,340px,298px;h:540px,423px,423px,429px;"
@@ -96,9 +68,10 @@
                                                                             data-frame_1="st:300;sp:1000;"
                                                                             data-frame_999="o:0;st:w;"
                                                                             style="z-index:10;background-color:#ffffff;">
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-14" data-type="text"
+                                                                        </rs-layer>
+                                                    
+                                                                        <!-- Title Layer -->
+                                                                        <rs-layer id="slider-9-slide-{{ $index + 1 }}-layer-14" data-type="text"
                                                                             data-xy="x:c;xo:484px,348px,662px,662px;y:m;yo:18px,20px,-18px,18px;"
                                                                             data-text="w:normal;s:42;l:64;fw:600;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -106,11 +79,13 @@
                                                                             data-frame_0="y:50;"
                                                                             data-frame_1="st:300;sp:1000;"
                                                                             data-frame_999="o:0;st:w;"
-                                                                            style="z-index:19;font-family:'Work Sans';">VISION
-                                                                            YOU DESERVE
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-15" data-type="text"
+                                                                            style="z-index:19;font-family:'Work Sans';">
+                                                                            {{ $slider->title }}
+                                                                        </rs-layer>
+                                                    
+                                                                        <!-- Description Layer -->
+                                                                        @if($slider->description)
+                                                                        <rs-layer id="slider-9-slide-{{ $index + 1 }}-layer-15" data-type="text"
                                                                             data-xy="x:c;xo:483px,347px,588px,588px;y:m;yo:62px,63px,42px,78px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -118,11 +93,14 @@
                                                                             data-frame_0="y:50;"
                                                                             data-frame_1="st:300;sp:1000;"
                                                                             data-frame_999="o:0;st:w;"
-                                                                            style="z-index:14;font-family:'Heebo';">Offering
-                                                                            you the best service possible
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-16" data-type="text"
+                                                                            style="z-index:14;font-family:'Heebo';">
+                                                                            {{ $slider->description }}
+                                                                        </rs-layer>
+                                                                        @endif
+                                                    
+                                                                        <!-- Button Layer -->
+                                                                        @if($slider->url)
+                                                                        <rs-layer id="slider-9-slide-{{ $index + 1 }}-layer-16" data-type="text"
                                                                             data-xy="x:c;xo:552px,416px,619px,619px;y:m;yo:135px,136px,126px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:341px;" data-vbility="t,t,f,f"
@@ -130,311 +108,19 @@
                                                                             data-rsp_bd="off" data-frame_0="y:50;"
                                                                             data-frame_1="st:300;sp:1000;"
                                                                             data-frame_999="o:0;st:w;"
-                                                                            style="z-index:13;font-family:'Heebo';"><a
-                                                                                class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--large qodef-html--link qodef-layout--custom"
-                                                                                href="book-an-appointment/index.html"
+                                                                            style="z-index:13;font-family:'Heebo';">
+                                                                            <a class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--large qodef-html--link qodef-layout--custom"
+                                                                                href="{{ $slider->url }}"
                                                                                 target="_self"
                                                                                 style="--qode-button-color: #FFFFFF;--qode-button-border-color: #FFFFFF;--qode-button-hover-color: #FFFFFF;--qode-button-hover-background-color: #1C1C1C;--qode-button-hover-border-color: #1C1C1C">
-                                                                                <span class="qodef-m-text">View
-                                                                                    more</span>
+                                                                                <span class="qodef-m-text">View more</span>
                                                                             </a>
-
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-13-layer-21" data-type="text" data-color="#000000"
-                                                                            data-xy="x:c;xo:-425px,-289px,55px,57px;y:m;yo:241px,215px,159px,162px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;"
-                                                                            data-dim="w:201px;" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:12;font-family:'Heebo';"><a
-                                                                                class="qodef-shortcode qodef-m  qodef-button qodef-layout--textual  qodef-html--link "
-                                                                                href="get-in-touch/index.html"
-                                                                                target="_self">
-                                                                                <span class="qodef-m-text">Book
-                                                                                    Now</span>
-                                                                            </a>
-
-                                                                        </rs-layer><!--
-    --> </rs-slide>
-                                                                    <rs-slide style="position: absolute;" data-key="rs-21"
-                                                                        data-title="Slide" data-anim="adpr:false;"
-                                                                        data-in="o:0;" data-out="a:false;">
-                                                                        <img decoding="async"
-                                                                            src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                            alt="Slide" title="Main Home"
-                                                                            class="rev-slidebg tp-rs-img rs-lazyload"
-                                                                            data-lazyload="//neoocular.qodeinteractive.com/wp-content/plugins/revslider/sr6/assets/assets/transparent.png"
-                                                                            data-no-retina>
-                                                                        <!--
-                        --><rs-layer id="slider-9-slide-21-layer-1" data-type="image" data-rsp_ch="on"
-                                                                            data-xy="x:c;xo:-482px,-346px,0,0;y:m;yo:32px,29px,-24px,-28px;"
-                                                                            data-text="w:normal;s:20,16,8,4;l:0,21,11,6;"
-                                                                            data-dim="w:265px,224px,216px,189px;h:307px,259px,250px,219px;"
-                                                                            data-basealign="slide"
-                                                                            data-frame_0="y:50,42,22,11;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:20;"><img fetchpriority="high"
-                                                                                fetchpriority="high" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
-                                                                                width="265" height="307"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-19.png"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-4" data-type="image"
-                                                                            data-xy="x:l,l,c,c;xo:-15px,-15px,0,0;y:t,m,b,b;yo:0,0,-220px,-220px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:50%,50%,1028px,1028px;h:auto,auto,1413px,1413px;"
-                                                                            data-basealign="slide" data-rsp_o="off"
-                                                                            data-rsp_bd="off"
-                                                                            data-frame_1="e:power4.inOut;sp:1000;"
-                                                                            data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
-                                                                            style="z-index:9;"><img loading="lazy"
-                                                                                loading="lazy" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
-                                                                                width="946" height="1300"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-3.jpg"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-12" data-type="image"
-                                                                            data-xy="x:r;xo:-15px,-15px,1054px,1054px;y:m;yo:0,0,-3px,-3px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:[&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;];"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_1="e:power4.inOut;sp:1000;"
-                                                                            data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
-                                                                            style="z-index:8;"><img loading="lazy"
-                                                                                loading="lazy" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
-                                                                                width="945" height="1300"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-4.jpg"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-13" data-type="shape"
-                                                                            data-xy="x:c;xo:-481px,-345px,-1px,0;y:m;yo:71px,70px,19px,19px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:400px,340px,340px,298px;h:540px,423px,423px,429px;"
-                                                                            data-basealign="slide" data-rsp_o="off"
-                                                                            data-rsp_bd="off" data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:10;background-color:#ffffff;">
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-14" data-type="text"
-                                                                            data-xy="x:c;xo:484px,348px,662px,662px;y:m;yo:18px,20px,-18px,18px;"
-                                                                            data-text="w:normal;s:42;l:64;fw:600;"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:19;font-family:'Work Sans';">A
-                                                                            VARIETY OF STYLES
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-15" data-type="text"
-                                                                            data-xy="x:c;xo:483px,347px,588px,588px;y:m;yo:62px,63px,42px,78px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:14;font-family:'Heebo';">Find
-                                                                            the best possible match for you
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-16" data-type="text"
-                                                                            data-xy="x:c;xo:552px,416px,619px,619px;y:m;yo:135px,136px,126px,162px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;"
-                                                                            data-dim="w:341px;" data-vbility="t,t,f,f"
-                                                                            data-basealign="slide" data-rsp_o="off"
-                                                                            data-rsp_bd="off" data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:13;font-family:'Heebo';"><a
-                                                                                class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--large qodef-html--link qodef-layout--custom"
-                                                                                href="pricing-plans/index.html"
-                                                                                target="_self"
-                                                                                style="--qode-button-color: #FFFFFF;--qode-button-border-color: #FFFFFF;--qode-button-hover-color: #FFFFFF;--qode-button-hover-background-color: #1C1C1C;--qode-button-hover-border-color: #1C1C1C">
-                                                                                <span class="qodef-m-text">View
-                                                                                    more</span>
-                                                                            </a>
-
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-21-layer-21" data-type="text" data-color="#000000"
-                                                                            data-xy="x:c;xo:-425px,-289px,55px,57px;y:m;yo:241px,215px,159px,162px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;"
-                                                                            data-dim="w:201px;" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:12;font-family:'Heebo';"><a
-                                                                                class="qodef-shortcode qodef-m  qodef-button qodef-layout--textual  qodef-html--link "
-                                                                                href="get-in-touch/index.html"
-                                                                                target="_self">
-                                                                                <span class="qodef-m-text">Book
-                                                                                    Now</span>
-                                                                            </a>
-
-                                                                        </rs-layer><!--
-    --> </rs-slide>
-                                                                    <rs-slide style="position: absolute;" data-key="rs-22"
-                                                                        data-title="Slide"
-                                                                        data-thumb="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-16.jpg"
-                                                                        data-anim="adpr:false;" data-in="o:0;"
-                                                                        data-out="a:false;">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async"
-                                                                            src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                            alt="a" title="main home rev img 16"
-                                                                            width="945" height="1300"
-                                                                            class="rev-slidebg tp-rs-img rs-lazyload"
-                                                                            data-lazyload="//neoocular.qodeinteractive.com/wp-content/plugins/revslider/sr6/assets/assets/transparent.png"
-                                                                            data-no-retina>
-                                                                        <!--
-                        --><rs-layer id="slider-9-slide-22-layer-4" data-type="image"
-                                                                            data-xy="x:l,l,c,c;xo:-15px,-15px,0,0;y:t,t,b,b;yo:0,0,-220px,-220px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:50%,50%,1028px,1028px;h:auto,auto,1414px,1414px;"
-                                                                            data-basealign="slide" data-rsp_o="off"
-                                                                            data-rsp_bd="off"
-                                                                            data-frame_1="e:power4.inOut;sp:1000;"
-                                                                            data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
-                                                                            style="z-index:9;"><img loading="lazy"
-                                                                                loading="lazy" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
-                                                                                width="945" height="1300"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-16.jpg"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-6" data-type="image" data-rsp_ch="on"
-                                                                            data-xy="x:c;xo:-482px,-346px,0,0;y:m;yo:32px,29px,-24px,-28px;"
-                                                                            data-text="w:normal;s:20,16,8,4;l:0,21,11,6;"
-                                                                            data-dim="w:265px,224px,216px,189px;h:307px,259px,250px,219px;"
-                                                                            data-basealign="slide"
-                                                                            data-frame_0="y:50,42,22,11;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:20;"><img fetchpriority="high"
-                                                                                fetchpriority="high" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
-                                                                                width="265" height="307"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-19.png"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-12" data-type="image"
-                                                                            data-xy="x:r;xo:-15px,-15px,1054px,1054px;yo:0,0,-3px,-3px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:[&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;];"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_1="e:power4.inOut;sp:1000;"
-                                                                            data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
-                                                                            style="z-index:8;"><img loading="lazy"
-                                                                                loading="lazy" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"  
-                                                                                alt=""
-                                                                                class="tp-rs-img rs-lazyload"
-                                                                                width="945" height="1300"
-                                                                                data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-6.jpg"
-                                                                                data-no-retina>
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-13" data-type="shape"
-                                                                            data-xy="x:c;xo:-481px,-345px,-1px,0;y:m;yo:71px,70px,19px,19px;"
-                                                                            data-text="w:normal;"
-                                                                            data-dim="w:400px,340px,340px,298px;h:540px,423px,423px,429px;"
-                                                                            data-basealign="slide" data-rsp_o="off"
-                                                                            data-rsp_bd="off" data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:10;background-color:#ffffff;">
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-14" data-type="text"
-                                                                            data-xy="x:c;xo:484px,348px,662px,662px;y:m;yo:18px,20px,-18px,18px;"
-                                                                            data-text="w:normal;s:42;l:64;fw:600;a:left,center,center,center;"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:19;font-family:'Work Sans';">PREMIUM
-                                                                            EYE CARE
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-15" data-type="text"
-                                                                            data-xy="x:c;xo:483px,347px,588px,588px;y:m;yo:62px,63px,42px,78px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;a:left,center,center,center;"
-                                                                            data-vbility="t,t,f,f" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:14;font-family:'Heebo';">For
-                                                                            your and your whole family
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-16" data-type="text"
-                                                                            data-xy="x:c;xo:552px,416px,619px,619px;y:m;yo:135px,136px,126px,162px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;"
-                                                                            data-dim="w:341px;" data-vbility="t,t,f,f"
-                                                                            data-basealign="slide" data-rsp_o="off"
-                                                                            data-rsp_bd="off" data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:13;font-family:'Heebo';"><a
-                                                                                class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--large qodef-html--link qodef-layout--custom"
-                                                                                href="meet-the-doctor/index.html"
-                                                                                target="_self"
-                                                                                style="--qode-button-color: #FFFFFF;--qode-button-border-color: #FFFFFF;--qode-button-hover-color: #FFFFFF;--qode-button-hover-background-color: #1C1C1C;--qode-button-hover-border-color: #1C1C1C">
-                                                                                <span class="qodef-m-text">View
-                                                                                    more</span>
-                                                                            </a>
-
-                                                                        </rs-layer><!--
-
-                        --><rs-layer id="slider-9-slide-22-layer-21" data-type="text" data-color="#000000"
-                                                                            data-xy="x:c;xo:-425px,-289px,55px,57px;y:m;yo:241px,215px,159px,162px;"
-                                                                            data-text="w:normal;s:18;l:26;fw:300;"
-                                                                            data-dim="w:201px;" data-basealign="slide"
-                                                                            data-rsp_o="off" data-rsp_bd="off"
-                                                                            data-frame_0="y:50;"
-                                                                            data-frame_1="st:300;sp:1000;"
-                                                                            data-frame_999="o:0;st:w;"
-                                                                            style="z-index:12;font-family:'Heebo';"><a
-                                                                                class="qodef-shortcode qodef-m  qodef-button qodef-layout--textual  qodef-html--link "
-                                                                                href="get-in-touch/index.html"
-                                                                                target="_self">
-                                                                                <span class="qodef-m-text">Book
-                                                                                    Now</span>
-                                                                            </a>
-
-                                                                        </rs-layer><!--
-    --> </rs-slide>
+                                                                        </rs-layer>
+                                                                        @endif
+                                                    
+                                                                    </rs-slide>
+                                                                    @endif
+                                                                    @endforeach
                                                                 </rs-slides>
                                                             </rs-module>
                                                             <script data-cfasync="false" src="{{asset('v1/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js')}}"></script>
@@ -461,7 +147,7 @@
                                                             </script>
                                                         </rs-module-wrap>
                                                         <!-- END REVOLUTION SLIDER -->
-                                                    </div>
+                                                    </div> 
 
                                                 </div>
                                             </div>
@@ -939,7 +625,7 @@
                                                                                             xmlns="http://www.w3.org/2000/svg"
                                                                                             viewBox="0 0 512 512">
                                                                                             <path
-                                                                                                d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
+                                                                                                d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
                                                                                             </path>
                                                                                         </svg></span><span
                                                                                         class="qqvfw-m-icon qqvfw-icon--predefined">
@@ -2741,3 +2427,34 @@
         </div><!-- close #qodef-page-inner div from header.php -->
     </div><!-- close #qodef-page-outer div from header.php -->
 @endsection
+
+@push('scripts')
+<script>
+    // Khởi tạo slider revolution sau khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof setREVStartSize !== 'undefined') {
+            setREVStartSize({
+                c: 'rev_slider_9_1',
+                rl: [1920, 1700, 1025, 680],
+                el: [900, 600, 820, 600],
+                gw: [1300, 1100, 600, 300],
+                gh: [900, 600, 820, 600],
+                type: 'standard',
+                justify: '',
+                layout: 'fullscreen',
+                offsetContainer: '',
+                offset: '30px',
+                mh: "0"
+            });
+        }
+        
+        // Hiển thị slider sau khi khởi tạo
+        setTimeout(function() {
+            var sliderWrapper = document.getElementById('rev_slider_9_1_wrapper');
+            if (sliderWrapper) {
+                sliderWrapper.style.visibility = 'visible';
+            }
+        }, 1000);
+    });
+</script>
+@endpush

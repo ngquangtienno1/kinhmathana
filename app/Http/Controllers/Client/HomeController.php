@@ -11,9 +11,15 @@ class HomeController extends Controller
     public function index()
     {
         $sliders = Slider::where('is_active', true)
+            ->whereNotNull('image')
+            ->where('image', '!=', '')
             ->orderBy('sort_order', 'asc')
-            ->take(3)
+            ->take(6)
             ->get();
+        
+        // Debug để kiểm tra dữ liệu
+        // dd($sliders->toArray());
+        
         return view('client.home', compact('sliders'));
     }
 }
