@@ -134,7 +134,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
 });
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
