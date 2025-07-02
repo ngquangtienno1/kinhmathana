@@ -12,7 +12,7 @@
                             href="{{ route('client.home') }}"><span itemprop="title">Home</span></a><span
                             class="qodef-breadcrumbs-separator"></span><span itemprop="title"
                             class="qodef-breadcrumbs-current">Sản phẩm</span></div>
-                </div>  
+                </div>
             </div>
         </div>
         <div id="qodef-page-inner" class="qodef-content-grid">
@@ -86,7 +86,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -104,8 +105,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="indexe187.html?add-to-cart=253"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="indexe187.html?add-to-cart=253"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_253"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -173,7 +174,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -191,8 +193,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="index23d2.html?add-to-cart=607"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="index23d2.html?add-to-cart=607"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_607"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -249,7 +251,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -267,8 +270,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="indexfb29.html?add-to-cart=295"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="indexfb29.html?add-to-cart=295"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_295"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -327,7 +330,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -345,8 +349,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="index3103.html?add-to-cart=329"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="index3103.html?add-to-cart=329"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_329"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -413,7 +417,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -431,8 +436,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="index32b7.html?add-to-cart=332"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="index32b7.html?add-to-cart=332"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_332"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -492,7 +497,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -510,8 +516,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="indexd259.html?add-to-cart=609"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="indexd259.html?add-to-cart=609"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_609"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -570,7 +576,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -588,8 +595,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="indexfefc.html?add-to-cart=335"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="indexfefc.html?add-to-cart=335"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_335"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -648,7 +655,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -666,8 +674,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="index612c.html?add-to-cart=339"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="index612c.html?add-to-cart=339"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_339"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -726,7 +734,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -744,8 +753,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="index5529.html?add-to-cart=342"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="index5529.html?add-to-cart=342"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_342"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -806,7 +815,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -824,8 +834,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="../product/optical-dark/index.html"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="../product/optical-dark/index.html"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_402"
                                                     data-quantity="1" class="button product_type_simple"
                                                     data-product_id="402" data-product_sku="0018"
@@ -883,7 +893,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -901,8 +912,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="indexfa33.html?add-to-cart=235"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="indexfa33.html?add-to-cart=235"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_235"
                                                     data-quantity="1"
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
@@ -960,7 +971,8 @@
                                                                     <path
                                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                                 </g>
-                                                            </svg> </span> </a></div>
+                                                            </svg> </span> </a>
+                                                </div>
                                                 <div
                                                     class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
                                                     <a role="button" tabindex="0"
@@ -978,8 +990,8 @@
                                                             </svg></span><span class="qqvfw-m-icon qqvfw-icon--predefined">
                                                             <span
                                                                 class="qodef-icon-linear-icons lnr-eye lnr"></span></span><span
-                                                            class="qqvfw-m-text"></span> </a></div><a
-                                                    href="../product/marshal-glasses/index.html"
+                                                            class="qqvfw-m-text"></span> </a>
+                                                </div><a href="../product/marshal-glasses/index.html"
                                                     aria-describedby="woocommerce_loop_add_to_cart_link_describedby_135"
                                                     data-quantity="1"
                                                     class="button product_type_variable add_to_cart_button qvsfw-ajax-add-to-cart"
@@ -1083,15 +1095,18 @@
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="indexcfb7.html?filter_gender=unisex&amp;query_type_gender=or">Unisex</a>
-                                        <span class="count">(17)</span></li>
+                                        <span class="count">(17)</span>
+                                    </li>
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="indexe312.html?filter_gender=male&amp;query_type_gender=or">Male</a>
-                                        <span class="count">(10)</span></li>
+                                        <span class="count">(10)</span>
+                                    </li>
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="indexee24.html?filter_gender=female&amp;query_type_gender=or">Female</a>
-                                        <span class="count">(20)</span></li>
+                                        <span class="count">(20)</span>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
@@ -1101,15 +1116,18 @@
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="index5e9e.html?filter_color=bronze&amp;query_type_color=or">Bronze</a>
-                                        <span class="count">(18)</span></li>
+                                        <span class="count">(18)</span>
+                                    </li>
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="index2eb4.html?filter_color=orange&amp;query_type_color=or">Orange</a>
-                                        <span class="count">(18)</span></li>
+                                        <span class="count">(18)</span>
+                                    </li>
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="index9d90.html?filter_color=purple&amp;query_type_color=or">Purple</a>
-                                        <span class="count">(9)</span></li>
+                                        <span class="count">(9)</span>
+                                    </li>
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="index4ded.html?filter_color=dark-green&amp;query_type_color=or">Dark
@@ -1125,7 +1143,8 @@
                                     <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
                                             rel="nofollow"
                                             href="indexc3cf.html?filter_color=silver&amp;query_type_color=or">Silver</a>
-                                        <span class="count">(16)</span></li>
+                                        <span class="count">(16)</span>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
