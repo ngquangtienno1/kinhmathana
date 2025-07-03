@@ -1,5 +1,6 @@
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 
     <title>Neo Ocular &#8211; Optician and Optical Store</title>

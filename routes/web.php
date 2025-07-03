@@ -99,7 +99,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
     });
 
-    Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
+    Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('add', [CartController::class, 'add'])->name('add');
         Route::post('update/{id}', [CartController::class, 'update'])->name('update');

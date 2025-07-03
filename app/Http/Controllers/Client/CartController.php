@@ -26,9 +26,9 @@ class CartController extends Controller
         $promotions = Promotion::where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereNull('usage_limit')
-                      ->orWhereRaw('used_count < usage_limit');
+                    ->orWhereRaw('used_count < usage_limit');
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -76,7 +76,7 @@ class CartController extends Controller
         // Tính lại tổng tiền giỏ hàng
         $cart_total = Cart::where('user_id', $user->id)
             ->get()
-            ->sum(function($item) {
+            ->sum(function ($item) {
                 return $item->variation->price * $item->quantity;
             });
         $cart_total = number_format($cart_total, 0, ',', '.');
@@ -106,31 +106,31 @@ class CartController extends Controller
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
-        
+
         // Lấy danh sách phương thức vận chuyển đang hoạt động cùng với phí vận chuyển
-        $shippingProviders = ShippingProvider::with(['shippingFees' => function($query) {
+        $shippingProviders = ShippingProvider::with(['shippingFees' => function ($query) {
             $query->orderBy('province_code');
         }])
-        ->where('is_active', true)
-        ->orderBy('sort_order')
-        ->get();
-            
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
         // Lấy danh sách phương thức thanh toán đang hoạt động
         $paymentMethods = PaymentMethod::where('is_active', true)
             ->orderBy('sort_order')
             ->get();
-            
+
         // Lấy danh sách voucher đang hoạt động
         $promotions = Promotion::where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereNull('usage_limit')
-                      ->orWhereRaw('used_count < usage_limit');
+                    ->orWhereRaw('used_count < usage_limit');
             })
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return view('client.cart.checkout', compact('cartItems', 'shippingProviders', 'paymentMethods', 'promotions'));
     }
 
@@ -216,6 +216,7 @@ class CartController extends Controller
 
     public function checkout(Request $request)
     {
+        // dd($request->all());
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
@@ -236,6 +237,7 @@ class CartController extends Controller
             'payment_method' => 'required|string',
             'applied_voucher' => 'nullable|string',
             'note' => 'nullable|string|max:1000',
+            'save_payment_info' => 'nullable',
         ], [
             'customer_name.required' => 'Vui lòng nhập họ tên người đặt.',
             'customer_phone.required' => 'Vui lòng nhập số điện thoại người đặt.',
@@ -251,29 +253,28 @@ class CartController extends Controller
         $totalAmount = $cartItems->sum(function ($item) {
             return $item->variation->price * $item->quantity;
         });
-        
+
         // Tính phí vận chuyển dựa trên phương thức được chọn
         $shippingCost = 0;
         $shippingProvider = null;
-        
+
         if ($request->shipping_method !== 'free') {
             $shippingProvider = ShippingProvider::where('code', $request->shipping_method)
                 ->where('is_active', true)
                 ->first();
-                
+
             if ($shippingProvider) {
-                // Lấy phí vận chuyển cơ bản (có thể lấy phí đầu tiên hoặc tính trung bình)
                 $shippingFee = $shippingProvider->shippingFees()->first();
                 if ($shippingFee) {
                     $shippingCost = $shippingFee->base_fee;
                 }
             }
         }
-        
+
         // Xử lý voucher
         $discountAmount = 0;
         $promotion = null;
-        
+
         if ($request->filled('applied_voucher')) {
             $voucherData = json_decode($request->applied_voucher, true);
             if ($voucherData && isset($voucherData['code'])) {
@@ -282,7 +283,7 @@ class CartController extends Controller
                     ->where('start_date', '<=', now())
                     ->where('end_date', '>=', now())
                     ->first();
-                    
+
                 if ($promotion && $totalAmount >= $promotion->minimum_purchase) {
                     if ($promotion->discount_type === 'percentage') {
                         $discountAmount = $totalAmount * ($promotion->discount_value / 100);
@@ -295,12 +296,12 @@ class CartController extends Controller
                 }
             }
         }
-        
+
         $grandTotal = $totalAmount + $shippingCost - $discountAmount;
-        
+
         // Tìm payment method
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
-        
+
         $order = Order::create([
             'user_id' => $user->id,
             'order_number' => 'DH' . time(),
@@ -323,7 +324,8 @@ class CartController extends Controller
             'status' => 'pending',
             'note' => $validated['note'] ?? '',
         ]);
-        
+
+
         foreach ($cartItems as $item) {
             OrderItem::create([
                 'order_id' => $order->id,
@@ -344,7 +346,7 @@ class CartController extends Controller
             $variation->stock_quantity = max(0, $variation->stock_quantity - $item->quantity);
             $variation->save();
         }
-        
+
         // Ghi lại việc sử dụng voucher
         if ($promotion && $discountAmount > 0) {
             \App\Models\PromotionUsage::create([
@@ -353,12 +355,12 @@ class CartController extends Controller
                 'user_id' => $user->id,
                 'discount_amount' => $discountAmount
             ]);
-            
+
             // Tăng số lượt sử dụng
             $promotion->increment('used_count');
         }
-        
+
         Cart::where('user_id', $user->id)->delete();
-        return redirect()->route('client.orders.show', $order->id)->with('success', 'Đặt hàng thành công!');
+        return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
     }
-} 
+}
