@@ -12,4 +12,8 @@ class Color extends Model
     protected $fillable = ['name', 'hex_code', 'image_url', 'sort_order'];
 
     public $timestamps = false;
+    public function variations()
+    {
+        return $this->hasMany(Variation::class, 'color_id');
+    }
 }
