@@ -34,8 +34,7 @@
                                                                             data-title="{{ $sliders[$i]->title }}"
                                                                             data-anim="adpr:false;" data-in="o:0;"
                                                                             data-out="a:false;">
-                                                                            <img decoding="async"
-                                                                                src="{{ asset('wp-content/plugins/revslider/sr6/assets/assets/dummy.png') }}"
+                                                                            <img decoding="async" src="{{ asset('') }}"
                                                                                 alt="{{ $sliders[$i]->title }}"
                                                                                 title="{{ $sliders[$i]->title }}"
                                                                                 class="rev-slidebg tp-rs-img rs-lazyload"
@@ -55,7 +54,7 @@
                                                                                     data-frame_999="o:0;st:w;"
                                                                                     style="z-index:20;">
                                                                                     <img decoding="async"
-                                                                                        src="{{ asset('wp-content/plugins/revslider/sr6/assets/assets/dummy.png') }}"
+                                                                                        src="{{ asset('') }}"
                                                                                         alt="{{ $sliders[$i]->title }}"
                                                                                         class="tp-rs-img rs-lazyload"
                                                                                         width="300" height="350"
@@ -78,7 +77,7 @@
                                                                                     data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
                                                                                     style="z-index:9;">
                                                                                     <img decoding="async"
-                                                                                        src="{{ asset('wp-content/plugins/revslider/sr6/assets/assets/dummy.png') }}"
+                                                                                        src="{{ asset('') }}"
                                                                                         alt="{{ $sliders[$i]->title }}"
                                                                                         class="tp-rs-img rs-lazyload"
                                                                                         width="945" height="1300"
@@ -102,7 +101,7 @@
                                                                                     data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
                                                                                     style="z-index:8;">
                                                                                     <img decoding="async"
-                                                                                        src="{{ asset('wp-content/plugins/revslider/sr6/assets/assets/dummy.png') }}"
+                                                                                        src="{{ asset('') }}"
                                                                                         alt="{{ $sliders[$i + 1]->title }}"
                                                                                         class="tp-rs-img rs-lazyload"
                                                                                         width="945" height="1300"
@@ -199,8 +198,6 @@
                                                                     @endfor
                                                                 </rs-slides>
                                                             </rs-module>
-                                                            <script data-cfasync="false" src="{{ asset('cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js') }}">
-                                                            </script>
                                                             <script>
                                                                 setREVStartSize({
                                                                     c: 'rev_slider_9_1',

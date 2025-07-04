@@ -138,11 +138,10 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('voucher')->name('voucher.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
-   Route::prefix('contact')->group(function () {
-    Route::get('/', [ClientContactController::class, 'index'])->name('contact.index');
-    Route::post('/', [ClientContactController::class, 'store'])->name('contact.store');
-});
-
+    Route::prefix('contact')->name('contact.')->group(function () {
+        Route::get('/', [ClientContactController::class, 'index'])->name('index');
+        Route::post('/', [ClientContactController::class, 'store'])->name('store');
+    });
 });
 
 // Admin routes group

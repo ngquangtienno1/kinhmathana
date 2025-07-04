@@ -1,26 +1,19 @@
 @extends('client.layouts.app')
 
 @section('content')
-
     <div id="qodef-page-outer">
-        <div class="qodef-page-title qodef-m qodef-title--standard qodef-alignment--center qodef-vertical-alignment--header-bottom qodef--has-image qodef-image--parallax qodef-parallax"
-            style="margin-top: 32px !important;">
+        <div
+            class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
             <div class="qodef-m-inner">
-                <div class="qodef-parallax-img-holder">
-                    <div class="qodef-parallax-img-wrapper"><img loading="lazy" width="1920" height="1300"
-                            src="../wp-content/uploads/2021/10/booking-parallax-title-image-01.jpg"
-                            class="qodef-parallax-img" alt="r" decoding="async"
-                            srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01.jpg 1920w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01-600x203.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01-800x271.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01-300x102.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01-1024x347.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01-768x260.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/booking-parallax-title-image-01-1536x520.jpg 1536w"
-                            sizes="(max-width: 1920px) 100vw, 1920px" /></div>
-                </div>
-                <div class="qodef-m-content qodef-content-grid qodef-parallax-content-holder breadcrumbs-light-skin">
+                <div class="qodef-m-content qodef-content-grid">
                     <h1 class="qodef-m-title entry-title">
                         Liên hệ </h1>
-                    <p class="qodef-m-subtitle"> Donec varius semper magna sit amet dignissim</p>
-
+                    <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
+                            href="{{ route('client.home') }}"><span itemprop="title">Home</span></a><span
+                            class="qodef-breadcrumbs-separator"></span><span itemprop="title"
+                            class="qodef-breadcrumbs-current">Liên hệ</span></div>
                 </div>
             </div>
-
         </div>
 
         <div id="qodef-page-inner" class="qodef-content-full-width">
@@ -42,7 +35,7 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--center ">
                                                         <h2 class="qodef-m-title">
-                                                            Liên hệ </h2>
+                                                            Liên hệ cho chúng tôi </h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -53,59 +46,139 @@
                             <section
                                 class="elementor-section elementor-top-section elementor-element elementor-element-64d5a65 qodef-elementor-content-grid elementor-section-boxed elementor-section-height-default elementor-section-height-default"
                                 data-id="64d5a65" data-element_type="section">
-                                <div class="elementor-container d-flex flex-column align-items-center"
-                                    style="max-width: 1200px; width: 90%; margin: 0 auto;">
-                                    <div
-                                        style="background: #fff; max-width: 100%; width: 100%; padding: 48px 40px; border-radius: 20px; box-shadow: 0 4px 32px rgba(0,0,0,0.10); margin-bottom: 40px;">
-                                        <h2 class="mb-4"
-                                            style="font-weight: bold; font-size: 1.5rem; border-bottom: 2px solid #222; display: inline-block;">
-                                            Liên hệ</h2>
-                                        <div class="mb-4">
-                                            <div style="font-size: 16px; color: #888;">Địa chỉ chúng tôi</div>
-                                            <div style="font-weight: bold;">Tòa nhà FPT Polytechnic., Cổng số 2, 13 P. Trịnh
-                                                Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội</div>
-                                            <div style="font-size: 16px; color: #888; margin-top: 16px;">Email chúng tôi
+                                <div class="elementor-container elementor-column-gap-default">
+                                    <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-66af7fd"
+                                        data-id="66af7fd" data-element_type="column">
+                                        <div class="elementor-widget-wrap elementor-element-populated">
+                                            <div class="elementor-element elementor-element-d8fe16c elementor-widget elementor-widget-text-editor"
+                                                data-id="d8fe16c" data-element_type="widget"
+                                                data-widget_type="text-editor.default">
+                                                <div class="elementor-widget-container">
+                                                    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn. Vui lòng liên hệ với chúng tôi
+                                                        qua các thông tin dưới đây.</p>
+                                                </div>
                                             </div>
-                                            <div style="font-weight: bold;">kinhmathana@gmail.com</div>
-                                            <div style="font-size: 16px; color: #888; margin-top: 16px;">Điện thoại</div>
-                                            <div style="font-weight: bold;">0123456789</div>
-                                            <div style="font-size: 16px; color: #888; margin-top: 16px;">Thời gian làm việc
+                                            <div class="elementor-element elementor-element-5527f0a elementor-widget elementor-widget-wp-widget-neoocular_core_contact_form_7"
+                                                data-id="5527f0a" data-element_type="widget"
+                                                data-widget_type="wp-widget-neoocular_core_contact_form_7.default">
+                                                <div class="elementor-widget-container">
+                                                    <div class="qodef-contact-form-7">
+
+                                                        <div class="wpcf7 no-js" id="wpcf7-f690-p3396-o1" lang="en-US"
+                                                            dir="ltr">
+                                                            <div class="screen-reader-response">
+                                                                <p role="status" aria-live="polite" aria-atomic="true"></p>
+                                                                <ul></ul>
+                                                            </div>
+                                                            <form method="POST"
+                                                                action="{{ route('client.contact.store') }}"
+                                                                class="wpcf7-form init demo" aria-label="Contact form"
+                                                                novalidate="novalidate" data-status="init">
+                                                                @csrf
+                                                                @if (session('success'))
+                                                                    <div class="alert alert-success"
+                                                                        style="background: #e6f9ed; border: 1.5px solid #2ecc71; color: #218c5a; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
+                                                                        <span style="font-size: 22px;">&#10003;</span>
+                                                                        <span>{{ session('success') }}</span>
+                                                                    </div>
+                                                                @endif
+                                                                @if ($errors->any())
+                                                                    @foreach ($errors->all() as $error)
+                                                                        <div class="alert alert-danger"
+                                                                            style="background: #ffeaea; border: 1.5px solid #e74c3c; color: #c0392b; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
+                                                                            <span style="font-size: 22px;">&#9888;</span>
+                                                                            <span>{{ $error }}</span>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endif
+                                                                <div style="display: none;">
+                                                                    <input type="hidden" name="_wpcf7" value="690" />
+                                                                    <input type="hidden" name="_wpcf7_version"
+                                                                        value="5.9.8" />
+                                                                    <input type="hidden" name="_wpcf7_locale"
+                                                                        value="en_US" />
+                                                                    <input type="hidden" name="_wpcf7_unit_tag"
+                                                                        value="wpcf7-f690-p3396-o1" />
+                                                                    <input type="hidden" name="_wpcf7_container_post"
+                                                                        value="3396" />
+                                                                    <input type="hidden" name="_wpcf7_posted_data_hash"
+                                                                        value="" />
+                                                                </div>
+                                                                <div class="qodef-appointment-form">
+                                                                    <p>
+                                                                        <span class="wpcf7-form-control-wrap"
+                                                                            data-name="name">
+                                                                            <input size="40" maxlength="400"
+                                                                                class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                                                                                aria-required="true" aria-invalid="false"
+                                                                                placeholder="Tên của bạn (bắt buộc)"
+                                                                                value="{{ old('name') }}" type="text"
+                                                                                name="name" required />
+                                                                            @error('name')
+                                                                                <div class="text-danger"
+                                                                                    style="color: red; font-size: 14px; text-align: left;">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
+                                                                        </span>
+                                                                        <span class="wpcf7-form-control-wrap"
+                                                                            data-name="email">
+                                                                            <input size="40" maxlength="400"
+                                                                                class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email"
+                                                                                aria-required="true" aria-invalid="false"
+                                                                                placeholder="Email của bạn (bắt buộc)"
+                                                                                value="{{ old('email') }}" type="email"
+                                                                                name="email" required />
+                                                                            @error('email')
+                                                                                <div class="text-danger"
+                                                                                    style="color: red; font-size: 14px; text-align: left;">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
+                                                                        </span>
+                                                                        <br />
+                                                                        <span class="wpcf7-form-control-wrap"
+                                                                            data-name="phone">
+                                                                            <input size="40" maxlength="400"
+                                                                                class="wpcf7-form-control wpcf7-text"
+                                                                                aria-invalid="false"
+                                                                                placeholder="Số điện thoại của bạn"
+                                                                                value="{{ old('phone') }}" type="text"
+                                                                                name="phone" />
+                                                                            @error('phone')
+                                                                                <div class="text-danger"
+                                                                                    style="color: red; font-size: 14px; text-align: left;">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
+                                                                        </span>
+                                                                        <br />
+                                                                        <span class="wpcf7-form-control-wrap"
+                                                                            data-name="message">
+                                                                            <textarea cols="40" rows="10" maxlength="2000" class="wpcf7-form-control wpcf7-textarea"
+                                                                                aria-invalid="false" placeholder="Nội dung tin nhắn" name="message" required>{{ old('message') }}</textarea>
+                                                                            @error('message')
+                                                                                <div class="text-danger"
+                                                                                    style="color: red; font-size: 14px; text-align: left;">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
+                                                                        </span>
+                                                                        <br />
+                                                                        <button
+                                                                            class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
+                                                                            type="submit">
+                                                                            <span class="qodef-m-text">Gửi tin nhắn</span>
+                                                                        </button>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="wpcf7-response-output" aria-hidden="true">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div style="font-weight: bold;">Tất cả các ngày trong tuần</div>
                                         </div>
-                                        <h3 class="mb-3 text-center"
-                                            style="font-weight: bold;  font-size: 1.5rem; border-bottom: 2px solid #222; display: inline-block;">
-                                            Gửi thắc mắc cho chúng tôi</h3>
-                                        <form method="POST" action="{{ route('client.contact.store') }}">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <input type="text" name="name" class="form-control"
-                                                    placeholder="Tên của bạn" required>
-                                            </div>
-                                            <div class="mb-3 d-flex gap-2">
-                                                <input type="email" name="email" class="form-control"
-                                                    placeholder="Email của bạn" required>
-                                                <input type="text" name="phone" class="form-control"
-                                                    placeholder="Số điện thoại của bạn">
-                                            </div>
-                                            <div class="mb-3">
-                                                <textarea name="message" class="form-control" rows="4" placeholder="Nội dung" required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-dark w-100">GỬI CHO CHÚNG TÔI</button>
-                                        </form>
                                     </div>
                                 </div>
                             </section>
-                            <!-- Google Maps dưới khung trắng -->
-                            <div
-                                style="width: 100%; max-width: 1200px; height: 400px; margin: 32px auto 0 auto; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d59581.82487630353!2d105.70606196305216!3d21.03812483681596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1751456217046!5m2!1svi!2s"
-                                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
-                            </div>
-                            <br><br><br>
-                            <!-- Các ảnh client list để dưới cùng -->
                             <section
                                 class="elementor-section elementor-top-section elementor-element elementor-element-28a86fd qodef-elementor-content-grid elementor-section-boxed elementor-section-height-default elementor-section-height-default"
                                 data-id="28a86fd" data-element_type="section"
@@ -128,13 +201,13 @@
                                                                             <span class="qodef-e-logo">
                                                                                 <img decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-01-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-01-hover.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-hover.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -148,14 +221,14 @@
                                                                             <span class="qodef-e-logo">
                                                                                 <img decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-02-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-02-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -170,14 +243,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-03-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-03-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -192,14 +265,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-04-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-04-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -214,14 +287,14 @@
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-05-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
                                                                                     decoding="async" width="170"
                                                                                     height="70"
-                                                                                    src="../wp-content/uploads/2021/07/Client-05-hover-1.png"
+                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-hover-1.png') }}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
                                                                         </a>
@@ -240,37 +313,7 @@
                     </div>
                 </div>
             </main>
-        </div><!-- close #qodef-page-inner div from header.php -->
+        </div>
 
     </div>
-    <style>
-        .elementor-container>.row {
-            display: flex !important;
-            flex-wrap: wrap;
-        }
-
-        .elementor-container>.row>.col-md-6 {
-            display: flex !important;
-            flex-direction: column;
-            justify-content: center;
-            height: 100%;
-        }
-
-        .elementor-container>.row.align-items-stretch {
-            display: flex !important;
-            align-items: stretch !important;
-        }
-
-        .elementor-container>.row.align-items-stretch>.col-md-6 {
-            display: flex;
-            flex-direction: column;
-            justify-content: stretch;
-        }
-
-        .elementor-container {
-            max-width: 1100px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
 @endsection

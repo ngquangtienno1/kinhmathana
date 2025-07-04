@@ -63,7 +63,7 @@
                                                         ->first();
                                                     $imagePath = $featuredImage
                                                         ? asset('storage/' . $featuredImage->image_path)
-                                                        : asset('storage/sample/default.jpg');
+                                                        : asset('');
                                                 @endphp
                                                 <img loading="lazy" width="600" height="431" src="{{ $imagePath }}"
                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
@@ -119,7 +119,7 @@
                         </div>
                         <!-- <nav class="woocommerce-pagination">
 
-                            </nav> -->
+                                    </nav> -->
                     </div>
                     <div class="qodef-grid-item qodef-page-sidebar-section qodef-col--3 qodef-col-pull--9">
                         <aside id="qodef-page-sidebar" role="complementary">
@@ -224,8 +224,8 @@
                             <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
                                 <figure class="wp-block-image size-large"><a href="#"><img fetchpriority="high"
                                             fetchpriority="high" decoding="async" width="1024" height="690"
-                                            src="{{ asset('storage/sample/shop-banner.jpg') }}" alt=""
-                                            class="wp-image-7903" /></a></figure>
+                                            src="{{ asset('') }}" alt="" class="wp-image-7903" /></a>
+                                </figure>
                             </div>
                         </aside>
                     </div>
