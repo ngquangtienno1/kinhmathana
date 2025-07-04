@@ -6,7 +6,7 @@
             class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
             <div class="qodef-m-inner">
                 <div class="qodef-m-content qodef-content-grid">
-                    <h1 class="qodef-m-title entry-title">Sản phẩm</h1>
+                    <h1 class="qodef-m-title entry-title">Chi tiết sản phẩm</h1>
                     <div itemprop="breadcrumb" class="qodef-breadcrumbs">
                         <a itemprop="url" class="qodef-breadcrumbs-link" href="{{ route('client.home') }}"><span
                                 itemprop="title">Trang chủ</span></a>
@@ -36,8 +36,7 @@
                                         alt="{{ $product->name }}" class="main-product-image"
                                         style="width:867.19px;height:623.28px;object-fit:cover;" id="main-product-image" />
                                 @else
-                                    <img src="{{ asset('') }}" alt="No image"
-                                        class="main-product-image"
+                                    <img src="{{ asset('') }}" alt="No image" class="main-product-image"
                                         style="width:867.19px;height:623.28px;object-fit:cover;" />
                                 @endif
                                 @php
@@ -233,8 +232,8 @@
                                                         <span class="qodef-quantity-plus"></span>
                                                     </div>
                                                     <button type="submit" class="single_add_to_cart_button button alt"
-                                                        @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Add
-                                                        to cart</button>
+                                                        @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
+                                                        giỏ hàng</button>
                                                     <input type="hidden" name="add-to-cart" value="921" />
                                                     <input type="hidden" name="product_id" value="921" />
                                                     <input type="hidden" name="variation_id" class="variation_id"
@@ -274,7 +273,7 @@
                                     <a role="button" tabindex="0"
                                         class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
                                         href="index7f33.html?add_to_wishlist=921" data-item-id="921"
-                                        data-original-item-id="921" aria-label="Add to wishlist"
+                                        data-original-item-id="921" aria-label="Thêm vào danh sách yêu thích"
                                         data-shortcode-atts="{"button_behavior":"view","button_type":"icon-with-text","show_count":"","require_login":false}"
                                         rel="noopener noreferrer"> <span class="qwfw-m-spinner qwfw-spinner-icon"> <svg
                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -288,7 +287,8 @@
                                                     <path
                                                         d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                 </g>
-                                            </svg> </span> <span class="qwfw-m-text">Add to wishlist</span> </a>
+                                            </svg> </span> <span class="qwfw-m-text">Thêm vào yêu thích</span>
+                                    </a>
                                 </div>
                                 <div class="product_meta">
                                     @if ($product->sku && $product->sku !== '0158')
@@ -313,14 +313,14 @@
                                             @endif
                                         </span>
                                     </span>
-                                    <span class="tagged_as"><span class="qodef-woo-meta-label">Tags:</span><span
-                                            class="qodef-woo-meta-value"><a href="../../product-tag/frame/index.html"
-                                                rel="tag">Frame</a>,
-                                            <a href="../../product-tag/stripe/index.html"
-                                                rel="tag">Stripe</a></span></span>
+                                    <span class="tagged_as"><span class="qodef-woo-meta-label">Thẻ:</span>
+                                        <span class="qodef-woo-meta-value">
+                                            <a href="../../product-tag/frame/index.html" rel="tag">Kính</a>
+                                        </span>
+                                    </span>
                                 </div>
                                 <div class="qodef-shortcode qodef-m  qodef-social-share clear qodef-layout--list ">
-                                    <span class="qodef-social-title qodef-custom-label">Share product:</span>
+                                    <span class="qodef-social-title qodef-custom-label">Chia sẻ sản phẩm:</span>
                                     <ul class="qodef-shortcode-list">
                                         <li class="qodef-facebook-share"> <a itemprop="url" class="qodef-share-link"
                                                 href="#"
@@ -363,19 +363,23 @@
                                 <a href="#tab-additional_information">Additional information</a>
                             </li>
                             <li class="reviews_tab" id="tab-title-reviews" role="tab" aria-controls="tab-reviews">
-                                <a href="#tab-reviews">Reviews (0)</a>
+                                <a href="#tab-reviews">Đánh giá ({{ $product->reviews->count() }})</a>
+                            </li>
+                            <li class="comments_tab" id="tab-title-comments" role="tab"
+                                aria-controls="tab-comments">
+                                <a href="#tab-comments">Bình luận ({{ $comments->count() }})</a>
                             </li>
                         </ul>
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab"
                             id="tab-description" role="tabpanel" aria-labelledby="tab-title-description">
-                            <h2>Description</h2>
+                            <h2>Mô tả</h2>
                             <p>{{ $product->description ?: 'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.' }}
                             </p>
                         </div>
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
                             id="tab-additional_information" role="tabpanel"
                             aria-labelledby="tab-title-additional_information">
-                            <h2>Additional information</h2>
+                            <h2>Thông tin thêm</h2>
                             <table class="woocommerce-product-attributes shop_attributes">
                                 @if ($product->variations->isNotEmpty())
                                     @foreach ($product->variations->groupBy('attribute_name')->map->unique() as $attribute => $variations)
@@ -384,8 +388,7 @@
                                             <th class="woocommerce-product-attributes-item__label">{{ $attribute }}
                                             </th>
                                             <td class="woocommerce-product-attributes-item__value">
-                                                <p>{{ $variations->pluck('attribute_value')->unique()->implode(', ') }}
-                                                </p>
+                                                <p>{{ $variations->pluck('attribute_value')->unique()->implode(', ') }}</p>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -393,18 +396,56 @@
                             </table>
                         </div>
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--reviews panel entry-content wc-tab"
-                            id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews">
-                            <div id="reviews" class="woocommerce-Reviews">
-                                <div id="comments">
-                                    <h2 class="woocommerce-Reviews-title">Reviews</h2>
-                                    <p class="woocommerce-noreviews">There are no reviews yet.</p>
-                                    <p>(0 customer reviews)</p>
+                            id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
+                            <h2>Đánh giá</h2>
+                            @if ($product->reviews->count() > 0)
+                                <div class="reviews-list">
+                                    @foreach ($product->reviews as $review)
+                                        <div class="review-item mb-3 p-3 border rounded">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>{{ $review->user->name ?? 'Người dùng ẩn danh' }}</strong>
+                                                <span>{{ $review->created_at->format('d/m/Y H:i') }}</span>
+                                            </div>
+                                            <div class="rating">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <span
+                                                        class="star {{ $i <= $review->rating ? 'filled' : '' }}">★</span>
+                                                @endfor
+                                            </div>
+                                            <p class="mt-2">{{ $review->content }}</p>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            </div>
+                            @else
+                                <p class="text-muted">Chưa có đánh giá nào.</p>
+                            @endif
+                        </div>
+                        <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--comments panel entry-content wc-tab"
+                            id="tab-comments" role="tabpanel" aria-labelledby="tab-title-comments"
+                            style="display:none;">
+                            <h2>Bình luận</h2>
+                            @if ($comments->count() > 0)
+                                <div class="comments-list">
+                                    @foreach ($comments as $comment)
+                                        <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                            <div style="display: flex; align-items: baseline; gap: 8px;">
+                                                <span
+                                                    style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
+                                                <span
+                                                    style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                            </div>
+                                            <div style="margin-top: 2px; font-size: 15px; color: #222;">
+                                                {{ $comment->content }}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-muted">Chưa có bình luận nào.</p>
+                            @endif
                         </div>
                     </div>
                     <section class="related products">
-                        <h2>Related products</h2>
+                        <h2>Sản phẩm liên quan</h2>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
                             <ul class="products columns-4">
                                 @foreach ($related_products as $related_product)
@@ -449,7 +490,7 @@
                                                         class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon"
                                                         href="#" data-item-id="{{ $related_product->id }}"
                                                         data-original-item-id="{{ $related_product->id }}"
-                                                        aria-label="Add to wishlist"
+                                                        aria-label="Thêm vào danh sách yêu thích"
                                                         data-shortcode-atts="{'button_behavior':'view','button_type':'icon','show_count':'','require_login':false}"
                                                         rel="noopener noreferrer">
                                                         <span class="qwfw-m-spinner qwfw-spinner-icon">
@@ -494,8 +535,8 @@
                                                     class="button product_type_simple add_to_cart_button ajax_add_to_cart"
                                                     data-product_id="{{ $related_product->id }}"
                                                     data-product_sku="{{ $related_product->sku }}"
-                                                    aria-label="Add to cart: "{{ $related_product->name }}"""
-                                                    rel="nofollow">Add to cart</a>
+                                                    aria-label="Thêm vào giỏ hàng: "{{ $related_product->name }}"""
+                                                    rel="nofollow">Thêm vào giỏ hàng</a>
                                             </div>
                                         </div>
                                         <a href="{{ route('client.products.show', $related_product->slug) }}"
@@ -642,6 +683,23 @@
 
             // Initial call to set image based on default selection (if any)
             onAttributeChange();
+
+            // Tab switching logic
+            const tabLinks = document.querySelectorAll('.wc-tabs li');
+            const tabPanels = document.querySelectorAll('.woocommerce-Tabs-panel');
+            tabLinks.forEach(function(tab) {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    tabLinks.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    tabPanels.forEach(panel => panel.style.display = 'none');
+                    const target = tab.querySelector('a').getAttribute('href');
+                    document.querySelector(target).style.display = '';
+                });
+            });
+            // Mặc định mở tab đầu tiên
+            tabLinks[0].classList.add('active');
+            tabPanels[0].style.display = '';
         });
     </script>
 @endsection

@@ -1997,10 +1997,10 @@ input:-webkit-autofill {
 #qodef-page-outer {
     position: relative;
 }
-/* #qodef-page-inner {
+#qodef-page-inner {
     position: relative;
     padding: 130px 0 100px;
-} */
+}
 #qodef-page-content.qodef-layout--template
     .qodef-page-content-section.qodef-col--12 {
     margin-bottom: 0;
@@ -10545,7 +10545,7 @@ body:not([class*="neoocular-core"])
 .widget.woocommerce.widget_price_filter .price_slider_amount {
     align-items: center;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row; /* Đổi từ row-reverse thành row */
     justify-content: space-between;
     margin: 22px 0 0;
     position: relative;

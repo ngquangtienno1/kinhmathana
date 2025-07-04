@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -47,15 +48,38 @@ class ProductController extends Controller
 
         // Bộ lọc: Price range
         if ($request->filled('min_price') || $request->filled('max_price')) {
-            $minPrice = $request->input('min_price', 0);
-            $maxPrice = $request->input('max_price', 999999);
+            $minPriceRaw = $request->input('min_price', 0);
+            $maxPriceRaw = $request->input('max_price', 999999999);
+            $minPrice = preg_replace('/\D/', '', $minPriceRaw);
+            $maxPrice = preg_replace('/\D/', '', $maxPriceRaw);
+            $minPrice = (int) $minPrice;
+            $maxPrice = (int) $maxPrice;
+
+            Log::info('[Lọc giá] min_price_raw: ' . $minPriceRaw . ', max_price_raw: ' . $maxPriceRaw . ', min_price: ' . $minPrice . ', max_price: ' . $maxPrice);
+
             $query->where(function ($q) use ($minPrice, $maxPrice) {
-                $q->whereBetween('sale_price', [$minPrice, $maxPrice])
-                    ->orWhereBetween('price', [$minPrice, $maxPrice])
-                    ->orWhereHas('variations', function ($qv) use ($minPrice, $maxPrice) {
-                        $qv->whereBetween('sale_price', [$minPrice, $maxPrice])
-                            ->orWhereBetween('price', [$minPrice, $maxPrice]);
-                    });
+                // Sản phẩm thường
+                $q->where(function ($q2) use ($minPrice, $maxPrice) {
+                    $q2->where(function ($q3) use ($minPrice, $maxPrice) {
+                        $q3->whereNotNull('price')
+                            ->whereBetween('price', [$minPrice, $maxPrice]);
+                    })
+                        ->orWhere(function ($q3) use ($minPrice, $maxPrice) {
+                            $q3->whereNotNull('sale_price')
+                                ->whereBetween('sale_price', [$minPrice, $maxPrice]);
+                        });
+                });
+                // Sản phẩm biến thể
+                $q->orWhereHas('variations', function ($qv) use ($minPrice, $maxPrice) {
+                    $qv->where(function ($q4) use ($minPrice, $maxPrice) {
+                        $q4->whereNotNull('price')
+                            ->whereBetween('price', [$minPrice, $maxPrice]);
+                    })
+                        ->orWhere(function ($q4) use ($minPrice, $maxPrice) {
+                            $q4->whereNotNull('sale_price')
+                                ->whereBetween('sale_price', [$minPrice, $maxPrice]);
+                        });
+                });
             });
         }
 
@@ -76,8 +100,8 @@ class ProductController extends Controller
         }
 
         // Tìm kiếm
-        if ($request->filled('search')) {
-            $search = $request->input('search');
+        $search = $request->input('search') ?? $request->input('s');
+        if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('sku', 'like', "%{$search}%");
@@ -106,9 +130,9 @@ class ProductController extends Controller
                 break;
         }
 
-        // Phân trang
-        $products = $query->paginate(6); // 6 sản phẩm mỗi trang
-        $categories = Category::with('children')->where('is_active', true)->get();
+        $products = $query->paginate(12);
+        Log::info('[Lọc giá] Số lượng sản phẩm tìm được: ' . $products->total());
+        $categories = Category::withCount('products')->with('children')->where('is_active', true)->get();
         $colors = Color::all();
         $brands = Brand::where('is_active', true)->get();
 
@@ -160,7 +184,7 @@ class ProductController extends Controller
             ->get();
 
         // Prepare variationsJson for Blade (for JS)
-        $variationsJson = $product->variations->map(function($v) {
+        $variationsJson = $product->variations->map(function ($v) {
             return [
                 'id' => $v->id,
                 'color_id' => $v->color_id ? (string)$v->color_id : '',
@@ -171,6 +195,9 @@ class ProductController extends Controller
             ];
         })->values()->toArray();
 
-        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson'));
+        // Lấy bình luận (comments) cho sản phẩm, mới nhất trước(TA)
+        $comments = $product->comments()->with('user')->orderByDesc('created_at')->get();
+
+        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
     }
 }
