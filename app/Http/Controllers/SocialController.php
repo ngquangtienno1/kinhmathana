@@ -19,14 +19,22 @@ class SocialController extends Controller
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
 
-            $user = User::updateOrCreate(
-                ['email' => $googleUser->getEmail()],
-                [
-                    'name' => $googleUser->getName() ?? $googleUser->getNickname(),
-                    'password' => bcrypt(Str::random(24)),
-                    'role_id' => 3,
-                ]
-            );
+       $user = User::updateOrCreate(
+            ['email' => $googleUser->getEmail()],
+            [
+                'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                'address' => null, // Bạn có thể thêm trường address nếu cần (hoặc lấy từ Google nếu có)
+                'phone' => null,    // Bạn có thể thêm trường phone nếu có dữ liệu từ Google
+                'password' => bcrypt(Str::random(24)), // Mật khẩu ngẫu nhiên
+                'date_birth' => null, // Bạn có thể lấy ngày sinh từ Google nếu có (chỉnh sửa nếu Google trả về thông tin này)
+                'gender' => null, // Bạn có thể thêm thông tin giới tính nếu có (hoặc từ Google)
+                'status_user' => 'active', // Trạng thái mặc định
+                'avatar' => $googleUser->getAvatar(), // Lưu ảnh đại diện từ Google
+                'role_id' => 3, // Gán vai trò mặc định (có thể thay đổi tùy nhu cầu)
+                'email_verified_at' => now(), // Thời gian xác minh email
+                'phone_verified_at' => null, // Nếu có thông tin điện thoại, bạn có thể cập nhật tương tự
+            ]
+        );
 
             Auth::login($user);
 
