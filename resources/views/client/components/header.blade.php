@@ -239,7 +239,7 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="contact-us/index.html"><span class="qodef-menu-item-text">Contact
+                                        <a href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Contact
                                                 Us</span></a>
                                     </li>
                                     <li
