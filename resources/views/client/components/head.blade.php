@@ -105,6 +105,7 @@
             contain-intrinsic-size: 3000px 1500px
         }
     </style>
+    
 
     <!-- Google Tag Manager for WordPress by gtm4wp.com -->
     <script data-cfasync="false" data-pagespeed-no-defer>

@@ -13,6 +13,7 @@ use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\ContactController as ClientContactController;
 
 // ================== Admin Controllers ===================
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
@@ -43,6 +44,14 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+
+
+
+
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
@@ -125,9 +134,15 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('faq')->name('faq.')->group(function () {
         Route::get('/', [FaqClientController::class, 'index'])->name('index');
     });
+
     Route::prefix('voucher')->name('voucher.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
+   Route::prefix('contact')->group(function () {
+    Route::get('/', [ClientContactController::class, 'index'])->name('contact.index');
+    Route::post('/', [ClientContactController::class, 'store'])->name('contact.store');
+});
+
 });
 
 // Admin routes group
