@@ -128,11 +128,11 @@ class ProductController extends Controller
         // Tăng lượt xem
         $product->increment('views');
 
-        // Lấy các thuộc tính variations
-        $colors = $product->variations->whereNotNull('color')->pluck('color')->unique('id');
-        $sizes = $product->variations->whereNotNull('size')->pluck('size')->unique('id');
-        $sphericals = $product->variations->whereNotNull('spherical')->pluck('spherical')->unique('id');
-        $cylindricals = $product->variations->whereNotNull('cylindrical')->pluck('cylindrical')->unique('id');
+        // Lấy các thuộc tính variations (fix: luôn lấy đủ option nếu có)
+        $colors = $product->variations->pluck('color')->filter()->unique('id')->values();
+        $sizes = $product->variations->pluck('size')->filter()->unique('id')->values();
+        $sphericals = $product->variations->pluck('spherical')->filter()->unique('id')->values();
+        $cylindricals = $product->variations->pluck('cylindrical')->filter()->unique('id')->values();
 
         // Tính toán $selectedVariation
         $selectedColorId = request()->input('variant', $product->variations->first()->color_id ?? null);
@@ -159,6 +159,18 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals'));
+        // Prepare variationsJson for Blade (for JS)
+        $variationsJson = $product->variations->map(function($v) {
+            return [
+                'id' => $v->id,
+                'color_id' => $v->color_id ? (string)$v->color_id : '',
+                'size_id' => $v->size_id ? (string)$v->size_id : '',
+                'spherical_id' => $v->spherical_id ? (string)$v->spherical_id : '',
+                'cylindrical_id' => $v->cylindrical_id ? (string)$v->cylindrical_id : '',
+                'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
+            ];
+        })->values()->toArray();
+
+        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson'));
     }
 }
