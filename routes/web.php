@@ -44,6 +44,14 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+
+
+
+
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
@@ -131,6 +139,7 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('faq')->name('faq.')->group(function () {
         Route::get('/', [FaqClientController::class, 'index'])->name('index');
     });
+
     Route::prefix('voucher')->name('voucher.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
@@ -138,6 +147,7 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('/', [ClientContactController::class, 'index'])->name('contact.index');
     Route::post('/', [ClientContactController::class, 'store'])->name('contact.store');
 });
+
 });
 
 // Admin routes group

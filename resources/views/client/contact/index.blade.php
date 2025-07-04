@@ -1,6 +1,7 @@
 @extends('client.layouts.app')
 
 @section('content')
+
     <div id="qodef-page-outer">
         <div class="qodef-page-title qodef-m qodef-title--standard qodef-alignment--center qodef-vertical-alignment--header-bottom qodef--has-image qodef-image--parallax qodef-parallax"
             style="margin-top: 32px !important;">
@@ -16,9 +17,12 @@
                     <h1 class="qodef-m-title entry-title">
                         Liên hệ </h1>
                     <p class="qodef-m-subtitle"> Donec varius semper magna sit amet dignissim</p>
+
                 </div>
             </div>
+
         </div>
+
         <div id="qodef-page-inner" class="qodef-content-full-width">
             <main id="qodef-page-content" class="qodef-grid qodef-layout--template " role="main">
                 <div class="qodef-grid-inner clear">
@@ -237,6 +241,7 @@
                 </div>
             </main>
         </div><!-- close #qodef-page-inner div from header.php -->
+
     </div>
     <style>
         .elementor-container>.row {

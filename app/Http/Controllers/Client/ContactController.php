@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\ContactMessage as Contact;
 
 
+
+
+
 class ContactController extends Controller
 {
     /**
@@ -21,10 +24,15 @@ class ContactController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
         //
     }
+
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -40,13 +48,14 @@ class ContactController extends Controller
 
         $validated['ip_address'] = $request->ip();
         $validated['user_agent'] = $request->userAgent();
-        $validated['status']     = 'mới'; 
+        $validated['status']     = 'mới';
         $validated['is_spam']    = 0;
         // 1. Lưu DB
         $contact = Contact::create($validated);
 
 
         return back()->with('success', 'Gửi liên hệ thành công!');
+
     }
 
     /**
