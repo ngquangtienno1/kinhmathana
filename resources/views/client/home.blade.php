@@ -25,8 +25,7 @@
                                                         <p class="rs-p-wp-fix"></p>
                                                         <rs-module-wrap id="rev_slider_9_1_wrapper" data-source="gallery"
                                                             style="visibility:hidden;background:transparent;padding:0;">
-                                                            <rs-module id="rev_slider_9_1" style=""
-                                                                data-version="6.7.15">
+                                                            <rs-module id="rev_slider_9_1" style="" data-version="6.7.15">
                                                                 <rs-slides style="overflow: hidden; position: absolute;">
                                                                     <rs-slide style="position: absolute;" data-key="rs-13"
                                                                         data-title="Slide" data-anim="adpr:false;"
@@ -38,7 +37,7 @@
                                                                             data-lazyload="//neoocular.qodeinteractive.com/wp-content/plugins/revslider/sr6/assets/assets/transparent.png"
                                                                             data-no-retina>
                                                                         <!--
-                        --><rs-layer id="slider-9-slide-13-layer-0" data-type="image" data-rsp_ch="on"
+                            --><rs-layer id="slider-9-slide-13-layer-0" data-type="image" data-rsp_ch="on"
                                                                             data-xy="x:c;xo:-482px,-346px,0,0;y:m;yo:32px,29px,-24px,-28px;"
                                                                             data-text="w:normal;s:20,16,8,4;l:0,21,11,6;"
                                                                             data-dim="w:265px,224px,216px,189px;h:307px,259px,250px,219px;"
@@ -55,7 +54,7 @@
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-4" data-type="image"
+                            --><rs-layer id="slider-9-slide-13-layer-4" data-type="image"
                                                                             data-xy="x:l,l,c,c;xo:-15px,-15px,0,0;y:t,m,b,b;yo:0,0,-220px,-220px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:50%,50%,1028px,1028px;h:auto,auto,1414px,1414px;"
@@ -71,7 +70,7 @@
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-12" data-type="image"
+                            --><rs-layer id="slider-9-slide-13-layer-12" data-type="image"
                                                                             data-xy="x:r;xo:-15px,-15px,1054px,1054px;y:m;yo:0,0,-3px,-3px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:[&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;];"
@@ -87,7 +86,7 @@
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-13" data-type="shape"
+                            --><rs-layer id="slider-9-slide-13-layer-13" data-type="shape"
                                                                             data-xy="x:c;xo:-481px,-345px,-1px,0;y:m;yo:71px,70px,19px,19px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:400px,340px,340px,298px;h:540px,423px,423px,429px;"
@@ -98,7 +97,7 @@
                                                                             style="z-index:10;background-color:#ffffff;">
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-14" data-type="text"
+                            --><rs-layer id="slider-9-slide-13-layer-14" data-type="text"
                                                                             data-xy="x:c;xo:484px,348px,662px,662px;y:m;yo:18px,20px,-18px,18px;"
                                                                             data-text="w:normal;s:42;l:64;fw:600;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -110,7 +109,7 @@
                                                                             YOU DESERVE
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-15" data-type="text"
+                            --><rs-layer id="slider-9-slide-13-layer-15" data-type="text"
                                                                             data-xy="x:c;xo:483px,347px,588px,588px;y:m;yo:62px,63px,42px,78px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -122,7 +121,7 @@
                                                                             you the best service possible
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-16" data-type="text"
+                            --><rs-layer id="slider-9-slide-13-layer-16" data-type="text"
                                                                             data-xy="x:c;xo:552px,416px,619px,619px;y:m;yo:135px,136px,126px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:341px;" data-vbility="t,t,f,f"
@@ -141,7 +140,7 @@
 
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-13-layer-21" data-type="text" data-color="#000000"
+                            --><rs-layer id="slider-9-slide-13-layer-21" data-type="text" data-color="#000000"
                                                                             data-xy="x:c;xo:-425px,-289px,55px,57px;y:m;yo:241px,215px,159px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:201px;" data-basealign="slide"
@@ -158,7 +157,7 @@
                                                                             </a>
 
                                                                         </rs-layer><!--
-    --> </rs-slide>
+        --> </rs-slide>
                                                                     <rs-slide style="position: absolute;" data-key="rs-21"
                                                                         data-title="Slide" data-anim="adpr:false;"
                                                                         data-in="o:0;" data-out="a:false;">
@@ -169,7 +168,7 @@
                                                                             data-lazyload="//neoocular.qodeinteractive.com/wp-content/plugins/revslider/sr6/assets/assets/transparent.png"
                                                                             data-no-retina>
                                                                         <!--
-                        --><rs-layer id="slider-9-slide-21-layer-1" data-type="image" data-rsp_ch="on"
+                            --><rs-layer id="slider-9-slide-21-layer-1" data-type="image" data-rsp_ch="on"
                                                                             data-xy="x:c;xo:-482px,-346px,0,0;y:m;yo:32px,29px,-24px,-28px;"
                                                                             data-text="w:normal;s:20,16,8,4;l:0,21,11,6;"
                                                                             data-dim="w:265px,224px,216px,189px;h:307px,259px,250px,219px;"
@@ -180,14 +179,13 @@
                                                                             style="z-index:20;"><img fetchpriority="high"
                                                                                 fetchpriority="high" decoding="async"
                                                                                 src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
+                                                                                alt="a" class="tp-rs-img rs-lazyload"
                                                                                 width="265" height="307"
                                                                                 data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-19.png"
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-4" data-type="image"
+                            --><rs-layer id="slider-9-slide-21-layer-4" data-type="image"
                                                                             data-xy="x:l,l,c,c;xo:-15px,-15px,0,0;y:t,m,b,b;yo:0,0,-220px,-220px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:50%,50%,1028px,1028px;h:auto,auto,1413px,1413px;"
@@ -198,14 +196,13 @@
                                                                             style="z-index:9;"><img loading="lazy"
                                                                                 loading="lazy" decoding="async"
                                                                                 src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
+                                                                                alt="a" class="tp-rs-img rs-lazyload"
                                                                                 width="946" height="1300"
                                                                                 data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-3.jpg"
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-12" data-type="image"
+                            --><rs-layer id="slider-9-slide-21-layer-12" data-type="image"
                                                                             data-xy="x:r;xo:-15px,-15px,1054px,1054px;y:m;yo:0,0,-3px,-3px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:[&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;];"
@@ -216,14 +213,13 @@
                                                                             style="z-index:8;"><img loading="lazy"
                                                                                 loading="lazy" decoding="async"
                                                                                 src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
+                                                                                alt="a" class="tp-rs-img rs-lazyload"
                                                                                 width="945" height="1300"
                                                                                 data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-4.jpg"
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-13" data-type="shape"
+                            --><rs-layer id="slider-9-slide-21-layer-13" data-type="shape"
                                                                             data-xy="x:c;xo:-481px,-345px,-1px,0;y:m;yo:71px,70px,19px,19px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:400px,340px,340px,298px;h:540px,423px,423px,429px;"
@@ -234,7 +230,7 @@
                                                                             style="z-index:10;background-color:#ffffff;">
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-14" data-type="text"
+                            --><rs-layer id="slider-9-slide-21-layer-14" data-type="text"
                                                                             data-xy="x:c;xo:484px,348px,662px,662px;y:m;yo:18px,20px,-18px,18px;"
                                                                             data-text="w:normal;s:42;l:64;fw:600;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -246,7 +242,7 @@
                                                                             VARIETY OF STYLES
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-15" data-type="text"
+                            --><rs-layer id="slider-9-slide-21-layer-15" data-type="text"
                                                                             data-xy="x:c;xo:483px,347px,588px,588px;y:m;yo:62px,63px,42px,78px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -258,7 +254,7 @@
                                                                             the best possible match for you
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-16" data-type="text"
+                            --><rs-layer id="slider-9-slide-21-layer-16" data-type="text"
                                                                             data-xy="x:c;xo:552px,416px,619px,619px;y:m;yo:135px,136px,126px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:341px;" data-vbility="t,t,f,f"
@@ -277,7 +273,7 @@
 
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-21-layer-21" data-type="text" data-color="#000000"
+                            --><rs-layer id="slider-9-slide-21-layer-21" data-type="text" data-color="#000000"
                                                                             data-xy="x:c;xo:-425px,-289px,55px,57px;y:m;yo:241px,215px,159px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:201px;" data-basealign="slide"
@@ -294,22 +290,21 @@
                                                                             </a>
 
                                                                         </rs-layer><!--
-    --> </rs-slide>
+        --> </rs-slide>
                                                                     <rs-slide style="position: absolute;" data-key="rs-22"
                                                                         data-title="Slide"
                                                                         data-thumb="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-16.jpg"
                                                                         data-anim="adpr:false;" data-in="o:0;"
                                                                         data-out="a:false;">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
                                                                             src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                            alt="a" title="main home rev img 16"
-                                                                            width="945" height="1300"
+                                                                            alt="a" title="main home rev img 16" width="945"
+                                                                            height="1300"
                                                                             class="rev-slidebg tp-rs-img rs-lazyload"
                                                                             data-lazyload="//neoocular.qodeinteractive.com/wp-content/plugins/revslider/sr6/assets/assets/transparent.png"
                                                                             data-no-retina>
                                                                         <!--
-                        --><rs-layer id="slider-9-slide-22-layer-4" data-type="image"
+                            --><rs-layer id="slider-9-slide-22-layer-4" data-type="image"
                                                                             data-xy="x:l,l,c,c;xo:-15px,-15px,0,0;y:t,t,b,b;yo:0,0,-220px,-220px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:50%,50%,1028px,1028px;h:auto,auto,1414px,1414px;"
@@ -320,14 +315,13 @@
                                                                             style="z-index:9;"><img loading="lazy"
                                                                                 loading="lazy" decoding="async"
                                                                                 src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
+                                                                                alt="a" class="tp-rs-img rs-lazyload"
                                                                                 width="945" height="1300"
                                                                                 data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-16.jpg"
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-6" data-type="image" data-rsp_ch="on"
+                            --><rs-layer id="slider-9-slide-22-layer-6" data-type="image" data-rsp_ch="on"
                                                                             data-xy="x:c;xo:-482px,-346px,0,0;y:m;yo:32px,29px,-24px,-28px;"
                                                                             data-text="w:normal;s:20,16,8,4;l:0,21,11,6;"
                                                                             data-dim="w:265px,224px,216px,189px;h:307px,259px,250px,219px;"
@@ -338,14 +332,13 @@
                                                                             style="z-index:20;"><img fetchpriority="high"
                                                                                 fetchpriority="high" decoding="async"
                                                                                 src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
-                                                                                alt="a"
-                                                                                class="tp-rs-img rs-lazyload"
+                                                                                alt="a" class="tp-rs-img rs-lazyload"
                                                                                 width="265" height="307"
                                                                                 data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-rev-img-19.png"
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-12" data-type="image"
+                            --><rs-layer id="slider-9-slide-22-layer-12" data-type="image"
                                                                             data-xy="x:r;xo:-15px,-15px,1054px,1054px;yo:0,0,-3px,-3px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:[&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;,&#039;50%&#039;];"
@@ -355,15 +348,14 @@
                                                                             data-frame_999="o:0;e:power2.in;st:w;sp:1000;"
                                                                             style="z-index:8;"><img loading="lazy"
                                                                                 loading="lazy" decoding="async"
-                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"  
-                                                                                alt=""
-                                                                                class="tp-rs-img rs-lazyload"
+                                                                                src="{{asset('v1/wp-content/plugins/revslider/sr6/assets/assets/dummy.png')}}"
+                                                                                alt="" class="tp-rs-img rs-lazyload"
                                                                                 width="945" height="1300"
                                                                                 data-lazyload="//neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-rev-img-6.jpg"
                                                                                 data-no-retina>
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-13" data-type="shape"
+                            --><rs-layer id="slider-9-slide-22-layer-13" data-type="shape"
                                                                             data-xy="x:c;xo:-481px,-345px,-1px,0;y:m;yo:71px,70px,19px,19px;"
                                                                             data-text="w:normal;"
                                                                             data-dim="w:400px,340px,340px,298px;h:540px,423px,423px,429px;"
@@ -374,7 +366,7 @@
                                                                             style="z-index:10;background-color:#ffffff;">
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-14" data-type="text"
+                            --><rs-layer id="slider-9-slide-22-layer-14" data-type="text"
                                                                             data-xy="x:c;xo:484px,348px,662px,662px;y:m;yo:18px,20px,-18px,18px;"
                                                                             data-text="w:normal;s:42;l:64;fw:600;a:left,center,center,center;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -386,7 +378,7 @@
                                                                             EYE CARE
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-15" data-type="text"
+                            --><rs-layer id="slider-9-slide-22-layer-15" data-type="text"
                                                                             data-xy="x:c;xo:483px,347px,588px,588px;y:m;yo:62px,63px,42px,78px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;a:left,center,center,center;"
                                                                             data-vbility="t,t,f,f" data-basealign="slide"
@@ -398,7 +390,7 @@
                                                                             your and your whole family
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-16" data-type="text"
+                            --><rs-layer id="slider-9-slide-22-layer-16" data-type="text"
                                                                             data-xy="x:c;xo:552px,416px,619px,619px;y:m;yo:135px,136px,126px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:341px;" data-vbility="t,t,f,f"
@@ -417,7 +409,7 @@
 
                                                                         </rs-layer><!--
 
-                        --><rs-layer id="slider-9-slide-22-layer-21" data-type="text" data-color="#000000"
+                            --><rs-layer id="slider-9-slide-22-layer-21" data-type="text" data-color="#000000"
                                                                             data-xy="x:c;xo:-425px,-289px,55px,57px;y:m;yo:241px,215px,159px,162px;"
                                                                             data-text="w:normal;s:18;l:26;fw:300;"
                                                                             data-dim="w:201px;" data-basealign="slide"
@@ -434,10 +426,11 @@
                                                                             </a>
 
                                                                         </rs-layer><!--
-    --> </rs-slide>
+        --> </rs-slide>
                                                                 </rs-slides>
                                                             </rs-module>
-                                                            <script data-cfasync="false" src="{{asset('v1/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js')}}"></script>
+                                                            <script data-cfasync="false"
+                                                                src="{{asset('v1/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js')}}"></script>
                                                             <script>
                                                                 setREVStartSize({
                                                                     c: 'rev_slider_9_1',
@@ -453,7 +446,7 @@
                                                                     mh: "0"
                                                                 });
                                                                 if (window.RS_MODULES !== undefined && window.RS_MODULES.modules !== undefined && window.RS_MODULES.modules[
-                                                                        "revslider91"] !== undefined) {
+                                                                    "revslider91"] !== undefined) {
                                                                     window.RS_MODULES.modules["revslider91"].once = false;
                                                                     window.revapi9 = undefined;
                                                                     if (window.RS_MODULES.checkMinimal !== undefined) window.RS_MODULES.checkMinimal()
@@ -513,9 +506,8 @@
                                                                     <div class="qodef-woo-product-image">
                                                                         <span
                                                                             class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async" width="800"
-                                                                            height="393"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
+                                                                            width="800" height="393"
                                                                             src="{{asset('v1/wp-content/uploads/2021/07/PRODUCT-01-c-1.jpg')}}"
                                                                             class="attachment-full size-full qodef-list-image"
                                                                             alt="m"
@@ -629,9 +621,8 @@
                                                                 class="qodef-e qodef-grid-item qodef-item--full product type-product post-11595 status-publish instock product_cat-cat-eye product_cat-luxory product_tag-luxory product_tag-top has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-woo-product-image">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async" width="800"
-                                                                            height="393"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
+                                                                            width="800" height="393"
                                                                             src="{{asset('v1/wp-content/uploads/2021/07/PRODUCT-02-a.jpg')}}"
                                                                             class="attachment-full size-full qodef-list-image"
                                                                             alt="m"
@@ -738,9 +729,8 @@
                                                                 class="qodef-e qodef-grid-item qodef-item--full product type-product post-11597 status-publish last instock product_cat-cat-eye product_cat-luxory product_tag-luxory product_tag-top has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-woo-product-image">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async" width="800"
-                                                                            height="393"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
+                                                                            width="800" height="393"
                                                                             src="wp-content/uploads/2021/07/PRODUCT-03-a.jpg"
                                                                             class="attachment-full size-full qodef-list-image"
                                                                             alt="z"
@@ -847,9 +837,8 @@
                                                                 class="qodef-e qodef-grid-item qodef-item--full product type-product post-11599 status-publish first instock product_cat-cat-eye product_cat-luxory product_tag-luxory product_tag-top has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-woo-product-image">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async" width="800"
-                                                                            height="393"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
+                                                                            width="800" height="393"
                                                                             src="wp-content/uploads/2021/08/PRODUCT-04-1.jpg"
                                                                             class="attachment-full size-full qodef-list-image"
                                                                             alt="m"
@@ -956,9 +945,8 @@
                                                                 class="qodef-e qodef-grid-item qodef-item--full product type-product post-11601 status-publish instock product_cat-cat-eye product_cat-luxory product_tag-luxory product_tag-top has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-woo-product-image">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async" width="800"
-                                                                            height="393"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
+                                                                            width="800" height="393"
                                                                             src="wp-content/uploads/2021/08/PRODUCT-05-1.jpg"
                                                                             class="attachment-full size-full qodef-list-image"
                                                                             alt="m"
@@ -1065,9 +1053,8 @@
                                                                 class="qodef-e qodef-grid-item qodef-item--full product type-product post-11603 status-publish last instock product_cat-cat-eye product_cat-luxory product_tag-luxory product_tag-top has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-woo-product-image">
-                                                                        <img loading="lazy" loading="lazy"
-                                                                            decoding="async" width="800"
-                                                                            height="393"
+                                                                        <img loading="lazy" loading="lazy" decoding="async"
+                                                                            width="800" height="393"
                                                                             src="wp-content/uploads/2021/08/PRODUCT-06.jpg"
                                                                             class="attachment-full size-full qodef-list-image"
                                                                             alt="f"
@@ -1194,14 +1181,14 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-stacked-images qodef-layout--default qodef-stack--bottom-right">
                                                         <div class="qodef-m-images">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1300" height="1300"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1300"
+                                                                height="1300"
                                                                 src="{{asset('v1/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001.jpg')}}"
                                                                 class="qodef-e-image qodef--main" alt="g"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001.jpg 1300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-300x300.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-1024x1024.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-150x150.jpg 150w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-768x768.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-1200x1200.jpg 1200w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-650x650.jpg 650w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-600x600.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-800x800.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-100x100.jpg 100w"
                                                                 sizes="(max-width: 1300px) 100vw, 1300px" /> <img
-                                                                loading="lazy" loading="lazy" decoding="async"
-                                                                width="1300" height="1228"
+                                                                loading="lazy" loading="lazy" decoding="async" width="1300"
+                                                                height="1228"
                                                                 src="{{asset('v1/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1.png')}}"
                                                                 class="qodef-e-image qodef--stack" alt="j"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1.png 1300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1-300x283.png 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1-1024x967.png 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1-768x725.png 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1-1200x1134.png 1200w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1-600x567.png 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0001-1-800x756.png 800w"
@@ -1256,8 +1243,8 @@
                                                                                     sodales odio non libero
                                                                                     tincidunt amet</span>
                                                                             </h6>
-                                                                            <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                            <p class="qodef-m-text" style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur sit do
                                                                             </p>
                                                                         </div>
@@ -1295,8 +1282,8 @@
                                                                                     lorem ipsum sodales odio vivid
                                                                                     sit mor</span>
                                                                             </h6>
-                                                                            <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                            <p class="qodef-m-text" style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur del sint
                                                                             </p>
                                                                         </div>
@@ -1335,11 +1322,10 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-single-image qodef-layout--default   ">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1300" height="1300"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1300"
+                                                                height="1300"
                                                                 src="{{asset('v1/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001.jpg')}}"
-                                                                class="attachment-full size-full qodef-list-image"
-                                                                alt="g"
+                                                                class="attachment-full size-full qodef-list-image" alt="g"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001.jpg 1300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-300x300.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-1024x1024.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-150x150.jpg 150w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-768x768.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-1200x1200.jpg 1200w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-650x650.jpg 650w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-600x600.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-800x800.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-Home-stacked-img-big-001-100x100.jpg 100w"
                                                                 sizes="(max-width: 1300px) 100vw, 1300px" />
                                                         </div>
@@ -1393,8 +1379,8 @@
                                                                                     sodales odio non libero
                                                                                     tincidunt amet</span>
                                                                             </h6>
-                                                                            <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                            <p class="qodef-m-text" style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur sit do
                                                                             </p>
                                                                         </div>
@@ -1431,8 +1417,8 @@
                                                                                     lorem ipsum sodales odio vivid
                                                                                     sit mor</span>
                                                                             </h6>
-                                                                            <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                            <p class="qodef-m-text" style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur del sint
                                                                             </p>
                                                                         </div>
@@ -1495,8 +1481,8 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-icon-with-text qodef-layout--top qodef--custom-icon qodef--retina qodef-alignment--center">
                                                         <div class="qodef-m-icon-wrapper">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="172" height="92"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="172"
+                                                                height="92"
                                                                 src="{{asset('v1/wp-content/uploads/2021/10/mainhome-icon-01.png')}}"
                                                                 class="attachment-full size-full" alt="" />
                                                         </div>
@@ -1524,8 +1510,8 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-icon-with-text qodef-layout--top qodef--custom-icon qodef--retina qodef-alignment--center">
                                                         <div class="qodef-m-icon-wrapper">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="94" height="94"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="94"
+                                                                height="94"
                                                                 src="{{asset('v1/wp-content/uploads/2021/10/main-home-icon-02.png')}}"
                                                                 class="attachment-full size-full" alt="" />
                                                         </div>
@@ -1553,8 +1539,8 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-icon-with-text qodef-layout--top qodef--custom-icon qodef--retina qodef-alignment--center">
                                                         <div class="qodef-m-icon-wrapper">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="120" height="104"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="120"
+                                                                height="104"
                                                                 src="{{asset('v1/wp-content/uploads/2021/10/sluske.png')}}"
                                                                 class="attachment-full size-full" alt="m" />
                                                         </div>
@@ -1588,8 +1574,8 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-banner qodef-layout--link-button">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1100" height="1165"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1100"
+                                                                height="1165"
                                                                 src="{{asset('v1/wp-content/uploads/2021/08/main-home-banner-01.jpg')}}"
                                                                 class="attachment-full size-full" alt="m"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-01.jpg 1100w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-01-600x635.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-01-800x847.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-01-283x300.jpg 283w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-01-967x1024.jpg 967w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-01-768x813.jpg 768w"
@@ -1627,8 +1613,8 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-banner qodef-layout--link-button">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1100" height="1165"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1100"
+                                                                height="1165"
                                                                 src="{{asset('v1/wp-content/uploads/2021/08/main-home-banner-02.jpg')}}"
                                                                 class="attachment-full size-full" alt="m"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-02.jpg 1100w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-02-600x635.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-02-800x847.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-02-283x300.jpg 283w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-02-967x1024.jpg 967w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/main-home-banner-02-768x813.jpg 768w"
@@ -1695,11 +1681,10 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-single-image qodef-layout--default   ">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1100" height="826"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1100"
+                                                                height="826"
                                                                 src="{{asset('v1/wp-content/uploads/2021/07/h3-image-w-text-01.jpg')}}"
-                                                                class="attachment-full size-full qodef-list-image"
-                                                                alt="m"
+                                                                class="attachment-full size-full qodef-list-image" alt="m"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-01.jpg 1100w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-01-600x451.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-01-800x601.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-01-300x225.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-01-1024x769.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-01-768x577.jpg 768w"
                                                                 sizes="(max-width: 1100px) 100vw, 1100px" />
                                                         </div>
@@ -1796,11 +1781,10 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-single-image qodef-layout--default   ">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1100" height="826"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1100"
+                                                                height="826"
                                                                 src="wp-content/uploads/2021/07/h3-image-w-text-02.jpg"
-                                                                class="attachment-full size-full qodef-list-image"
-                                                                alt="m"
+                                                                class="attachment-full size-full qodef-list-image" alt="m"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-02.jpg 1100w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-02-600x451.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-02-800x601.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-02-300x225.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-02-1024x769.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-02-768x577.jpg 768w"
                                                                 sizes="(max-width: 1100px) 100vw, 1100px" />
                                                         </div>
@@ -1897,11 +1881,10 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-single-image qodef-layout--default   ">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1103" height="826"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1103"
+                                                                height="826"
                                                                 src="wp-content/uploads/2021/07/h3-image-w-text-03.jpg"
-                                                                class="attachment-full size-full qodef-list-image"
-                                                                alt="m"
+                                                                class="attachment-full size-full qodef-list-image" alt="m"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-03.jpg 1103w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-03-600x449.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-03-800x599.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-03-300x225.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-03-1024x767.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/07/h3-image-w-text-03-768x575.jpg 768w"
                                                                 sizes="(max-width: 1103px) 100vw, 1103px" />
                                                         </div>
@@ -2037,11 +2020,9 @@
                                                                             </div>
                                                                             <form
                                                                                 action="https://neoocular.qodeinteractive.com/#wpcf7-f683-p65-o1"
-                                                                                method="post"
-                                                                                class="wpcf7-form init demo"
+                                                                                method="post" class="wpcf7-form init demo"
                                                                                 aria-label="Contact form"
-                                                                                novalidate="novalidate"
-                                                                                data-status="init">
+                                                                                novalidate="novalidate" data-status="init">
                                                                                 <div style="display: none;">
                                                                                     <input type="hidden" name="_wpcf7"
                                                                                         value="683" />
@@ -2064,14 +2045,12 @@
                                                                                 <div class="qodef-simple-form">
                                                                                     <p><span class="wpcf7-form-control-wrap"
                                                                                             data-name="your-text"><input
-                                                                                                size="40"
-                                                                                                maxlength="400"
+                                                                                                size="40" maxlength="400"
                                                                                                 class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
                                                                                                 aria-required="true"
                                                                                                 aria-invalid="false"
                                                                                                 placeholder="Type question"
-                                                                                                value=""
-                                                                                                type="text"
+                                                                                                value="" type="text"
                                                                                                 name="your-text" /></span><button
                                                                                             class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
                                                                                             type="submit"><span
@@ -2167,14 +2146,14 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-stacked-images qodef-layout--default qodef-stack--bottom-left">
                                                         <div class="qodef-m-images">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1300" height="1300"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1300"
+                                                                height="1300"
                                                                 src="wp-content/uploads/2021/10/main-home-img-stacked-02.jpg"
                                                                 class="qodef-e-image qodef--main" alt=""
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02.jpg 1300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-300x300.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-1024x1024.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-150x150.jpg 150w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-768x768.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-1200x1200.jpg 1200w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-650x650.jpg 650w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-600x600.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-800x800.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-100x100.jpg 100w"
                                                                 sizes="(max-width: 1300px) 100vw, 1300px" /> <img
-                                                                loading="lazy" loading="lazy" decoding="async"
-                                                                width="1300" height="1164"
+                                                                loading="lazy" loading="lazy" decoding="async" width="1300"
+                                                                height="1164"
                                                                 src="wp-content/uploads/2021/10/Main-home-stacked-img-0002.png"
                                                                 class="qodef-e-image qodef--stack" alt="g"
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002.png 1300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002-300x269.png 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002-1024x917.png 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002-768x688.png 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002-1200x1074.png 1200w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002-600x537.png 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/Main-home-stacked-img-0002-800x716.png 800w"
@@ -2260,11 +2239,10 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-single-image qodef-layout--default   ">
                                                         <div class="qodef-m-image">
-                                                            <img loading="lazy" loading="lazy" decoding="async"
-                                                                width="1300" height="1300"
+                                                            <img loading="lazy" loading="lazy" decoding="async" width="1300"
+                                                                height="1300"
                                                                 src="wp-content/uploads/2021/10/main-home-img-stacked-02.jpg"
-                                                                class="attachment-full size-full qodef-list-image"
-                                                                alt=""
+                                                                class="attachment-full size-full qodef-list-image" alt=""
                                                                 srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02.jpg 1300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-300x300.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-1024x1024.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-150x150.jpg 150w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-768x768.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-1200x1200.jpg 1200w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-650x650.jpg 650w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-600x600.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-800x800.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/10/main-home-img-stacked-02-100x100.jpg 100w"
                                                                 sizes="(max-width: 1300px) 100vw, 1300px" />
                                                         </div>
@@ -2340,8 +2318,7 @@
                                                                         <div class="qodef-e-text">
                                                                             <h4 itemprop="name"
                                                                                 class="qodef-e-title entry-title">
-                                                                                <a itemprop="url"
-                                                                                    class="qodef-e-title-link"
+                                                                                <a itemprop="url" class="qodef-e-title-link"
                                                                                     href="trendy-mens-eyeglasses/index.html">
                                                                                     Trendy men&#8217;s eyeglasses
                                                                                 </a>
@@ -2404,8 +2381,7 @@
                                                                         <div class="qodef-e-text">
                                                                             <h4 itemprop="name"
                                                                                 class="qodef-e-title entry-title">
-                                                                                <a itemprop="url"
-                                                                                    class="qodef-e-title-link"
+                                                                                <a itemprop="url" class="qodef-e-title-link"
                                                                                     href="frames-that-suit-you/index.html">
                                                                                     Frames that suit you </a>
                                                                             </h4>
@@ -2467,8 +2443,7 @@
                                                                         <div class="qodef-e-text">
                                                                             <h4 itemprop="name"
                                                                                 class="qodef-e-title entry-title">
-                                                                                <a itemprop="url"
-                                                                                    class="qodef-e-title-link"
+                                                                                <a itemprop="url" class="qodef-e-title-link"
                                                                                     href="style-your-own-glasses/index.html">
                                                                                     Style your own glasses </a>
                                                                             </h4>
@@ -2532,8 +2507,8 @@
                                                                 <a class="qodef-popup-item" itemprop="image"
                                                                     href="wp-content/uploads/2023/11/gallery-img-01.jpg"
                                                                     data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy"
-                                                                        decoding="async" width="800" height="791"
+                                                                    <img loading="lazy" loading="lazy" decoding="async"
+                                                                        width="800" height="791"
                                                                         src="wp-content/uploads/2023/11/gallery-img-01.jpg"
                                                                         class="attachment-full size-full" alt="d"
                                                                         srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
@@ -2544,8 +2519,8 @@
                                                                 <a class="qodef-popup-item" itemprop="image"
                                                                     href="wp-content/uploads/2023/11/gallery-img-02.jpg"
                                                                     data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy"
-                                                                        decoding="async" width="800" height="791"
+                                                                    <img loading="lazy" loading="lazy" decoding="async"
+                                                                        width="800" height="791"
                                                                         src="wp-content/uploads/2023/11/gallery-img-02.jpg"
                                                                         class="attachment-full size-full" alt="d"
                                                                         srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
@@ -2556,8 +2531,8 @@
                                                                 <a class="qodef-popup-item" itemprop="image"
                                                                     href="wp-content/uploads/2023/11/gallery-img-03.jpg"
                                                                     data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy"
-                                                                        decoding="async" width="800" height="791"
+                                                                    <img loading="lazy" loading="lazy" decoding="async"
+                                                                        width="800" height="791"
                                                                         src="wp-content/uploads/2023/11/gallery-img-03.jpg"
                                                                         class="attachment-full size-full" alt="d"
                                                                         srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
@@ -2568,8 +2543,8 @@
                                                                 <a class="qodef-popup-item" itemprop="image"
                                                                     href="wp-content/uploads/2023/11/gallery-img-04.jpg"
                                                                     data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy"
-                                                                        decoding="async" width="800" height="791"
+                                                                    <img loading="lazy" loading="lazy" decoding="async"
+                                                                        width="800" height="791"
                                                                         src="wp-content/uploads/2023/11/gallery-img-04.jpg"
                                                                         class="attachment-full size-full" alt="d"
                                                                         srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
@@ -2580,8 +2555,8 @@
                                                                 <a class="qodef-popup-item" itemprop="image"
                                                                     href="wp-content/uploads/2023/11/gallery-img-05.jpg"
                                                                     data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy"
-                                                                        decoding="async" width="800" height="791"
+                                                                    <img loading="lazy" loading="lazy" decoding="async"
+                                                                        width="800" height="791"
                                                                         src="wp-content/uploads/2023/11/gallery-img-05.jpg"
                                                                         class="attachment-full size-full" alt="d"
                                                                         srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
@@ -2614,19 +2589,16 @@
                                                             <span class="qodef-e qodef-grid-item ">
                                                                 <span class="qodef-e-inner">
                                                                     <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#"
-                                                                            target="_blank">
+                                                                        <a itemprop="url" href="#" target="_blank">
                                                                             <span class="qodef-e-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-01-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-01-hover.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
@@ -2637,19 +2609,16 @@
                                                             <span class="qodef-e qodef-grid-item ">
                                                                 <span class="qodef-e-inner">
                                                                     <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#"
-                                                                            target="_blank">
+                                                                        <a itemprop="url" href="#" target="_blank">
                                                                             <span class="qodef-e-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-02-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-02-hover-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
@@ -2660,19 +2629,16 @@
                                                             <span class="qodef-e qodef-grid-item ">
                                                                 <span class="qodef-e-inner">
                                                                     <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#"
-                                                                            target="_blank">
+                                                                        <a itemprop="url" href="#" target="_blank">
                                                                             <span class="qodef-e-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-03-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-03-hover-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
@@ -2683,19 +2649,16 @@
                                                             <span class="qodef-e qodef-grid-item ">
                                                                 <span class="qodef-e-inner">
                                                                     <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#"
-                                                                            target="_blank">
+                                                                        <a itemprop="url" href="#" target="_blank">
                                                                             <span class="qodef-e-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-04-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-04-hover-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>
@@ -2706,19 +2669,16 @@
                                                             <span class="qodef-e qodef-grid-item ">
                                                                 <span class="qodef-e-inner">
                                                                     <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#"
-                                                                            target="_blank">
+                                                                        <a itemprop="url" href="#" target="_blank">
                                                                             <span class="qodef-e-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-05-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="s" /> </span>
                                                                             <span class="qodef-e-hover-logo">
                                                                                 <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
+                                                                                    decoding="async" width="170" height="70"
                                                                                     src="{{asset('v1/wp-content/uploads/2021/07/Client-05-hover-1.png')}}"
                                                                                     class="attachment-full size-full"
                                                                                     alt="h" /> </span>

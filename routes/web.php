@@ -88,6 +88,10 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
+    //Users routes 
+      Route::prefix('users')->name('users.')->group(function () {
+        Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
+    });
     // Product routes
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
@@ -133,6 +137,8 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('voucher')->name('voucher.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
+
+   
 });
 
 // Admin routes group

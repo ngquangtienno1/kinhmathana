@@ -102,7 +102,7 @@ class AuthenticationClientController extends BaseController
 
     public function register()
     {
-        return view('admin.login.register');
+        return view('client.login.register');
     }
 
     public function postRegister(Request $request)
