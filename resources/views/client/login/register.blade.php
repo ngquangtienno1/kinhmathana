@@ -2,7 +2,7 @@
 
 @section('content')
     <style>
-        .login-wrapper {
+        .register-wrapper {
             display: flex;
             align-items: flex-start;
             justify-content: center;
@@ -11,7 +11,7 @@
             margin: 48px auto 64px auto;
         }
 
-        .login-image {
+        .register-image {
             flex: 1 1 50%;
             min-width: 340px;
             max-width: 520px;
@@ -24,7 +24,7 @@
             justify-content: center;
         }
 
-        .login-image img {
+        .register-image img {
             width: 100%;
             height: auto;
             display: block;
@@ -32,7 +32,22 @@
             object-fit: cover;
         }
 
-        .login-section {
+        .btn-primary:hover {
+            background: #1ccfcf;
+        }
+
+        .login-link {
+            color: #1ccfcf;
+            text-decoration: underline;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .login-link:hover {
+            color: #0b8b8b;
+        }
+
+        .register-section {
             flex: 1 1 50%;
             background: #fff;
             border-radius: 0;
@@ -44,7 +59,7 @@
             max-width: 480px;
         }
 
-        .login-title {
+        .register-title {
             font-size: 2rem;
             font-weight: 700;
             text-align: left;
@@ -52,7 +67,7 @@
             letter-spacing: 0.01em;
         }
 
-        .login-desc {
+        .register-desc {
             text-align: left;
             font-size: 1rem;
             color: #222;
@@ -77,7 +92,7 @@
         .form-control {
             width: 100%;
             padding: 13px 18px;
-            border: 2.5px solid #7de3e7;
+            border: 2.5px solid #222;
             border-radius: 10px;
             font-size: 1.08rem;
             color: #222;
@@ -88,58 +103,49 @@
         }
 
         .form-control:focus {
-            border-color: #1ccfcf;
+            border-color: #111;
             outline: none;
         }
 
-        .form-check {
-            display: flex;
-            align-items: center;
+        .form-info {
+            font-size: 1rem;
+            color: #222;
             margin-bottom: 18px;
         }
 
-        .form-check-input {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
-            accent-color: #1ccfcf;
-        }
-
-        .form-check-label {
-            font-size: 1rem;
-            color: #222;
-            font-weight: 500;
+        .form-info .policy-link {
+            color: #b97a3c;
+            font-weight: 600;
+            text-decoration: underline;
         }
 
         .btn-primary {
             display: block;
             margin: 0 auto 18px auto;
-            background: #7de3e7;
+            background: #111;
             color: #fff;
             border: none;
             border-radius: 10px;
             font-size: 1.1rem;
             font-weight: 700;
             padding: 13px 0;
-            width: 70%;
+            width: 220px;
             transition: background 0.2s;
             box-shadow: none;
             text-align: center;
+            letter-spacing: 2px;
         }
 
         .btn-primary:hover {
-            background: #1ccfcf;
+            background: #222;
         }
 
-        .login-link {
-            color: #1ccfcf;
-            text-decoration: underline;
+        .or-divider {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #222;
+            margin: 18px 0 10px 0;
             font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .login-link:hover {
-            color: #0b8b8b;
         }
 
         .google-btn {
@@ -151,13 +157,14 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
             padding: 13px 18px;
             width: 100%;
-            margin-top: 18px;
+            margin-top: 0;
             margin-bottom: 0;
             font-size: 1.08rem;
             font-weight: 600;
             color: #222;
             transition: box-shadow 0.2s;
             cursor: pointer;
+            justify-content: flex-start;
         }
 
         .google-btn:hover {
@@ -171,7 +178,7 @@
             display: inline-block;
         }
 
-        .login-bottom-text {
+        .register-bottom-text {
             text-align: center;
             margin-top: 22px;
             font-size: 1rem;
@@ -187,34 +194,34 @@
         }
 
         @media (max-width: 1024px) {
-            .login-wrapper {
+            .register-wrapper {
                 flex-direction: column;
                 align-items: center;
                 gap: 24px;
             }
 
-            .login-image,
-            .login-section {
+            .register-image,
+            .register-section {
                 max-width: 100%;
                 min-width: 0;
             }
 
-            .login-section {
+            .register-section {
                 padding: 24px 8px 18px;
             }
         }
 
         @media (max-width: 600px) {
-            .login-wrapper {
+            .register-wrapper {
                 gap: 12px;
                 margin: 16px 0;
             }
 
-            .login-image {
+            .register-image {
                 border-radius: 16px;
             }
 
-            .login-section {
+            .register-section {
                 border-radius: 0;
                 padding: 12px 2px 8px;
             }
@@ -231,17 +238,23 @@
             }
         }
     </style>
-    <div class="login-wrapper">
-        <div class="login-image">
-            <img src="/path/to/your/login-image.jpg" alt="Login" />
+    <div class="register-wrapper">
+        <div class="register-image">
+            <img src="/path/to/your/register-image.jpg" alt="Register" />
         </div>
-        <div class="login-section">
-            <div class="login-title">Đăng nhập</div>
-            <div class="login-desc">Hãy đăng nhập để được hưởng đặc quyền riêng dành cho bạn</div>
-            <form action="{{ route('postLogin') }}" method="POST">
+        <div class="register-section">
+            <div class="register-title">Đăng ký email</div>
+            <div class="register-desc">Hãy đăng ký để được hưởng nhiều đặc quyền riêng dành cho bạn</div>
+            <form action="{{ route('client.postRegister') }}" method="POST">
                 @csrf
-                <label class="form-label" for="email">Tài khoản<span class="required">*</span></label>
-                <input class="form-control" id="email" name="email" type="text" placeholder="Nhập tài khoản"
+                <label class="form-label" for="username">Họ và tên<span class="required">*</span></label>
+                <input class="form-control" name="name" id="name" type="text" placeholder="Nhập tên của bạn"
+                    value="{{ old('name') }}" />
+                @error('name')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+                <label class="form-label" for="email">Email<span class="required">*</span></label>
+                <input class="form-control" id="email" name="email" type="email" placeholder="Nhập email"
                     value="{{ old('email') }}" />
                 @error('email')
                     <span class="text-danger">{{ $message }}</span>
@@ -249,15 +262,24 @@
                 <label class="form-label" for="password">Mật khẩu<span class="required">*</span></label>
                 <input class="form-control" id="password" name="password" type="password" placeholder="Nhập mật khẩu" />
                 @error('password')
-                    <span class="text-danger">{{ $message }}</span>
+                    @if (!str_contains($message, 'xác nhận'))
+                        <small class="text-danger">{{ $message }}</small>
+                    @endif
                 @enderror
-                <div class="form-check">
-                    <input class="form-check-input" id="basic-checkbox" type="checkbox" />
-                    <label class="form-check-label mb-0" for="basic-checkbox">Lưu tài khoản</label>
+                <label class="form-label" for="confirmPassword">Xác nhận mật khẩu<span class="required">*</span></label>
+                <div class="position-relative" data-password="data-password">
+                    <input class="form-control" id="confirmPassword" type="password" name="password_confirmation"
+                        placeholder="Xác nhận mật khẩu" value="{{ old('password_confirmation') }}" />
                 </div>
-                <button class="btn btn-primary" type="submit">Đăng nhập</button>
-                <div style="margin-bottom: 12px;"><a class="login-link" href="{{ asset('forgot-password.html') }}">Quên mật
-                        khẩu ?</a></div>
+                @if ($errors->has('password') && str_contains($errors->first('password'), 'xác nhận'))
+                    <small class="text-danger">{{ $errors->first('password') }}</small>
+                @endif
+                <div class="form-info">
+                    Thông tin của bạn sẽ được bảo mật theo <a class="policy-link" href="#">chính sách riêng tư</a> của
+                    chúng tôi
+                </div>
+                <button class="btn btn-primary" type="submit">Đăng ký ngay</button>
+                <div class="or-divider">Hoặc</div>
                 <button type="button" class="google-btn" onclick="location.href='{{ route('login.google') }}'">
                     <span class="google-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                             <g>
@@ -271,12 +293,12 @@
                                     d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z" />
                             </g>
                         </svg></span>
-                    Đăng nhập bằng <b>Google</b>
+                    Đăng nhập bằng <b> Google</b>
                 </button>
             </form>
-            <div class="login-bottom-text">
+            <div class="register-bottom-text">
                 Bạn chưa có tài khoản Anna ?<br>
-                <a class="login-link" href="{{ route('client.register') }}">Đăng ký ngay</a>
+                <a class="login-link" href="{{ route('client.login') }}">Đăng nhập ngay</a>
             </div>
         </div>
     </div>

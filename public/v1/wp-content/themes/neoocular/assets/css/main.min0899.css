@@ -10545,7 +10545,7 @@ body:not([class*="neoocular-core"])
 .widget.woocommerce.widget_price_filter .price_slider_amount {
     align-items: center;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row; /* Đổi từ row-reverse thành row */
     justify-content: space-between;
     margin: 22px 0 0;
     position: relative;

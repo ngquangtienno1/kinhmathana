@@ -3,7 +3,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 
-    <title>Neo Ocular &#8211; Optician and Optical Store</title>
+    <title>Kính Mắt Hana &#8211; Optician and Optical Store</title>
     <style type="text/css" media="screen">
         #ui-datepicker-div.booked_custom_date_picker table.ui-datepicker-calendar tbody td a.ui-state-active,
         #ui-datepicker-div.booked_custom_date_picker table.ui-datepicker-calendar tbody td a.ui-state-active:hover,
@@ -107,14 +107,13 @@
         }
     </style>
 
+
     <!-- Google Tag Manager for WordPress by gtm4wp.com -->
     <script data-cfasync="false" data-pagespeed-no-defer>
         var gtm4wp_datalayer_name = "dataLayer";
         var dataLayer = dataLayer || [];
     </script>
     <!-- End Google Tag Manager for WordPress by gtm4wp.com -->
-    <link rel='dns-prefetch' href='http://export.qodethemes.com/' />
-    <link rel='dns-prefetch' href='http://static.zdassets.com/' />
     <link rel='dns-prefetch' href='http://fonts.googleapis.com/' />
     <link rel="alternate" type="application/rss+xml" title="Neo Ocular &raquo; Feed"
         href="{{ asset('v1/feed/index.html') }}" />
@@ -241,9 +240,6 @@
     <link rel='stylesheet' id='sbi_styles-css'
         href='{{ asset('v1/wp-content/plugins/instagram-feed/css/sbi-styles.mine6df.css?ver=6.5.0') }}' type='text/css'
         media='all' />
-    <link rel='stylesheet' id='dripicons-css'
-        href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/dripicons/assets/css/dripicons.min0899.css?ver=6.8.1') }}'
-        type='text/css' media='all' />
     <link rel='stylesheet' id='elegant-icons-css'
         href='{{ asset('v1/wp-content/plugins/neoocular-core/inc/icons/elegant-icons/assets/css/elegant-icons.min0899.css?ver=6.8.1') }}'
         type='text/css' media='all' />
@@ -312,9 +308,7 @@
     <link rel='stylesheet' id='ctf_styles-css'
         href='{{ asset('v1/wp-content/plugins/custom-twitter-feeds/css/ctf-styles.min605a.css?ver=2.2.2') }}'
         type='text/css' media='all' />
-    <link rel='stylesheet' id='rabbit_css-css'
-        href='../export.qodethemes.com/_toolbar/assets/css/rbt-modules0899.css?ver=6.8.1' type='text/css'
-        media='all' />
+
     <style id='woocommerce-inline-inline-css' type='text/css'>
         .woocommerce form .form-row .required {
             visibility: visible;
@@ -475,9 +469,9 @@
         };
         /* ]]> */
     </script>
-    <script type="text/javascript"
+    {{-- <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.min4615.js?ver=9.1.4') }}"
-        id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script>
+        id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script> --}}
     <script type="text/javascript" id="wc-add-to-cart-js-extra">
         /* <![CDATA[ */
         var wc_add_to_cart_params = {
@@ -507,9 +501,9 @@
     <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min4615.js?ver=9.1.4') }}"
         id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
-    <script type="text/javascript"
+    {{-- <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/select2/select2.full.minffdd.js?ver=4.0.3-wc.9.1.4') }}"
-        id="select2-js" defer="defer" data-wp-strategy="defer"></script>
+        id="select2-js" defer="defer" data-wp-strategy="defer"></script> --}}
     <script type="text/javascript" id="booked-wc-fe-functions-js-extra">
         /* <![CDATA[ */
         var booked_wc_variables = {
@@ -574,22 +568,7 @@
         };
         dataLayer.push(dataLayer_content);
     </script>
-    <script data-cfasync="false">
-        (function(w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                '../www.googletagmanager.com/gtm5445.html?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-KLJLSX7');
-    </script>
+
     <!-- End Google Tag Manager for WordPress by gtm4wp.com --> <noscript>
         <style>
             .woocommerce-product-gallery {
@@ -710,4 +689,7 @@
             text-align: center;
         }
     </style>
+    <link rel='stylesheet' id='elementor-post-3396-css'
+        href='{{ asset('v1/wp-content/uploads/elementor/css/post-3396145f.css?ver=1722420608') }}' type='text/css'
+        media='all' />
 </head>
