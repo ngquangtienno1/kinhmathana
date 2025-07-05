@@ -86,6 +86,9 @@
                                             <span style="font-size:0.9em;">VNĐ</span></bdi>
                                     </span>
                                 </p>
+                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                    Số lượng: <strong>{{ $product->total_stock_quantity }}</strong>
+                                </div>
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
                                 </div>
@@ -261,8 +264,8 @@
                                                 <span class="qodef-quantity-plus"></span>
                                             </div>
                                             <button type="submit" class="single_add_to_cart_button button alt"
-                                                @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Add
-                                                to cart</button>
+                                                @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
+                                                giỏ hàng</button>
                                             <input type="hidden" name="add-to-cart" value="{{ $product->id }}" />
                                             <input type="hidden" name="product_id" value="{{ $product->id }}" />
                                         </div>
@@ -313,11 +316,14 @@
                                             @endif
                                         </span>
                                     </span>
-                                    <span class="tagged_as"><span class="qodef-woo-meta-label">Thẻ:</span>
-                                        <span class="qodef-woo-meta-value">
-                                            <a href="../../product-tag/frame/index.html" rel="tag">Kính</a>
+                                    @if ($product->brand)
+                                        <span class="tagged_as"><span class="qodef-woo-meta-label">Thương hiệu:</span>
+                                            <span class="qodef-woo-meta-value">
+                                                <a href="{{ route('client.products.index', ['brand_id' => $product->brand->id]) }}"
+                                                    rel="tag">{{ $product->brand->name }}</a>
+                                            </span>
                                         </span>
-                                    </span>
+                                    @endif
                                 </div>
                                 <div class="qodef-shortcode qodef-m  qodef-social-share clear qodef-layout--list ">
                                     <span class="qodef-social-title qodef-custom-label">Chia sẻ sản phẩm:</span>
@@ -356,11 +362,11 @@
                         <ul class="tabs wc-tabs" role="tablist">
                             <li class="description_tab" id="tab-title-description" role="tab"
                                 aria-controls="tab-description">
-                                <a href="#tab-description">Description</a>
+                                <a href="#tab-description">Mô tả</a>
                             </li>
                             <li class="additional_information_tab" id="tab-title-additional_information" role="tab"
                                 aria-controls="tab-additional_information">
-                                <a href="#tab-additional_information">Additional information</a>
+                                <a href="#tab-additional_information">Thông tin thêm</a>
                             </li>
                             <li class="reviews_tab" id="tab-title-reviews" role="tab" aria-controls="tab-reviews">
                                 <a href="#tab-reviews">Đánh giá ({{ $product->reviews->count() }})</a>
@@ -375,6 +381,26 @@
                             <h2>Mô tả</h2>
                             <p>{{ $product->description ?: 'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.' }}
                             </p>
+                        </div>
+                        <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
+                            id="tab-additional_information" role="tabpanel"
+                            aria-labelledby="tab-title-additional_information">
+
+                            <h2>Thông tin thêm</h2>
+
+                            <table class="woocommerce-product-attributes shop_attributes">
+                                <tr
+                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--weight">
+                                    <th class="woocommerce-product-attributes-item__label">Weight</th>
+                                    <td class="woocommerce-product-attributes-item__value">0.5 kg</td>
+                                </tr>
+                                <tr
+                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
+                                    <th class="woocommerce-product-attributes-item__label">Dimensions</th>
+                                    <td class="woocommerce-product-attributes-item__value">1 &times; 2
+                                        &times; 3 cm</td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
                             id="tab-additional_information" role="tabpanel"
@@ -452,7 +478,7 @@
                                     <li
                                         class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
-                                            <div class="qodef-woo-product-image">
+                                            <div class="qodef-woo-product-image" style="position:relative;">
                                                 @php
                                                     $relatedFeaturedImage =
                                                         $related_product->images->where('is_featured', true)->first() ??
@@ -461,6 +487,11 @@
                                                         ? asset('storage/' . $relatedFeaturedImage->image_path)
                                                         : asset('');
                                                 @endphp
+                                                @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
+                                                    <span class="qodef-woo-product-mark qodef-woo-onsale"
+                                                        style="position:absolute;top:10px;left:10px;z-index:2;">Giảm
+                                                        giá</span>
+                                                @endif
                                                 <img width="600" height="431" src="{{ $relatedImagePath }}"
                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
                                                     alt="{{ $related_product->name }}" decoding="async" />
@@ -479,9 +510,28 @@
                                                     @endforeach
                                                     <div class="qodef-info-separator-end"></div>
                                                 </div>
-                                                <span class="price"><span
-                                                        class="woocommerce-Price-amount amount"><bdi><span
-                                                                class="woocommerce-Price-currencySymbol">$</span>{{ number_format($related_product->minimum_price, 2) }}</bdi></span></span>
+                                                <span class="price">
+                                                    @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
+                                                        <del aria-hidden="true">
+                                                            <span class="woocommerce-Price-amount amount">
+                                                                <bdi>{{ number_format($related_product->price, 0, ',', '.') }}đ</bdi>
+                                                            </span>
+                                                        </del>
+                                                        <span class="screen-reader-text">Giá gốc:
+                                                            {{ number_format($related_product->price, 0, ',', '.') }}đ.</span>
+                                                        <ins aria-hidden="true">
+                                                            <span class="woocommerce-Price-amount amount">
+                                                                <bdi>{{ number_format($related_product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                            </span>
+                                                        </ins>
+                                                        <span class="screen-reader-text">Giá khuyến mãi:
+                                                            {{ number_format($related_product->sale_price, 0, ',', '.') }}đ.</span>
+                                                    @else
+                                                        <span class="woocommerce-Price-amount amount">
+                                                            <bdi>{{ number_format($related_product->price ?? $related_product->minimum_price, 0, ',', '.') }}đ</bdi>
+                                                        </span>
+                                                    @endif
+                                                </span>
                                             </div>
                                             <div class="qodef-woo-product-image-inner">
                                                 <div

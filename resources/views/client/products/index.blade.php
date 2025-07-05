@@ -79,7 +79,8 @@
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image">
                                                 @if ($product->sale_price && $product->sale_price < $product->price)
-                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
+                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">Giảm
+                                                        giá</span>
                                                 @endif
                                                 @if ($product->images->isNotEmpty())
                                                     <img loading="lazy" width="600" height="431"

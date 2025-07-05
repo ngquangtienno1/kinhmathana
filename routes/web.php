@@ -143,7 +143,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
 });
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home');

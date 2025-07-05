@@ -88,13 +88,17 @@ class Product extends Model
 
     public function getTotalStockQuantityAttribute()
     {
-        return $this->variations->sum('stock_quantity') ?? $this->stock_quantity ?? 0;
+        // Nếu là sản phẩm đơn giản, trả về stock_quantity
+        if ($this->product_type === 'simple') {
+            return $this->stock_quantity ?? 0;
+        }
+        // Nếu là sản phẩm biến thể, tính tổng tồn kho các biến thể
+        return $this->variations->sum('stock_quantity');
     }
 
     public function getFeaturedMedia()
     {
         $featured = $this->images()->where('is_featured', true)->first();
-        \Log::info('Featured image for product ID ' . $this->id . ': ' . ($featured ? $featured->image_path : 'null'));
         if ($featured) {
             return (object) [
                 'path' => $featured->image_path,
@@ -102,7 +106,6 @@ class Product extends Model
             ];
         }
         $defaultImage = $this->images()->first();
-        \Log::info('Default image for product ID ' . $this->id . ': ' . ($defaultImage ? $defaultImage->image_path : 'null'));
         if ($defaultImage) {
             return (object) [
                 'path' => $defaultImage->image_path,
