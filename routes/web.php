@@ -107,7 +107,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
     });
 
-    Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
+    Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('add', [CartController::class, 'add'])->name('add');
         Route::post('update/{id}', [CartController::class, 'update'])->name('update');

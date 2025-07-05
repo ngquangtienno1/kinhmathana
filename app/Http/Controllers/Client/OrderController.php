@@ -20,7 +20,11 @@ class OrderController extends Controller
             ->where('user_id', $user->id)
             ->orderByDesc('created_at');
         if ($status) {
-            $query->where('status', $status);
+            if ($status === 'cancelled') {
+                $query->whereIn('status', ['cancelled_by_customer', 'cancelled_by_admin']);
+            } else {
+                $query->where('status', $status);
+            }
         }
         $orders = $query->paginate(10);
         return view('client.orders.index', compact('orders', 'status'));
