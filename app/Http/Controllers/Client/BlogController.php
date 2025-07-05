@@ -17,14 +17,14 @@ class BlogController extends Controller
             ->active()
             ->published();
         if ($query) {
-            $newsQuery->where(function($q) use ($query) {
+            $newsQuery->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%$query%")
-                  ->orWhere('summary', 'like', "%$query%") ;
+                    ->orWhere('summary', 'like', "%$query%");
             });
         }
         $news = $newsQuery->orderByDesc('published_at')->paginate(5)->withQueryString();
         $categories = NewsCategory::where('is_active', true)
-            ->withCount(['news' => function($q) {
+            ->withCount(['news' => function ($q) {
                 $q->active()->published();
             }])
             ->orderBy('name')
@@ -68,7 +68,21 @@ class BlogController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('client.blog.show', compact('news', 'mostViewed', 'comments', 'relatedNews'));
+        // Lấy danh mục và bài viết mới nhất cho sidebar
+        $categories = NewsCategory::where('is_active', true)
+            ->withCount(['news' => function ($q) {
+                $q->active()->published();
+            }])
+            ->orderBy('name')
+            ->get();
+        $latestNews = News::with(['category', 'author'])
+            ->active()
+            ->published()
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get();
+
+        return view('client.blog.show', compact('news', 'mostViewed', 'comments', 'relatedNews', 'categories', 'latestNews'));
     }
 
     public function comment(Request $request, $slug)

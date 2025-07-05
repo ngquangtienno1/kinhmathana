@@ -26,7 +26,7 @@ class Order extends Model
         'subtotal',
         'promotion_amount',
         'shipping_fee',
-        'payment_method',
+        'payment_method_id',
         'payment_details',
         'payment_status',
         'status',

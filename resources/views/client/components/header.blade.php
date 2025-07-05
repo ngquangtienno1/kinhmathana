@@ -33,7 +33,7 @@
                                     <span class="qodef-icon-elegant-icons icon_mail_alt qodef-icon qodef-e"
                                         style="font-size: 13px"></span> </span> <span class="qodef-e-title-text"><span
                                         class="__cf_email__"
-                                        data-cfemail="a7c9c2c8c8c4d2cbc6d5e7c2dfc6cad7cbc289c4c8ca">[email&#160;protected]</span></span>
+                                        data-cfemail="a7c9c2c8c8c4d2cbc6d5e7c2dfc6cad7cbc289c4c8ca">hanaeyewear@gmail.com</span></span>
                             </span> </a> </p>
                 </div>
             </div>
@@ -48,8 +48,8 @@
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 7px 0 0"> <span
                                         class="qodef-icon-elegant-icons icon_pin_alt qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">235 N
-                                    Edison St, Arlington, VA 22203, USA</span>
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Trịnh
+                                    Văn Bô, Nam Từ Liêm, Hà Nội</span>
                             </span> </a> </p>
                 </div>
             </div>
@@ -61,8 +61,8 @@
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 5px 0 -2px"> <span
                                         class="qodef-icon-elegant-icons icon_mobile qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Call
-                                    us: +34936915450</span> </span> </a> </p>
+                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">SĐT:
+                                    +84936915450</span> </span> </a> </p>
                 </div>
             </div>
             <div id="neoocular_core_icon_list_item-5"
@@ -71,8 +71,8 @@
                     <p class="qodef-e-title"> <span class="qodef-e-title-inner"> <span
                                 class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"> <span
                                     class="qodef-icon-elegant-icons icon_clock_alt qodef-icon qodef-e"
-                                    style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Mon-Sat:
-                                9AM-9PM</span> </span> </p>
+                                    style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Thứ Hai -
+                                Thứ Bảy: 9AM - 9PM</span> </span> </p>
                 </div>
             </div>
         </div>
@@ -97,31 +97,31 @@
     c0.342-0.207,0.613-0.489,0.814-0.847c0.201-0.356,0.302-0.748,0.302-1.174c0-0.427-0.102-0.819-0.306-1.18
     c-0.204-0.359-0.48-0.645-0.828-0.854c-0.348-0.21-0.729-0.315-1.143-0.315c-0.42,0-0.802,0.105-1.147,0.315
     c-0.345,0.21-0.618,0.495-0.819,0.854c-0.201,0.36-0.301,0.753-0.301,1.18C30.366,45.159,30.468,45.549,30.672,45.903z" />
-                            <path d="M45.59,47.883c-0.34,0.126-0.71,0.189-1.112,0.189c-0.678,0-1.27-0.148-1.777-0.445c-0.507-0.298-0.897-0.696-1.17-1.197
+                                <path d="M45.59,47.883c-0.34,0.126-0.71,0.189-1.112,0.189c-0.678,0-1.27-0.148-1.777-0.445c-0.507-0.298-0.897-0.696-1.17-1.197
     s-0.409-1.052-0.409-1.651c0-0.654,0.136-1.239,0.409-1.755c0.273-0.517,0.654-0.92,1.143-1.211
     c0.49-0.291,1.045-0.437,1.669-0.437c0.384,0,0.739,0.051,1.066,0.153c0.327,0.102,0.617,0.23,0.869,0.387l-0.414,0.981
     c-0.486-0.343-0.981-0.514-1.485-0.514c-0.384,0-0.742,0.104-1.075,0.311s-0.599,0.489-0.797,0.846
     c-0.198,0.357-0.297,0.749-0.297,1.175c0,0.45,0.091,0.854,0.274,1.211c0.183,0.356,0.444,0.636,0.783,0.837
     c0.339,0.201,0.73,0.302,1.175,0.302c0.317,0,0.604-0.049,0.859-0.145c0.255-0.096,0.469-0.219,0.644-0.369l0.44,0.937
     C46.194,47.625,45.929,47.757,45.59,47.883z" />
-                            <path d="M53.063,46.344c0.132,0.216,0.312,0.389,0.54,0.518c0.228,0.129,0.477,0.193,0.747,0.193c0.282,0,0.538-0.063,0.77-0.188
+                                <path d="M53.063,46.344c0.132,0.216,0.312,0.389,0.54,0.518c0.228,0.129,0.477,0.193,0.747,0.193c0.282,0,0.538-0.063,0.77-0.188
     c0.23-0.126,0.412-0.297,0.544-0.514c0.133-0.216,0.198-0.452,0.198-0.711v-4.193h1.035v4.221c0,0.468-0.112,0.884-0.338,1.246
     c-0.225,0.363-0.532,0.647-0.922,0.851c-0.391,0.204-0.819,0.307-1.287,0.307s-0.896-0.103-1.282-0.307
     c-0.388-0.203-0.692-0.487-0.914-0.851c-0.222-0.362-0.333-0.778-0.333-1.246v-4.221h1.044v4.193
     C52.865,45.894,52.932,46.128,53.063,46.344z" />
-                            <path d="M63.784,41.448v5.544h3.23V48h-4.283v-6.552H63.784z" />
-                            <path d="M75.906,46.461h-2.385L72.891,48h-1.035l2.898-6.822h0.063L77.715,48h-1.206L75.906,46.461z M75.555,45.561l-0.819-2.069
+                                <path d="M63.784,41.448v5.544h3.23V48h-4.283v-6.552H63.784z" />
+                                <path d="M75.906,46.461h-2.385L72.891,48h-1.035l2.898-6.822h0.063L77.715,48h-1.206L75.906,46.461z M75.555,45.561l-0.819-2.069
     l-0.846,2.069H75.555z" />
-                            <path d="M86.553,48l-1.477-2.277h-0.107h-0.945V48h-1.053v-6.552h1.845c0.731,0,1.318,0.186,1.76,0.558
+                                <path d="M86.553,48l-1.477-2.277h-0.107h-0.945V48h-1.053v-6.552h1.845c0.731,0,1.318,0.186,1.76,0.558
     c0.44,0.372,0.661,0.889,0.661,1.548c0,0.402-0.086,0.775-0.257,1.121c-0.171,0.345-0.439,0.61-0.806,0.796L87.768,48H86.553z
      M84.024,44.715h0.936c0.42,0,0.725-0.115,0.914-0.347c0.188-0.23,0.283-0.49,0.283-0.778c0-0.168-0.036-0.337-0.108-0.509
     c-0.071-0.171-0.194-0.317-0.368-0.44c-0.175-0.123-0.402-0.185-0.685-0.185h-0.972V44.715z" />
-                        </g>
-                        <g>
-                            <path
-                                d="M23.546,1.03v27.213h-0.142L5.108,11.724l0.107,15.454h-5.223V0h0.213l18.261,16.769L18.359,1.03H23.546z" />
-                            <path
-                                d="M93.029,7.496c1.195-2.06,2.818-3.7,4.867-4.92c2.048-1.22,4.268-1.83,6.661-1.83c2.392,0,4.612,0.61,6.661,1.83
+                            </g>
+                            <g>
+                                <path
+                                    d="M23.546,1.03v27.213h-0.142L5.108,11.724l0.107,15.454h-5.223V0h0.213l18.261,16.769L18.359,1.03H23.546z" />
+                                <path
+                                    d="M93.029,7.496c1.195-2.06,2.818-3.7,4.867-4.92c2.048-1.22,4.268-1.83,6.661-1.83c2.392,0,4.612,0.61,6.661,1.83
     c2.048,1.22,3.683,2.86,4.903,4.92c1.219,2.061,1.83,4.276,1.83,6.644c0,2.416-0.611,4.643-1.83,6.679
     c-1.22,2.038-2.855,3.654-4.903,4.85c-2.049,1.196-4.269,1.794-6.661,1.794c-2.416,0-4.642-0.598-6.679-1.794
     c-2.037-1.196-3.654-2.812-4.849-4.85c-1.196-2.037-1.794-4.263-1.794-6.679C91.235,11.772,91.833,9.557,93.029,7.496z
@@ -129,18 +129,18 @@
     c1.208-0.746,2.155-1.753,2.842-3.019c0.687-1.267,1.031-2.67,1.031-4.21c0-1.563-0.356-2.984-1.067-4.263
     c-0.71-1.279-1.675-2.292-2.895-3.038c-1.22-0.746-2.576-1.119-4.068-1.119s-2.849,0.373-4.068,1.119
     c-1.22,0.746-2.185,1.759-2.896,3.038c-0.711,1.279-1.066,2.7-1.066,4.263C96.564,15.656,96.925,17.053,97.647,18.332z" />
-                            <polygon
-                                points="58,22 58,17 68,17 68,12 58,12 58,6 71,6 71,1 53,1 53,12 42,12 42,17 53,17 53,27 71,27 71,22 		" />
+                                <polygon
+                                    points="58,22 58,17 68,17 68,12 58,12 58,6 71,6 71,1 53,1 53,12 42,12 42,17 53,17 53,27 71,27 71,22 		" />
+                            </g>
                         </g>
-                    </g>
-                </svg>
+                    </svg>
                 </a>
             </div>
             <nav class="qodef-header-navigation" role="navigation" aria-label="Top Menu">
                 <ul id="menu-main-menu-1" class="menu">
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow">
-                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Home<svg
+                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Trang chủ<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -150,41 +150,10 @@
                                         </path>
                                     </g>
                                 </svg></span></a>
-                        <div class="qodef-drop-down-second">
-                            <div class="qodef-drop-down-second-inner">
-                                <ul class="sub-menu">
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-65 current_page_item menu-item-2340">
-                                        <a href="index.html"><span class="qodef-menu-item-text">Main
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3710">
-                                        <a href="optician-home/index.html"><span class="qodef-menu-item-text">Optician
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3711">
-                                        <a href="ophthalmology-home/index.html"><span
-                                                class="qodef-menu-item-text">Ophthalmology Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5023">
-                                        <a href="shop-home/index.html"><span class="qodef-menu-item-text">Shop
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3440">
-                                        <a href="eyewear-home/index.html"><span class="qodef-menu-item-text">Eyewear
-                                                Home</span></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-112 qodef--hide-link qodef-menu-item--narrow">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Pages<svg
+                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Trang<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -239,7 +208,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="contact-us/index.html"><span class="qodef-menu-item-text">Contact
+                                        <a href="{{ route('client.contact.index') }}"><span
+                                                class="qodef-menu-item-text">Contact
                                                 Us</span></a>
                                     </li>
                                     <li
@@ -462,8 +432,8 @@
                                         <ul class="sub-menu">
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2686">
-                                                <a href="cart/index.html"><span
-                                                        class="qodef-menu-item-text">Cart</span></a>
+                                                <a href="{{ route('client.cart.index') }}"><span
+                                                        class="qodef-menu-item-text">Giỏ hàng</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
@@ -511,7 +481,8 @@
                                 </svg></span></a>
                     </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747"><a
-                            href="landing/index.html"><span class="qodef-menu-item-text">Landing</span></a></li>
+                            href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Liên
+                                Hệ</span></a></li>
                 </ul>
             </nav>
             <div class="qodef-widget-holder qodef--one">
@@ -546,7 +517,7 @@
                     data-area="header-widget-one">
                     <div class="qodef-wishlist-widget-holder">
                         <div class="qodef-wishlist-inner" style="margin: 0 6px 0 0">
-                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link" title="View Wishlist">
+                            <a href="#" class="qodef-wishlist-widget-link" title="View Wishlist">
                                 <span class="qodef-wishlist-icon-count-holder">
                                     <span class="qodef-wishlist-widget-icon"><svg xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px"
@@ -567,20 +538,21 @@
                     class="widget widget_neoocular_membership_login_opener qodef-header-widget-area-one"
                     data-area="header-widget-one">
                     @guest
-                    <div class="qodef-login-opener-widget qodef-user-logged--out">
-                        <a href="{{ route('client.login') }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                                y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
-                                enable-background="new 0 0 16.289 16.087" xml:space="preserve">
-                                <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
-                                    cy="4.594" r="4.094" />
-                                <path fill="none" stroke="currentColor" stroke-miterlimit="10"
-                                    d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
-                            </svg>
-                        </a>
-                    </div>
+                        <div class="qodef-login-opener-widget qodef-user-logged--out">
+                            <a href="{{ route('client.login') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+                            </a>
+                        </div>
                     @endguest
                     @auth
+<<<<<<< HEAD
                     <div class="qodef-login-opener-widget qodef-user-logged--in">
                         <a href="{{ route('client.users.index') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
@@ -594,6 +566,21 @@
                           
                         </a>
                     </div>
+=======
+                        <div class="qodef-login-opener-widget qodef-user-logged--in">
+                            <a href="{{ route('client.users.profile') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+
+                            </a>
+                        </div>
+>>>>>>> 79b1bb162aabbc10017718859a748ba1c7c1e357
                     @endauth
                 </div>
                 <div id="neoocular_core_woo_side_area_cart-2"
@@ -692,7 +679,7 @@
                 <ul id="menu-main-menu-2" class="menu">
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Home<svg
+                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Trang chủ<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -702,41 +689,10 @@
                                         </path>
                                     </g>
                                 </svg></span></a>
-                        <div class="qodef-drop-down-second">
-                            <div class="qodef-drop-down-second-inner">
-                                <ul class="sub-menu">
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-65 current_page_item menu-item-2340">
-                                        <a href="index.html"><span class="qodef-menu-item-text">Main
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3710">
-                                        <a href="optician-home/index.html"><span class="qodef-menu-item-text">Optician
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3711">
-                                        <a href="ophthalmology-home/index.html"><span
-                                                class="qodef-menu-item-text">Ophthalmology Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5023">
-                                        <a href="shop-home/index.html"><span class="qodef-menu-item-text">Shop
-                                                Home</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3440">
-                                        <a href="eyewear-home/index.html"><span class="qodef-menu-item-text">Eyewear
-                                                Home</span></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-112 qodef--hide-link qodef-menu-item--narrow">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Pages<svg
+                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Trang<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -791,7 +747,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="contact-us/index.html"><span class="qodef-menu-item-text">Contact
+                                        <a href="{{ route('client.contact.index') }}"><span
+                                                class="qodef-menu-item-text">Contact
                                                 Us</span></a>
                                     </li>
                                     <li
@@ -806,8 +763,8 @@
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-113 qodef--hide-link qodef-menu-item--wide">
-                        <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Cửa hàng<svg
-                                    class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
+                        <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Sản
+                                phẩm<svg class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
                                     <g>
@@ -1014,8 +971,8 @@
                                         <ul class="sub-menu">
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2686">
-                                                <a href="cart/index.html"><span
-                                                        class="qodef-menu-item-text">Cart</span></a>
+                                                <a href="{{ route('client.cart.index') }}"><span
+                                                        class="qodef-menu-item-text">Giỏ hàng</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
@@ -1051,7 +1008,7 @@
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-114 qodef--hide-link qodef-menu-item--narrow">
-                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Blog<svg
+                        <a href="{{ route('client.blog.index') }}"><span class="qodef-menu-item-text">Tin tức<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
@@ -1061,81 +1018,10 @@
                                         </path>
                                     </g>
                                 </svg></span></a>
-                        <div class="qodef-drop-down-second">
-                            <div class="qodef-drop-down-second-inner">
-                                <ul class="sub-menu">
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4007">
-                                        <a href="blog-right-sidebar/index.html"><span
-                                                class="qodef-menu-item-text">Right Sidebar</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4009">
-                                        <a href="blog-left-sidebar/index.html"><span class="qodef-menu-item-text">Left
-                                                Sidebar</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4008">
-                                        <a href="blog-no-sidebar/index.html"><span class="qodef-menu-item-text">No
-                                                Sidebar</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-116 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Post
-                                                Types<svg class="qodef-menu-item-arrow"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
-                                                    height="32" viewBox="0 0 32 32">
-                                                    <g>
-                                                        <path
-                                                            d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z">
-                                                        </path>
-                                                    </g>
-                                                </svg></span></a>
-                                        <ul class="sub-menu">
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-7584">
-                                                <a href="what-is-blue-light/index.html"><span
-                                                        class="qodef-menu-item-text">Standard Post</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-4014">
-                                                <a href="our-new-hot-shapes/index.html"><span
-                                                        class="qodef-menu-item-text">No Sidebar Post</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-4011">
-                                                <a href="best-shapes-for-you/index.html"><span
-                                                        class="qodef-menu-item-text">Gallery Post</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-4017">
-                                                <a href="best-eye-health-tips/index.html"><span
-                                                        class="qodef-menu-item-text">Link Post</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-4015">
-                                                <a href="take-care-of-vision/index.html"><span
-                                                        class="qodef-menu-item-text">Quote Post</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-4012">
-                                                <a href="latest-glasses-trends/index.html"><span
-                                                        class="qodef-menu-item-text">Audio Post</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-post menu-item-4013">
-                                                <a href="latest-lens-technology/index.html"><span
-                                                        class="qodef-menu-item-text">Video Post</span></a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747"><a
-                            href="landing/index.html"><span class="qodef-menu-item-text">Landing</span></a></li>
+                            href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Liên
+                                Hệ</span></a></li>
                 </ul>
             </nav>
             <div class="qodef-widget-holder qodef--one">
@@ -1143,7 +1029,7 @@
                     class="widget widget_neoocular_core_qode_wishlist qodef-sticky-right">
                     <div class="qodef-wishlist-widget-holder">
                         <div class="qodef-wishlist-inner" style="margin: 0 6px 0 0">
-                            <a href="wishlist/index.html" class="qodef-wishlist-widget-link" title="View Wishlist">
+                            <a href="#" class="qodef-wishlist-widget-link" title="View Wishlist">
                                 <span class="qodef-wishlist-icon-count-holder">
                                     <span class="qodef-wishlist-widget-icon"><svg xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px"
@@ -1178,7 +1064,7 @@
                 <div id="neoocular_core_woo_side_area_cart-4"
                     class="widget widget_neoocular_core_woo_side_area_cart qodef-sticky-right">
                     <div class="qodef-widget-side-area-cart-inner">
-                        <a itemprop="url" class="qodef-m-opener" href="cart/index.html">
+                        <a itemprop="url" class="qodef-m-opener" href="{{ route('client.cart.index') }}">
                             <span class="qodef-m-opener-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     x="0px" y="0px" width="13.5px" height="18px" viewBox="0 0 13.5 18"

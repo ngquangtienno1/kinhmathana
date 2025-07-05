@@ -13,6 +13,7 @@ use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\ContactController as ClientContactController;
 
 // ================== Admin Controllers ===================
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
@@ -43,6 +44,14 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+
+
+
+
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
@@ -101,16 +110,11 @@ Route::get('reset-password/{token}', [AuthenticationClientController::class, 'sh
 Route::post('reset-password', [AuthenticationClientController::class, 'reset'])->name('password.update');
     // Product routes
     Route::prefix('products')->name('products.')->group(function () {
-        Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
-        Route::get('list', [ClientProductController::class, 'list'])->name('list'); // Dạng bảng
-        Route::get('{slug}', [ClientProductController::class, 'show'])->name('show'); // Chi tiết
-        // Wishlist
-        Route::post('wishlist/add/{product}', [ClientProductController::class, 'addToWishlist'])->name('wishlist.add');
-        // Đánh giá
-        Route::post('products/{slug}/reviews', [ClientProductController::class, 'storeReview'])->name('reviews.store');
+        Route::get('/', [ClientProductController::class, 'index'])->name('index');
+        Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
     });
 
-    Route::prefix('cart')->name('cart.')->middleware('auth')->group(function () {
+    Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('add', [CartController::class, 'add'])->name('add');
         Route::post('update/{id}', [CartController::class, 'update'])->name('update');
@@ -141,12 +145,16 @@ Route::post('reset-password', [AuthenticationClientController::class, 'reset'])-
     Route::prefix('faq')->name('faq.')->group(function () {
         Route::get('/', [FaqClientController::class, 'index'])->name('index');
     });
+
     Route::prefix('voucher')->name('voucher.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
     });
-
-   
+    Route::prefix('contact')->name('contact.')->group(function () {
+        Route::get('/', [ClientContactController::class, 'index'])->name('index');
+        Route::post('/', [ClientContactController::class, 'store'])->name('store');
+    });
 });
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
@@ -706,7 +714,4 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
             ->middleware(['permission:gui-email-lien-he']);
     });
-
-    // Quên mật khẩu cho client
-   
 });
