@@ -86,7 +86,7 @@
                                     <img src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
                                          alt="" >
                                     <div class="ms-3">
-                                        <div  class="fw-bold">{{ $item->product_name }}</div>
+                                        <div class="fw-bold">{{ $item->product_name }}</div>
                                         <div class="text-muted small">
                                             @if ($item->product_options)
                                                 @php $opts = json_decode($item->product_options, true); @endphp
@@ -101,6 +101,13 @@
                                                 @endif
                                             @endif
                                         </div>
+                                        @if (!\App\Models\Review::where('user_id', auth()->id())->where('product_id', $item->product_id)->where('order_id', $order->id)->exists())
+                                            <div class="mt-2">
+                                                <a href="{{ route('client.orders.review.form', [$order->id, $item->id]) }}" class="btn btn-sm" style="background:#222; color:#fff; border-radius:0; padding:7px 24px; font-weight:500;">Đánh giá</a>
+                                            </div>
+                                        @else
+                                            <span class="text-success">Đã đánh giá</span>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
