@@ -97,6 +97,10 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
+    //Users routes 
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
+    });
     // Product routes
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
@@ -144,6 +148,7 @@ Route::prefix('client')->name('client.')->group(function () {
     });
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
     Route::get('/home', [AdminHomeController::class, 'index'])->name('home');

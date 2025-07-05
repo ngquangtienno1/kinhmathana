@@ -537,18 +537,35 @@
                 <div id="neoocular_membership_login_opener-4"
                     class="widget widget_neoocular_membership_login_opener qodef-header-widget-area-one"
                     data-area="header-widget-one">
-                    <div class="qodef-login-opener-widget qodef-user-logged--out">
-                        <a href="#" class="qodef-login-opener">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                                y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
-                                enable-background="new 0 0 16.289 16.087" xml:space="preserve">
-                                <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
-                                    cy="4.594" r="4.094" />
-                                <path fill="none" stroke="currentColor" stroke-miterlimit="10"
-                                    d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
-                            </svg>
-                        </a>
-                    </div>
+                    @guest
+                        <div class="qodef-login-opener-widget qodef-user-logged--out">
+                            <a href="{{ route('client.login') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+                            </a>
+                        </div>
+                    @endguest
+                    @auth
+                        <div class="qodef-login-opener-widget qodef-user-logged--in">
+                            <a href="{{ route('client.users.profile') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+
+                            </a>
+                        </div>
+                    @endauth
                 </div>
                 <div id="neoocular_core_woo_side_area_cart-2"
                     class="widget widget_neoocular_core_woo_side_area_cart qodef-header-widget-area-one"
@@ -646,7 +663,7 @@
                 <ul id="menu-main-menu-2" class="menu">
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow">
-                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Trang chủ<svg 
+                        <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Trang chủ<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">

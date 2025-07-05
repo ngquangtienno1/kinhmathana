@@ -426,7 +426,8 @@
                                                                         <h3 class="qodef-m-title">
                                                                             Blue light optical lens </h3>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 11px">Lorem ipsum
+                                                                            style="margin-top: 11px">Lorem
+                                                                            ipsum
                                                                             dolore amet, vivid vel risus sit</p>
                                                                     </div>
                                                                 </div>
@@ -452,7 +453,8 @@
                                                                                     tincidunt amet</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                                style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur sit do
                                                                             </p>
                                                                         </div>
@@ -491,7 +493,8 @@
                                                                                     sit mor</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                                style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur del sint
                                                                             </p>
                                                                         </div>
@@ -553,7 +556,8 @@
                                                                         <h3 class="qodef-m-title">
                                                                             Blue light optical lens </h3>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 11px">Lorem ipsum
+                                                                            style="margin-top: 11px">Lorem
+                                                                            ipsum
                                                                             dolore amet, vivid vel risus sit</p>
                                                                     </div>
                                                                 </div>
@@ -579,7 +583,8 @@
                                                                                     tincidunt amet</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                                style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur sit do
                                                                             </p>
                                                                         </div>
@@ -617,7 +622,8 @@
                                                                                     sit mor</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
-                                                                                style="margin-top: 5px">Lorem ipsum
+                                                                                style="margin-top: 5px">
+                                                                                Lorem ipsum
                                                                                 dolor sit amet, consectetur del sint
                                                                             </p>
                                                                         </div>
@@ -1071,7 +1077,8 @@
                                                                                     </p>
                                                                                 </div>
                                                                                 <div class="wpcf7-response-output"
-                                                                                    aria-hidden="true"></div>
+                                                                                    aria-hidden="true">
+                                                                                </div>
                                                                             </form>
                                                                         </div>
                                                                     </div>
