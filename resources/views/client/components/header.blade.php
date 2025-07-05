@@ -582,7 +582,7 @@
                     @endguest
                     @auth
                     <div class="qodef-login-opener-widget qodef-user-logged--in">
-                        <a href="{{ route('client.users.profile') }}">
+                        <a href="{{ route('client.users.index') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                                 y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
                                 enable-background="new 0 0 16.289 16.087" xml:space="preserve">

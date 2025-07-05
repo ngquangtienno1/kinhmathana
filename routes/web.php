@@ -3,7 +3,7 @@
 // ================== Client Controllers ==================
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Client\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Client\VoucherController;
@@ -90,8 +90,15 @@ Route::prefix('client')->name('client.')->group(function () {
 
     //Users routes 
       Route::prefix('users')->name('users.')->group(function () {
-        Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
+        Route::get('index', [UserController::class, 'index'])->name('index');
+        Route::get('information',[ UserController::class, 'profile'])->name('information'); // Dạng lưới
+        Route::post('information', [UserController::class, 'update'])->name('information.update');
     });
+    
+     Route::get('forgot-password', [AuthenticationClientController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('forgot-password', [AuthenticationClientController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('reset-password/{token}', [AuthenticationClientController::class, 'showResetForm'])->name('password.reset');
+Route::post('reset-password', [AuthenticationClientController::class, 'reset'])->name('password.update');
     // Product routes
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index'); // Dạng lưới
@@ -699,4 +706,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
             ->middleware(['permission:gui-email-lien-he']);
     });
+
+    // Quên mật khẩu cho client
+   
 });

@@ -62,7 +62,9 @@
 }
 .account-menu li .icon {
     font-size: 1.2rem;
+    color: inherit; /* 🔁 Dùng màu chữ mặc định */
 }
+
 .account-divider {
     width: 100%;
     height: 1px;
@@ -90,11 +92,11 @@
     box-shadow: 0 1px 6px rgba(0,0,0,0.03);
 }
 .account-stat .icon {
-    display: block;
-    margin: 0 auto 6px auto;
     font-size: 2.1rem;
-    color: #8ed7d7;
+    /* Xoá màu để dùng màu mặc định theo ngữ cảnh */
+    color: inherit;
 }
+
 .account-stat .stat-number {
     font-size: 2rem;
     font-weight: 700;
@@ -146,10 +148,10 @@
         <div class="account-divider"></div>
         <nav class="account-menu">
             <ul>
-                <li class="active"><span class="icon">&#128179;</span> <a href="#">Danh sách sản phẩm</a></li>
-                <li><span class="icon">&#128100;</span> <a href="#">Thông tin tài khoản</a></li>
-                <li><span class="icon">&#128205;</span> <a href="#">Thông tin địa chỉ</a></li>
-                <li><span class="icon">&#128682;</span> <a href="{{ route('client.logout') }}">Đăng xuất</a></li>
+                <li class="active">@include('client.components.icons.cart')<a href="#">Danh sách sản phẩm</a></li>
+                <li>@include('client.components.icons.user')<a href="{{ route('client.users.information') }}">Thông tin tài khoản</a></li>
+                <li>@include('client.components.icons.map') <a href="#">Thông tin địa chỉ</a></li>
+                <li>@include('client.components.icons.logout')<a href="{{ route('client.logout') }}">Đăng xuất</a></li>
             </ul>
         </nav>
     </div>
