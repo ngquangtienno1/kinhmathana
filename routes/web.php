@@ -96,8 +96,10 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('logout', [AuthenticationClientController::class, 'logout'])->name('logout');
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
+    // Route lấy chi tiết đơn hàng cho client (AJAX popup)
+    Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
 
-    //Users routes 
+    //Users routes
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
     });
@@ -146,6 +148,9 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientContactController::class, 'index'])->name('index');
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
+
+    // Route lấy danh sách lý do hủy đơn hàng cho client
+    Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
