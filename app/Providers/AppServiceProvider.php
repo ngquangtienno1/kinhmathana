@@ -53,18 +53,25 @@ class AppServiceProvider extends ServiceProvider
             Config::set('mail.from.name', env('MAIL_FROM_NAME', 'Your Website'));
         }
 
-        // Truyền biến cartCount cho full view
+        // Truyền biến cartCount cho tất cả view
         View::composer('*', function ($view) {
             $cartCount = 0;
+            $cartItems = [];
             if (Auth::check()) {
-                $cartCount = Cart::where('user_id', Auth::id())->count();
+                // Lấy danh sách sản phẩm trong giỏ cho user đăng nhập
+                $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                    ->where('user_id', Auth::id())
+                    ->get();
+                $cartCount = $cartItems->count();
             } else {
+                // Lấy danh sách sản phẩm trong session cho khách
                 if (session()->has('cart')) {
                     $cart = session('cart');
-                    $cartCount = collect($cart)->count();
+                    $cartItems = collect($cart);
+                    $cartCount = $cartItems->count();
                 }
             }
-            $view->with('cartCount', $cartCount);
+            $view->with('cartCount', $cartCount)->with('cartItems', $cartItems);
         });
     }
 }

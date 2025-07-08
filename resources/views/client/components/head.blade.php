@@ -435,8 +435,8 @@
 </script>
     <script type="text/javascript" src="{{ asset('v1/wp-includes/js/jquery/jquery.minf43b.js?ver=3.7.1') }}"
         id="jquery-core-js"></script>
-    {{-- <script type="text/javascript" src="{{ asset('v1/wp-includes/js/jquery/jquery-migrate.min5589.js?ver=3.4.1') }}"
-        id="jquery-migrate-js"></script> --}}
+    <script type="text/javascript" src="{{ asset('v1/wp-includes/js/jquery/jquery-migrate.min5589.js?ver=3.4.1') }}"
+        id="jquery-migrate-js"></script>
     <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/revslider/sr6/assets/js/rbtools.mine9af.js?ver=6.7.15') }}" id="tp-tools-js">
     </script>
@@ -469,9 +469,9 @@
         };
         /* ]]> */
     </script>
-    {{-- <script type="text/javascript"
+    <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.min4615.js?ver=9.1.4') }}"
-        id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script> --}}
+        id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript" id="wc-add-to-cart-js-extra">
         /* <![CDATA[ */
         var wc_add_to_cart_params = {
@@ -498,12 +498,12 @@
         };
         /* ]]> */
     </script>
-    {{-- <script type="text/javascript"
+    <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min4615.js?ver=9.1.4') }}"
-        id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script> --}}
-    {{-- <script type="text/javascript"
+        id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
+    <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/select2/select2.full.minffdd.js?ver=4.0.3-wc.9.1.4') }}"
-        id="select2-js" defer="defer" data-wp-strategy="defer"></script> --}}
+        id="select2-js" defer="defer" data-wp-strategy="defer"></script>
     <script type="text/javascript" id="booked-wc-fe-functions-js-extra">
         /* <![CDATA[ */
         var booked_wc_variables = {
@@ -518,9 +518,9 @@
         };
         /* ]]> */
     </script>
-    {{-- <script type="text/javascript"
+    <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/booked/includes/add-ons/woocommerce-payments/js/frontend-functions0899.js?ver=6.8.1') }}"
-        id="booked-wc-fe-functions-js"></script> --}}
+        id="booked-wc-fe-functions-js"></script>
     <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/flexslider/jquery.flexslider.min75ae.js?ver=2.7.2-wc.9.1.4') }}"
         id="flexslider-js" defer="defer" data-wp-strategy="defer"></script>

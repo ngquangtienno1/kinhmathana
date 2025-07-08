@@ -99,7 +99,7 @@
                                 @endif
                                 @if ($product->variations->count() > 0)
                                     <div id="qvsfw-variations-form-wrapper">
-                                        <form class="variations_form cart" method="post"
+                                        <form class="variations_form cart js-add-to-cart-form" method="post"
                                             action="{{ route('client.products.add-to-cart') }}"
                                             enctype="multipart/form-data">
                                             @csrf

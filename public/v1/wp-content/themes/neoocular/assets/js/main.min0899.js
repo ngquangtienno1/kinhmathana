@@ -24,59 +24,59 @@
             _.init(), o.init();
         });
     var i = {
-            init: function () {
-                i.addBodyClassName();
-            },
-            isBrowser: function (e) {
-                var t = !1;
-                switch (e) {
-                    case "chrome":
-                        t =
-                            /Chrome/.test(navigator.userAgent) &&
-                            /Google Inc/.test(navigator.vendor);
-                        break;
-                    case "safari":
-                        t =
-                            /Safari/.test(navigator.userAgent) &&
-                            /Apple Computer/.test(navigator.vendor);
-                        break;
-                    case "firefox":
-                        t =
-                            -1 <
-                            navigator.userAgent
-                                .toLowerCase()
-                                .indexOf("firefox");
-                        break;
-                    case "ie":
-                        t =
-                            0 < window.navigator.userAgent.indexOf("MSIE ") ||
-                            !!navigator.userAgent.match(/Trident.*rv\:11\./);
-                        break;
-                    case "edge":
-                        t = /Edge\/\d./i.test(navigator.userAgent);
-                }
-                return t;
-            },
-            addBodyClassName: function () {
-                a.each(
-                    ["chrome", "safari", "firefox", "ie", "edge"],
-                    function (e, t) {
-                        i.isBrowser(t) &&
-                            void 0 !== qodef.body &&
-                            ("ie" === t && (t = "ms-explorer"),
-                            qodef.body.addClass("qodef-browser--" + t));
-                    }
-                );
-            },
+        init: function () {
+            i.addBodyClassName();
         },
+        isBrowser: function (e) {
+            var t = !1;
+            switch (e) {
+                case "chrome":
+                    t =
+                        /Chrome/.test(navigator.userAgent) &&
+                        /Google Inc/.test(navigator.vendor);
+                    break;
+                case "safari":
+                    t =
+                        /Safari/.test(navigator.userAgent) &&
+                        /Apple Computer/.test(navigator.vendor);
+                    break;
+                case "firefox":
+                    t =
+                        -1 <
+                        navigator.userAgent
+                            .toLowerCase()
+                            .indexOf("firefox");
+                    break;
+                case "ie":
+                    t =
+                        0 < window.navigator.userAgent.indexOf("MSIE ") ||
+                        !!navigator.userAgent.match(/Trident.*rv\:11\./);
+                    break;
+                case "edge":
+                    t = /Edge\/\d./i.test(navigator.userAgent);
+            }
+            return t;
+        },
+        addBodyClassName: function () {
+            a.each(
+                ["chrome", "safari", "firefox", "ie", "edge"],
+                function (e, t) {
+                    i.isBrowser(t) &&
+                        void 0 !== qodef.body &&
+                        ("ie" === t && (t = "ms-explorer"),
+                            qodef.body.addClass("qodef-browser--" + t));
+                }
+            );
+        },
+    },
         _ = {
             init: function (e) {
                 (this.holder = a(".qodef-swiper-container")),
                     a.extend(this.holder, e),
                     this.holder.length &&
-                        this.holder.each(function () {
-                            _.initSlider(a(this));
-                        });
+                    this.holder.each(function () {
+                        _.initSlider(a(this));
+                    });
             },
             initSlider: function (e) {
                 var t = _.getOptions(e),
@@ -132,13 +132,13 @@
                     p = g
                         ? ".swiper-button-next-" + i.unique
                         : e.children(".swiper-button-next").length
-                        ? e.children(".swiper-button-next")[0]
-                        : null,
+                            ? e.children(".swiper-button-next")[0]
+                            : null,
                     g = g
                         ? ".swiper-button-prev-" + i.unique
                         : e.children(".swiper-button-prev").length
-                        ? e.children(".swiper-button-prev")[0]
-                        : null,
+                            ? e.children(".swiper-button-prev")[0]
+                            : null,
                     m = e.children(".swiper-pagination").length
                         ? e.children(".swiper-pagination")[0]
                         : null,
@@ -146,28 +146,28 @@
                         (!0 === l &&
                             ((l = { disableOnInteraction: !1 }), 5e3 !== c) &&
                             (l.delay = c),
-                        void 0 !== i.slidesPerView1440 &&
-                        "" !== i.slidesPerView1440
-                            ? parseInt(i.slidesPerView1440, 10)
-                            : 5),
+                            void 0 !== i.slidesPerView1440 &&
+                                "" !== i.slidesPerView1440
+                                ? parseInt(i.slidesPerView1440, 10)
+                                : 5),
                     q =
                         void 0 !== i.slidesPerView1366 &&
-                        "" !== i.slidesPerView1366
+                            "" !== i.slidesPerView1366
                             ? parseInt(i.slidesPerView1366, 10)
                             : 4,
                     w =
                         void 0 !== i.slidesPerView1024 &&
-                        "" !== i.slidesPerView1024
+                            "" !== i.slidesPerView1024
                             ? parseInt(i.slidesPerView1024, 10)
                             : 3,
                     v =
                         void 0 !== i.slidesPerView768 &&
-                        "" !== i.slidesPerView768
+                            "" !== i.slidesPerView768
                             ? parseInt(i.slidesPerView768, 10)
                             : 2,
                     y =
                         void 0 !== i.slidesPerView680 &&
-                        "" !== i.slidesPerView680
+                            "" !== i.slidesPerView680
                             ? parseInt(i.slidesPerView680, 10)
                             : 1,
                     h =
@@ -175,10 +175,10 @@
                             (a < 2
                                 ? (v = w = q = c = a)
                                 : a < 3
-                                ? (w = q = c = a)
-                                : a < 4
-                                ? (q = c = a)
-                                : a < 5 && (c = a)),
+                                    ? (w = q = c = a)
+                                    : a < 4
+                                        ? (q = c = a)
+                                        : a < 5 && (c = a)),
                         {
                             direction: o,
                             slidesPerView: (a = "vertical" === o ? 1 : a),
@@ -213,7 +213,7 @@
                                 0: {
                                     slidesPerView:
                                         void 0 !== i.slidesPerView480 &&
-                                        "" !== i.slidesPerView480
+                                            "" !== i.slidesPerView480
                                             ? parseInt(i.slidesPerView480, 10)
                                             : 1,
                                 },
@@ -227,8 +227,8 @@
                         });
                 return (
                     u.length &&
-                        "fade" === u &&
-                        ((h.effect = "fade"),
+                    "fade" === u &&
+                    ((h.effect = "fade"),
                         (h.fadeEffect = { crossFade: !0 })),
                     Object.assign(h, _.getSliderDatas(e))
                 );
@@ -252,13 +252,13 @@
                             var e, t, i;
                             "vertical" === n.direction &&
                                 ((t = e = 0),
-                                (i = o.find(".qodef-e")).length &&
+                                    (i = o.find(".qodef-e")).length &&
                                     i.each(function () {
                                         (t = a(this).outerHeight()),
                                             e < t && (e = t);
                                     }),
-                                o.css("height", e),
-                                i.css("height", e));
+                                    o.css("height", e),
+                                    i.css("height", e));
                         },
                         init: function () {
                             var t;
@@ -268,11 +268,11 @@
                                     [o, n]
                                 ),
                                 n.sliderScroll &&
-                                    ((t = !1),
+                                ((t = !1),
                                     o.on("mousewheel", function (e) {
                                         e.preventDefault(),
                                             t ||
-                                                ((t = !0),
+                                            ((t = !0),
                                                 e.deltaY < 0
                                                     ? o[0].swiper.slideNext()
                                                     : o[0].swiper.slidePrev(),
@@ -292,15 +292,15 @@
                     (this.holder = a(".qodef-magnific-popup")),
                         a.extend(this.holder, e),
                         this.holder.length &&
-                            this.holder.each(function () {
-                                o.initPopup(a(this));
-                            });
+                        this.holder.each(function () {
+                            o.initPopup(a(this));
+                        });
                 },
                 initPopup: function (e) {
                     e.hasClass("qodef-popup-item")
                         ? o.initSingleImagePopup(e)
                         : e.hasClass("qodef-popup-gallery") &&
-                          o.initGalleryPopup(e);
+                        o.initGalleryPopup(e);
                 },
                 initSingleImagePopup: function (e) {
                     var t = e.data("type");
@@ -341,15 +341,15 @@
                     var t = [];
                     return (
                         e.length &&
-                            e.each(function () {
-                                var e = a(this),
-                                    e = {
-                                        src: e.attr("href"),
-                                        title: e.attr("title"),
-                                        type: e.data("type"),
-                                    };
-                                t.push(e);
-                            }),
+                        e.each(function () {
+                            var e = a(this),
+                                e = {
+                                    src: e.attr("href"),
+                                    title: e.attr("title"),
+                                    type: e.data("type"),
+                                };
+                            t.push(e);
+                        }),
                         t
                     );
                 },
@@ -362,7 +362,7 @@
                     (this.holder = a(".qodef-anchor")),
                         a.extend(this.holder, e),
                         this.holder.length &&
-                            ((r.items = this.holder),
+                        ((r.items = this.holder),
                             r.clickTrigger(),
                             a(window).on("load", function () {
                                 r.checkAnchorOnScroll(), r.checkAnchorOnLoad();
@@ -379,10 +379,10 @@
                             i === n ||
                             (0 !== a &&
                                 i.substring(0, i.length - o.length - 1) ===
-                                    n.substring(0, n.length - a.length - 1)) ||
+                                n.substring(0, n.length - a.length - 1)) ||
                             (0 === a &&
                                 i.substring(0, i.length - o.length - 1) ===
-                                    n)) &&
+                                n)) &&
                             e.preventDefault(),
                             r.animateScroll(t, o);
                     });
@@ -407,11 +407,11 @@
                                 t = a('[href*="#' + e.attr("id") + '"]');
                             t.length &&
                                 (r.isTargetInView(e) && r.setActiveState(t),
-                                a(window).scroll(function () {
-                                    r.isTargetInView(e)
-                                        ? r.setActiveState(t)
-                                        : t.removeClass(r.getItemClasses(t));
-                                }));
+                                    a(window).scroll(function () {
+                                        r.isTargetInView(e)
+                                            ? r.setActiveState(t)
+                                            : t.removeClass(r.getItemClasses(t));
+                                    }));
                         });
                 },
                 isTargetInView: function (e) {
@@ -459,8 +459,8 @@
                     var e = 0;
                     return (e =
                         1024 < qodef.windowWidth &&
-                        null !== qodefGlobal.vars.headerHeight &&
-                        "" !== qodefGlobal.vars.headerHeight
+                            null !== qodefGlobal.vars.headerHeight &&
+                            "" !== qodefGlobal.vars.headerHeight
                             ? parseInt(qodefGlobal.vars.headerHeight, 10)
                             : e);
                 },
@@ -490,35 +490,35 @@
                             r.complete
                                 ? ++o === i.length && t.call(e)
                                 : ((a = new Image()).addEventListener(
-                                      "load",
-                                      function () {
-                                          if (++o === i.length)
-                                              return t.call(e), !1;
-                                      },
-                                      !1
-                                  ),
-                                  (a.src = r.src));
+                                    "load",
+                                    function () {
+                                        if (++o === i.length)
+                                            return t.call(e), !1;
+                                    },
+                                    !1
+                                ),
+                                    (a.src = r.src));
                         }
                     else t.call(e);
                 }
             },
         }),
         "function" != typeof Object.assign &&
-            (Object.assign = function (e) {
-                if (null == e)
-                    throw new TypeError(
-                        "Cannot convert undefined or null to object"
-                    );
-                e = Object(e);
-                for (var t = 1; t < arguments.length; t++) {
-                    var i = arguments[t];
-                    if (null !== i)
-                        for (var o in i)
-                            Object.prototype.hasOwnProperty.call(i, o) &&
-                                (e[o] = i[o]);
-                }
-                return e;
-            });
+        (Object.assign = function (e) {
+            if (null == e)
+                throw new TypeError(
+                    "Cannot convert undefined or null to object"
+                );
+            e = Object(e);
+            for (var t = 1; t < arguments.length; t++) {
+                var i = arguments[t];
+                if (null !== i)
+                    for (var o in i)
+                        Object.prototype.hasOwnProperty.call(i, o) &&
+                            (e[o] = i[o]);
+            }
+            return e;
+        });
 })(jQuery),
     (function (o) {
         o(document).ready(function () {
@@ -531,25 +531,25 @@
                 t.hasClass("qodef-blog") && (i.resize(t), n.resize(t));
             });
         var i = {
-                init: function () {
-                    var e = o(".qodef-blog");
-                    e.length && i.resize(e);
-                },
-                resize: function (e) {
-                    e = e
-                        .find(".wp-video-shortcode, .wp-audio-shortcode")
-                        .not(".mejs-container");
-                    e.length &&
-                        e.each(function () {
-                            var e = o(this);
-                            "function" == typeof e.mediaelementplayer &&
-                                e.mediaelementplayer({
-                                    videoWidth: "100%",
-                                    videoHeight: "56.5%",
-                                });
-                        });
-                },
+            init: function () {
+                var e = o(".qodef-blog");
+                e.length && i.resize(e);
             },
+            resize: function (e) {
+                e = e
+                    .find(".wp-video-shortcode, .wp-audio-shortcode")
+                    .not(".mejs-container");
+                e.length &&
+                    e.each(function () {
+                        var e = o(this);
+                        "function" == typeof e.mediaelementplayer &&
+                            e.mediaelementplayer({
+                                videoWidth: "100%",
+                                videoHeight: "56.5%",
+                            });
+                    });
+            },
+        },
             n =
                 ((qodef.qodefReInitMediaElementPostFormats = i),
                 {
@@ -585,12 +585,12 @@
                 (this.holder = o(".qodef-filter--on")),
                     o.extend(this.holder, e),
                     this.holder.length &&
-                        this.holder.each(function () {
-                            var e = o(this),
-                                t = e.find(".qodef-m-filter-item");
-                            r.checkCustomListQuery(e.data("options")),
-                                r.clickEvent(e, t);
-                        });
+                    this.holder.each(function () {
+                        var e = o(this),
+                            t = e.find(".qodef-m-filter-item");
+                        r.checkCustomListQuery(e.data("options")),
+                            r.clickEvent(e, t);
+                    });
             },
             checkCustomListQuery: function (e) {
                 void 0 !== e.additional_query_args &&
@@ -603,9 +603,9 @@
                     e = o(this);
                     e.hasClass("qodef--active") ||
                         (t.addClass("qodef--filter-loading"),
-                        i.removeClass("qodef--active"),
-                        e.addClass("qodef--active"),
-                        r.setVisibility(t, e));
+                            i.removeClass("qodef--active"),
+                            e.addClass("qodef--active"),
+                            r.setVisibility(t, e));
                 });
             },
             setVisibility: function (e, t) {
@@ -617,13 +617,13 @@
                     a = o
                         ? r.customListQuery
                         : {
-                              0: {
-                                  taxonomy: i,
-                                  field:
-                                      "number" == typeof t ? "term_id" : "slug",
-                                  terms: t,
-                              },
-                          };
+                            0: {
+                                taxonomy: i,
+                                field:
+                                    "number" == typeof t ? "term_id" : "slug",
+                                terms: t,
+                            },
+                        };
                 (n.additional_query_args = { tax_query: a }),
                     qodef.body.trigger("neoocular_trigger_load_more", [e, 1]);
             },
@@ -656,7 +656,7 @@
                     i = e.children(".qodef-grid-inner"),
                     o =
                         void 0 !== t.justified_gallery_row_height &&
-                        "" !== t.justified_gallery_row_height
+                            "" !== t.justified_gallery_row_height
                             ? t.justified_gallery_row_height
                             : 150,
                     n =
@@ -666,7 +666,7 @@
                     a = void 0 !== t.space_value ? 2 * t.space_value : 0,
                     r =
                         void 0 !== t.justified_gallery_treshold &&
-                        "" !== t.justified_gallery_treshold
+                            "" !== t.justified_gallery_treshold
                             ? t.justified_gallery_treshold
                             : 0.75;
                 qodef.qodefWaitForImages.check(i, function () {
@@ -691,10 +691,10 @@
                                         var e = s(this);
                                         e.height(Math.round(e.height())),
                                             i ||
-                                                0 !== e.width() ||
-                                                (t.height(
-                                                    t.height() - e.height() - a
-                                                ),
+                                            0 !== e.width() ||
+                                            (t.height(
+                                                t.height() - e.height() - a
+                                            ),
                                                 (i = !0));
                                     });
                             }),
@@ -719,19 +719,19 @@
                 (this.holder = t(".qodef-layout--masonry")),
                     t.extend(this.holder, e),
                     this.holder.length &&
-                        this.holder.each(function () {
-                            n.createMasonry(t(this));
-                        });
+                    this.holder.each(function () {
+                        n.createMasonry(t(this));
+                    });
             },
             reInit: function (e) {
                 (this.holder = t(".qodef-layout--masonry")),
                     t.extend(this.holder, e),
                     this.holder.length &&
-                        this.holder.each(function () {
-                            var e = t(this).find(".qodef-grid-inner");
-                            "function" == typeof e.isotope &&
-                                e.isotope("layout");
-                        });
+                    this.holder.each(function () {
+                        var e = t(this).find(".qodef-grid-inner");
+                        "function" == typeof e.isotope &&
+                            e.isotope("layout");
+                    });
             },
             createMasonry: function (t) {
                 var i = t.find(".qodef-grid-inner"),
@@ -748,10 +748,10 @@
                                 gutter: ".qodef-grid-masonry-gutter",
                             },
                         }),
-                        t.hasClass("qodef-items--fixed") &&
+                            t.hasClass("qodef-items--fixed") &&
                             ((e = n.getFixedImageSize(i, o)),
-                            n.setFixedImageProportionSize(i, o, e)),
-                        i.isotope("layout")),
+                                n.setFixedImageProportionSize(i, o, e)),
+                            i.isotope("layout")),
                         i.addClass("qodef--masonry-init");
                 });
             },
@@ -763,13 +763,13 @@
                         ? o
                         : i
                     : e.find(".qodef-grid-masonry-sizer").width() -
-                          2 * parseInt(t.css("paddingLeft"), 10);
+                    2 * parseInt(t.css("paddingLeft"), 10);
             },
             setFixedImageProportionSize: function (e, t, i) {
                 var o = parseInt(t.css("paddingLeft"), 10),
                     n =
                         (e.find(".qodef-item--square"),
-                        e.find(".qodef-item--landscape")),
+                            e.find(".qodef-item--landscape")),
                     a = e.find(".qodef-item--portrait"),
                     e = e.find(".qodef-item--huge-square"),
                     r = qodef.windowWidth <= 680;
@@ -777,7 +777,7 @@
                     n.length && n.css("height", Math.round(i / 2)),
                     a.length && a.css("height", Math.round(2 * (i + o))),
                     r ||
-                        (n.length && n.css("height", i),
+                    (n.length && n.css("height", i),
                         e.length && e.css("height", Math.round(2 * (i + o))));
             },
         };
@@ -798,14 +798,14 @@
                     i = e.find(".qodef-mobile-header-opener");
                 i.length &&
                     ((t = e.find(".qodef-mobile-header-navigation")),
-                    i.on("tap click", function (e) {
-                        e.preventDefault(),
-                            t.is(":visible")
-                                ? (t.slideUp(450),
-                                  i.removeClass("qodef--opened"))
-                                : (t.slideDown(450),
-                                  i.addClass("qodef--opened"));
-                    }));
+                        i.on("tap click", function (e) {
+                            e.preventDefault(),
+                                t.is(":visible")
+                                    ? (t.slideUp(450),
+                                        i.removeClass("qodef--opened"))
+                                    : (t.slideDown(450),
+                                        i.addClass("qodef--opened"));
+                        }));
             },
             initDropDownMobileMenu: function () {
                 var e = t(
@@ -824,18 +824,18 @@
                                     ":visible"
                                 )
                                     ? (t.slideUp(450),
-                                      e.removeClass("qodef--opened"))
+                                        e.removeClass("qodef--opened"))
                                     : (e.addClass("qodef--opened"),
-                                      (0 === i.length
-                                          ? e
-                                          : e
+                                        (0 === i.length
+                                            ? e
+                                            : e
                                                 .siblings()
                                                 .removeClass("qodef--opened")
-                                      )
-                                          .find(".sub-menu")
-                                          .slideUp(400, function () {
-                                              t.slideDown(400);
-                                          })));
+                                        )
+                                            .find(".sub-menu")
+                                            .slideUp(400, function () {
+                                                t.slideDown(400);
+                                            })));
                         });
                     });
             },
@@ -862,7 +862,7 @@
                             (e = i - n),
                             o.removeClass("qodef-drop-down--right"),
                             (i < n || e < n) &&
-                                o.addClass("qodef-drop-down--right");
+                            o.addClass("qodef-drop-down--right");
                     });
             },
         };
@@ -882,45 +882,45 @@
                 (this.holder = a(".qodef-pagination--on")),
                     a.extend(this.holder, e),
                     this.holder.length &&
-                        this.holder.each(function () {
-                            var e = a(this);
-                            r.initPaginationType(e);
-                        });
+                    this.holder.each(function () {
+                        var e = a(this);
+                        r.initPaginationType(e);
+                    });
             },
             scroll: function (e) {
                 (this.holder = a(".qodef-pagination--on")),
                     a.extend(this.holder, e),
                     this.holder.length &&
-                        this.holder.each(function () {
-                            var e = a(this);
-                            e.hasClass(
-                                "qodef-pagination-type--infinite-scroll"
-                            ) && r.initInfiniteScroll(e);
-                        });
+                    this.holder.each(function () {
+                        var e = a(this);
+                        e.hasClass(
+                            "qodef-pagination-type--infinite-scroll"
+                        ) && r.initInfiniteScroll(e);
+                    });
             },
             initPaginationType: function (e) {
                 e.hasClass("qodef-pagination-type--standard")
                     ? r.initStandard(e)
                     : e.hasClass("qodef-pagination-type--load-more")
-                    ? r.initLoadMore(e)
-                    : e.hasClass("qodef-pagination-type--infinite-scroll") &&
-                      r.initInfiniteScroll(e);
+                        ? r.initLoadMore(e)
+                        : e.hasClass("qodef-pagination-type--infinite-scroll") &&
+                        r.initInfiniteScroll(e);
             },
             initStandard: function (i, e) {
                 var t,
                     o = i.find(".qodef-m-pagination-items");
                 o.length &&
                     ((t = i.data("options")),
-                    (e = void 0 !== e && "" !== e ? parseInt(e, 10) : 1),
-                    r.changeStandardState(i, t.max_pages_num, e),
-                    o.children().each(function () {
-                        var t = a(this);
-                        t.on("click", function (e) {
-                            e.preventDefault(),
-                                t.hasClass("qodef--active") ||
+                        (e = void 0 !== e && "" !== e ? parseInt(e, 10) : 1),
+                        r.changeStandardState(i, t.max_pages_num, e),
+                        o.children().each(function () {
+                            var t = a(this);
+                            t.on("click", function (e) {
+                                e.preventDefault(),
+                                    t.hasClass("qodef--active") ||
                                     r.getNewPosts(i, t.data("paged"));
-                        });
-                    }));
+                            });
+                        }));
             },
             changeStandardState: function (e, t, i) {
                 var o, n, a;
@@ -928,19 +928,19 @@
                     ((o = (e = e.find(".qodef-m-pagination-items")).children(
                         ".qodef--number"
                     )),
-                    (n = e.children(".qodef--prev")),
-                    (a = e.children(".qodef--next")),
-                    r.standardPaginationVisibility(e, t),
-                    o
-                        .removeClass("qodef--active")
-                        .eq(i - 1)
-                        .addClass("qodef--active"),
-                    n.data("paged", i - 1),
-                    1 < i
-                        ? (n.show(), n.next().removeClass("qodef-prev--hidden"))
-                        : (n.hide(), n.next().addClass("qodef-prev--hidden")),
-                    a.data("paged", i + 1),
-                    i === t ? a.hide() : a.show());
+                        (n = e.children(".qodef--prev")),
+                        (a = e.children(".qodef--next")),
+                        r.standardPaginationVisibility(e, t),
+                        o
+                            .removeClass("qodef--active")
+                            .eq(i - 1)
+                            .addClass("qodef--active"),
+                        n.data("paged", i - 1),
+                        1 < i
+                            ? (n.show(), n.next().removeClass("qodef-prev--hidden"))
+                            : (n.hide(), n.next().addClass("qodef-prev--hidden")),
+                        a.data("paged", i + 1),
+                        i === t ? a.hide() : a.show());
             },
             standardPaginationVisibility: function (e, t) {
                 1 === t ? e.hide() : 1 < t && !e.is(":visible") && e.show();
@@ -949,12 +949,12 @@
                 var n, a;
                 e.hasClass("qodef-pagination-type--standard") &&
                     ((n = e.find(".qodef-m-pagination")),
-                    (a = e.find(".qodef-m-pagination-spinner")),
-                    r.standardPaginationVisibility(n, t),
-                    n.remove(),
-                    a.remove(),
-                    e.append(o),
-                    r.initStandard(e, i));
+                        (a = e.find(".qodef-m-pagination-spinner")),
+                        r.standardPaginationVisibility(n, t),
+                        n.remove(),
+                        a.remove(),
+                        e.append(o),
+                        r.initStandard(e, i));
             },
             triggerStandardScrollAnimation: function (e) {
                 e.hasClass("qodef-pagination-type--standard") &&
@@ -976,8 +976,8 @@
                     (t.next_page > t.max_pages_num || 1 === t.max_pages_num
                         ? e.find(".qodef-load-more-button").hide()
                         : 1 < t.max_pages_num &&
-                          t.next_page <= t.max_pages_num &&
-                          e.find(".qodef-load-more-button").show());
+                        t.next_page <= t.max_pages_num &&
+                        e.find(".qodef-load-more-button").show());
             },
             initInfiniteScroll: function (e) {
                 var t = e.outerHeight() + e.offset().top,
@@ -1008,24 +1008,24 @@
                         success: function (e) {
                             "success" === e.status
                                 ? (n.max_pages_num !== e.data.max_pages_num &&
-                                      (n.max_pages_num = e.data.max_pages_num),
-                                  r.setNextPageValue(n, i, !0),
-                                  r.changeStandardHtml(
-                                      t,
-                                      n.max_pages_num,
-                                      i,
-                                      e.data.pagination_html
-                                  ),
-                                  r.addPosts(o, e.data.html, i),
-                                  r.reInitMasonryPosts(t, o),
-                                  setTimeout(function () {
-                                      qodef.body.trigger(
-                                          "neoocular_trigger_get_new_posts",
-                                          [t, e.data, i]
-                                      );
-                                  }, 300),
-                                  r.triggerStandardScrollAnimation(t),
-                                  r.loadMoreButtonVisibility(t, n))
+                                    (n.max_pages_num = e.data.max_pages_num),
+                                    r.setNextPageValue(n, i, !0),
+                                    r.changeStandardHtml(
+                                        t,
+                                        n.max_pages_num,
+                                        i,
+                                        e.data.pagination_html
+                                    ),
+                                    r.addPosts(o, e.data.html, i),
+                                    r.reInitMasonryPosts(t, o),
+                                    setTimeout(function () {
+                                        qodef.body.trigger(
+                                            "neoocular_trigger_get_new_posts",
+                                            [t, e.data, i]
+                                        );
+                                    }, 300),
+                                    r.triggerStandardScrollAnimation(t),
+                                    r.loadMoreButtonVisibility(t, n))
                                 : console.log(e.message);
                         },
                         complete: function () {
@@ -1046,9 +1046,9 @@
                     (t
                         .isotope("reloadItems")
                         .isotope({ sortBy: "original-order" }),
-                    setTimeout(function () {
-                        t.isotope("layout");
-                    }, 200));
+                        setTimeout(function () {
+                            t.isotope("layout");
+                        }, 200));
             },
         };
         qodef.qodefPagination = r;
@@ -1061,69 +1061,69 @@
                 i.init();
             });
         var i = {
-                init: function (e) {
-                    (this.holder = []),
-                        this.holder.push({
-                            holder: d(
-                                "#qodef-woo-page .woocommerce-ordering select"
-                            ),
-                            options: { minimumResultsForSearch: 1 / 0 },
-                        }),
-                        this.holder.push({
-                            holder: d(
-                                '.variations select:not(.yith_wccl_custom):not([data-type="colorpicker"]):not([data-type="image"]):not([data-type="label"])'
-                            ),
-                            options: { minimumResultsForSearch: 1 / 0 },
-                        }),
-                        this.holder.push({
-                            holder: d("#qodef-woo-page #calc_shipping_country"),
-                            options: {},
-                        }),
-                        this.holder.push({
-                            holder: d(
-                                "#qodef-woo-page .shipping select#calc_shipping_state"
-                            ),
-                            options: {},
-                        }),
-                        this.holder.push({
-                            holder: d(".widget.widget_archive select"),
-                            options: {},
-                        }),
-                        this.holder.push({
-                            holder: d(
-                                ".widget .wp-block-group .wp-block-archives-dropdown select"
-                            ),
-                        }),
-                        this.holder.push({
-                            holder: d(".widget.widget_categories select"),
-                            options: {},
-                        }),
-                        this.holder.push({
-                            holder: d(
-                                ".widget .wp-block-group .wp-block-categories-dropdown select"
-                            ),
-                            options: {},
-                        }),
-                        this.holder.push({
-                            holder: d(".widget.widget_text select"),
-                            options: {},
-                        }),
-                        this.holder.push({
-                            holder: d(
-                                ".qodef-appointment-form .menu-dd select"
-                            ),
-                            options: { minimumResultsForSearch: 1 / 0 },
-                        }),
-                        d.extend(this.holder, e),
-                        "object" == typeof this.holder &&
-                            d.each(this.holder, function (e, t) {
-                                i.createSelect2(t.holder, t.options);
-                            });
-                },
-                createSelect2: function (e, t) {
-                    "function" == typeof e.select2 && e.select2(t);
-                },
+            init: function (e) {
+                (this.holder = []),
+                    this.holder.push({
+                        holder: d(
+                            "#qodef-woo-page .woocommerce-ordering select"
+                        ),
+                        options: { minimumResultsForSearch: 1 / 0 },
+                    }),
+                    this.holder.push({
+                        holder: d(
+                            '.variations select:not(.yith_wccl_custom):not([data-type="colorpicker"]):not([data-type="image"]):not([data-type="label"])'
+                        ),
+                        options: { minimumResultsForSearch: 1 / 0 },
+                    }),
+                    this.holder.push({
+                        holder: d("#qodef-woo-page #calc_shipping_country"),
+                        options: {},
+                    }),
+                    this.holder.push({
+                        holder: d(
+                            "#qodef-woo-page .shipping select#calc_shipping_state"
+                        ),
+                        options: {},
+                    }),
+                    this.holder.push({
+                        holder: d(".widget.widget_archive select"),
+                        options: {},
+                    }),
+                    this.holder.push({
+                        holder: d(
+                            ".widget .wp-block-group .wp-block-archives-dropdown select"
+                        ),
+                    }),
+                    this.holder.push({
+                        holder: d(".widget.widget_categories select"),
+                        options: {},
+                    }),
+                    this.holder.push({
+                        holder: d(
+                            ".widget .wp-block-group .wp-block-categories-dropdown select"
+                        ),
+                        options: {},
+                    }),
+                    this.holder.push({
+                        holder: d(".widget.widget_text select"),
+                        options: {},
+                    }),
+                    this.holder.push({
+                        holder: d(
+                            ".qodef-appointment-form .menu-dd select"
+                        ),
+                        options: { minimumResultsForSearch: 1 / 0 },
+                    }),
+                    d.extend(this.holder, e),
+                    "object" == typeof this.holder &&
+                    d.each(this.holder, function (e, t) {
+                        i.createSelect2(t.holder, t.options);
+                    });
             },
+            createSelect2: function (e, t) {
+                "function" == typeof e.select2 && e.select2(t);
+            },
+        },
             e = {
                 init: function () {
                     d(document).on(
@@ -1140,7 +1140,7 @@
                                 r = !1,
                                 s =
                                     "function" == typeof Number.isNaN &&
-                                    Number.isNaN(parseFloat(i.val()))
+                                        Number.isNaN(parseFloat(i.val()))
                                         ? a
                                         : parseFloat(i.val());
                             (r = e.hasClass("qodef-quantity-minus") ? !0 : r)
@@ -1148,7 +1148,7 @@
                                     ? i.val(t)
                                     : i.val(a)
                                 : ((t = s + o),
-                                  void 0 !== n && n <= t ? i.val(n) : i.val(t)),
+                                    void 0 !== n && n <= t ? i.val(n) : i.val(t)),
                                 i.trigger("change");
                         }
                     );
@@ -1167,7 +1167,7 @@
                                 .attr("data-type", "image")
                                 .addClass("qodef-popup-item");
                         }),
-                        qodef.qodefMagnificPopup.init());
+                            qodef.qodefMagnificPopup.init());
                 },
             };
         (qodef.qodefWooMagnificPopup = t),
@@ -1181,6 +1181,6 @@
                         .children("a")
                         .attr("data-type", "image")
                         .addClass("qodef-popup-item"),
-                    qodef.qodefMagnificPopup.init());
+                        qodef.qodefMagnificPopup.init());
             });
     })(jQuery);

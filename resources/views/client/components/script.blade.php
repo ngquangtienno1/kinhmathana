@@ -592,8 +592,8 @@
     };
     /* ]]> */
 </script>
-{{-- <script type="text/javascript" src="{{ asset('v1/wp-content/plugins/booked/assets/js/functions25b6.js?ver=2.3.5') }}"
-    id="booked-functions-js"></script> --}}
+<script type="text/javascript" src="{{ asset('v1/wp-content/plugins/booked/assets/js/functions25b6.js?ver=2.3.5') }}"
+    id="booked-functions-js"></script>
 <script type="text/javascript" src="{{ asset('v1/wp-includes/js/dist/hooks.min4fdd.js?ver=4d63a3d491d11ffd8ac6') }}"
     id="wp-hooks-js"></script>
 <script type="text/javascript" src="{{ asset('v1/wp-includes/js/dist/i18n.minc33c.js?ver=5e580eb46a90c2b997e6') }}"
@@ -662,9 +662,9 @@
     };
     /* ]]> */
 </script>
-{{-- <script type="text/javascript"
+<script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/booked/includes/add-ons/frontend-agents/js/functions25b6.js?ver=2.3.5') }}"
-    id="booked-fea-js-js"></script> --}}
+    id="booked-fea-js-js"></script>
 <script type="text/javascript" src="{{ asset('v1/wp-includes/js/hoverIntent.min3e5a.js?ver=1.10.2') }}"
     id="hoverIntent-js"></script>
 <script type="text/javascript"
@@ -697,6 +697,8 @@
     };
     /* ]]> */
 </script>
+<script type="text/javascript" src="{{ asset('v1/wp-content/themes/neoocular/assets/js/main.min0899.js?ver=6.8.1') }}"
+    id="neoocular-main-js-js"></script>
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-core/inc/maps/assets/js/custom-marker0899.js?ver=6.8.1') }}"
     id="neoocular-core-map-custom-marker-js"></script>
@@ -839,9 +841,9 @@
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-core/inc/maps/assets/js/google-map0899.js?ver=6.8.1') }}"
     id="neoocular-core-google-map-js"></script>
-{{-- <script type="text/javascript"
+<script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-core/assets/js/neoocular-core.min0899.js?ver=6.8.1') }}"
-    id="neoocular-core-script-js"></script> --}}
+    id="neoocular-core-script-js"></script>
 <script type="text/javascript" src="{{ asset('v1/wp-includes/js/jquery/ui/tabs.minb37e.js?ver=1.13.3') }}"
     id="jquery-ui-tabs-js"></script>
 <script type="text/javascript" id="neoocular-membership-script-js-extra">
@@ -849,9 +851,9 @@
     var neoocularMembershipGlobal = [];
     /* ]]> */
 </script>
-{{-- <script type="text/javascript"
+<script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-membership/assets/js/neoocular-membership.min0899.js?ver=6.8.1') }}"
-    id="neoocular-membership-script-js"></script> --}}
+    id="neoocular-membership-script-js"></script>
 <script type="text/javascript" id="qode-quick-view-for-woocommerce-main-js-extra">
     /* <![CDATA[ */
     var qodeQuickViewForWooCommerceGlobal = {
@@ -1082,9 +1084,9 @@
     };
     /* ]]> */
 </script>
-{{-- <script type="text/javascript"
+<script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/single-product.min4615.js?ver=9.1.4') }}"
-    id="wc-single-product-js" defer="defer" data-wp-strategy="defer"></script> --}}
+    id="wc-single-product-js" defer="defer" data-wp-strategy="defer"></script>
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/qode-quick-view-for-woocommerce/assets/plugins/perfect-scrollbar/perfect-scrollbar.mine225.js?ver=1.5.3') }}"
     id="qqvfw-perfect-scrollbar-js"></script>
@@ -1247,9 +1249,9 @@
     };
     /* ]]> */
 </script>
-{{-- <script type="text/javascript"
+<script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-core/inc/plugins/elementor/assets/js/elementor.min0899.js?ver=6.8.1') }}"
-    id="neoocular-core-elementor-js"></script> --}}
+    id="neoocular-core-elementor-js"></script>
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/qode-quick-view-for-woocommerce/inc/plugins/elementor/assets/js/elementor0899.js?ver=6.8.1') }}"
     id="qode-quick-view-for-woocommerce-elementor-js"></script>
