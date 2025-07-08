@@ -5,7 +5,6 @@
 <!-- Added by HTTrack -->
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
 @include('client.components.head')
 
 <style>
