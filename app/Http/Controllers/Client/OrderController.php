@@ -50,14 +50,11 @@ class OrderController extends Controller
             if (!$newReason) {
                 return response()->json(['success' => false, 'message' => 'Vui lòng nhập lý do hủy mới!']);
             }
-            $reason = \App\Models\CancellationReason::create([
-                'reason' => $newReason,
-                'type' => 'customer',
-                'is_active' => true,
-            ]);
-            $order->cancellation_reason_id = $reason->id;
+            $order->cancellation_reason_id = null;
+            $order->cancellation_reason_text = $newReason;
         } else {
             $order->cancellation_reason_id = $reasonId;
+            $order->cancellation_reason_text = null;
         }
 
         $order->status = 'cancelled_by_customer';

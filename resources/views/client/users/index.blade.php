@@ -108,20 +108,100 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 18px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 .account-table th, .account-table td {
-    padding: 12px 8px;
+    padding: 0.9rem 1rem;
     text-align: left;
-    font-size: 1.08rem;
+    font-size: 1.05rem;
+    border-bottom: 1px solid #e9ecef;
 }
 .account-table th {
-    color: #333;
-    font-weight: 700;
-    border-bottom: 2px solid #eee;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #232323;
+    text-transform: none;
+    letter-spacing: 0.1px;
 }
 .account-table td {
-    color: #222;
-    border-bottom: 1px solid #f3f3f3;
+    color: #232323;
+    font-weight: 400;
+    background: #fff;
+}
+.account-table tr:hover { background-color: #f3f3f3; }
+.status-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: none;
+    color: #fff;
+    background: #bdbdbd;
+    text-align: center;
+    margin: 0 auto;
+    box-sizing: border-box;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.status-cancelled_by_customer { background: #e74c3c; }
+.status-completed { background: #27ae60; }
+.status-pending { background: #f1c40f; color: #232323; }
+.status-shipping { background: #3498db; }
+.status-delivered { background: #2ecc71; }
+.status-confirmed { background: #8e44ad; }
+.status-default { background: #bdbdbd; }
+.btn-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100px;
+    height: 38px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 1.02rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    color: #232323;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    text-decoration: none;
+    box-shadow: none;
+    white-space: nowrap;
+    padding: 0;
+}
+.btn-action:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+    text-decoration: none;
+}
+.btn-cancel {
+    color: #555;
+    border: 1px solid #bbb;
+    background: #fff;
+    margin-left: 8px;
+}
+.btn-cancel:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}
+.no-orders {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    padding: 2rem;
+    font-weight: 400;
 }
 @media (max-width: 900px) {
     .account-wrapper {
@@ -135,6 +215,65 @@
     }
     .account-content {
         padding: 18px 8px 18px 8px;
+    }
+    .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0 0;
+}
+
+}
+/* PHÂN TRANG CUSTOM */
+.pagination {
+    display: flex !important;
+    justify-content: center;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0 0;
+}
+.pagination li {
+    display: inline-block;
+}
+.pagination li a, .pagination li span {
+    display: block;
+    min-width: 36px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #232323;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid #e0e0e0;
+    transition: background 0.2s, color 0.2s;
+}
+.pagination li.active span,
+.pagination li a:hover {
+    background: #1ccfcf;
+    color: #fff;
+    border-color: #1ccfcf;
+}
+.pagination li.disabled span {
+    color: #bbb;
+    background: #f3f3f3;
+    border-color: #eee;
+}
+.action-group {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+}
+@media (max-width: 600px) {
+    .action-group {
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 6px;
     }
 }
 </style>
@@ -167,12 +306,12 @@
     <div class="account-content">
         <div class="account-stats">
             <div class="account-stat">
-                <span class="icon">&#128722;</span>
+
                 <span class="stat-number">{{ $totalOrders }}</span>
                 <div class="stat-label">Tổng số đơn đã đặt</div>
             </div>
             <div class="account-stat">
-                <span class="icon">&#128176;</span>
+
                 <span class="stat-number">{{ number_format($totalSpent, 0, ',', '.') }}₫</span>
                 <div class="stat-label">Tổng tiền đã mua</div>
             </div>
@@ -193,26 +332,38 @@
                 @if($orders->count() > 0)
                     @foreach($orders as $order)
                         <tr>
-                            <td>{{ $order->order_number }}</td>
-                            <td>{{ $order->items_count }}</td>
-                            <td>{{ $order->status_label }}</td>
-                            <td>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '' }}</td>
-                            <td>{{ number_format($order->total_amount, 0, ',', '.') }}₫</td>
+                            <td>#{{ $order->order_number }}</td>
+                            <td style="text-align:center;">{{ $order->items_count }}</td>
                             <td>
-                                <a href="#" class="view-order-detail" data-order='@json($order)' style="color:#1ccfcf;font-weight:500;">Xem</a>
-                                @if($order->status === 'pending')
-                                    <button class="cancel-order-btn" data-id="{{ $order->id }}" style="margin-left:8px;color:#e74c3c;background:none;border:none;cursor:pointer;">Hủy</button>
-                                @endif
+                                <span class="status-badge status-{{ $order->status }}">
+                                    {{ $order->status_label }}
+                                </span>
+                            </td>
+                            <td>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '' }}</td>
+                            <td style="text-align:right;">{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="#" class="view-order-detail btn-action" data-order='@json($order)' title="Xem chi tiết"><i class="fas fa-eye"></i> Xem</a>
+                                    @if($order->status === 'pending')
+                                        <button class="cancel-order-btn btn-action btn-cancel" data-id="{{ $order->id }}" title="Hủy đơn"><i class="fas fa-times-circle"></i> Hủy</button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="6" style="text-align:center;color:#aaa;">Chưa có đơn hàng nào</td>
+                        <td colspan="6" class="no-orders">Chưa có đơn hàng nào</td>
                     </tr>
                 @endif
             </tbody>
         </table>
+        {{-- PHÂN TRANG --}}
+        @if(method_exists($orders, 'links'))
+            <div style="margin-top:18px;text-align:center;">
+                {{ $orders->links('pagination::bootstrap-4')}}
+            </div>
+        @endif
         <!-- Popup chi tiết đơn hàng -->
         <div id="orderDetailModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
             <div style="background:#fff;padding:32px 24px;border-radius:12px;min-width:340px;max-width:95vw;max-height:90vh;overflow:auto;position:relative;">
@@ -336,17 +487,42 @@
                 reasonVal = 'other:' + other;
             }
             if(!cancelOrderId) return;
-            fetch(`/orders/${cancelOrderId}/cancel`, {
+
+            console.log('Sending cancel request:', {
+                orderId: cancelOrderId,
+                reason: reasonVal
+            });
+
+            // Lấy CSRF token
+            let csrfToken = '';
+            const metaTag = document.querySelector('meta[name="csrf-token"]');
+            if (metaTag) {
+                csrfToken = metaTag.getAttribute('content');
+            } else {
+                // Fallback: lấy từ input hidden nếu có
+                const csrfInput = document.querySelector('input[name="_token"]');
+                if (csrfInput) {
+                    csrfToken = csrfInput.value;
+                }
+            }
+
+            fetch(`/client/orders/${cancelOrderId}/cancel`, {
                 method: 'PATCH',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ cancellation_reason_id: reasonVal })
+                body: JSON.stringify({
+                    cancellation_reason_id: reasonVal
+                })
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('Response status:', res.status);
+                return res.json();
+            })
             .then(data => {
+                console.log('Response data:', data);
                 if(data.success) {
                     alert('Đã gửi yêu cầu hủy đơn hàng!');
                     location.reload();
@@ -354,7 +530,10 @@
                     alert(data.message || 'Không thể hủy đơn hàng. Có thể đơn đã được duyệt hoặc đã thay đổi trạng thái.');
                 }
             })
-            .catch(() => alert('Có lỗi xảy ra, vui lòng thử lại.'));
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
+            });
             document.getElementById('cancelOrderModal').style.display = 'none';
         };
         </script>

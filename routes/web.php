@@ -98,7 +98,7 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
     // Route lấy chi tiết đơn hàng cho client (AJAX popup)
     Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
-
+    Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
