@@ -188,14 +188,25 @@
                                                             <span class="qqvfw-m-text"></span>
                                                         </a>
                                                     </div>
-                                                    <a href="{{ route('client.products.show', $product->slug) }}"
-                                                        aria-describedby="woocommerce_loop_add_to_cart_link_describedby_{{ $product->id }}"
-                                                        data-quantity="1"
-                                                        class="button product_type_simple add_to_cart_button ajax_add_to_cart"
-                                                        data-product_id="{{ $product->id }}"
-                                                        data-product_sku="{{ $product->sku }}"
-                                                        aria-label="Add to cart: &ldquo;{{ $product->name }}&rdquo;"
-                                                        rel="nofollow">Add to cart</a>
+                                                    <form method="post"
+                                                        action="{{ route('client.products.add-to-cart') }}"
+                                                        style="display: inline;">
+                                                        @csrf
+                                                        <input type="hidden" name="variation_id"
+                                                            value="{{ $product->variations->first()->id ?? '' }}" />
+                                                        <input type="hidden" name="quantity" value="1" />
+                                                        <button type="submit"
+                                                            class="button product_type_simple add_to_cart_button"
+                                                            data-product_id="{{ $product->id }}"
+                                                            data-product_sku="{{ $product->sku }}"
+                                                            aria-label="Add to cart: &ldquo;{{ $product->name }}&rdquo;"
+                                                            rel="nofollow"
+                                                            @if (
+                                                                !$product->variations->first() ||
+                                                                    ($product->variations->first() && $product->variations->first()->stock_quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
+                                                            Add to cart
+                                                        </button>
+                                                    </form>
                                                     <span
                                                         id="woocommerce_loop_add_to_cart_link_describedby_{{ $product->id }}"
                                                         class="screen-reader-text"></span>

@@ -42,65 +42,71 @@
                                         <tbody>
                                             @php $rowIndex = 0; @endphp
                                             @forelse($cartItems as $item)
+                                                @php
+                                                    $cartProduct = $item->variation
+                                                        ? $item->variation->product
+                                                        : $item->product;
+                                                    $featuredImage =
+                                                        $cartProduct->images->where('is_featured', true)->first() ??
+                                                        $cartProduct->images->first();
+                                                    $imagePath = $featuredImage
+                                                        ? asset('storage/' . $featuredImage->image_path)
+                                                        : asset('/path/to/default.jpg');
+                                                    $maxQty = $item->variation
+                                                        ? $item->variation->stock_quantity
+                                                        : $cartProduct->total_stock_quantity;
+                                                @endphp
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
                                                     <td class="product-remove">
-                                                        <button type="button"
-                                                                class="remove btn-remove-cart-item"
-                                                                data-form-id="remove-cart-item-{{ $item->id }}"
-                                                                aria-label="Xóa {{ $item->variation->product->name }} khỏi giỏ hàng"
-                                                                data-product_id="{{ $item->id }}"
-                                                                style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
+                                                        <button type="button" class="remove btn-remove-cart-item"
+                                                            data-form-id="remove-cart-item-{{ $item->id }}"
+                                                            aria-label="Xóa {{ $cartProduct->name }} khỏi giỏ hàng"
+                                                            data-product_id="{{ $item->id }}"
+                                                            style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
                                                             &times;
                                                         </button>
                                                     </td>
                                                     <td class="product-thumbnail">
-                                                        <a
-                                                            href="{{ route('client.products.show', $item->variation->product->slug) }}">
-                                                            <img src="{{ $item->variation->product->getFeaturedMedia()->path ?? '/path/to/default.jpg' }}"
-                                                                width="80" alt="{{ $item->variation->product->name }}">
+                                                        <a href="{{ route('client.products.show', $cartProduct->slug) }}">
+                                                            <img src="{{ $imagePath }}" width="80"
+                                                                alt="{{ $cartProduct->name }}">
                                                         </a>
                                                     </td>
                                                     <td class="product-name" data-title="Sản phẩm">
-                                                        <a
-                                                            href="{{ route('client.products.show', $item->variation->product->slug) }}">
-                                                            {{ $item->variation->product->name }}
+                                                        <a href="{{ route('client.products.show', $cartProduct->slug) }}">
+                                                            {{ $cartProduct->name }}
                                                         </a>
                                                         <div>
-                                                            @if ($item->variation->name)
+                                                            @if ($item->variation && $item->variation->name)
                                                                 <small>Phân loại: {{ $item->variation->name }}</small>
                                                             @endif
                                                         </div>
                                                     </td>
                                                     <td class="product-price" data-title="Đơn giá">
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($item->variation->sale_price ?? $item->variation->price, 0, ',', '.') }}₫</bdi>
+                                                            <bdi>{{ number_format($item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                     <td class="product-quantity" data-title="Số lượng">
-                                                        <div class="qodef-quantity-buttons quantity" data-id="{{ $item->id }}">
-                                                            <label class="screen-reader-text" for="quantity_{{ $item->id }}">
-                                                                {{ $item->variation->product->name }} số lượng
+                                                        <div class="qodef-quantity-buttons quantity"
+                                                            data-id="{{ $item->id }}">
+                                                            <label class="screen-reader-text"
+                                                                for="quantity_{{ $item->id }}">
+                                                                {{ $cartProduct->name }} số lượng
                                                             </label>
                                                             <span class="qodef-quantity-minus"></span>
-                                                            <input
-                                                                type="text"
-                                                                id="quantity_{{ $item->id }}"
+                                                            <input type="text" id="quantity_{{ $item->id }}"
                                                                 class="input-text qty text qodef-quantity-input"
-                                                                data-step="1"
-                                                                data-min="1"
-                                                                name="cart[{{ $item->id }}][qty]"
-                                                                value="{{ $item->quantity }}"
-                                                                title="Số lượng"
-                                                                size="4"
-                                                                placeholder=""
-                                                                inputmode="numeric"
-                                                            >
+                                                                data-step="1" data-min="1"
+                                                                data-max="{{ $maxQty }}" name="quantity"
+                                                                value="{{ $item->quantity }}" title="Số lượng"
+                                                                size="4" placeholder="" inputmode="numeric">
                                                             <span class="qodef-quantity-plus"></span>
                                                         </div>
                                                     </td>
                                                     <td class="product-subtotal" data-title="Thành tiền">
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format(($item->variation->sale_price ?? $item->variation->price) * $item->quantity, 0, ',', '.') }}₫</bdi>
+                                                            <bdi>{{ number_format(($item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price) * $item->quantity, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -113,14 +119,22 @@
                                             <tr>
                                                 <td colspan="6" class="actions">
                                                     <div class="coupon" style="position:relative;">
-                                                        <label for="coupon_code" class="screen-reader-text">Mã giảm giá:</label>
-                                                        <input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="Nhập mã giảm giá" autocomplete="off" />
-                                                        <ul id="coupon-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:10;background:#fff;border:1px solid #ddd;list-style:none;padding:0;margin:2px 0 0 0;max-height:180px;overflow:auto;">
-                                                            @foreach($promotions as $promo)
-                                                                <li class="coupon-suggestion-item" data-code="{{ $promo->code }}" style="padding:6px 12px;cursor:pointer;">{{ $promo->code }} - {{ $promo->name }}</li>
+                                                        <label for="coupon_code" class="screen-reader-text">Mã giảm
+                                                            giá:</label>
+                                                        <input type="text" name="coupon_code" class="input-text"
+                                                            id="coupon_code" value="" placeholder="Nhập mã giảm giá"
+                                                            autocomplete="off" />
+                                                        <ul id="coupon-suggestions"
+                                                            style="display:none;position:absolute;top:100%;left:0;right:0;z-index:10;background:#fff;border:1px solid #ddd;list-style:none;padding:0;margin:5px 0 0 0;max-height:180px;overflow:auto;">
+                                                            @foreach ($promotions as $promo)
+                                                                <li class="coupon-suggestion-item"
+                                                                    data-code="{{ $promo->code }}"
+                                                                    style="padding:6px 12px;cursor:pointer;">
+                                                                    {{ $promo->code }} - {{ $promo->name }}</li>
                                                             @endforeach
                                                         </ul>
-                                                        <button type="button" class="button" id="apply-coupon-btn" name="apply_coupon" value="Áp dụng">Áp dụng</button>
+                                                        <button type="button" class="button" id="apply-coupon-btn"
+                                                            name="apply_coupon" value="Áp dụng">Áp dụng</button>
                                                     </div>
                                                     <button type="submit" class="button" name="update_cart"
                                                         value="Cập nhật giỏ hàng">Cập nhật giỏ hàng</button>
@@ -134,8 +148,10 @@
                                 </form>
 
                                 <!-- Render các form xóa ẩn ngoài form lớn -->
-                                @foreach($cartItems as $item)
-                                    <form id="remove-cart-item-{{ $item->id }}" action="{{ route('client.cart.remove', $item->id) }}" method="POST" style="display:none;">
+                                @foreach ($cartItems as $item)
+                                    <form id="remove-cart-item-{{ $item->id }}"
+                                        action="{{ route('client.cart.remove', $item->id) }}" method="POST"
+                                        style="display:none;">
                                         @csrf
                                         @method('DELETE')
                                     </form>
@@ -150,7 +166,12 @@
                                         <table cellspacing="0" class="shop_table shop_table_responsive">
                                             @php
                                                 $subtotal = $cartItems->sum(function ($item) {
-                                                    return ($item->variation->sale_price ?? $item->variation->price) *
+                                                    $cartProduct = $item->variation
+                                                        ? $item->variation->product
+                                                        : $item->product;
+                                                    return ($item->variation
+                                                        ? $item->variation->sale_price ?? $item->variation->price
+                                                        : $cartProduct->sale_price ?? $cartProduct->price) *
                                                         $item->quantity;
                                                 });
                                             @endphp
@@ -162,7 +183,9 @@
                                             </tr>
                                             <tr class="cart-discount" style="display:none;">
                                                 <th>Giảm giá</th>
-                                                <td data-title="Giảm giá"><span class="woocommerce-Price-amount amount"><bdi id="discount-amount">0₫</bdi></span></td>
+                                                <td data-title="Giảm giá"><span
+                                                        class="woocommerce-Price-amount amount"><bdi
+                                                            id="discount-amount">0₫</bdi></span></td>
                                             </tr>
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
@@ -232,6 +255,17 @@
             font-size: 16px;
             margin: 0 2px;
         }
+
+        #coupon-suggestions,
+        .coupon-list {
+            max-width: 385px;
+            width: 100%;
+            margin: 0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background: #fff;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -240,53 +274,85 @@
                 const plus = group.querySelector('.qodef-quantity-plus');
                 const input = group.querySelector('input');
                 const id = group.getAttribute('data-id');
+                let max = input.getAttribute('data-max');
+                max = max ? parseInt(max) : null;
 
                 if (minus) {
                     minus.addEventListener('click', function() {
                         let val = parseInt(input.value) || 1;
                         if (val > 1) {
                             input.value = val - 1;
-                            input.dispatchEvent(new Event('change'));
+                            updateCart(id, input.value, group);
                         }
                     });
                 }
                 if (plus) {
                     plus.addEventListener('click', function() {
                         let val = parseInt(input.value) || 1;
+                        if (max && val >= max) {
+                            showCartAlert('Số lượng đã đạt tối đa tồn kho!', 'danger');
+                            input.value = max;
+                            return;
+                        }
                         input.value = val + 1;
-                        input.dispatchEvent(new Event('change'));
+                        updateCart(id, input.value, group);
                     });
                 }
                 input.addEventListener('change', function() {
                     let val = parseInt(input.value) || 1;
                     if (val < 1) val = 1;
+                    if (max && val > max) {
+                        showCartAlert('Số lượng đã đạt tối đa tồn kho!', 'danger');
+                        val = max;
+                    }
                     input.value = val;
                     updateCart(id, val, group);
                 });
             });
 
+            // Hàm hiển thị alert-danger trên trang giỏ hàng
+            function showCartAlert(message, type) {
+                // Xóa alert cũ nếu có
+                let old = document.querySelector('.cart-alert');
+                if (old) old.remove();
+                let alert = document.createElement('div');
+                alert.className = 'alert alert-' + type + ' cart-alert';
+                alert.style =
+                    'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
+                alert.innerHTML = message +
+                    '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
+                document.body.appendChild(alert);
+                setTimeout(function() {
+                    if (alert) alert.style.display = 'none';
+                }, 3000);
+            }
+
             function updateCart(id, qty, group) {
                 fetch("{{ url('client/cart/update') }}/" + id, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ quantity: qty })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        group.closest('tr').querySelector('.product-subtotal bdi').innerText = data.item_total + '₫';
-                        document.querySelectorAll('.cart-subtotal bdi, .order-total bdi').forEach(function(el) {
-                            el.innerText = data.cart_total + '₫';
-                        });
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra!');
-                    }
-                })
-                .catch(() => alert('Có lỗi xảy ra!'));
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            quantity: qty
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            group.closest('tr').querySelector('.product-subtotal bdi').innerText = data
+                                .item_total + '₫';
+                            document.querySelectorAll('.cart-subtotal bdi, .order-total bdi').forEach(function(
+                                el) {
+                                el.innerText = data.cart_total + '₫';
+                            });
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra!');
+                        }
+                    })
+                    .catch(() => alert('Có lỗi xảy ra!'));
             }
 
             document.querySelectorAll('.btn-remove-cart-item').forEach(function(btn) {
@@ -338,31 +404,43 @@
                     return;
                 }
                 fetch("{{ route('client.cart.apply-voucher') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ voucher_code: code })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message || 'Áp dụng mã giảm giá thành công!');
-                        let discount = data.voucher.discount_amount || 0;
-                        let subtotal = parseInt(document.querySelector('.cart-subtotal bdi').innerText.replace(/[^0-9]/g, '')) || 0;
-                        let total = subtotal - discount;
-                        if (total < 0) total = 0;
-                        document.querySelector('.cart-discount').style.display = '';
-                        document.getElementById('discount-amount').innerText = discount.toLocaleString('vi-VN') + '₫';
-                        document.querySelector('.order-total bdi').innerText = total.toLocaleString('vi-VN') + '₫';
-                    } else {
-                        alert(data.message || 'Mã giảm giá không hợp lệ!');
-                    }
-                })
-                .catch(() => alert('Có lỗi xảy ra!'));
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            voucher_code: code
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message || 'Áp dụng mã giảm giá thành công!');
+                            let discount = data.voucher.discount_amount || 0;
+                            let subtotal = parseInt(document.querySelector('.cart-subtotal bdi')
+                                .innerText.replace(/[^0-9]/g, '')) || 0;
+                            let total = subtotal - discount;
+                            if (total < 0) total = 0;
+                            document.querySelector('.cart-discount').style.display = '';
+                            document.getElementById('discount-amount').innerText = discount
+                                .toLocaleString('vi-VN') + '₫';
+                            document.querySelector('.order-total bdi').innerText = total.toLocaleString(
+                                'vi-VN') + '₫';
+                        } else {
+                            alert(data.message || 'Mã giảm giá không hợp lệ!');
+                        }
+                    })
+                    .catch(() => alert('Có lỗi xảy ra!'));
             });
+
+            var alertBox = document.querySelector('.alert-success');
+            if (alertBox) {
+                setTimeout(function() {
+                    alertBox.style.display = 'none';
+                }, 3000); // 3 giây
+            }
         });
     </script>
 @endpush

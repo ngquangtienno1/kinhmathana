@@ -20,6 +20,7 @@ class CartController extends Controller
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Lấy danh sách voucher đang hoạt động
@@ -68,22 +69,42 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
-        $cartItem->quantity = $request->quantity;
+
+        // Lấy số lượng tồn kho thực tế
+        if ($cartItem->variation) {
+            $maxQty = $cartItem->variation->stock_quantity;
+        } else {
+            $maxQty = $cartItem->product->total_stock_quantity;
+        }
+
+        $newQty = min($request->quantity, $maxQty);
+
+        $cartItem->quantity = $newQty;
         $cartItem->save();
 
         // Tính lại tổng tiền dòng
-        $item_total = number_format($cartItem->variation->price * $cartItem->quantity, 0, ',', '.');
+        if ($cartItem->variation) {
+            $price = $cartItem->variation->sale_price ?? $cartItem->variation->price;
+        } else {
+            $price = $cartItem->product->sale_price ?? $cartItem->product->price;
+        }
+        $item_total = number_format($price * $cartItem->quantity, 0, ',', '.');
         // Tính lại tổng tiền giỏ hàng
         $cart_total = Cart::where('user_id', $user->id)
             ->get()
             ->sum(function ($item) {
-                return $item->variation->price * $item->quantity;
+                if ($item->variation) {
+                    $price = $item->variation->sale_price ?? $item->variation->price;
+                } else {
+                    $price = $item->product->sale_price ?? $item->product->price;
+                }
+                return $price * $item->quantity;
             });
         $cart_total = number_format($cart_total, 0, ',', '.');
 
         return response()->json([
             'success' => true,
-            'message' => 'Cập nhật số lượng thành công!',
+            'message' => $newQty < $request->quantity ? 'Số lượng đã được giới hạn theo tồn kho!' : 'Cập nhật số lượng thành công!',
             'item_total' => $item_total,
             'cart_total' => $cart_total,
         ]);
@@ -177,7 +198,12 @@ class CartController extends Controller
             ->where('user_id', $user->id)
             ->get();
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->variation->price * $item->quantity;
+            if ($item->variation) {
+                $price = $item->variation->sale_price ?? $item->variation->price;
+            } else {
+                $price = $item->product->sale_price ?? $item->product->price;
+            }
+            return $price * $item->quantity;
         });
 
         // Kiểm tra điều kiện giá trị đơn tối thiểu
@@ -187,14 +213,18 @@ class CartController extends Controller
                 'message' => 'Đơn hàng phải có giá trị tối thiểu ' . number_format($promotion->minimum_purchase, 0, ',', '.') . '₫!'
             ]);
         }
+        // Kiểm tra điều kiện giá trị đơn tối đa
+        if ($promotion->maximum_purchase && $subtotal > $promotion->maximum_purchase) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Đơn hàng không được vượt quá ' . number_format($promotion->maximum_purchase, 0, ',', '.') . '₫ để áp dụng mã này!'
+            ]);
+        }
 
         // Tính số tiền giảm
         $discountAmount = 0;
         if ($promotion->discount_type === 'percentage') {
             $discountAmount = $subtotal * ($promotion->discount_value / 100);
-            if ($promotion->maximum_purchase) {
-                $discountAmount = min($discountAmount, $promotion->maximum_purchase);
-            }
         } else {
             $discountAmount = $promotion->discount_value;
         }
@@ -287,9 +317,6 @@ class CartController extends Controller
                 if ($promotion && $totalAmount >= $promotion->minimum_purchase) {
                     if ($promotion->discount_type === 'percentage') {
                         $discountAmount = $totalAmount * ($promotion->discount_value / 100);
-                        if ($promotion->maximum_purchase) {
-                            $discountAmount = min($discountAmount, $promotion->maximum_purchase);
-                        }
                     } else {
                         $discountAmount = $promotion->discount_value;
                     }
@@ -329,22 +356,24 @@ class CartController extends Controller
         foreach ($cartItems as $item) {
             OrderItem::create([
                 'order_id' => $order->id,
-                'product_id' => $item->variation->product_id,
-                'product_name' => $item->variation->product->name ?? '',
-                'product_sku' => $item->variation->sku ?? '',
-                'price' => $item->variation->price,
+                'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
+                'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
+                'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
+                'price' => $item->variation ? $item->variation->price : ($item->product->price ?? 0),
                 'quantity' => $item->quantity,
-                'subtotal' => $item->variation->price * $item->quantity,
+                'subtotal' => ($item->variation ? $item->variation->price : ($item->product->price ?? 0)) * $item->quantity,
                 'discount_amount' => 0,
-                'product_options' => json_encode([
+                'product_options' => $item->variation ? json_encode([
                     'color' => $item->variation->color->name ?? null,
                     'size' => $item->variation->size->name ?? null,
-                ]),
+                ]) : null,
             ]);
             // Trừ số lượng tồn kho
-            $variation = $item->variation;
-            $variation->stock_quantity = max(0, $variation->stock_quantity - $item->quantity);
-            $variation->save();
+            if ($item->variation) {
+                $variation = $item->variation;
+                $variation->stock_quantity = max(0, $variation->stock_quantity - $item->quantity);
+                $variation->save();
+            }
         }
 
         // Ghi lại việc sử dụng voucher

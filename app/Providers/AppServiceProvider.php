@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Cart;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -49,5 +52,19 @@ class AppServiceProvider extends ServiceProvider
             Config::set('mail.from.address', env('MAIL_FROM_ADDRESS', 'no-reply@yourdomain.com'));
             Config::set('mail.from.name', env('MAIL_FROM_NAME', 'Your Website'));
         }
+
+        // Truyền biến cartCount cho full view
+        View::composer('*', function ($view) {
+            $cartCount = 0;
+            if (Auth::check()) {
+                $cartCount = Cart::where('user_id', Auth::id())->count();
+            } else {
+                if (session()->has('cart')) {
+                    $cart = session('cart');
+                    $cartCount = collect($cart)->count();
+                }
+            }
+            $view->with('cartCount', $cartCount);
+        });
     }
 }

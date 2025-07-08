@@ -22,6 +22,7 @@
     <div id="qodef-page-inner" class="qodef-content-grid">
         <main id="qodef-page-content" class="qodef-grid qodef-layout--template qodef--no-bottom-space qodef-gutter--medium"
             role="main">
+            <div id="add-to-cart-message"></div>
             <div class="qodef-grid-inner clear">
                 <div id="qodef-woo-page"
                     class="qodef-grid-item qodef--single qodef-popup--magnific-popup qodef-magnific-popup qodef-popup-gallery">
@@ -98,7 +99,10 @@
                                 @endif
                                 @if ($product->variations->count() > 0)
                                     <div id="qvsfw-variations-form-wrapper">
-                                        <form class="variations_form cart" method="post" enctype="multipart/form-data">
+                                        <form class="variations_form cart" method="post"
+                                            action="{{ route('client.products.add-to-cart') }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
                                             @if ($product->total_stock_quantity <= 0)
                                                 <fieldset disabled style="opacity:0.7;pointer-events:none;">
                                             @endif
@@ -225,22 +229,21 @@
                                                 <div class="woocommerce-variation-add-to-cart variations_button">
                                                     <div class="qodef-quantity-buttons quantity">
                                                         <label class="screen-reader-text"
-                                                            for="quantity_68627e2494143">Aviator Paris quantity</label>
+                                                            for="quantity_{{ $product->id }}">{{ $product->name }}
+                                                            quantity</label>
                                                         <span class="qodef-quantity-minus"></span>
-                                                        <input type="text" id="quantity_68627e2494143"
+                                                        <input type="text" id="quantity_{{ $product->id }}"
                                                             class="input-text qty text qodef-quantity-input"
                                                             data-step="1" data-min="1" data-max="" name="quantity"
-                                                            value="01" title="Qty" size="4" placeholder=""
+                                                            value="1" title="Qty" size="4" placeholder=""
                                                             inputmode="numeric" />
                                                         <span class="qodef-quantity-plus"></span>
                                                     </div>
                                                     <button type="submit" class="single_add_to_cart_button button alt"
                                                         @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
                                                         giỏ hàng</button>
-                                                    <input type="hidden" name="add-to-cart" value="921" />
-                                                    <input type="hidden" name="product_id" value="921" />
                                                     <input type="hidden" name="variation_id" class="variation_id"
-                                                        value="0" />
+                                                        value="{{ $selectedVariation->id ?? '' }}" />
                                                 </div>
                                             </div>
                                             @if ($product->total_stock_quantity <= 0)
@@ -249,7 +252,10 @@
                                         </form>
                                     </div>
                                 @else
-                                    <form class="cart">
+                                    <form class="cart js-add-to-cart-form" method="post"
+                                        action="{{ route('client.products.add-to-cart') }}"
+                                        data-product-name="{{ $product->name }}">
+                                        @csrf
                                         <div class="woocommerce-variation-add-to-cart variations_button">
                                             <div class="qodef-quantity-buttons quantity">
                                                 <label class="screen-reader-text" for="quantity_{{ $product->id }}">Số
@@ -266,8 +272,12 @@
                                             <button type="submit" class="single_add_to_cart_button button alt"
                                                 @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
                                                 giỏ hàng</button>
-                                            <input type="hidden" name="add-to-cart" value="{{ $product->id }}" />
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}" />
+                                            @if ($product->product_type === 'simple')
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}" />
+                                            @else
+                                                <input type="hidden" name="variation_id"
+                                                    value="{{ $product->variations->first()->id ?? '' }}" />
+                                            @endif
                                         </div>
                                     </form>
                                 @endif
@@ -663,6 +673,7 @@
                 const mainImg = document.getElementById('main-product-image');
                 const defaultImg = mainImg.dataset.defaultSrc ||
                     '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
+                const variationIdInput = document.querySelector('input[name="variation_id"]');
 
                 if (colorId || sizeId || sphericalId || cylindricalId) {
                     const matchingVariation = window.productVariations.find(v =>
@@ -672,13 +683,25 @@
                         (!cylindricalId || v.cylindrical_id === cylindricalId)
                     );
 
-                    if (matchingVariation && matchingVariation.image) {
-                        mainImg.src = matchingVariation.image;
+                    if (matchingVariation) {
+                        if (matchingVariation.image) {
+                            mainImg.src = matchingVariation.image;
+                        }
+                        // Cập nhật variation_id
+                        if (variationIdInput) {
+                            variationIdInput.value = matchingVariation.id;
+                        }
                     } else if (colorId) {
                         // Nếu chỉ chọn màu sắc, dùng ảnh của màu
                         const colorVariation = window.productVariations.find(v => v.color_id === colorId);
-                        if (colorVariation && colorVariation.image) {
-                            mainImg.src = colorVariation.image;
+                        if (colorVariation) {
+                            if (colorVariation.image) {
+                                mainImg.src = colorVariation.image;
+                            }
+                            // Cập nhật variation_id
+                            if (variationIdInput) {
+                                variationIdInput.value = colorVariation.id;
+                            }
                         } else {
                             mainImg.src = defaultImg;
                         }
@@ -687,6 +710,10 @@
                     }
                 } else {
                     mainImg.src = defaultImg;
+                    // Reset variation_id về giá trị mặc định
+                    if (variationIdInput) {
+                        variationIdInput.value = '{{ $selectedVariation->id ?? '' }}';
+                    }
                 }
             }
 
@@ -721,6 +748,11 @@
                     const mainImg = document.getElementById('main-product-image');
                     mainImg.src = mainImg.dataset.defaultSrc ||
                         '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
+                    // Reset variation_id về giá trị mặc định
+                    const variationIdInput = document.querySelector('input[name="variation_id"]');
+                    if (variationIdInput) {
+                        variationIdInput.value = '{{ $selectedVariation->id ?? '' }}';
+                    }
                     onAttributeChange();
                 });
             }
@@ -752,4 +784,67 @@
             tabPanels[0].style.display = '';
         });
     </script>
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        var formData = new FormData(form);
+                        fetch(form.action, {
+                                method: 'POST',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': form.querySelector('[name=_token]').value
+                                },
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                // Xóa message cũ nếu có
+                                var msgContainer = document.getElementById('add-to-cart-message');
+                                if (msgContainer) {
+                                    msgContainer.innerHTML = '';
+                                }
+                                // Tạo message mới
+                                var msg = document.createElement('div');
+                                msg.className = 'woocommerce-message';
+                                msg.setAttribute('role', 'alert');
+                                var productName = form.getAttribute('data-product-name');
+                                msg.innerHTML =
+                                    `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> &ldquo;${productName}&rdquo; đã được thêm vào giỏ hàng.`;
+                                if (msgContainer) {
+                                    msgContainer.appendChild(msg);
+                                }
+                            })
+                            .catch(() => alert('Có lỗi xảy ra!'));
+                    });
+                });
+            });
+        </script>
+    @endpush
+    <style>
+        .woocommerce-message .wc-forward {
+            border: 1.5px solid #222;
+            background: #fff;
+            color: #222;
+            border-radius: 0;
+            padding: 18px 40px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: background 0.2s, color 0.2s;
+            margin-left: 0;
+            margin-right: 32px;
+            box-shadow: none;
+            outline: none;
+            display: inline-block;
+        }
+
+        .woocommerce-message .wc-forward:hover {
+            background: #222;
+            color: #fff;
+        }
+    </style>
 @endsection
