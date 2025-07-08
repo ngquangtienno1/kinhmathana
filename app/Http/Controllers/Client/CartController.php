@@ -20,15 +20,16 @@ class CartController extends Controller
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Lấy danh sách voucher đang hoạt động
         $promotions = Promotion::where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereNull('usage_limit')
-                      ->orWhereRaw('used_count < usage_limit');
+                    ->orWhereRaw('used_count < usage_limit');
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -68,22 +69,42 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
-        $cartItem->quantity = $request->quantity;
+
+        // Lấy số lượng tồn kho thực tế
+        if ($cartItem->variation) {
+            $maxQty = $cartItem->variation->stock_quantity;
+        } else {
+            $maxQty = $cartItem->product->total_stock_quantity;
+        }
+
+        $newQty = min($request->quantity, $maxQty);
+
+        $cartItem->quantity = $newQty;
         $cartItem->save();
 
         // Tính lại tổng tiền dòng
-        $item_total = number_format($cartItem->variation->price * $cartItem->quantity, 0, ',', '.');
+        if ($cartItem->variation) {
+            $price = $cartItem->variation->sale_price ?? $cartItem->variation->price;
+        } else {
+            $price = $cartItem->product->sale_price ?? $cartItem->product->price;
+        }
+        $item_total = number_format($price * $cartItem->quantity, 0, ',', '.');
         // Tính lại tổng tiền giỏ hàng
         $cart_total = Cart::where('user_id', $user->id)
             ->get()
-            ->sum(function($item) {
-                return $item->variation->price * $item->quantity;
+            ->sum(function ($item) {
+                if ($item->variation) {
+                    $price = $item->variation->sale_price ?? $item->variation->price;
+                } else {
+                    $price = $item->product->sale_price ?? $item->product->price;
+                }
+                return $price * $item->quantity;
             });
         $cart_total = number_format($cart_total, 0, ',', '.');
 
         return response()->json([
             'success' => true,
-            'message' => 'Cập nhật số lượng thành công!',
+            'message' => $newQty < $request->quantity ? 'Số lượng đã được giới hạn theo tồn kho!' : 'Cập nhật số lượng thành công!',
             'item_total' => $item_total,
             'cart_total' => $cart_total,
         ]);
@@ -106,31 +127,31 @@ class CartController extends Controller
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
-        
+
         // Lấy danh sách phương thức vận chuyển đang hoạt động cùng với phí vận chuyển
-        $shippingProviders = ShippingProvider::with(['shippingFees' => function($query) {
+        $shippingProviders = ShippingProvider::with(['shippingFees' => function ($query) {
             $query->orderBy('province_code');
         }])
-        ->where('is_active', true)
-        ->orderBy('sort_order')
-        ->get();
-            
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
         // Lấy danh sách phương thức thanh toán đang hoạt động
         $paymentMethods = PaymentMethod::where('is_active', true)
             ->orderBy('sort_order')
             ->get();
-            
+
         // Lấy danh sách voucher đang hoạt động
         $promotions = Promotion::where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereNull('usage_limit')
-                      ->orWhereRaw('used_count < usage_limit');
+                    ->orWhereRaw('used_count < usage_limit');
             })
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return view('client.cart.checkout', compact('cartItems', 'shippingProviders', 'paymentMethods', 'promotions'));
     }
 
@@ -177,7 +198,12 @@ class CartController extends Controller
             ->where('user_id', $user->id)
             ->get();
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->variation->price * $item->quantity;
+            if ($item->variation) {
+                $price = $item->variation->sale_price ?? $item->variation->price;
+            } else {
+                $price = $item->product->sale_price ?? $item->product->price;
+            }
+            return $price * $item->quantity;
         });
 
         // Kiểm tra điều kiện giá trị đơn tối thiểu
@@ -187,14 +213,18 @@ class CartController extends Controller
                 'message' => 'Đơn hàng phải có giá trị tối thiểu ' . number_format($promotion->minimum_purchase, 0, ',', '.') . '₫!'
             ]);
         }
+        // Kiểm tra điều kiện giá trị đơn tối đa
+        if ($promotion->maximum_purchase && $subtotal > $promotion->maximum_purchase) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Đơn hàng không được vượt quá ' . number_format($promotion->maximum_purchase, 0, ',', '.') . '₫ để áp dụng mã này!'
+            ]);
+        }
 
         // Tính số tiền giảm
         $discountAmount = 0;
         if ($promotion->discount_type === 'percentage') {
             $discountAmount = $subtotal * ($promotion->discount_value / 100);
-            if ($promotion->maximum_purchase) {
-                $discountAmount = min($discountAmount, $promotion->maximum_purchase);
-            }
         } else {
             $discountAmount = $promotion->discount_value;
         }
@@ -216,6 +246,7 @@ class CartController extends Controller
 
     public function checkout(Request $request)
     {
+        // dd($request->all());
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
@@ -236,6 +267,7 @@ class CartController extends Controller
             'payment_method' => 'required|string',
             'applied_voucher' => 'nullable|string',
             'note' => 'nullable|string|max:1000',
+            'save_payment_info' => 'nullable',
         ], [
             'customer_name.required' => 'Vui lòng nhập họ tên người đặt.',
             'customer_phone.required' => 'Vui lòng nhập số điện thoại người đặt.',
@@ -251,29 +283,28 @@ class CartController extends Controller
         $totalAmount = $cartItems->sum(function ($item) {
             return $item->variation->price * $item->quantity;
         });
-        
+
         // Tính phí vận chuyển dựa trên phương thức được chọn
         $shippingCost = 0;
         $shippingProvider = null;
-        
+
         if ($request->shipping_method !== 'free') {
             $shippingProvider = ShippingProvider::where('code', $request->shipping_method)
                 ->where('is_active', true)
                 ->first();
-                
+
             if ($shippingProvider) {
-                // Lấy phí vận chuyển cơ bản (có thể lấy phí đầu tiên hoặc tính trung bình)
                 $shippingFee = $shippingProvider->shippingFees()->first();
                 if ($shippingFee) {
                     $shippingCost = $shippingFee->base_fee;
                 }
             }
         }
-        
+
         // Xử lý voucher
         $discountAmount = 0;
         $promotion = null;
-        
+
         if ($request->filled('applied_voucher')) {
             $voucherData = json_decode($request->applied_voucher, true);
             if ($voucherData && isset($voucherData['code'])) {
@@ -282,25 +313,22 @@ class CartController extends Controller
                     ->where('start_date', '<=', now())
                     ->where('end_date', '>=', now())
                     ->first();
-                    
+
                 if ($promotion && $totalAmount >= $promotion->minimum_purchase) {
                     if ($promotion->discount_type === 'percentage') {
                         $discountAmount = $totalAmount * ($promotion->discount_value / 100);
-                        if ($promotion->maximum_purchase) {
-                            $discountAmount = min($discountAmount, $promotion->maximum_purchase);
-                        }
                     } else {
                         $discountAmount = $promotion->discount_value;
                     }
                 }
             }
         }
-        
+
         $grandTotal = $totalAmount + $shippingCost - $discountAmount;
-        
+
         // Tìm payment method
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
-        
+
         $order = Order::create([
             'user_id' => $user->id,
             'order_number' => 'DH' . time(),
@@ -323,28 +351,31 @@ class CartController extends Controller
             'status' => 'pending',
             'note' => $validated['note'] ?? '',
         ]);
-        
+
+
         foreach ($cartItems as $item) {
             OrderItem::create([
                 'order_id' => $order->id,
-                'product_id' => $item->variation->product_id,
-                'product_name' => $item->variation->product->name ?? '',
-                'product_sku' => $item->variation->sku ?? '',
-                'price' => $item->variation->price,
+                'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
+                'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
+                'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
+                'price' => $item->variation ? $item->variation->price : ($item->product->price ?? 0),
                 'quantity' => $item->quantity,
-                'subtotal' => $item->variation->price * $item->quantity,
+                'subtotal' => ($item->variation ? $item->variation->price : ($item->product->price ?? 0)) * $item->quantity,
                 'discount_amount' => 0,
-                'product_options' => json_encode([
+                'product_options' => $item->variation ? json_encode([
                     'color' => $item->variation->color->name ?? null,
                     'size' => $item->variation->size->name ?? null,
-                ]),
+                ]) : null,
             ]);
             // Trừ số lượng tồn kho
-            $variation = $item->variation;
-            $variation->stock_quantity = max(0, $variation->stock_quantity - $item->quantity);
-            $variation->save();
+            if ($item->variation) {
+                $variation = $item->variation;
+                $variation->stock_quantity = max(0, $variation->stock_quantity - $item->quantity);
+                $variation->save();
+            }
         }
-        
+
         // Ghi lại việc sử dụng voucher
         if ($promotion && $discountAmount > 0) {
             \App\Models\PromotionUsage::create([
@@ -353,12 +384,12 @@ class CartController extends Controller
                 'user_id' => $user->id,
                 'discount_amount' => $discountAmount
             ]);
-            
+
             // Tăng số lượt sử dụng
             $promotion->increment('used_count');
         }
-        
+
         Cart::where('user_id', $user->id)->delete();
-        return redirect()->route('client.orders.show', $order->id)->with('success', 'Đặt hàng thành công!');
+        return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
     }
-} 
+}

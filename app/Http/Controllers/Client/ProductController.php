@@ -9,6 +9,7 @@ use App\Models\Color;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -55,7 +56,6 @@ class ProductController extends Controller
             $minPrice = (int) $minPrice;
             $maxPrice = (int) $maxPrice;
 
-            Log::info('[Lọc giá] min_price_raw: ' . $minPriceRaw . ', max_price_raw: ' . $maxPriceRaw . ', min_price: ' . $minPrice . ', max_price: ' . $maxPrice);
 
             $query->where(function ($q) use ($minPrice, $maxPrice) {
                 // Sản phẩm thường
@@ -131,7 +131,6 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(12);
-        Log::info('[Lọc giá] Số lượng sản phẩm tìm được: ' . $products->total());
         $categories = Category::withCount('products')->with('children')->where('is_active', true)->get();
         $colors = Color::all();
         $brands = Brand::where('is_active', true)->get();
@@ -199,5 +198,93 @@ class ProductController extends Controller
         $comments = $product->comments()->with('user')->orderByDesc('created_at')->get();
 
         return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
+    }
+
+    /**
+     * Thêm sản phẩm vào giỏ hàng từ trang chi tiết sản phẩm
+     */
+    public function addToCart(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập!'], 401);
+            }
+            return redirect()->route('client.login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+        }
+
+        $quantity = $request->input('quantity', 1);
+        $variationId = $request->input('variation_id');
+        $productId = $request->input('product_id');
+
+        if ($variationId) {
+            $variation = \App\Models\Variation::find($variationId);
+            if (!$variation) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Không tìm thấy biến thể sản phẩm!'], 404);
+                }
+                return back()->with('error', 'Không tìm thấy biến thể sản phẩm!');
+            }
+            if ($variation->stock_quantity < $quantity) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Số lượng sản phẩm không đủ trong kho!'], 400);
+                }
+                return back()->with('error', 'Số lượng sản phẩm không đủ trong kho!');
+            }
+            $cartItem = \App\Models\Cart::where('user_id', $user->id)
+                ->where('variation_id', $variationId)
+                ->first();
+            if ($cartItem) {
+                $cartItem->quantity += $quantity;
+                $cartItem->save();
+            } else {
+                \App\Models\Cart::create([
+                    'user_id' => $user->id,
+                    'variation_id' => $variationId,
+                    'quantity' => $quantity,
+                ]);
+            }
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
+            return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+        } elseif ($productId) {
+            $product = \App\Models\Product::find($productId);
+            if (!$product) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Không tìm thấy sản phẩm!'], 404);
+                }
+                return back()->with('error', 'Không tìm thấy sản phẩm!');
+            }
+            if ($product->stock_quantity < $quantity) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Số lượng sản phẩm không đủ trong kho!'], 400);
+                }
+                return back()->with('error', 'Số lượng sản phẩm không đủ trong kho!');
+            }
+            $cartItem = \App\Models\Cart::where('user_id', $user->id)
+                ->where('product_id', $productId)
+                ->whereNull('variation_id')
+                ->first();
+            if ($cartItem) {
+                $cartItem->quantity += $quantity;
+                $cartItem->save();
+            } else {
+                \App\Models\Cart::create([
+                    'user_id' => $user->id,
+                    'product_id' => $productId,
+                    'quantity' => $quantity,
+                ]);
+            }
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
+            return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Không xác định được sản phẩm!'], 400);
+            }
+            return back()->with('error', 'Không xác định được sản phẩm cần thêm vào giỏ hàng!');
+        }
     }
 }

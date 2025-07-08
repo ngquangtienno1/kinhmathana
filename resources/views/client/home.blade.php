@@ -296,67 +296,67 @@
                                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
                                                                         </div>
-                                                                        <div class="qodef-woo-product-content"
-                                                                            style="background-color: #FFFFFF">
-                                                                            <div class="qodef-woo-color-variations-holder">
-                                                                            </div>
+                                                    <div class="qodef-woo-product-content"
+                                                        style="background-color: #FFFFFF">
+                                                        <div class="qodef-woo-color-variations-holder">
+                                                        </div>
                                                                             <h5 itemprop="name"
                                                                                 class="qodef-woo-product-title entry-title"
-                                                                                style="margin-bottom: 8px">
+                                                            style="margin-bottom: 8px">
                                                                                 <a itemprop="url"
                                                                                     class="qodef-woo-product-title-link"
-                                                                                    href="{{ route('client.products.show', $product->slug) }}">
-                                                                                    {{ $product->name }}
-                                                                                </a>
-                                                                            </h5>
+                                                                href="{{ route('client.products.show', $product->slug) }}">
+                                                                {{ $product->name }}
+                                                            </a>
+                                                        </h5>
                                                                             <div
                                                                                 class="qodef-woo-product-categories qodef-e-info">
-                                                                                @foreach ($product->categories as $category)
-                                                                                    <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
-                                                                                        rel="tag">{{ $category->name }}</a>
-                                                                                    @if (!$loop->last)
+                                                            @foreach ($product->categories as $category)
+                                                                <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
+                                                                    rel="tag">{{ $category->name }}</a>
+                                                                @if (!$loop->last)
                                                                                         <span
                                                                                             class="qodef-info-separator-single"></span>
-                                                                                    @endif
-                                                                                @endforeach
-                                                                                <div class="qodef-info-separator-end">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="qodef-woo-product-price price">
-                                                                                @if ($product->sale_price && $product->sale_price < $product->price)
-                                                                                    <del aria-hidden="true">
+                                                                @endif
+                                                            @endforeach
+                                                            <div class="qodef-info-separator-end">
+                                                            </div>
+                                                        </div>
+                                                        <div class="qodef-woo-product-price price">
+                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                <del aria-hidden="true">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                                            <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
-                                                                                        </span>
-                                                                                    </del>
+                                                                        <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                                    </span>
+                                                                </del>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         gốc:
-                                                                                        {{ number_format($product->price, 0, ',', '.') }}đ.</span>
-                                                                                    <ins aria-hidden="true">
+                                                                    {{ number_format($product->price, 0, ',', '.') }}đ.</span>
+                                                                <ins aria-hidden="true">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                                            <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
-                                                                                        </span>
-                                                                                    </ins>
+                                                                        <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                    </span>
+                                                                </ins>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         khuyến mãi:
-                                                                                        {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
-                                                                                @else
+                                                                    {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
+                                                            @else
                                                                                     <span
                                                                                         class="woocommerce-Price-amount amount">
-                                                                                        <bdi>{{ number_format($product->price ?? 0, 0, ',', '.') }}đ</bdi>
-                                                                                    </span>
-                                                                                @endif
-                                                                            </div>
-                                                                            <div class="qodef-woo-product-image-inner">
-                                                                                <a href="{{ route('client.products.show', $product->slug) }}"
-                                                                                    class="button product_type_simple add_to_cart_button"
-                                                                                    aria-label="Xem chi tiết: {{ $product->name }}"
-                                                                                    rel="nofollow">Xem chi tiết</a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                                    <bdi>{{ number_format($product->price ?? 0, 0, ',', '.') }}đ</bdi>
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                        <div class="qodef-woo-product-image-inner">
+                                                            <a href="{{ route('client.products.show', $product->slug) }}"
+                                                                class="button product_type_simple add_to_cart_button"
+                                                                aria-label="Xem chi tiết: {{ $product->name }}"
+                                                                rel="nofollow">Xem chi tiết</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                                 </li>
                                                             @empty
                                                                 <li class="qodef-e qodef-grid-item qodef-item--full">
