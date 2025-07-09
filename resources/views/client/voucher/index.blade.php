@@ -10,33 +10,39 @@
                         Mã giảm giá </h1>
                     <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
                             href="{{ route('client.home') }}"><span itemprop="title">Home</span></a>
-                            <span class="qodef-breadcrumbs-separator"></span>
-                            <span itemprop="title" class="qodef-breadcrumbs-current">Page</span>
-                            <span itemprop="title" class="qodef-breadcrumbs-separator"></span>
-                            <span itemprop="title" class="qodef-breadcrumbs-current">Mã giảm giá</span></div>
+                        <span class="qodef-breadcrumbs-separator"></span>
+                        <span itemprop="title" class="qodef-breadcrumbs-current">Page</span>
+                        <span itemprop="title" class="qodef-breadcrumbs-separator"></span>
+                        <span itemprop="title" class="qodef-breadcrumbs-current">Mã giảm giá</span>
+                    </div>
 
                     {{-- Danh sách mã giảm giá --}}
                     <div class="voucher-list" style="margin-top: 32px;">
                         @forelse($vouchers as $voucher)
-                            <div class="voucher-item" style="border:1px solid #eee; border-radius:8px; padding:16px; margin-bottom:16px; background:#fafbfc;">
+                            <div class="voucher-item"
+                                style="border:1px solid #eee; border-radius:8px; padding:16px; margin-bottom:16px; background:#fafbfc;">
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
                                     <div>
-                                        <div><strong>{{ $voucher->name }}</strong> <span style="color:#888;">({{ $voucher->code }})</span></div>
+                                        <div><strong>{{ $voucher->name }}</strong> <span
+                                                style="color:#888;">({{ $voucher->code }})</span></div>
                                         <div>{{ $voucher->description }}</div>
                                         <div>
                                             <span>Giảm:
-                                                @if($voucher->discount_type === 'percentage')
+                                                @if ($voucher->discount_type === 'percentage')
                                                     {{ $voucher->discount_value }}%
                                                 @else
                                                     {{ number_format($voucher->discount_value, 0) }}đ
                                                 @endif
                                             </span>
-                                            <span style="margin-left:16px;">Đơn tối thiểu: {{ number_format($voucher->minimum_purchase, 0) }}đ</span>
+                                            <span style="margin-left:16px;">Đơn tối thiểu:
+                                                {{ number_format($voucher->minimum_purchase, 0) }}đ</span>
                                         </div>
                                         <div>HSD: {{ $voucher->end_date->format('d/m/Y H:i') }}</div>
                                     </div>
                                     <div style="min-width:180px; text-align:center;">
-                                        <div class="voucher-countdown" data-end="{{ $voucher->end_date->format('Y-m-d H:i:s') }}" style="font-size:18px; color:#e74c3c; font-weight:bold;"></div>
+                                        <div class="voucher-countdown"
+                                            data-end="{{ $voucher->end_date->format('Y-m-d H:i:s') }}"
+                                            style="font-size:18px; color:#e74c3c; font-weight:bold;"></div>
                                         <div style="font-size:12px; color:#888;">Còn lại</div>
                                     </div>
                                 </div>
@@ -45,7 +51,7 @@
                             <div>Hiện không có mã giảm giá nào.</div>
                         @endforelse
                     </div>
-                </div>  
+                </div>
             </div>
         </div>
         <div id="qodef-page-inner" class="qodef-content-full-width">
@@ -106,7 +112,7 @@
                                                                 target="_self">
                                                                 <img fetchpriority="high" fetchpriority="high"
                                                                     decoding="async" width="900" height="593"
-                                                                    src="../wp-content/uploads/2021/08/voucher-01-img.jpg"
+                                                                    src="{{ asset('v1/wp-content/uploads/2021/08/voucher-01-img.jpg') }}"
                                                                     class="attachment-full size-full qodef-list-image"
                                                                     alt="m"
                                                                     srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/voucher-01-img.jpg 900w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/voucher-01-img-600x395.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/voucher-01-img-800x527.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/voucher-01-img-300x198.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/voucher-01-img-768x506.jpg 768w"
@@ -430,27 +436,28 @@
 @endsection
 
 @section('scripts')
-<script>
-    function startCountdown() {
-        document.querySelectorAll('.voucher-countdown').forEach(function(el) {
-            var end = new Date(el.getAttribute('data-end').replace(/-/g, '/')).getTime();
-            function updateCountdown() {
-                var now = new Date().getTime();
-                var distance = end - now;
-                if (distance < 0) {
-                    el.innerHTML = 'Đã hết hạn';
-                    return;
+    <script>
+        function startCountdown() {
+            document.querySelectorAll('.voucher-countdown').forEach(function(el) {
+                var end = new Date(el.getAttribute('data-end').replace(/-/g, '/')).getTime();
+
+                function updateCountdown() {
+                    var now = new Date().getTime();
+                    var distance = end - now;
+                    if (distance < 0) {
+                        el.innerHTML = 'Đã hết hạn';
+                        return;
+                    }
+                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    el.innerHTML = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+                    setTimeout(updateCountdown, 1000);
                 }
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                el.innerHTML = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
-                setTimeout(updateCountdown, 1000);
-            }
-            updateCountdown();
-        });
-    }
-    document.addEventListener('DOMContentLoaded', startCountdown);
-</script>
+                updateCountdown();
+            });
+        }
+        document.addEventListener('DOMContentLoaded', startCountdown);
+    </script>
 @endsection
