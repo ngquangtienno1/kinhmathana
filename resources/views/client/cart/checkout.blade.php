@@ -248,22 +248,41 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($cartItems as $item)
+                                                        @php
+                                                            $product = $item->variation
+                                                                ? $item->variation->product
+                                                                : $item->product ?? null;
+                                                            $images =
+                                                                $product && isset($product->images)
+                                                                    ? $product->images
+                                                                    : collect();
+                                                            $featuredImage =
+                                                                $images->where('is_featured', true)->first() ??
+                                                                $images->first();
+                                                            $imagePath = $featuredImage
+                                                                ? asset('storage/' . $featuredImage->image_path)
+                                                                : asset('/path/to/default.jpg');
+                                                            $price = $item->variation
+                                                                ? $item->variation->sale_price ??
+                                                                    ($item->variation->price ?? 0)
+                                                                : $product->sale_price ?? ($product->price ?? 0);
+                                                        @endphp
                                                         <tr>
                                                             <td>
-                                                                <img src="{{ $item->variation->product->getFeaturedMedia()->path ?? '/path/to/default.jpg' }}"
-                                                                    alt=""
+                                                                <img src="{{ $imagePath }}"
+                                                                    alt="{{ $product->name ?? 'Sản phẩm đã xóa' }}"
                                                                     style="width: 60px; height: 60px; object-fit: cover;">
                                                             </td>
                                                             <td class="text-start">
-                                                                <strong>{{ $item->variation->product->name }}</strong>
-                                                                @if ($item->variation->name)
+                                                                <strong>{{ $product->name ?? 'Sản phẩm đã xóa' }}</strong>
+                                                                @if ($item->variation && $item->variation->name)
                                                                     <div class="text-muted small">
                                                                         ({{ $item->variation->name }})
                                                                     </div>
                                                                 @endif
                                                             </td>
                                                             <td>{{ $item->quantity }}</td>
-                                                            <td>{{ number_format(($item->variation->sale_price ?? $item->variation->price) * $item->quantity, 0, ',', '.') }}₫
+                                                            <td>{{ number_format($price * $item->quantity, 0, ',', '.') }}₫
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -272,7 +291,18 @@
                                                     <tr>
                                                         <td></td>
                                                         <th colspan="2" class="text-end">Tạm tính</th>
-                                                        <td>{{ number_format($cartItems->sum(fn($item) => ($item->variation->sale_price ?? $item->variation->price) * $item->quantity), 0, ',', '.') }}₫
+                                                        <td>{{ number_format(
+                                                            $cartItems->sum(function ($item) {
+                                                                $product = $item->variation ? $item->variation->product : $item->product ?? null;
+                                                                $price = $item->variation
+                                                                    ? $item->variation->sale_price ?? ($item->variation->price ?? 0)
+                                                                    : $product->sale_price ?? ($product->price ?? 0);
+                                                                return $price * $item->quantity;
+                                                            }),
+                                                            0,
+                                                            ',',
+                                                            '.',
+                                                        ) }}₫
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -289,7 +319,18 @@
                                                         <td></td>
                                                         <th colspan="2" class="text-end">Tổng cộng</th>
                                                         <td><span
-                                                                class="total-amount">{{ number_format($cartItems->sum(fn($item) => ($item->variation->sale_price ?? $item->variation->price) * $item->quantity), 0, ',', '.') }}₫</span>
+                                                                class="total-amount">{{ number_format(
+                                                                    $cartItems->sum(function ($item) {
+                                                                        $product = $item->variation ? $item->variation->product : $item->product ?? null;
+                                                                        $price = $item->variation
+                                                                            ? $item->variation->sale_price ?? ($item->variation->price ?? 0)
+                                                                            : $product->sale_price ?? ($product->price ?? 0);
+                                                                        return $price * $item->quantity;
+                                                                    }),
+                                                                    0,
+                                                                    ',',
+                                                                    '.',
+                                                                ) }}₫</span>
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -358,7 +399,14 @@
             const appliedVoucherInput = document.getElementById('applied_voucher');
             const useVoucherBtns = document.querySelectorAll('.use-voucher');
 
-            const subtotal = {{ $cartItems->sum(fn($item) => $item->variation->price * (int) $item->quantity) }};
+            @php
+                $subtotal = $cartItems->sum(function ($item) {
+                    $product = $item->variation ? $item->variation->product : $item->product ?? null;
+                    $price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);
+                    return $price * $item->quantity;
+                });
+            @endphp
+            const subtotal = {{ $subtotal }};
             let appliedVoucher = null;
             let discountAmount = 0;
 
@@ -434,7 +482,6 @@
             function showVoucherMessage(message, type) {
                 voucherMessage.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
                     ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>`;
             }
 

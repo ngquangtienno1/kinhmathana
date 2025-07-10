@@ -1055,7 +1055,7 @@
     })(jQuery),
     (function (d) {
         d(document).ready(function () {
-            e.init(), t.init();
+            t.init();
         }),
             d(window).on("load", function () {
                 i.init();
