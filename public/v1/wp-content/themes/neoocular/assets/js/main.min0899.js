@@ -1124,36 +1124,6 @@
                 "function" == typeof e.select2 && e.select2(t);
             },
         },
-            e = {
-                init: function () {
-                    d(document).on(
-                        "click",
-                        ".qodef-quantity-minus, .qodef-quantity-plus",
-                        function (e) {
-                            e.stopPropagation();
-                            var t,
-                                e = d(this),
-                                i = e.siblings(".qodef-quantity-input"),
-                                o = parseFloat(i.data("step")),
-                                n = parseFloat(i.data("max")),
-                                a = parseFloat(i.data("min")),
-                                r = !1,
-                                s =
-                                    "function" == typeof Number.isNaN &&
-                                        Number.isNaN(parseFloat(i.val()))
-                                        ? a
-                                        : parseFloat(i.val());
-                            (r = e.hasClass("qodef-quantity-minus") ? !0 : r)
-                                ? a <= (t = s - o)
-                                    ? i.val(t)
-                                    : i.val(a)
-                                : ((t = s + o),
-                                    void 0 !== n && n <= t ? i.val(n) : i.val(t)),
-                                i.trigger("change");
-                        }
-                    );
-                },
-            },
             t = {
                 init: function () {
                     var e;
