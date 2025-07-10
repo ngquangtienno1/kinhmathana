@@ -4,48 +4,12 @@
     <div id="qodef-page-outer">
         <div class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
             <div class="qodef-m-inner">
-                <div class="qodef-m-content qodef-content-grid" style="text-align:left;">
+                <div class="qodef-m-content qodef-content-grid">
                     <h1 class="qodef-m-title entry-title">Mã giảm giá</h1>
-                    <div itemprop="breadcrumb" class="qodef-breadcrumbs" style="justify-content:flex-start; display:flex; gap:8px;">
+                    <div itemprop="breadcrumb" class="qodef-breadcrumbs">
                         <a itemprop="url" class="qodef-breadcrumbs-link" href="{{ route('client.home') }}"><span itemprop="title">Home</span></a>
                         <span class="qodef-breadcrumbs-separator"></span>
                         <span itemprop="title" class="qodef-breadcrumbs-current">Mã giảm giá</span>
-                    </div>
-
-                    {{-- Danh sách mã giảm giá --}}
-                    <div class="voucher-list" style="margin-top: 32px;">
-                        @forelse($vouchers as $voucher)
-                            <div class="voucher-item"
-                                style="border:1px solid #eee; border-radius:8px; padding:16px; margin-bottom:16px; background:#fafbfc;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <div>
-                                        <div><strong>{{ $voucher->name }}</strong> <span
-                                                style="color:#888;">({{ $voucher->code }})</span></div>
-                                        <div>{{ $voucher->description }}</div>
-                                        <div>
-                                            <span>Giảm:
-                                                @if ($voucher->discount_type === 'percentage')
-                                                    {{ $voucher->discount_value }}%
-                                                @else
-                                                    {{ number_format($voucher->discount_value, 0) }}đ
-                                                @endif
-                                            </span>
-                                            <span style="margin-left:16px;">Đơn tối thiểu:
-                                                {{ number_format($voucher->minimum_purchase, 0) }}đ</span>
-                                        </div>
-                                        <div>HSD: {{ $voucher->end_date->format('d/m/Y H:i') }}</div>
-                                    </div>
-                                    <div style="min-width:180px; text-align:center;">
-                                        <div class="voucher-countdown"
-                                            data-end="{{ $voucher->end_date->format('Y-m-d H:i:s') }}"
-                                            style="font-size:18px; color:#e74c3c; font-weight:bold;"></div>
-                                        <div style="font-size:12px; color:#888;">Còn lại</div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div>Hiện không có mã giảm giá nào.</div>
-                        @endforelse
                     </div>
                 </div>
             </div>
@@ -172,6 +136,31 @@
                         grid-template-columns: 1fr !important;
                     }
                 }
+                .copy-voucher-btn {
+                    background: #2ecc71;
+                    color: #fff;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    font-size: 15px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    transition: background 0.2s, box-shadow 0.2s;
+                    position: relative;
+                }
+                .copy-voucher-btn:hover {
+                    background: #27ae60;
+                    box-shadow: 0 2px 8px rgba(46,204,113,0.15);
+                }
+                .copy-success-msg {
+                    color: #27ae60;
+                    font-size: 13px;
+                    font-weight: 500;
+                    min-height: 18px;
+                    margin-top: 4px;
+                    display: none;
+                    transition: opacity 0.2s;
+                }
             </style>
             <div class="voucher-list-grid">
                 @forelse($vouchers as $voucher)
@@ -197,8 +186,10 @@
                                 <div style="font-size: 12px; color: #888;">Còn lại</div>
                             </div>
                             <div style="text-align: right;">
-                                <button class="copy-voucher-btn" data-code="{{ $voucher->code }}" style="background: #2ecc71; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 15px; cursor: pointer; font-weight: 500;">Sao chép mã</button>
-                                <div class="copy-success-msg" style="display:none; color:#27ae60; font-size:13px; margin-top:4px;">Đã sao chép!</div>
+                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                    <button class="copy-voucher-btn" data-code="{{ $voucher->code }}">Sao chép mã</button>
+                                    <span class="copy-success-msg" style="min-height: 18px; margin-top: 4px; display: none;">Đã sao chép!</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -210,29 +201,45 @@
     </div>
 @endsection
 
-@section('scripts')
-    <script>
-        function startCountdown() {
-            document.querySelectorAll('.voucher-countdown').forEach(function(el) {
-                var end = new Date(el.getAttribute('data-end').replace(/-/g, '/')).getTime();
-
-                function updateCountdown() {
-                    var now = new Date().getTime();
-                    var distance = end - now;
-                    if (distance < 0) {
-                        el.innerHTML = 'Đã hết hạn';
-                        return;
-                    }
-                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    el.innerHTML = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
-                    setTimeout(updateCountdown, 1000);
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.copy-voucher-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var code = btn.getAttribute('data-code');
+            // Copy to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code);
+            } else {
+                var textarea = document.createElement('textarea');
+                textarea.value = code;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+            // Hiện thông báo
+            var parent = btn.parentElement;
+            var msg = parent.querySelector('.copy-success-msg');
+            if (msg) {
+                msg.style.display = 'inline-block';
+            }
+            setTimeout(function() {
+                if (msg) {
+                    msg.style.display = 'none';
                 }
-                updateCountdown();
-            });
-        }
-        document.addEventListener('DOMContentLoaded', startCountdown);
-    </script>
-@endsection
+            }, 1500);
+        });
+        btn.addEventListener('mouseleave', function() {
+            var parent = btn.parentElement;
+            var msg = parent.querySelector('.copy-success-msg');
+            if (msg) {
+                msg.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+@endpush
+
+
