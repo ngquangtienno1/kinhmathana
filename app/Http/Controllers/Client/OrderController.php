@@ -16,6 +16,7 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         $status = $request->get('status');
+        $q = $request->get('q');
         $query = Order::with(['items.product.images'])
             ->where('user_id', $user->id)
             ->orderByDesc('created_at');
@@ -25,6 +26,20 @@ class OrderController extends Controller
             } else {
                 $query->where('status', $status);
             }
+        }
+        // Bổ sung tìm kiếm theo mã đơn hàng hoặc tên sản phẩm
+        if ($q) {
+            $query->where(function($sub) use ($q) {
+                $sub->where('order_number', 'like', "%$q%")
+                    ->orWhereHas('items', function($q2) use ($q) {
+                        $q2->where('product_name', 'like', "%$q%")
+                            ->orWhereHas('product', function($q3) use ($q) {
+                                $q3->where('name', 'like', "%$q%")
+                                    ->orWhere('slug', 'like', "%$q%")
+                                    ;
+                            });
+                    });
+            });
         }
         $orders = $query->paginate(10);
         return view('client.orders.index', compact('orders', 'status'));
