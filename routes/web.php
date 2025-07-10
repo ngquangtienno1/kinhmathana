@@ -97,7 +97,11 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
-    //Users routes 
+    // Route lấy chi tiết đơn hàng cho client (AJAX popup)
+    Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
+    Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
+
+    //Users routes
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
     });
@@ -105,6 +109,7 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
+        Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
     });
 
     Route::prefix('cart')->name('cart.')->group(function () {
@@ -146,6 +151,9 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientContactController::class, 'index'])->name('index');
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
+
+    // Route lấy danh sách lý do hủy đơn hàng cho client
+    Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

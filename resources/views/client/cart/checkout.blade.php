@@ -29,24 +29,29 @@
                                     <div class="woocommerce-info">
                                         Bạn có mã giảm giá?
                                     </div>
-                                     <!-- Form mã giảm giá chuyển sang đây -->
-                                     <form class="checkout_coupon woocommerce-form-coupon mt-4" method="post" style="display:block;">
+                                    <!-- Form mã giảm giá chuyển sang đây -->
+                                    <form class="checkout_coupon woocommerce-form-coupon mt-4" method="post"
+                                        style="display:block;">
                                         <p class="form-row form-row-first">
                                             <label for="voucher_code" class="screen-reader-text">Mã giảm giá:</label>
-                                            <input type="text" name="voucher_code" class="input-text" placeholder="Nhập mã giảm giá" id="voucher_code" value="">
-                                            <input type="hidden" id="applied_voucher" name="applied_voucher" value="">
+                                            <input type="text" name="voucher_code" class="input-text"
+                                                placeholder="Nhập mã giảm giá" id="voucher_code" value="">
+                                            <input type="hidden" id="applied_voucher" name="applied_voucher"
+                                                value="">
                                         </p>
                                         <p class="form-row form-row-last">
                                             <button type="button" class="button" id="apply_voucher_btn">Áp dụng</button>
                                         </p>
                                         <div id="voucher_message" class="mt-2"></div>
                                         <div>
-                                            @if(isset($promotions) && $promotions->count())
+                                            @if (isset($promotions) && $promotions->count())
                                                 <div class="voucher-label">Voucher có sẵn:</div>
                                                 <div class="voucher-suggestion-list">
-                                                    @foreach($promotions as $promotion)
-                                                        <span class="voucher-suggestion-item use-voucher" data-code="{{ $promotion->code }}">
-                                                            <i class="fa fa-ticket-alt"></i>{{ $promotion->code }} - {{ $promotion->name }}
+                                                    @foreach ($promotions as $promotion)
+                                                        <span class="voucher-suggestion-item use-voucher"
+                                                            data-code="{{ $promotion->code }}">
+                                                            <i class="fa fa-ticket-alt"></i>{{ $promotion->code }} -
+                                                            {{ $promotion->name }}
                                                         </span>
                                                     @endforeach
                                                 </div>
@@ -65,38 +70,53 @@
                                             <input type="hidden" name="customer_name" value="{{ auth()->user()->name }}">
                                             <input type="hidden" name="customer_phone" value="{{ auth()->user()->phone }}">
                                             <input type="hidden" name="customer_email" value="{{ auth()->user()->email }}">
-                                            <input type="hidden" name="customer_address" value="{{ auth()->user()->address }}">
-                                            <input type="hidden" name="shipping_address" value="{{ old('receiver_address', auth()->user()->address) }}">
-                                            <input type="hidden" name="applied_voucher" id="applied_voucher_hidden" value="">
+                                            <input type="hidden" name="customer_address"
+                                                value="{{ auth()->user()->address }}">
+                                            <input type="hidden" name="shipping_address"
+                                                value="{{ old('receiver_address', auth()->user()->address) }}">
+                                            <input type="hidden" name="applied_voucher" id="applied_voucher_hidden"
+                                                value="">
                                             <input type="hidden" name="note" id="order_note_hidden" value="">
                                             <h3>Thông tin người nhận</h3>
                                             <div class="woocommerce-billing-fields__field-wrapper">
                                                 <p class="form-row form-row-first validate-required">
-                                                    <label for="receiver_name">Họ tên người nhận <abbr class="required" title="required">*</abbr></label>
+                                                    <label for="receiver_name">Họ tên người nhận <abbr class="required"
+                                                            title="required">*</abbr></label>
                                                     <span class="woocommerce-input-wrapper">
-                                                        <input type="text" class="input-text" name="receiver_name" id="receiver_name" placeholder="" value="{{ old('receiver_name', auth()->user()->name) }}">
+                                                        <input type="text" class="input-text" name="receiver_name"
+                                                            id="receiver_name" placeholder=""
+                                                            value="{{ old('receiver_name', auth()->user()->name) }}">
                                                     </span>
                                                 </p>
                                                 <p class="form-row form-row-last validate-required">
-                                                    <label for="receiver_phone">Số điện thoại <abbr class="required" title="required">*</abbr></label>
+                                                    <label for="receiver_phone">Số điện thoại <abbr class="required"
+                                                            title="required">*</abbr></label>
                                                     <span class="woocommerce-input-wrapper">
-                                                        <input type="text" class="input-text" name="receiver_phone" id="receiver_phone" placeholder="" value="{{ old('receiver_phone', auth()->user()->phone) }}">
+                                                        <input type="text" class="input-text" name="receiver_phone"
+                                                            id="receiver_phone" placeholder=""
+                                                            value="{{ old('receiver_phone', auth()->user()->phone) }}">
                                                     </span>
                                                 </p>
                                                 <p class="form-row form-row-wide validate-required">
-                                                    <label for="receiver_address">Địa chỉ nhận hàng <abbr class="required" title="required">*</abbr></label>
+                                                    <label for="receiver_address">Địa chỉ nhận hàng <abbr class="required"
+                                                            title="required">*</abbr></label>
                                                     <span class="woocommerce-input-wrapper">
-                                                        <input type="text" class="input-text" name="receiver_address" id="receiver_address" placeholder="" value="{{ old('receiver_address', auth()->user()->address) }}">
+                                                        <input type="text" class="input-text" name="receiver_address"
+                                                            id="receiver_address" placeholder=""
+                                                            value="{{ old('receiver_address', auth()->user()->address) }}">
                                                     </span>
                                                 </p>
                                                 <p class="form-row form-row-wide">
                                                     <label for="receiver_email">Email</label>
                                                     <span class="woocommerce-input-wrapper">
-                                                        <input type="email" class="input-text" name="receiver_email" id="receiver_email" placeholder="" value="{{ old('receiver_email', auth()->user()->email) }}">
+                                                        <input type="email" class="input-text" name="receiver_email"
+                                                            id="receiver_email" placeholder=""
+                                                            value="{{ old('receiver_email', auth()->user()->email) }}">
                                                     </span>
                                                 </p>
                                                 <p class="form-row notes" id="order_comments_field">
-                                                    <label for="order_comments">Ghi chú đơn hàng <span class="optional">(tùy chọn)</span></label>
+                                                    <label for="order_comments">Ghi chú đơn hàng <span
+                                                            class="optional">(tùy chọn)</span></label>
                                                     <span class="woocommerce-input-wrapper">
                                                         <textarea name="note" class="input-text" id="order_comments" placeholder="" rows="2" cols="5">{{ old('note') }}</textarea>
                                                     </span>
@@ -108,29 +128,45 @@
                                                     <div class="col-12 col-md-12">
                                                         <div class="row">
                                                             <div class="col-12 col-md-6">
-                                                                <div class="shipping-method-card" style="border:1px solid #eee;  padding:12px; min-width:0;">
+                                                                <div class="shipping-method-card"
+                                                                    style="border:1px solid #eee;  padding:12px; min-width:0;">
                                                                     <div class="d-flex flex-wrap align-items-center mb-2">
                                                                         <div class="form-check mb-0">
-                                                                            <input class="form-check-input" type="radio" name="shipping_method" id="free_shipping" value="free" checked>
-                                                                            <label class="form-check-label fs-8 text-body" for="free_shipping">Miễn phí vận chuyển</label>
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="shipping_method" id="free_shipping"
+                                                                                value="free" checked>
+                                                                            <label class="form-check-label fs-8 text-body"
+                                                                                for="free_shipping">Miễn phí vận
+                                                                                chuyển</label>
                                                                         </div>
-                                                                        <span class="d-inline-block text-body-emphasis fw-bold ms-2">0₫</span>
+                                                                        <span
+                                                                            class="d-inline-block text-body-emphasis fw-bold ms-2">0₫</span>
                                                                     </div>
                                                                     <div class="ps-2">
-                                                                        <h6 class="text-body-tertiary mb-2">Dự kiến giao hàng: 3-5 ngày</h6>
-                                                                        <h6 class="text-info lh-base mb-0">Giao hàng miễn phí cho đơn hàng từ 500.000₫!</h6>
+                                                                        <h6 class="text-body-tertiary mb-2">Dự kiến giao
+                                                                            hàng: 3-5 ngày</h6>
+                                                                        <h6 class="text-info lh-base mb-0">Giao hàng miễn
+                                                                            phí cho đơn hàng từ 500.000₫!</h6>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             @foreach ($shippingProviders as $provider)
                                                                 <div class="col-12 col-md-6">
-                                                                    <div class="shipping-method-card" style="border:1px solid #eee;  padding:12px; min-width:0;">
-                                                                        <div class="d-flex flex-wrap align-items-center mb-2">
+                                                                    <div class="shipping-method-card"
+                                                                        style="border:1px solid #eee;  padding:12px; min-width:0;">
+                                                                        <div
+                                                                            class="d-flex flex-wrap align-items-center mb-2">
                                                                             <div class="form-check mb-0">
-                                                                                <input class="form-check-input" type="radio" name="shipping_method" id="provider_{{ $provider->id }}" value="{{ $provider->code }}">
-                                                                                <label class="form-check-label fs-8 text-body" for="provider_{{ $provider->id }}">{{ $provider->name }}</label>
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="shipping_method"
+                                                                                    id="provider_{{ $provider->id }}"
+                                                                                    value="{{ $provider->code }}">
+                                                                                <label
+                                                                                    class="form-check-label fs-8 text-body"
+                                                                                    for="provider_{{ $provider->id }}">{{ $provider->name }}</label>
                                                                             </div>
-                                                                            <span class="d-inline-block text-body-emphasis fw-bold ms-2">
+                                                                            <span
+                                                                                class="d-inline-block text-body-emphasis fw-bold ms-2">
                                                                                 @if ($provider->shippingFees->count() > 0)
                                                                                     {{ number_format($provider->shippingFees->first()->base_fee, 0, ',', '.') }}₫
                                                                                 @else
@@ -138,7 +174,9 @@
                                                                                 @endif
                                                                             </span>
                                                                             @if ($provider->code === 'GHN')
-                                                                                <span class="badge badge-phoenix badge-phoenix-warning ms-2 ms-lg-4 ms-xl-2">Phổ biến</span>
+                                                                                <span
+                                                                                    class="badge badge-phoenix badge-phoenix-warning ms-2 ms-lg-4 ms-xl-2">Phổ
+                                                                                    biến</span>
                                                                             @endif
                                                                         </div>
                                                                         <div class="ps-2">
@@ -153,7 +191,8 @@
                                                                                     Dự kiến giao hàng: 2-4 ngày
                                                                                 @endif
                                                                             </h6>
-                                                                            <h6 class="text-info lh-base mb-0">{{ $provider->description }}</h6>
+                                                                            <h6 class="text-info lh-base mb-0">
+                                                                                {{ $provider->description }}</h6>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -167,12 +206,19 @@
                                                 <div class="row g-4 mb-4">
                                                     @foreach ($paymentMethods as $method)
                                                         <div class="col-12 col-md-6">
-                                                            <div class="payment-method-card" style="border:1px solid #eee;  padding:12px; min-width:0;">
+                                                            <div class="payment-method-card"
+                                                                style="border:1px solid #eee;  padding:12px; min-width:0;">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" id="payment_{{ $method->id }}" type="radio" name="payment_method" value="{{ $method->code }}" {{ old('payment_method') == $method->code ? 'checked' : '' }}>
-                                                                    <label class="form-check-label fs-8 text-body" for="payment_{{ $method->id }}">
+                                                                    <input class="form-check-input"
+                                                                        id="payment_{{ $method->id }}" type="radio"
+                                                                        name="payment_method" value="{{ $method->code }}"
+                                                                        {{ old('payment_method') == $method->code ? 'checked' : '' }}>
+                                                                    <label class="form-check-label fs-8 text-body"
+                                                                        for="payment_{{ $method->id }}">
                                                                         @if ($method->logo)
-                                                                            <img src="{{ asset('storage/' . $method->logo) }}" alt="{{ $method->name }}" class="me-2" style="height: 20px;">
+                                                                            <img src="{{ asset('storage/' . $method->logo) }}"
+                                                                                alt="{{ $method->name }}" class="me-2"
+                                                                                style="height: 20px;">
                                                                         @endif
                                                                         {{ $method->name }}
                                                                     </label>
@@ -204,16 +250,21 @@
                                                     @foreach ($cartItems as $item)
                                                         <tr>
                                                             <td>
-                                                                <img src="{{ $item->variation->product->getFeaturedMedia()->path ?? '/path/to/default.jpg' }}" alt="" style="width: 60px; height: 60px; object-fit: cover;">
+                                                                <img src="{{ $item->variation->product->getFeaturedMedia()->path ?? '/path/to/default.jpg' }}"
+                                                                    alt=""
+                                                                    style="width: 60px; height: 60px; object-fit: cover;">
                                                             </td>
                                                             <td class="text-start">
                                                                 <strong>{{ $item->variation->product->name }}</strong>
                                                                 @if ($item->variation->name)
-                                                                    <div class="text-muted small">({{ $item->variation->name }})</div>
+                                                                    <div class="text-muted small">
+                                                                        ({{ $item->variation->name }})
+                                                                    </div>
                                                                 @endif
                                                             </td>
                                                             <td>{{ $item->quantity }}</td>
-                                                            <td>{{ number_format(($item->variation->sale_price ?? $item->variation->price) * $item->quantity, 0, ',', '.') }}₫</td>
+                                                            <td>{{ number_format(($item->variation->sale_price ?? $item->variation->price) * $item->quantity, 0, ',', '.') }}₫
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -221,7 +272,8 @@
                                                     <tr>
                                                         <td></td>
                                                         <th colspan="2" class="text-end">Tạm tính</th>
-                                                        <td>{{ number_format($cartItems->sum(fn($item) => ($item->variation->sale_price ?? $item->variation->price) * $item->quantity), 0, ',', '.') }}₫</td>
+                                                        <td>{{ number_format($cartItems->sum(fn($item) => ($item->variation->sale_price ?? $item->variation->price) * $item->quantity), 0, ',', '.') }}₫
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td></td>
@@ -236,12 +288,14 @@
                                                     <tr class="fw-bold">
                                                         <td></td>
                                                         <th colspan="2" class="text-end">Tổng cộng</th>
-                                                        <td><span class="total-amount">{{ number_format($cartItems->sum(fn($item) => ($item->variation->sale_price ?? $item->variation->price) * $item->quantity), 0, ',', '.') }}₫</span></td>
+                                                        <td><span
+                                                                class="total-amount">{{ number_format($cartItems->sum(fn($item) => ($item->variation->sale_price ?? $item->variation->price) * $item->quantity), 0, ',', '.') }}₫</span>
+                                                        </td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
                                         </div>
-                                       
+
                                     </div>
                                 </div>
                             </div>
@@ -252,43 +306,45 @@
         </div>
     </div>
     <style>
-    .voucher-label {
-        font-weight: bold;
-        color: black;
-        margin-bottom: 10px;
-    }
+        .voucher-label {
+            font-weight: bold;
+            color: black;
+            margin-bottom: 10px;
+        }
 
-    .voucher-suggestion-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+        .voucher-suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .voucher-suggestion-item {
-        background-color: #2c2c2c; /* màu nền tối */
-        color: #fff;
-        border: 1px solid #444;
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
+        .voucher-suggestion-item {
+            background-color: #2c2c2c;
+            /* màu nền tối */
+            color: #fff;
+            border: 1px solid #444;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-    .voucher-suggestion-item i {
-        color: #f1c40f; /* màu vàng nổi bật cho icon */
-    }
+        .voucher-suggestion-item i {
+            color: #f1c40f;
+            /* màu vàng nổi bật cho icon */
+        }
 
-    .voucher-suggestion-item:hover {
-        background-color: #3a3a3a;
-        border-color: #f1c40f;
-        box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
-        transform: translateY(-2px);
-    }
-</style>
+        .voucher-suggestion-item:hover {
+            background-color: #3a3a3a;
+            border-color: #f1c40f;
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

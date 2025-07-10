@@ -100,7 +100,7 @@
                                                             {{ $item->variation->product->name }}
                                                         </a>
                                                         <div>
-                                                            @if ($item->variation->name)
+                                                            @if ($item->variation && $item->variation->name)
                                                                 <small>Phân loại: {{ $item->variation->name }}</small>
                                                             @endif
                                                         </div>
@@ -108,7 +108,7 @@
                                                     <td class="product-price" data-title="Đơn giá">
                                                         {{-- Hiển thị giá bán (ưu tiên giá khuyến mãi nếu có) --}}
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($item->variation->sale_price ?? $item->variation->price, 0, ',', '.') }}₫</bdi>
+                                                            <bdi>{{ number_format($item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                     <td class="product-quantity" data-title="Số lượng">
@@ -122,7 +122,8 @@
                                                             <span class="qodef-quantity-minus"></span>
                                                             <input type="text" id="quantity_{{ $item->id }}"
                                                                 class="input-text qty text qodef-quantity-input"
-                                                                data-step="1" data-min="1" data-stock="{{ $item->variation->stock }}"
+                                                                data-step="1" data-min="1"
+                                                                data-stock="{{ $item->variation->stock }}"
                                                                 name="cart[{{ $item->id }}][qty]"
                                                                 value="{{ $item->quantity }}" title="Số lượng"
                                                                 size="4" placeholder="" inputmode="numeric">
@@ -132,7 +133,7 @@
                                                     <td class="product-subtotal" data-title="Thành tiền">
                                                         {{-- Thành tiền = đơn giá * số lượng --}}
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format(($item->variation->sale_price ?? $item->variation->price) * $item->quantity, 0, ',', '.') }}₫</bdi>
+                                                            <bdi>{{ number_format(($item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price) * $item->quantity, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -141,7 +142,6 @@
                                                     <td colspan="6">Giỏ hàng của bạn đang trống.</td>
                                                 </tr>
                                             @endforelse
-
 
                                         </tbody>
                                     </table>
@@ -167,7 +167,12 @@
                                             @php
                                                 // Tính tổng tạm tính (chưa giảm giá)
                                                 $subtotal = $cartItems->sum(function ($item) {
-                                                    return ($item->variation->sale_price ?? $item->variation->price) *
+                                                    $cartProduct = $item->variation
+                                                        ? $item->variation->product
+                                                        : $item->product;
+                                                    return ($item->variation
+                                                        ? $item->variation->sale_price ?? $item->variation->price
+                                                        : $cartProduct->sale_price ?? $cartProduct->price) *
                                                         $item->quantity;
                                                 });
                                             @endphp
@@ -219,6 +224,8 @@
                 const plus = group.querySelector('.qodef-quantity-plus');
                 const input = group.querySelector('input');
                 const id = group.getAttribute('data-id');
+                let max = input.getAttribute('data-max');
+                max = max ? parseInt(max) : null;
 
                 if (minus) {
                     minus.addEventListener('click', function() {
@@ -246,6 +253,10 @@
                 input.addEventListener('change', function() {
                     let val = parseInt(input.value) || 1;
                     if (val < 1) val = 1;
+                    if (max && val > max) {
+                        showCartAlert('Số lượng đã đạt tối đa tồn kho!', 'danger');
+                        val = max;
+                    }
                     input.value = val;
                     updateCart(id, val, group);
                 });

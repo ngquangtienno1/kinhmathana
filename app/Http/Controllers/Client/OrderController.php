@@ -52,14 +52,35 @@ class OrderController extends Controller
         return view('client.orders.show', compact('order'));
     }
 
-    public function cancel($id)
+    public function cancel(Request $request, $id)
     {
-        $user = Auth::user();
-        $order = Order::where('user_id', $user->id)->where('status', 'pending')->findOrFail($id);
+        $order = Order::findOrFail($id);
+        if ($order->status !== 'pending') {
+            return response()->json(['success' => false, 'message' => 'Đơn hàng đã được duyệt hoặc thay đổi trạng thái, không thể hủy.']);
+        }
+
+        $reasonId = $request->input('cancellation_reason_id');
+        if (!$reasonId) {
+            return response()->json(['success' => false, 'message' => 'Vui lòng chọn lý do hủy đơn hàng!']);
+        }
+
+        if (str_starts_with($reasonId, 'other:')) {
+            $newReason = trim(substr($reasonId, 6));
+            if (!$newReason) {
+                return response()->json(['success' => false, 'message' => 'Vui lòng nhập lý do hủy mới!']);
+            }
+            $order->cancellation_reason_id = null;
+            $order->cancellation_reason_text = $newReason;
+        } else {
+            $order->cancellation_reason_id = $reasonId;
+            $order->cancellation_reason_text = null;
+        }
+
         $order->status = 'cancelled_by_customer';
         $order->cancelled_at = now();
         $order->save();
-        return redirect()->route('client.orders.index')->with('success', 'Đã hủy đơn hàng thành công!');
+
+        return response()->json(['success' => true]);
     }
 
     public function reviewForm($orderId, $itemId)
@@ -172,4 +193,4 @@ class OrderController extends Controller
         return redirect()->route('client.orders.show', $order->id)
             ->with('success', 'Đã xác nhận nhận hàng thành công! Bây giờ bạn có thể đánh giá sản phẩm.');
     }
-} 
+}
