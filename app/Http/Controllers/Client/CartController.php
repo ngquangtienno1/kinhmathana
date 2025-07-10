@@ -45,9 +45,18 @@ class CartController extends Controller
         ]);
         $variationId = $request->variation_id;
         $quantity = $request->quantity;
+        $variation = Variation::findOrFail($variationId);
+        $maxStock = $variation->stock_quantity ?? $variation->stock ?? 0;
+        if ($maxStock <= 0) {
+            return redirect()->route('client.cart.index')->with('error', 'Sản phẩm đã hết hàng!');
+        }
         $cartItem = Cart::where('user_id', $user->id)
             ->where('variation_id', $variationId)
             ->first();
+        $currentQty = $cartItem ? $cartItem->quantity : 0;
+        if ($currentQty + $quantity > $maxStock) {
+            return redirect()->route('client.cart.index')->with('error', 'Số lượng vượt quá tồn kho!');
+        }
         if ($cartItem) {
             $cartItem->quantity += $quantity;
             $cartItem->save();
@@ -68,6 +77,14 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
+        $variation = $cartItem->variation;
+        $maxStock = $variation->stock_quantity ?? $variation->stock ?? 0;
+        if ($request->quantity > $maxStock) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Số lượng vượt quá tồn kho!',
+            ]);
+        }
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
@@ -253,6 +270,11 @@ class CartController extends Controller
         $totalAmount = $cartItems->sum(function ($item) {
             return $item->variation->price * $item->quantity;
         });
+
+        // // Nếu chọn miễn phí vận chuyển mà tổng tiền < 500.000₫ thì báo lỗi
+        // if ($request->shipping_method === 'free' && $totalAmount < 500000) {
+        //     return back()->withErrors(['shipping_method' => 'Đơn hàng phải từ 500.000₫ mới được miễn phí vận chuyển!'])->withInput();
+        // }
 
         // Tính phí vận chuyển dựa trên phương thức được chọn
         $shippingCost = 0;

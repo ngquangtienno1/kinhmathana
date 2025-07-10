@@ -1,6 +1,36 @@
 @extends('client.layouts.app')
 
 @section('content')
+    <style>
+        .custom-quantity-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .custom-quantity-input {
+            width: 48px;
+            height: 32px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            margin: 0 2px;
+        }
+
+        /* Thêm border cho bảng giỏ hàng */
+        .shop_table,
+        .shop_table th,
+        .shop_table td {
+            border-bottom: 1px solid #e0e0e0 !important;
+        }
+
+        .shop_table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+    </style>
     <div id="qodef-page-outer">
         <div
             class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
@@ -28,32 +58,35 @@
                                     <table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents"
                                         cellspacing="0">
                                         <thead>
-                                            <tr>
-                                                <th class="product-remove"><span class="screen-reader-text">Remove
-                                                        item</span></th>
-                                                <th class="product-thumbnail"><span class="screen-reader-text">Thumbnail
-                                                        image</span></th>
-                                                <th class="product-name">Sản phẩm</th>
-                                                <th class="product-price">Đơn giá</th>
-                                                <th class="product-quantity">Số lượng</th>
-                                                <th class="product-subtotal">Thành tiền</th>
-                                            </tr>
+                                            <th class="product-remove"><span class="screen-reader-text">Remove
+                                                    item</span></th>
+                                            <th class="product-thumbnail"><span class="screen-reader-text">Thumbnail
+                                                    image</span></th>
+                                            <th class="product-name">Sản phẩm</th>
+                                            <th class="product-price">Đơn giá</th>
+                                            <th class="product-quantity">Số lượng</th>
+                                            <th class="product-subtotal">Thành tiền</th>
                                         </thead>
                                         <tbody>
+                                            {{-- ========================
+                                                Hiển thị danh sách sản phẩm trong giỏ hàng
+                                                ======================== --}}
                                             @php $rowIndex = 0; @endphp
                                             @forelse($cartItems as $item)
+                                                {{-- Mỗi dòng là một sản phẩm trong giỏ hàng --}}
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
                                                     <td class="product-remove">
-                                                        <button type="button"
-                                                                class="remove btn-remove-cart-item"
-                                                                data-form-id="remove-cart-item-{{ $item->id }}"
-                                                                aria-label="Xóa {{ $item->variation->product->name }} khỏi giỏ hàng"
-                                                                data-product_id="{{ $item->id }}"
-                                                                style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
+                                                        {{-- Nút xóa sản phẩm khỏi giỏ hàng, submit form ẩn bên dưới --}}
+                                                        <button type="button" class="remove btn-remove-cart-item"
+                                                            data-form-id="remove-cart-item-{{ $item->id }}"
+                                                            aria-label="Xóa {{ $item->variation->product->name }} khỏi giỏ hàng"
+                                                            data-product_id="{{ $item->id }}"
+                                                            style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
                                                             &times;
                                                         </button>
                                                     </td>
                                                     <td class="product-thumbnail">
+                                                        {{-- Ảnh sản phẩm --}}
                                                         <a
                                                             href="{{ route('client.products.show', $item->variation->product->slug) }}">
                                                             <img src="{{ $item->variation->product->getFeaturedMedia()->path ?? '/path/to/default.jpg' }}"
@@ -61,6 +94,7 @@
                                                         </a>
                                                     </td>
                                                     <td class="product-name" data-title="Sản phẩm">
+                                                        {{-- Tên sản phẩm và phân loại (nếu có) --}}
                                                         <a
                                                             href="{{ route('client.products.show', $item->variation->product->slug) }}">
                                                             {{ $item->variation->product->name }}
@@ -72,33 +106,31 @@
                                                         </div>
                                                     </td>
                                                     <td class="product-price" data-title="Đơn giá">
+                                                        {{-- Hiển thị giá bán (ưu tiên giá khuyến mãi nếu có) --}}
                                                         <span class="woocommerce-Price-amount amount">
                                                             <bdi>{{ number_format($item->variation->sale_price ?? $item->variation->price, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                     <td class="product-quantity" data-title="Số lượng">
-                                                        <div class="qodef-quantity-buttons quantity" data-id="{{ $item->id }}">
-                                                            <label class="screen-reader-text" for="quantity_{{ $item->id }}">
+                                                        {{-- Nhóm nút tăng/giảm và input số lượng --}}
+                                                        <div class="qodef-quantity-buttons quantity"
+                                                            data-id="{{ $item->id }}">
+                                                            <label class="screen-reader-text"
+                                                                for="quantity_{{ $item->id }}">
                                                                 {{ $item->variation->product->name }} số lượng
                                                             </label>
                                                             <span class="qodef-quantity-minus"></span>
-                                                            <input
-                                                                type="text"
-                                                                id="quantity_{{ $item->id }}"
+                                                            <input type="text" id="quantity_{{ $item->id }}"
                                                                 class="input-text qty text qodef-quantity-input"
-                                                                data-step="1"
-                                                                data-min="1"
+                                                                data-step="1" data-min="1" data-stock="{{ $item->variation->stock }}"
                                                                 name="cart[{{ $item->id }}][qty]"
-                                                                value="{{ $item->quantity }}"
-                                                                title="Số lượng"
-                                                                size="4"
-                                                                placeholder=""
-                                                                inputmode="numeric"
-                                                            >
+                                                                value="{{ $item->quantity }}" title="Số lượng"
+                                                                size="4" placeholder="" inputmode="numeric">
                                                             <span class="qodef-quantity-plus"></span>
                                                         </div>
                                                     </td>
                                                     <td class="product-subtotal" data-title="Thành tiền">
+                                                        {{-- Thành tiền = đơn giá * số lượng --}}
                                                         <span class="woocommerce-Price-amount amount">
                                                             <bdi>{{ number_format(($item->variation->sale_price ?? $item->variation->price) * $item->quantity, 0, ',', '.') }}₫</bdi>
                                                         </span>
@@ -110,32 +142,16 @@
                                                 </tr>
                                             @endforelse
 
-                                            <tr>
-                                                <td colspan="6" class="actions">
-                                                    <div class="coupon" style="position:relative;">
-                                                        <label for="coupon_code" class="screen-reader-text">Mã giảm giá:</label>
-                                                        <input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="Nhập mã giảm giá" autocomplete="off" />
-                                                        <ul id="coupon-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:10;background:#fff;border:1px solid #ddd;list-style:none;padding:0;margin:2px 0 0 0;max-height:180px;overflow:auto;">
-                                                            @foreach($promotions as $promo)
-                                                                <li class="coupon-suggestion-item" data-code="{{ $promo->code }}" style="padding:6px 12px;cursor:pointer;">{{ $promo->code }} - {{ $promo->name }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                        <button type="button" class="button" id="apply-coupon-btn" name="apply_coupon" value="Áp dụng">Áp dụng</button>
-                                                    </div>
-                                                    <button type="submit" class="button" name="update_cart"
-                                                        value="Cập nhật giỏ hàng">Cập nhật giỏ hàng</button>
-                                                    <input type="hidden" id="woocommerce-cart-nonce"
-                                                        name="woocommerce-cart-nonce" value="665c378ca6" />
-                                                    <input type="hidden" name="_wp_http_referer" value="/cart/" />
-                                                </td>
-                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </form>
 
                                 <!-- Render các form xóa ẩn ngoài form lớn -->
-                                @foreach($cartItems as $item)
-                                    <form id="remove-cart-item-{{ $item->id }}" action="{{ route('client.cart.remove', $item->id) }}" method="POST" style="display:none;">
+                                @foreach ($cartItems as $item)
+                                    <form id="remove-cart-item-{{ $item->id }}"
+                                        action="{{ route('client.cart.remove', $item->id) }}" method="POST"
+                                        style="display:none;">
                                         @csrf
                                         @method('DELETE')
                                     </form>
@@ -149,6 +165,7 @@
 
                                         <table cellspacing="0" class="shop_table shop_table_responsive">
                                             @php
+                                                // Tính tổng tạm tính (chưa giảm giá)
                                                 $subtotal = $cartItems->sum(function ($item) {
                                                     return ($item->variation->sale_price ?? $item->variation->price) *
                                                         $item->quantity;
@@ -162,7 +179,8 @@
                                             </tr>
                                             <tr class="cart-discount" style="display:none;">
                                                 <th>Giảm giá</th>
-                                                <td data-title="Giảm giá"><span class="woocommerce-Price-amount amount"><bdi id="discount-amount">0₫</bdi></span></td>
+                                                <td data-title="Giảm giá"><span class="woocommerce-Price-amount amount"><bdi
+                                                            id="discount-amount">0₫</bdi></span></td>
                                             </tr>
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
@@ -193,48 +211,9 @@
 @endsection
 
 @push('scripts')
-    <style>
-        .custom-quantity-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .custom-quantity-btn {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #ddd;
-            background: #fff;
-            color: #222;
-            font-size: 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s, border 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-
-        .custom-quantity-btn:hover {
-            background: #222;
-            color: #fff;
-            border: 1px solid #222;
-        }
-
-        .custom-quantity-input {
-            width: 48px;
-            height: 32px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            margin: 0 2px;
-        }
-    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý tăng/giảm số lượng sản phẩm
             document.querySelectorAll('.qodef-quantity-buttons').forEach(function(group) {
                 const minus = group.querySelector('.qodef-quantity-minus');
                 const plus = group.querySelector('.qodef-quantity-plus');
@@ -245,7 +224,7 @@
                     minus.addEventListener('click', function() {
                         let val = parseInt(input.value) || 1;
                         if (val > 1) {
-                            input.value = val - 1;
+                            input.value = val - 0;
                             input.dispatchEvent(new Event('change'));
                         }
                     });
@@ -253,8 +232,15 @@
                 if (plus) {
                     plus.addEventListener('click', function() {
                         let val = parseInt(input.value) || 1;
-                        input.value = val + 1;
-                        input.dispatchEvent(new Event('change'));
+                        // Lấy số lượng tồn kho từ thuộc tính data-stock
+                        let maxStock = parseInt(input.getAttribute('data-stock')) || 1;
+                        if (val < maxStock) {
+                            input.value = val + 1;
+                            input.dispatchEvent(new Event('change'));
+                        } else {
+                            input.value = maxStock;
+                            alert('Số lượng vượt quá tồn kho!');
+                        }
                     });
                 }
                 input.addEventListener('change', function() {
@@ -265,103 +251,43 @@
                 });
             });
 
+            // Hàm gửi request cập nhật số lượng sản phẩm lên server
             function updateCart(id, qty, group) {
                 fetch("{{ url('client/cart/update') }}/" + id, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ quantity: qty })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        group.closest('tr').querySelector('.product-subtotal bdi').innerText = data.item_total + '₫';
-                        document.querySelectorAll('.cart-subtotal bdi, .order-total bdi').forEach(function(el) {
-                            el.innerText = data.cart_total + '₫';
-                        });
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra!');
-                    }
-                })
-                .catch(() => alert('Có lỗi xảy ra!'));
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            quantity: qty
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Cập nhật lại thành tiền và tổng tiền trên giao diện
+                            group.closest('tr').querySelector('.product-subtotal bdi').innerText = data
+                                .item_total + '₫';
+                            document.querySelectorAll('.cart-subtotal bdi, .order-total bdi').forEach(function(
+                                el) {
+                                el.innerText = data.cart_total + '₫';
+                            });
+                        } else {
+                            alert(data.message || 'Có lỗi xảy ra!');
+                        }
+                    })
+                    .catch(() => alert('Có lỗi xảy ra!'));
             }
 
+            // Xử lý nút xóa sản phẩm khỏi giỏ hàng
             document.querySelectorAll('.btn-remove-cart-item').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     var formId = btn.getAttribute('data-form-id');
                     var form = document.getElementById(formId);
                     if (form) form.submit();
                 });
-            });
-
-            // Gợi ý mã giảm giá
-            const input = document.getElementById('coupon_code');
-            const suggestionBox = document.getElementById('coupon-suggestions');
-            const suggestionItems = suggestionBox ? suggestionBox.querySelectorAll('.coupon-suggestion-item') : [];
-
-            if (input && suggestionBox) {
-                input.addEventListener('focus', function() {
-                    suggestionBox.style.display = 'block';
-                });
-                input.addEventListener('input', function() {
-                    const val = input.value.toLowerCase();
-                    suggestionItems.forEach(function(item) {
-                        if (item.dataset.code.toLowerCase().includes(val)) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                    suggestionBox.style.display = 'block';
-                });
-                document.addEventListener('click', function(e) {
-                    if (!suggestionBox.contains(e.target) && e.target !== input) {
-                        suggestionBox.style.display = 'none';
-                    }
-                });
-                suggestionItems.forEach(function(item) {
-                    item.addEventListener('click', function() {
-                        input.value = item.dataset.code;
-                        suggestionBox.style.display = 'none';
-                    });
-                });
-            }
-
-            // Áp dụng mã giảm giá
-            document.getElementById('apply-coupon-btn').addEventListener('click', function() {
-                const code = input.value.trim();
-                if (!code) {
-                    alert('Vui lòng nhập mã giảm giá!');
-                    return;
-                }
-                fetch("{{ route('client.cart.apply-voucher') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ voucher_code: code })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message || 'Áp dụng mã giảm giá thành công!');
-                        let discount = data.voucher.discount_amount || 0;
-                        let subtotal = parseInt(document.querySelector('.cart-subtotal bdi').innerText.replace(/[^0-9]/g, '')) || 0;
-                        let total = subtotal - discount;
-                        if (total < 0) total = 0;
-                        document.querySelector('.cart-discount').style.display = '';
-                        document.getElementById('discount-amount').innerText = discount.toLocaleString('vi-VN') + '₫';
-                        document.querySelector('.order-total bdi').innerText = total.toLocaleString('vi-VN') + '₫';
-                    } else {
-                        alert(data.message || 'Mã giảm giá không hợp lệ!');
-                    }
-                })
-                .catch(() => alert('Có lỗi xảy ra!'));
             });
         });
     </script>
