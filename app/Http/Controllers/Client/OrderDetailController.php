@@ -24,7 +24,7 @@ class OrderDetailController extends Controller
             'receiver_phone' => $order->receiver_phone,
             'receiver_email' => $order->receiver_email,
             'shipping_address' => $order->shipping_address,
-            'items' => $order->items->map(function($item) {
+            'items' => $order->items->map(function ($item) {
                 return [
                     'product_name' => $item->product_name,
                     'product_sku' => $item->product_sku,

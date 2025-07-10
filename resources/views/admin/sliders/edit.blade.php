@@ -80,7 +80,7 @@
                             <label class="form-label" for="start_date">Ngày bắt đầu</label>
                             <input class="form-control @error('start_date') is-invalid @enderror" id="start_date"
                                 name="start_date" type="datetime-local"
-                                value="{{ old('start_date', $slider->start_date ? \Carbon\Carbon::parse($slider->start_date)->format('Y-m-d\TH:i') : '') }}" />
+                                value="{{ old('start_date', $slider->start_date ? $slider->start_date->format('Y-m-d\TH:i') : '') }}" />
                             @error('start_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -90,7 +90,7 @@
                             <label class="form-label" for="end_date">Ngày kết thúc</label>
                             <input class="form-control @error('end_date') is-invalid @enderror" id="end_date"
                                 name="end_date" type="datetime-local"
-                                value="{{ old('end_date', $slider->end_date ? \Carbon\Carbon::parse($slider->end_date)->format('Y-m-d\TH:i') : '') }}" />
+                                value="{{ old('end_date', $slider->end_date ? $slider->end_date->format('Y-m-d\TH:i') : '') }}" />
                             @error('end_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

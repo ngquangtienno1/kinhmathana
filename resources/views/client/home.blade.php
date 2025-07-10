@@ -63,7 +63,6 @@
                                                                                 </rs-layer>
                                                                             @endif
 
-<<<<<<< HEAD
                                                                             @if (isset($sliders[$i]))
                                                                                 <!-- Layer 4: Main Image Left (bên trái) -->
                                                                                 <rs-layer
@@ -222,134 +221,6 @@
                                                             </script>
                                                         </rs-module-wrap>
                                                         <!-- END REVOLUTION SLIDER -->
-=======
-        <!-- ============================================-->
-        <!-- <section> begin ============================-->
-        <section class="py-0 px-xl-3">
-            <div class="container px-xl-0 px-xxl-3">
-                <div class="row g-3 mb-9">
-                    @if($sliders->isNotEmpty())
-                        @foreach($sliders as $slider)
-                            <div class="col-12 {{ $loop->first ? '' : 'col-xl-6' }}">
-                                <div class="whooping-banner w-100 rounded-3 overflow-hidden">
-                                    <div class="bg-holder z-n1 product-bg"
-                                        style="background-image:url({{ asset('storage/' . $slider->image) }});background-position: center;">
-                                    </div>
-                                    <!--/.bg-holder-->
-                                    <div class="banner-text" data-bs-theme="light">
-                                        <h2 class="text-warning-light fw-bolder fs-lg-3 fs-xxl-2">{{ $slider->title }}</h2>
-                                        @if($slider->description)
-                                            <h3 class="fw-bolder fs-lg-5 fs-xxl-3 text-white">{{ $slider->description }}</h3>
-                                        @endif
-                                    </div>
-                                    @if($slider->url)
-                                        <a class="btn btn-lg btn-primary rounded-pill banner-button" href="{{ $slider->url }}">Xem ngay</a>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="col-12">
-                            <div class="whooping-banner w-100 rounded-3 overflow-hidden">
-                                <div class="bg-holder z-n1 product-bg"
-                                    style="background-image:url({{ asset('v1/assets/img/e-commerce/whooping_banner_product.png') }});background-position: bottom right;">
-                                </div>
-                                <!--/.bg-holder-->
-                                <div class="bg-holder z-n1 shape-bg"
-                                    style="background-image:url({{ asset('v1/assets/img/e-commerce/whooping_banner_shape_2.png') }});background-position: bottom left;">
-                                </div>
-                                <!--/.bg-holder-->
-                                <div class="banner-text" data-bs-theme="light">
-                                    <h2 class="text-warning-light fw-bolder fs-lg-3 fs-xxl-2">Whooping <span
-                                            class="gradient-text">60% </span>Off</h2>
-                                    <h3 class="fw-bolder fs-lg-5 fs-xxl-3 text-white">on everyday items</h3>
-                                </div><a class="btn btn-lg btn-primary rounded-pill banner-button" href="#">Shop Now</a>
-                            </div>
-                        </div>
-                        <div class="col-12 col-xl-6">
-                            <div class="gift-items-banner w-100 rounded-3 overflow-hidden">
-                                <div class="bg-holder z-n1 banner-bg"
-                                    style="background-image:url({{ asset('v1/assets/img/e-commerce/gift-items-banner-bg.png') }});">
-                                </div>
-                                <!--/.bg-holder-->
-                                <div class="banner-text text-md-center">
-                                    <h2 class="text-white fw-bolder fs-xl-4">Get <span class="gradient-text">10% Off </span><br
-                                            class="d-md-none"> on gift items</h2><a
-                                        class="btn btn-lg btn-primary rounded-pill banner-button" href="#">Buy Now</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-xl-6">
-                            <div
-                                class="best-in-market-banner d-flex h-100 px-4 px-sm-7 py-5 px-md-11 rounded-3 overflow-hidden">
-                                <div class="bg-holder z-n1 banner-bg"
-                                    style="background-image:url({{ asset('v1/assets/img/e-commerce/best-in-market-bg.png') }});"></div>
-                                <!--/.bg-holder-->
-                                <div class="row align-items-center w-sm-100">
-                                    <div class="col-8">
-                                        <div class="banner-text">
-                                            <h2 class="text-white fw-bolder fs-sm-4 mb-5">MI 11 Pro<br><span
-                                                    class="fs-7 fs-sm-6"> Best in the market</span></h2><a
-                                                class="btn btn-lg btn-warning rounded-pill banner-button" href="#">Buy
-                                                Now</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-4"><img class="w-100 w-sm-75" src="{{ asset('v1/assets/img/e-commerce/5.png') }}"
-                                            alt=""></div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div class="row g-4 mb-6">
-                    <div class="col-12 col-lg-9 col-xxl-10">
-                        <div class="d-flex flex-between-center mb-3">
-                            <div class="d-flex"><span class="fas fa-bolt text-warning fs-6"></span>
-                                <h3 class="mx-2">Top Deals today</h3><span class="fas fa-bolt text-warning fs-6"></span>
-                            </div><a class="btn btn-link btn-lg p-0 d-none d-md-block" href="#">Explore more<span
-                                    class="fas fa-chevron-right fs-9 ms-1"></span></a>
-                        </div>
-                        <div class="swiper-theme-container products-slider">
-                            <div class="swiper swiper theme-slider"
-                                data-swiper='{"slidesPerView":1,"spaceBetween":16,"breakpoints":{"450":{"slidesPerView":2,"spaceBetween":16},"768":{"slidesPerView":3,"spaceBetween":20},"1200":{"slidesPerView":4,"spaceBetween":16},"1540":{"slidesPerView":5,"spaceBetween":16}}}'>
-                                <div class="swiper-wrapper">
-                                    @foreach([6,1,2,3,4,5] as $img)
-                                    <div class="swiper-slide">
-                                        <div class="position-relative text-decoration-none product-card h-100">
-                                            <div class="d-flex flex-column justify-content-between h-100">
-                                                <div>
-                                                    <div
-                                                        class="border border-1 border-translucent rounded-3 position-relative mb-3">
-                                                        <button
-                                                            class="btn btn-wish btn-wish-primary z-2 d-toggle-container"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                                            title="Add to wishlist"><span
-                                                                class="fas fa-heart d-block-hover"
-                                                                data-fa-transform="down-1"></span><span
-                                                                class="far fa-heart d-none-hover"
-                                                                data-fa-transform="down-1"></span></button><img
-                                                            class="img-fluid" src="{{ asset('v1/assets/img/products/' . $img . '.png') }}"
-                                                            alt="" />
-                                                    </div><a class="stretched-link" href="product-details.html">
-                                                        <h6 class="mb-2 lh-sm line-clamp-3 product-name">PlayStation 5
-                                                            DualSense Wireless Controller</h6>
-                                                    </a>
-                                                    <p class="fs-9"><span class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="fa fa-star text-warning"></span><span
-                                                            class="text-body-quaternary fw-semibold ms-1">(67 people
-                                                            rated)</span></p>
-                                                </div>
-                                                <div>
-                                                    <p class="fs-9 text-body-highlight fw-bold mb-2">dbrand skin available
-                                                    </p>
-                                                    <div class="d-flex align-items-center mb-1">
-                                                        <p class="me-2 text-body text-decoration-line-through mb-0">$125.00
-                                                        </p>
-                                                        <h3 class="text-body-emphasis mb-0">$89.00</h3>
->>>>>>> ce4619afef8fe10330eb72b65c620d23fcc043f0
                                                     </div>
                                                 </div>
                                             </div>
@@ -425,67 +296,67 @@
                                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
                                                                         </div>
-                                                    <div class="qodef-woo-product-content"
-                                                        style="background-color: #FFFFFF">
-                                                        <div class="qodef-woo-color-variations-holder">
-                                                        </div>
+                                                                        <div class="qodef-woo-product-content"
+                                                                            style="background-color: #FFFFFF">
+                                                                            <div class="qodef-woo-color-variations-holder">
+                                                                            </div>
                                                                             <h5 itemprop="name"
                                                                                 class="qodef-woo-product-title entry-title"
-                                                            style="margin-bottom: 8px">
+                                                                                style="margin-bottom: 8px">
                                                                                 <a itemprop="url"
                                                                                     class="qodef-woo-product-title-link"
-                                                                href="{{ route('client.products.show', $product->slug) }}">
-                                                                {{ $product->name }}
-                                                            </a>
-                                                        </h5>
+                                                                                    href="{{ route('client.products.show', $product->slug) }}">
+                                                                                    {{ $product->name }}
+                                                                                </a>
+                                                                            </h5>
                                                                             <div
                                                                                 class="qodef-woo-product-categories qodef-e-info">
-                                                            @foreach ($product->categories as $category)
-                                                                <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
-                                                                    rel="tag">{{ $category->name }}</a>
-                                                                @if (!$loop->last)
+                                                                                @foreach ($product->categories as $category)
+                                                                                    <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
+                                                                                        rel="tag">{{ $category->name }}</a>
+                                                                                    @if (!$loop->last)
                                                                                         <span
                                                                                             class="qodef-info-separator-single"></span>
-                                                                @endif
-                                                            @endforeach
-                                                            <div class="qodef-info-separator-end">
-                                                            </div>
-                                                        </div>
-                                                        <div class="qodef-woo-product-price price">
-                                                            @if ($product->sale_price && $product->sale_price < $product->price)
-                                                                <del aria-hidden="true">
+                                                                                    @endif
+                                                                                @endforeach
+                                                                                <div class="qodef-info-separator-end">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="qodef-woo-product-price price">
+                                                                                @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                                    <del aria-hidden="true">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                        <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
-                                                                    </span>
-                                                                </del>
+                                                                                            <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                                                        </span>
+                                                                                    </del>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         gốc:
-                                                                    {{ number_format($product->price, 0, ',', '.') }}đ.</span>
-                                                                <ins aria-hidden="true">
+                                                                                        {{ number_format($product->price, 0, ',', '.') }}đ.</span>
+                                                                                    <ins aria-hidden="true">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                        <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
-                                                                    </span>
-                                                                </ins>
+                                                                                            <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                                        </span>
+                                                                                    </ins>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         khuyến mãi:
-                                                                    {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
-                                                            @else
+                                                                                        {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
+                                                                                @else
                                                                                     <span
                                                                                         class="woocommerce-Price-amount amount">
-                                                                    <bdi>{{ number_format($product->price ?? 0, 0, ',', '.') }}đ</bdi>
-                                                                </span>
-                                                            @endif
-                                                        </div>
-                                                        <div class="qodef-woo-product-image-inner">
-                                                            <a href="{{ route('client.products.show', $product->slug) }}"
-                                                                class="button product_type_simple add_to_cart_button"
-                                                                aria-label="Xem chi tiết: {{ $product->name }}"
-                                                                rel="nofollow">Xem chi tiết</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                                                        <bdi>{{ number_format($product->price ?? 0, 0, ',', '.') }}đ</bdi>
+                                                                                    </span>
+                                                                                @endif
+                                                                            </div>
+                                                                            <div class="qodef-woo-product-image-inner">
+                                                                                <a href="{{ route('client.products.show', $product->slug) }}"
+                                                                                    class="button product_type_simple add_to_cart_button"
+                                                                                    aria-label="Xem chi tiết: {{ $product->name }}"
+                                                                                    rel="nofollow">Xem chi tiết</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </li>
                                                             @empty
                                                                 <li class="qodef-e qodef-grid-item qodef-item--full">
