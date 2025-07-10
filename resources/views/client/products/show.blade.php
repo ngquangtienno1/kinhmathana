@@ -80,15 +80,22 @@
                                     style="margin-bottom: 16px; color: #555; font-size: 1.1em;">
                                     {{ $product->description_short ?? ($product->description ?? $product->description_long) }}
                                 </div>
-                                <p class="price">
-                                    <span class="woocommerce-Price-amount amount">
-                                        <bdi><span
-                                                class="woocommerce-Price-currencySymbol"></span>{{ number_format($product->minimum_price, 0, ',', '.') }}
-                                            <span style="font-size:0.9em;">VNĐ</span></bdi>
-                                    </span>
-                                </p>
-                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
-                                    Số lượng: <strong>{{ $product->total_stock_quantity }}</strong>
+                                <div class="product-price-stock-box" style="margin-bottom: 10px;">
+                                    <div class="product-price-box">
+                                        <span id="default-price-html">
+                                            @if(isset($selectedVariation) && $selectedVariation->sale_price && $selectedVariation->sale_price < $selectedVariation->price)
+                                                <span class="old-price">{{ number_format($selectedVariation->price, 0, ',', '.') }}₫</span>
+                                                <span class="sale-price">{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}₫</span>
+                                            @elseif(isset($selectedVariation))
+                                                <span class="sale-price">{{ number_format($selectedVariation->price, 0, ',', '.') }}₫</span>
+                                            @else
+                                                <span class="sale-price">{{ number_format($product->minimum_price, 0, ',', '.') }}₫</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <div class="product-stock-box" style="margin-top: 5px;">
+                                        Số lượng: <strong id="variation-stock-quantity">{{ isset($selectedVariation) ? $selectedVariation->stock_quantity : $product->total_stock_quantity }}</strong>
+                                    </div>
                                 </div>
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
@@ -216,14 +223,12 @@
                                                         </tr>
                                                     @endif
                                                 </tbody>
-
                                             </table>
                                             <div style="margin-top:12px;text-align:left;">
                                                 <a class="reset_variations" href="#"
                                                     style="font-size:14px;color:#007bff;cursor:pointer;">Clear tất cả lựa
                                                     chọn</a>
                                             </div>
-
                                             <div class="single_variation_wrap">
                                                 <div class="woocommerce-variation single_variation"></div>
                                                 <div class="woocommerce-variation-add-to-cart variations_button">
@@ -407,8 +412,8 @@
                                 <tr
                                     class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
                                     <th class="woocommerce-product-attributes-item__label">Dimensions</th>
-                                    <td class="woocommerce-product-attributes-item__value">1 &times; 2
-                                        &times; 3 cm</td>
+                                    <td class="woocommerce-product-attributes-item__value">1 × 2
+                                        × 3 cm</td>
                                 </tr>
                             </table>
                         </div>
@@ -648,111 +653,102 @@
             function getSelectedAttributes() {
                 const colorEl = document.querySelector('.qvsfw-select-option--color.qvsfw-selected');
                 const colorId = colorEl ? colorEl.getAttribute('data-value') : '';
-                const sizeId = document.getElementById('custom_size') ? document.getElementById('custom_size')
-                    .value : '';
-                const sphericalId = document.getElementById('custom_spherical') ? document.getElementById(
-                    'custom_spherical').value : '';
-                const cylindricalId = document.getElementById('custom_cylindrical') ? document.getElementById(
-                    'custom_cylindrical').value : '';
-                return {
-                    colorId,
-                    sizeId,
-                    sphericalId,
-                    cylindricalId
-                };
+                const sizeId = document.getElementById('custom_size') ? document.getElementById('custom_size').value : '';
+                const sphericalId = document.getElementById('custom_spherical') ? document.getElementById('custom_spherical').value : '';
+                const cylindricalId = document.getElementById('custom_cylindrical') ? document.getElementById('custom_cylindrical').value : '';
+                return { colorId, sizeId, sphericalId, cylindricalId };
             }
 
             // Attribute change handler
             function onAttributeChange() {
-                const {
-                    colorId,
-                    sizeId,
-                    sphericalId,
-                    cylindricalId
-                } = getSelectedAttributes();
+                const { colorId, sizeId, sphericalId, cylindricalId } = getSelectedAttributes();
                 const mainImg = document.getElementById('main-product-image');
-                const defaultImg = mainImg.dataset.defaultSrc ||
-                    '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
+                const defaultImg = mainImg.dataset.defaultSrc || '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
                 const variationIdInput = document.querySelector('input[name="variation_id"]');
+                const priceBox = document.querySelector('.product-price-box');
+                const stockBox = document.getElementById('variation-stock-quantity');
+                const defaultPriceHtml = document.getElementById('default-price-html') ? document.getElementById('default-price-html').innerHTML : '';
+                const defaultStock = '{{ isset($selectedVariation) ? $selectedVariation->stock_quantity : $product->total_stock_quantity }}';
 
+                let matchingVariation = null;
                 if (colorId || sizeId || sphericalId || cylindricalId) {
-                    const matchingVariation = window.productVariations.find(v =>
-                        (!colorId || v.color_id === colorId) &&
-                        (!sizeId || v.size_id === sizeId) &&
-                        (!sphericalId || v.spherical_id === sphericalId) &&
-                        (!cylindricalId || v.cylindrical_id === cylindricalId)
+                    matchingVariation = window.productVariations.find(v =>
+                        (!colorId || v.color_id == colorId) &&
+                        (!sizeId || v.size_id == sizeId) &&
+                        (!sphericalId || v.spherical_id == sphericalId) &&
+                        (!cylindricalId || v.cylindrical_id == cylindricalId)
                     );
+                }
 
-                    if (matchingVariation) {
-                        if (matchingVariation.image) {
-                            mainImg.src = matchingVariation.image;
-                        }
-                        // Cập nhật variation_id
-                        if (variationIdInput) {
-                            variationIdInput.value = matchingVariation.id;
-                        }
-                    } else if (colorId) {
-                        // Nếu chỉ chọn màu sắc, dùng ảnh của màu
-                        const colorVariation = window.productVariations.find(v => v.color_id === colorId);
-                        if (colorVariation) {
-                            if (colorVariation.image) {
-                                mainImg.src = colorVariation.image;
-                            }
-                            // Cập nhật variation_id
-                            if (variationIdInput) {
-                                variationIdInput.value = colorVariation.id;
-                            }
+                if (matchingVariation) {
+                    mainImg.src = matchingVariation.image ? matchingVariation.image : defaultImg;
+                    if (priceBox) {
+                        let priceHtml = '';
+                        if (matchingVariation.sale_price && Number(matchingVariation.sale_price) < Number(matchingVariation.price)) {
+                            priceHtml = `<span class='old-price'>${Number(matchingVariation.price).toLocaleString()}₫</span> <span class='sale-price'>${Number(matchingVariation.sale_price).toLocaleString()}₫</span>`;
                         } else {
-                            mainImg.src = defaultImg;
+                            priceHtml = `<span class='sale-price'>${Number(matchingVariation.price).toLocaleString()}₫</span>`;
                         }
+                        priceBox.innerHTML = priceHtml;
+                    }
+                    if (stockBox) stockBox.textContent = matchingVariation.stock_quantity;
+                    if (variationIdInput) variationIdInput.value = matchingVariation.id;
+                } else if (colorId) {
+                    const colorVariation = window.productVariations.find(v => v.color_id == colorId);
+                    if (colorVariation) {
+                        mainImg.src = colorVariation.image ? colorVariation.image : defaultImg;
+                        if (priceBox) {
+                            let minPrice = Math.min(...window.productVariations.filter(v => v.color_id == colorId).map(v => Number(v.sale_price && Number(v.sale_price) < Number(v.price) ? v.sale_price : v.price)));
+                            let maxPrice = Math.max(...window.productVariations.filter(v => v.color_id == colorId).map(v => Number(v.price)));
+                            let priceHtml = '';
+                            if (minPrice < maxPrice) {
+                                priceHtml = `<span class='sale-price'>${minPrice.toLocaleString()}₫</span> - <span class='sale-price'>${maxPrice.toLocaleString()}₫</span>`;
+                            } else {
+                                priceHtml = `<span class='sale-price'>${minPrice.toLocaleString()}₫</span>`;
+                            }
+                            priceBox.innerHTML = priceHtml;
+                        }
+                        if (stockBox) stockBox.textContent = colorVariation.stock_quantity;
+                        if (variationIdInput) variationIdInput.value = colorVariation.id;
                     } else {
                         mainImg.src = defaultImg;
+                        if (priceBox && defaultPriceHtml) priceBox.innerHTML = defaultPriceHtml;
+                        if (stockBox) stockBox.textContent = defaultStock;
                     }
                 } else {
                     mainImg.src = defaultImg;
-                    // Reset variation_id về giá trị mặc định
-                    if (variationIdInput) {
-                        variationIdInput.value = '{{ $selectedVariation->id ?? '' }}';
-                    }
+                    if (priceBox && defaultPriceHtml) priceBox.innerHTML = defaultPriceHtml;
+                    if (stockBox) stockBox.textContent = defaultStock;
+                    if (variationIdInput) variationIdInput.value = '{{ $selectedVariation->id ?? '' }}';
                 }
             }
 
             // Color select
             document.querySelectorAll('.qvsfw-select-option--color').forEach(function(el) {
                 el.addEventListener('click', function() {
-                    document.querySelectorAll('.qvsfw-select-option--color').forEach(e => e
-                        .classList.remove('qvsfw-selected'));
+                    document.querySelectorAll('.qvsfw-select-option--color').forEach(e => e.classList.remove('qvsfw-selected'));
                     el.classList.add('qvsfw-selected');
                     onAttributeChange();
                 });
             });
 
             // Other attribute selects
-            const sizeSelect = document.getElementById('custom_size');
-            const sphericalSelect = document.getElementById('custom_spherical');
-            const cylindricalSelect = document.getElementById('custom_cylindrical');
-            if (sizeSelect) sizeSelect.addEventListener('change', onAttributeChange);
-            if (sphericalSelect) sphericalSelect.addEventListener('change', onAttributeChange);
-            if (cylindricalSelect) cylindricalSelect.addEventListener('change', onAttributeChange);
+            ['custom_size', 'custom_spherical', 'custom_cylindrical'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', onAttributeChange);
+                }
+            });
 
-            // Clear button: reset all selects and color (Clear All)
+            // Clear button: reset all selects and color
             const clearBtn = document.querySelector('.reset_variations');
             if (clearBtn) {
                 clearBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    if (sizeSelect) sizeSelect.selectedIndex = 0;
-                    if (sphericalSelect) sphericalSelect.selectedIndex = 0;
-                    if (cylindricalSelect) cylindricalSelect.selectedIndex = 0;
-                    document.querySelectorAll('.qvsfw-select-option--color').forEach(el => el.classList
-                        .remove('qvsfw-selected'));
+                    document.querySelectorAll('.custom-attribute-select').forEach(sel => sel.selectedIndex = 0);
+                    document.querySelectorAll('.qvsfw-select-option--color').forEach(el => el.classList.remove('qvsfw-selected'));
                     const mainImg = document.getElementById('main-product-image');
-                    mainImg.src = mainImg.dataset.defaultSrc ||
-                        '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
-                    // Reset variation_id về giá trị mặc định
-                    const variationIdInput = document.querySelector('input[name="variation_id"]');
-                    if (variationIdInput) {
-                        variationIdInput.value = '{{ $selectedVariation->id ?? '' }}';
-                    }
+                    mainImg.src = mainImg.dataset.defaultSrc || '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
                     onAttributeChange();
                 });
             }
@@ -812,7 +808,7 @@
                                 msg.setAttribute('role', 'alert');
                                 var productName = form.getAttribute('data-product-name');
                                 msg.innerHTML =
-                                    `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> &ldquo;${productName}&rdquo; đã được thêm vào giỏ hàng.`;
+                                    `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> “${productName}” đã được thêm vào giỏ hàng.`;
                                 if (msgContainer) {
                                     msgContainer.appendChild(msg);
                                 }
@@ -846,5 +842,10 @@
             background: #222;
             color: #fff;
         }
+        .old-price {
+    text-decoration: line-through;
+    color: #999;
+    margin-right: 8px;
+}
     </style>
 @endsection
