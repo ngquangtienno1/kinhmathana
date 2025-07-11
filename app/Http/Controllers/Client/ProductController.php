@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\Brand;
+use App\Models\Color;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Color;
-use App\Models\Brand;
+use App\Models\Variation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -218,27 +220,33 @@ class ProductController extends Controller
         $productId = $request->input('product_id');
 
         if ($variationId) {
-            $variation = \App\Models\Variation::find($variationId);
+            $variation = Variation::find($variationId);
             if (!$variation) {
                 if ($request->ajax()) {
                     return response()->json(['success' => false, 'message' => 'Không tìm thấy biến thể sản phẩm!'], 404);
                 }
                 return back()->with('error', 'Không tìm thấy biến thể sản phẩm!');
             }
-            if ($variation->stock_quantity < $quantity) {
-                if ($request->ajax()) {
-                    return response()->json(['success' => false, 'message' => 'Số lượng sản phẩm không đủ trong kho!'], 400);
-                }
-                return back()->with('error', 'Số lượng sản phẩm không đủ trong kho!');
-            }
-            $cartItem = \App\Models\Cart::where('user_id', $user->id)
+            
+            // Kiểm tra tổng số lượng trong giỏ hàng
+            $cartItem = Cart::where('user_id', $user->id)
                 ->where('variation_id', $variationId)
                 ->first();
+            $currentQty = $cartItem ? $cartItem->quantity : 0;
+            $totalQty = $currentQty + $quantity;
+            
+            if ($totalQty > $variation->stock_quantity) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Số lượng vượt quá tồn kho!'], 400);
+                }
+                return back()->with('error', 'Số lượng vượt quá tồn kho!');
+            }
+            
             if ($cartItem) {
-                $cartItem->quantity += $quantity;
+                $cartItem->quantity = $totalQty;
                 $cartItem->save();
             } else {
-                \App\Models\Cart::create([
+                Cart::create([
                     'user_id' => $user->id,
                     'variation_id' => $variationId,
                     'quantity' => $quantity,
@@ -247,30 +255,36 @@ class ProductController extends Controller
             if ($request->ajax()) {
                 return response()->json(['success' => true]);
             }
-            return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+            // return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
         } elseif ($productId) {
-            $product = \App\Models\Product::find($productId);
+            $product = Product::find($productId);
             if (!$product) {
                 if ($request->ajax()) {
                     return response()->json(['success' => false, 'message' => 'Không tìm thấy sản phẩm!'], 404);
                 }
                 return back()->with('error', 'Không tìm thấy sản phẩm!');
             }
-            if ($product->stock_quantity < $quantity) {
-                if ($request->ajax()) {
-                    return response()->json(['success' => false, 'message' => 'Số lượng sản phẩm không đủ trong kho!'], 400);
-                }
-                return back()->with('error', 'Số lượng sản phẩm không đủ trong kho!');
-            }
-            $cartItem = \App\Models\Cart::where('user_id', $user->id)
+            
+            // Kiểm tra tổng số lượng trong giỏ hàng
+            $cartItem = Cart::where('user_id', $user->id)
                 ->where('product_id', $productId)
                 ->whereNull('variation_id')
                 ->first();
+            $currentQty = $cartItem ? $cartItem->quantity : 0;
+            $totalQty = $currentQty + $quantity;
+            
+            if ($totalQty > $product->stock_quantity) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Thất bại! Số lượng vượt quá tồn kho'], 400);
+                }
+                return back()->with('error', 'Thất bại! Số lượng vượt quá tồn kho!');
+            }
+            
             if ($cartItem) {
-                $cartItem->quantity += $quantity;
+                $cartItem->quantity = $totalQty;
                 $cartItem->save();
             } else {
-                \App\Models\Cart::create([
+                Cart::create([
                     'user_id' => $user->id,
                     'product_id' => $productId,
                     'quantity' => $quantity,
@@ -279,7 +293,7 @@ class ProductController extends Controller
             if ($request->ajax()) {
                 return response()->json(['success' => true]);
             }
-            return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+            // return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
         } else {
             if ($request->ajax()) {
                 return response()->json(['success' => false, 'message' => 'Không xác định được sản phẩm!'], 400);
