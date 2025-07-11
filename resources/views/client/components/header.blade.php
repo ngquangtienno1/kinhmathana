@@ -571,7 +571,7 @@
                     class="widget widget_neoocular_core_woo_side_area_cart qodef-header-widget-area-one"
                     data-area="header-widget-one">
                     <div class="qodef-widget-side-area-cart-inner">
-                        <a itemprop="url" class="qodef-m-opener" href="cart/index.html">
+                        <a itemprop="url" class="qodef-m-opener" href="{{ route('client.cart.index') }}">
                             <span class="qodef-m-opener-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     x="0px" y="0px" width="13.5px" height="18px" viewBox="0 0 13.5 18"
@@ -587,17 +587,128 @@
             c0,0.164-0.053,0.299-0.158,0.404S8.601,6.75,8.438,6.75H5.063C4.898,6.75,4.764,6.697,4.658,6.592z" />
                                     </g>
                                 </svg>
-                                <span class="qodef-m-opener-count">0</span>
+                                <span class="qodef-m-opener-count">{{ $cartCount ?? 0 }}</span>
                             </span>
                         </a>
                         <div class="qodef-widget-side-area-cart-content">
-                            <div class="qodef-cart-header-holder empty-cart">
+                            <div class="qodef-cart-header-holder">
+                                <a itemprop="url" class="qodef-m-opener"
+                                    href="https://neoocular.qodeinteractive.com/cart/">
+                                    <span class="qodef-m-opener-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="13.5px"
+                                            height="18px" viewBox="0 0 13.5 18" enable-background="new 0 0 13.5 18"
+                                            xml:space="preserve">
+                                            <g>
+                                                <path fill="currentColor"
+                                                    d="M0.334,17.666C0.111,17.443,0,17.179,0,16.875V4.5c0-0.304,0.111-0.568,0.334-0.791
+                                            C0.557,3.486,0.82,3.375,1.125,3.375h2.25c0.023-0.937,0.363-1.734,1.02-2.391C5.05,0.329,5.836,0,6.75,0s1.699,0.329,2.355,0.984
+                                            c0.656,0.656,0.996,1.454,1.019,2.391h2.25c0.305,0,0.568,0.111,0.791,0.334C13.388,3.932,13.5,4.196,13.5,4.5v12.375
+                                            c0,0.304-0.111,0.568-0.334,0.791C12.943,17.889,12.679,18,12.375,18H1.125C0.82,18,0.557,17.889,0.334,17.666z M1.125,4.5v12.375
+                                            h11.25V4.5H1.125z M4.5,3.375H9c-0.023-0.633-0.252-1.166-0.686-1.6C7.88,1.342,7.359,1.125,6.75,1.125
+                                            c-0.61,0-1.131,0.217-1.564,0.65C4.751,2.209,4.523,2.742,4.5,3.375z M4.658,6.592C4.553,6.486,4.5,6.352,4.5,6.188
+                                            c0-0.164,0.053-0.299,0.158-0.404s0.24-0.158,0.404-0.158h3.375c0.164,0,0.299,0.053,0.404,0.158S9,6.024,9,6.188
+                                            c0,0.164-0.053,0.299-0.158,0.404S8.601,6.75,8.438,6.75H5.063C4.898,6.75,4.764,6.697,4.658,6.592z" />
+                                            </g>
+                                        </svg>
+                                        <span class="qodef-m-opener-count">{{ $cartCount ?? 0 }}</span>
+                                    </span>
+                                </a>
+
+                                <h5 class="qodef-cart-title">Giỏ hàng của tôi</h5>
+
                                 <a class="qodef-m-close" href="#">
                                     <span class="qodef-m-close-icon"><span
                                             class="qodef-icon-elegant-icons icon_close"></span></span>
                                 </a>
                             </div>
-                            <p class="qodef-m-posts-not-found">No products in the cart.</p>
+                            @if ($cartCount > 0)
+                                <ul class="qodef-woo-side-area-cart">
+                                    @foreach ($cartItems as $item)
+                                        @php
+                                            $cartProduct = $item->variation
+                                                ? $item->variation->product
+                                                : $item->product;
+                                            $featuredImage =
+                                                $cartProduct->images->where('is_featured', true)->first() ??
+                                                $cartProduct->images->first();
+                                            $imagePath = $featuredImage
+                                                ? asset('storage/' . $featuredImage->image_path)
+                                                : asset('/path/to/default.jpg');
+                                            $productUrl = route('client.products.show', $cartProduct->slug);
+                                            $productName = $cartProduct->name;
+                                            $variationName =
+                                                $item->variation && $item->variation->name
+                                                    ? $item->variation->name
+                                                    : null;
+                                            $price = $item->variation
+                                                ? $item->variation->sale_price ?? $item->variation->price
+                                                : $cartProduct->sale_price ?? $cartProduct->price;
+                                        @endphp
+                                        <li class="qodef-woo-side-area-cart-item qodef-e">
+                                            <button type="button" class="remove btn-remove-cart-item-header"
+                                                data-form-id="remove-cart-item-header-{{ $item->id }}"
+                                                aria-label="Xóa {{ $productName }} khỏi giỏ hàng"
+                                                style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
+                                                &times;
+                                            </button>
+                                            <form id="remove-cart-item-header-{{ $item->id }}"
+                                                action="{{ route('client.cart.remove', $item->id) }}" method="POST"
+                                                style="display:none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            <div class="qodef-e-image">
+                                                <a href="{{ $productUrl }}">
+                                                    <img src="{{ $imagePath }}" width="60"
+                                                        alt="{{ $productName }}">
+                                                </a>
+                                            </div>
+                                            <div class="qodef-e-content">
+                                                <h6 itemprop="name" class="qodef-e-title entry-title">
+                                                    <a href="{{ $productUrl }}">{{ $productName }}</a>
+                                                </h6>
+                                                @if ($variationName)
+                                                    <div><small>Phân loại: {{ $variationName }}</small></div>
+                                                @endif
+                                                <p class="qodef-e-quantity">Số lượng: {{ $item->quantity }}</p>
+                                                <p class="qodef-e-price">
+                                                    <span class="woocommerce-Price-amount amount">
+                                                        <bdi>{{ number_format($price, 0, ',', '.') }}₫</bdi>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                <div class="qodef-m-order-details">
+                                    <h5 class="qodef-m-order-label">Tổng:</h5>
+                                    <h5 class="qodef-m-order-amount">
+                                        <span class="woocommerce-Price-amount amount">
+                                            <bdi>
+                                                @php
+                                                    $subtotal = $cartItems->sum(function ($item) {
+                                                        $cartProduct = $item->variation
+                                                            ? $item->variation->product
+                                                            : $item->product;
+                                                        $price = $item->variation
+                                                            ? $item->variation->sale_price ?? $item->variation->price
+                                                            : $cartProduct->sale_price ?? $cartProduct->price;
+                                                        return $price * $item->quantity;
+                                                    });
+                                                @endphp
+                                                {{ number_format($subtotal, 0, ',', '.') }}₫
+                                            </bdi>
+                                        </span>
+                                    </h5>
+                                </div>
+                                <div class="qodef-m-action">
+                                    <a itemprop="url" href="{{ route('client.cart.index') }}"
+                                        class="qodef-m-action-link">Xem giỏ hàng & Thanh toán</a>
+                                </div>
+                            @else
+                                <p class="qodef-m-posts-not-found">No products in the cart.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -1064,21 +1175,160 @@
             c0,0.164-0.053,0.299-0.158,0.404S8.601,6.75,8.438,6.75H5.063C4.898,6.75,4.764,6.697,4.658,6.592z" />
                                     </g>
                                 </svg>
-                                <span class="qodef-m-opener-count">0</span>
+                                <span class="qodef-m-opener-count">{{ $cartCount ?? 0 }}</span>
                             </span>
                         </a>
                         <div class="qodef-widget-side-area-cart-content">
-                            <div class="qodef-cart-header-holder empty-cart">
+                            <div class="qodef-cart-header-holder">
+                                <a itemprop="url" class="qodef-m-opener"
+                                    href="https://neoocular.qodeinteractive.com/cart/">
+                                    <span class="qodef-m-opener-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="13.5px"
+                                            height="18px" viewBox="0 0 13.5 18" enable-background="new 0 0 13.5 18"
+                                            xml:space="preserve">
+                                            <g>
+                                                <path fill="currentColor"
+                                                    d="M0.334,17.666C0.111,17.443,0,17.179,0,16.875V4.5c0-0.304,0.111-0.568,0.334-0.791
+                                            C0.557,3.486,0.82,3.375,1.125,3.375h2.25c0.023-0.937,0.363-1.734,1.02-2.391C5.05,0.329,5.836,0,6.75,0s1.699,0.329,2.355,0.984
+                                            c0.656,0.656,0.996,1.454,1.019,2.391h2.25c0.305,0,0.568,0.111,0.791,0.334C13.388,3.932,13.5,4.196,13.5,4.5v12.375
+                                            c0,0.304-0.111,0.568-0.334,0.791C12.943,17.889,12.679,18,12.375,18H1.125C0.82,18,0.557,17.889,0.334,17.666z M1.125,4.5v12.375
+                                            h11.25V4.5H1.125z M4.5,3.375H9c-0.023-0.633-0.252-1.166-0.686-1.6C7.88,1.342,7.359,1.125,6.75,1.125
+                                            c-0.61,0-1.131,0.217-1.564,0.65C4.751,2.209,4.523,2.742,4.5,3.375z M4.658,6.592C4.553,6.486,4.5,6.352,4.5,6.188
+                                            c0-0.164,0.053-0.299,0.158-0.404s0.24-0.158,0.404-0.158h3.375c0.164,0,0.299,0.053,0.404,0.158S9,6.024,9,6.188
+                                            c0,0.164-0.053,0.299-0.158,0.404S8.601,6.75,8.438,6.75H5.063C4.898,6.75,4.764,6.697,4.658,6.592z" />
+                                            </g>
+                                        </svg>
+                                        <span class="qodef-m-opener-count">{{ $cartCount ?? 0 }}</span>
+                                    </span>
+                                </a>
+
+                                <h5 class="qodef-cart-title">Giỏ hàng của tôi</h5>
+
                                 <a class="qodef-m-close" href="#">
                                     <span class="qodef-m-close-icon"><span
                                             class="qodef-icon-elegant-icons icon_close"></span></span>
                                 </a>
                             </div>
-                            <p class="qodef-m-posts-not-found">No products in the cart.</p>
+                            @if ($cartCount > 0)
+                                <ul class="qodef-woo-side-area-cart">
+                                    @foreach ($cartItems as $item)
+                                        @php
+                                            $cartProduct = $item->variation
+                                                ? $item->variation->product
+                                                : $item->product;
+                                            $featuredImage =
+                                                $cartProduct->images->where('is_featured', true)->first() ??
+                                                $cartProduct->images->first();
+                                            $imagePath = $featuredImage
+                                                ? asset('storage/' . $featuredImage->image_path)
+                                                : asset('/path/to/default.jpg');
+                                            $productUrl = route('client.products.show', $cartProduct->slug);
+                                            $productName = $cartProduct->name;
+                                            $variationName =
+                                                $item->variation && $item->variation->name
+                                                    ? $item->variation->name
+                                                    : null;
+                                            $price = $item->variation
+                                                ? $item->variation->sale_price ?? $item->variation->price
+                                                : $cartProduct->sale_price ?? $cartProduct->price;
+                                        @endphp
+                                        <li class="qodef-woo-side-area-cart-item qodef-e">
+                                            <button type="button" class="remove btn-remove-cart-item-header"
+                                                data-form-id="remove-cart-item-header-{{ $item->id }}"
+                                                aria-label="Xóa {{ $productName }} khỏi giỏ hàng"
+                                                style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
+                                                &times;
+                                            </button>
+                                            <form id="remove-cart-item-header-{{ $item->id }}"
+                                                action="{{ route('client.cart.remove', $item->id) }}" method="POST"
+                                                style="display:none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            <div class="qodef-e-image">
+                                                <a href="{{ $productUrl }}">
+                                                    <img src="{{ $imagePath }}" width="60"
+                                                        alt="{{ $productName }}">
+                                                </a>
+                                            </div>
+                                            <div class="qodef-e-content">
+                                                <h6 itemprop="name" class="qodef-e-title entry-title">
+                                                    <a href="{{ $productUrl }}">{{ $productName }}</a>
+                                                </h6>
+                                                @if ($variationName)
+                                                    <div><small>Phân loại: {{ $variationName }}</small></div>
+                                                @endif
+                                                <p class="qodef-e-quantity">Số lượng: {{ $item->quantity }}</p>
+                                                <p class="qodef-e-price">
+                                                    <span class="woocommerce-Price-amount amount">
+                                                        <bdi>{{ number_format($price, 0, ',', '.') }}₫</bdi>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                <div class="qodef-m-order-details">
+                                    <h5 class="qodef-m-order-label">Tổng:</h5>
+                                    <h5 class="qodef-m-order-amount">
+                                        <span class="woocommerce-Price-amount amount">
+                                            <bdi>
+                                                @php
+                                                    $subtotal = $cartItems->sum(function ($item) {
+                                                        $cartProduct = $item->variation
+                                                            ? $item->variation->product
+                                                            : $item->product;
+                                                        $price = $item->variation
+                                                            ? $item->variation->sale_price ?? $item->variation->price
+                                                            : $cartProduct->sale_price ?? $cartProduct->price;
+                                                        return $price * $item->quantity;
+                                                    });
+                                                @endphp
+                                                {{ number_format($subtotal, 0, ',', '.') }}₫
+                                            </bdi>
+                                        </span>
+                                    </h5>
+                                </div>
+                                <div class="qodef-m-action">
+                                    <a itemprop="url" href="{{ route('client.cart.index') }}"
+                                        class="qodef-m-action-link">Xem giỏ hàng & Thanh toán</a>
+                                </div>
+                            @else
+                                <p class="qodef-m-posts-not-found">No products in the cart.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-remove-cart-item-header').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var formId = btn.getAttribute('data-form-id');
+                var form = document.getElementById(formId);
+                if (!form) return;
+                var action = form.getAttribute('action');
+                var csrf = form.querySelector('input[name="_token"]').value;
+                fetch(action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrf,
+                            'Accept': 'application/json'
+                        },
+                        body: new URLSearchParams({
+                            '_method': 'DELETE'
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        location.reload();
+                    });
+            });
+        });
+    });
+</script>

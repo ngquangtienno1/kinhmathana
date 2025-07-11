@@ -9,9 +9,9 @@ class Cart extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'variation_id', 'quantity'];
+    protected $fillable = ['user_id', 'variation_id', 'product_id', 'quantity'];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function user()
     {
@@ -21,5 +21,10 @@ class Cart extends Model
     public function variation()
     {
         return $this->belongsTo(Variation::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }

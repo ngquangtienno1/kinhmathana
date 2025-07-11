@@ -102,6 +102,13 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('index', [UserController::class, 'index'])->name('index');
         Route::get('information',[ UserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [UserController::class, 'update'])->name('information.update');
+    // Route lấy chi tiết đơn hàng cho client (AJAX popup)
+    Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
+    Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
+
+    //Users routes
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
     });
     
      Route::get('forgot-password', [AuthenticationClientController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -112,6 +119,7 @@ Route::post('reset-password', [AuthenticationClientController::class, 'reset'])-
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
+        Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
     });
 
     Route::prefix('cart')->name('cart.')->group(function () {
@@ -153,6 +161,9 @@ Route::post('reset-password', [AuthenticationClientController::class, 'reset'])-
         Route::get('/', [ClientContactController::class, 'index'])->name('index');
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
+
+    // Route lấy danh sách lý do hủy đơn hàng cho client
+    Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

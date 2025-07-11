@@ -37,10 +37,7 @@
                     {{ $order->payment_status == 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
                 </p>
             </div>
-            <div class="col-md-6">
-                <h6 class="fw-bold">Trạng thái vận chuyển</h6>
-                <p class="text-muted mb-0">{{ $order->status_label }}</p>
-            </div>
+           
         </div>
 
         {{-- Thông tin giao hàng, thanh toán, ghi chú --}}
@@ -101,11 +98,11 @@
                                                 @endif
                                             @endif
                                         </div>
-                                        @if (!\App\Models\Review::where('user_id', auth()->id())->where('product_id', $item->product_id)->where('order_id', $order->id)->exists())
+                                        @if ($order->status == 'completed' && !\App\Models\Review::where('user_id', auth()->id())->where('product_id', $item->product_id)->where('order_id', $order->id)->exists())
                                             <div class="mt-2">
                                                 <a href="{{ route('client.orders.review.form', [$order->id, $item->id]) }}" class="btn btn-sm" style="background:#222; color:#fff; border-radius:0; padding:7px 24px; font-weight:500;">Đánh giá</a>
                                             </div>
-                                        @else
+                                        @elseif (\App\Models\Review::where('user_id', auth()->id())->where('product_id', $item->product_id)->where('order_id', $order->id)->exists())
                                             <span class="text-success">Đã đánh giá</span>
                                         @endif
                                     </div>
@@ -127,11 +124,15 @@
                 <span>{{ number_format($order->subtotal, 0, ',', '.') }}₫</span>
             </div>
             <div class="d-flex justify-content-between">
-                <span>Phí vận chuyển:</span>
-                <span>{{ number_format($order->shipping_fee, 0, ',', '.') }}₫ <span class="text-muted small">@if($order->shippingProvider)({{ $order->shippingProvider->name }})@endif</span></span>
+                <span>Phí vận chuyển đã áp dụng:</span>
+                <span>{{ number_format($order->shipping_fee, 0, ',', '.') }}₫
+                    <span class="text-muted small">
+                        @if($order->shippingProvider) ({{ $order->shippingProvider->name }}) @endif
+                    </span>
+                </span>
             </div>
             <div class="d-flex justify-content-between">
-                <span>Khuyến mại:</span>
+                <span>Khuyến mại (mã giảm giá):</span>
                 <span class="text-danger">-{{ number_format($order->promotion_amount, 0, ',', '.') }}₫</span>
             </div>
             <div class="d-flex justify-content-between border-top pt-2 mt-2 fw-bold fs-5">

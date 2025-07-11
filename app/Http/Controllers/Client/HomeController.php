@@ -29,6 +29,12 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        return view('client.home', compact('sliders', 'featuredProducts', 'latestNews'));
+        $cartCount = 0;
+        if (session()->has('cart')) {
+            $cart = session('cart');
+            $cartCount = collect($cart)->sum('quantity');
+        }
+
+        return view('client.home', compact('sliders', 'featuredProducts', 'latestNews', 'cartCount'));
     }
 }
