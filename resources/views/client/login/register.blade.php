@@ -7,29 +7,25 @@
             align-items: flex-start;
             justify-content: center;
             gap: 48px;
-            max-width: 1100px;
+            max-width: 1400px;
             margin: 48px auto 64px auto;
         }
 
         .register-image {
-            flex: 1 1 50%;
-            min-width: 340px;
-            max-width: 520px;
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-            background: #f7f7f7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-top: 100px;
+    flex: 1 1 50%;
+    border-radius: 32px;
+    overflow: hidden;
+    height: 550px;
+    padding: 0; /* loại bỏ padding nếu có */
         }
 
         .register-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 32px;
-            object-fit: cover;
+           width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 32px;
+    object-fit: cover;
         }
 
         .btn-primary:hover {
@@ -37,7 +33,7 @@
         }
 
         .login-link {
-            color: #1ccfcf;
+            color: #000000ff;
             text-decoration: underline;
             font-weight: 600;
             font-size: 1rem;
@@ -56,7 +52,7 @@
             padding: 36px 32px 28px;
             font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
             min-width: 340px;
-            max-width: 480px;
+           
         }
 
         .register-title {
@@ -129,7 +125,7 @@
             font-size: 1.1rem;
             font-weight: 700;
             padding: 13px 0;
-            width: 220px;
+            width: 100%;
             transition: background 0.2s;
             box-shadow: none;
             text-align: center;
@@ -148,7 +144,7 @@
             font-weight: 600;
         }
 
-        .google-btn {
+        .google-btn  {
             display: flex;
             align-items: center;
             background: #fff;
@@ -240,7 +236,7 @@
     </style>
     <div class="register-wrapper">
         <div class="register-image">
-            <img src="/path/to/your/register-image.jpg" alt="Register" />
+            <img src="{{ asset('uploads/avatars/Pic1.jpg') }}" alt="Register" />
         </div>
         <div class="register-section">
             <div class="register-title">Đăng ký email</div>
@@ -293,7 +289,7 @@
                                     d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z" />
                             </g>
                         </svg></span>
-                    Đăng nhập bằng <b> Google</b>
+                          Đăng nhập bằng <b>&nbsp;Google</b>
                 </button>
             </form>
             <div class="register-bottom-text">

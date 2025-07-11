@@ -7,24 +7,21 @@
     align-items: flex-start;
     justify-content: center;
     gap: 48px;
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 48px auto 64px auto;
 }
 .login-image {
+    margin-top: 24px;
     flex: 1 1 50%;
-    min-width: 340px;
-    max-width: 520px;
     border-radius: 32px;
     overflow: hidden;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-    background: #f7f7f7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 550px;
+    padding: 0; /* loại bỏ padding nếu có */
 }
+
 .login-image img {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     border-radius: 32px;
     object-fit: cover;
@@ -38,7 +35,7 @@
     padding: 36px 32px 28px;
     font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
     min-width: 340px;
-    max-width: 480px;
+    
 }
 .login-title {
     font-size: 2rem;
@@ -117,7 +114,7 @@
     background: #1ccfcf;
 }
 .login-link {
-    color: #1ccfcf;
+    padding top: 2px;
     text-decoration: underline;
     font-weight: 600;
     font-size: 1rem;
@@ -202,7 +199,7 @@
 </style>
 <div class="login-wrapper">
     <div class="login-image">
-        <img src="/path/to/your/login-image.jpg" alt="Login" />
+        <img src="{{ asset('uploads/avatars/Pic1.jpg') }}" alt="Login" />
     </div>
     <div class="login-section">
         <div class="login-title">Đăng nhập</div>
@@ -232,7 +229,9 @@
             <div style="margin-bottom: 12px;"><a class="login-link" href="{{ route('client.password.request') }}">Quên mật khẩu ?</a></div>
             <button type="button" class="google-btn" onclick="location.href='{{ route('login.google') }}'">
                 <span class="google-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.7 20-21 0-1.4-.2-2.7-.4-3.5z"/><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16.1 18.8 13 24 13c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 16.1 3 9.1 7.6 6.3 14.7z"/><path fill="#FBBC05" d="M24 45c6.2 0 11.4-2 15.2-5.4l-7-5.7C29.5 35.7 26.9 37 24 37c-5.5 0-10.1-3.7-11.7-8.7l-6.6 5.1C9.1 40.4 16.1 45 24 45z"/><path fill="#EA4335" d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z"/></g></svg></span>
-                Đăng nhập bằng <b>Google</b>
+                Đăng nhập bằng <b>&nbsp;Google</b>
+
+
             </button>
         </form>
         <div class="login-bottom-text">
