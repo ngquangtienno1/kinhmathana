@@ -158,9 +158,9 @@ class AuthenticationClientController extends BaseController
             $request->only('email')
         );
         if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('status', __($status));
+            return back()->with('status', 'Đã gửi email xác nhận, vui lòng kiểm tra hộp thư của bạn!');
         }
-        return back()->withErrors(['email' => __($status)]);
+        return back()->withErrors(['email' => 'Không thể gửi email. Vui lòng kiểm tra lại địa chỉ email hoặc thử lại sau.']);
     }
 
     // Hiển thị form đặt lại mật khẩu

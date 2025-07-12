@@ -42,6 +42,7 @@
     font-weight: 700;
     text-align: left;
     margin-bottom: 6px;
+    color: black;
     letter-spacing: 0.01em;
 }
 .login-desc {
@@ -120,7 +121,7 @@
     font-size: 1rem;
 }
 .login-link:hover {
-    color: #0b8b8b;
+    color: #1ccfcf;
 }
 .google-btn {
     display: flex;
@@ -128,7 +129,7 @@
     background: #fff;
     border: none;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
     padding: 13px 18px;
     width: 100%;
     margin-top: 18px;
@@ -153,6 +154,7 @@
     margin-top: 22px;
     font-size: 1rem;
     color: #222;
+    font-weight: 500;
 }
 .text-danger {
     color: #e74c3c;
@@ -225,10 +227,14 @@
                 <input class="form-check-input" id="basic-checkbox" type="checkbox" />
                 <label class="form-check-label mb-0" for="basic-checkbox">Lưu tài khoản</label>
             </div>
-            <button class="btn btn-primary" type="submit">Đăng nhập</button>
-            <div style="margin-bottom: 12px;"><a class="login-link" href="{{ route('client.password.request') }}">Quên mật khẩu ?</a></div>
-            <button type="button" class="google-btn" onclick="location.href='{{ route('login.google') }}'">
-                <span class="google-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.7 20-21 0-1.4-.2-2.7-.4-3.5z"/><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16.1 18.8 13 24 13c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 16.1 3 9.1 7.6 6.3 14.7z"/><path fill="#FBBC05" d="M24 45c6.2 0 11.4-2 15.2-5.4l-7-5.7C29.5 35.7 26.9 37 24 37c-5.5 0-10.1-3.7-11.7-8.7l-6.6 5.1C9.1 40.4 16.1 45 24 45z"/><path fill="#EA4335" d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z"/></g></svg></span>
+            <button class="btn btn-primary" type="submit"
+    style="width: 100%; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-align: center;">
+    Đăng nhập
+</button>
+
+            <div style="margin-bottom: 12px; margin-top: 10px;"><a class="login-link" href="{{ route('client.password.request') }}">Quên mật khẩu ?</a></div>
+            <button type="button" style="display: flex; justify-content: center; align-items: center; text-align: center; margin-bottom: 0px;" class="google-btn" onclick="location.href='{{ route('login.google') }}'">
+                <span class="google-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g><path fill="#1ccfcf" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.7 20-21 0-1.4-.2-2.7-.4-3.5z"/><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16.1 18.8 13 24 13c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 16.1 3 9.1 7.6 6.3 14.7z"/><path fill="#FBBC05" d="M24 45c6.2 0 11.4-2 15.2-5.4l-7-5.7C29.5 35.7 26.9 37 24 37c-5.5 0-10.1-3.7-11.7-8.7l-6.6 5.1C9.1 40.4 16.1 45 24 45z"/><path fill="#EA4335" d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z"/></g></svg></span>
                 Đăng nhập bằng <b>&nbsp;Google</b>
 
 

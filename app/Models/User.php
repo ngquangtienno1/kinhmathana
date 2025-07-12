@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use App\Models\Otp;
@@ -14,9 +13,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * Send the password reset notification using custom notification.
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ClientResetPassword($token));
+    }
 
     protected $fillable = [
         'name',
