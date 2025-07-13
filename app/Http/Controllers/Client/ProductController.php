@@ -230,21 +230,21 @@ class ProductController extends Controller
                 }
                 return back()->with('error', 'Không tìm thấy biến thể sản phẩm!');
             }
-            
+
             // Kiểm tra tổng số lượng trong giỏ hàng
             $cartItem = Cart::where('user_id', $user->id)
                 ->where('variation_id', $variationId)
                 ->first();
             $currentQty = $cartItem ? $cartItem->quantity : 0;
             $totalQty = $currentQty + $quantity;
-            
+
             if ($totalQty > $variation->stock_quantity) {
                 if ($request->ajax()) {
                     return response()->json(['success' => false, 'message' => 'Số lượng vượt quá tồn kho!'], 400);
                 }
                 return back()->with('error', 'Số lượng vượt quá tồn kho!');
             }
-            
+
             if ($cartItem) {
                 $cartItem->quantity = $totalQty;
                 $cartItem->save();
@@ -267,7 +267,7 @@ class ProductController extends Controller
                 }
                 return back()->with('error', 'Không tìm thấy sản phẩm!');
             }
-            
+
             // Kiểm tra tổng số lượng trong giỏ hàng
             $cartItem = Cart::where('user_id', $user->id)
                 ->where('product_id', $productId)
@@ -275,14 +275,14 @@ class ProductController extends Controller
                 ->first();
             $currentQty = $cartItem ? $cartItem->quantity : 0;
             $totalQty = $currentQty + $quantity;
-            
+
             if ($totalQty > $product->stock_quantity) {
                 if ($request->ajax()) {
                     return response()->json(['success' => false, 'message' => 'Thất bại! Số lượng vượt quá tồn kho'], 400);
                 }
                 return back()->with('error', 'Thất bại! Số lượng vượt quá tồn kho!');
             }
-            
+
             if ($cartItem) {
                 $cartItem->quantity = $totalQty;
                 $cartItem->save();
@@ -290,6 +290,7 @@ class ProductController extends Controller
                 Cart::create([
                     'user_id' => $user->id,
                     'product_id' => $productId,
+                    'variation_id' => $variationId,
                     'quantity' => $quantity,
                 ]);
             }

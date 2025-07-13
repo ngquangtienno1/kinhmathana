@@ -61,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
                 // Lấy danh sách sản phẩm trong giỏ cho user đăng nhập
                 $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
                     ->where('user_id', Auth::id())
+                    ->orderBy('updated_at', 'desc')
                     ->get();
                 $cartCount = $cartItems->count();
             } else {

@@ -92,20 +92,20 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
-    //Users routes 
+    //Users routes
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('index', [UserController::class, 'index'])->name('index');
-        Route::get('information',[ UserController::class, 'profile'])->name('information'); // Dạng lưới
+        Route::get('information', [UserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [UserController::class, 'update'])->name('information.update');
-    // Route lấy chi tiết đơn hàng cho client (AJAX popup)
-    Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
-    Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
+        // Route lấy chi tiết đơn hàng cho client (AJAX popup)
+        Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
+        Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('profile', [UserController::class, 'index'])->name('profile'); // Dạng lưới
     });
-    
+
     Route::get('forgot-password', [AuthenticationClientController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('forgot-password', [AuthenticationClientController::class, 'sendResetLinkEmail'])->name('password.email');
     Route::get('reset-password/{token}', [AuthenticationClientController::class, 'showResetForm'])->name('password.reset');
@@ -116,7 +116,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
         Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
     });
- 
+
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('add', [CartController::class, 'add'])->name('add');
@@ -125,6 +125,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('checkout', [CartController::class, 'showCheckoutForm'])->name('checkout.form');
         Route::post('checkout', [CartController::class, 'checkout'])->name('checkout');
         Route::post('apply-voucher', [CartController::class, 'applyVoucher'])->name('apply-voucher');
+        Route::post('bulk-remove', [CartController::class, 'bulkRemove'])->name('bulk-remove');
     });
 
     Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
@@ -607,7 +608,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
     });
 
     // Quản lý ticket

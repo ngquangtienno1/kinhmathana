@@ -562,7 +562,7 @@
                                 <path fill="none" stroke="currentColor" stroke-miterlimit="10"
                                     d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
                             </svg>
-                          
+
                         </a>
                     </div>
                     @endauth

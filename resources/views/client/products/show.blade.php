@@ -6,7 +6,8 @@
             style="background: #ffeaea; border: 1.5px solid #e74c3c; color: #c0392b; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
             <span style="font-size: 22px;">&#9888;</span>
             <span>{{ session('error') }}</span>
-            <button type="button" class="close" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>
+            <button type="button" class="close" onclick="this.parentElement.style.display='none'"
+                style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>
         </div>
     @endif
     <div id="qodef-page-outer">
@@ -88,22 +89,15 @@
                                     style="margin-bottom: 16px; color: #555; font-size: 1.1em;">
                                     {{ $product->description_short ?? ($product->description ?? $product->description_long) }}
                                 </div>
-                                <div class="product-price-stock-box" style="margin-bottom: 10px;">
-                                    <div class="product-price-box">
-                                        <span id="default-price-html">
-                                            @if(isset($selectedVariation) && $selectedVariation->sale_price && $selectedVariation->sale_price < $selectedVariation->price)
-                                                <span class="old-price">{{ number_format($selectedVariation->price, 0, ',', '.') }}₫</span>
-                                                <span class="sale-price">{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}₫</span>
-                                            @elseif(isset($selectedVariation))
-                                                <span class="sale-price">{{ number_format($selectedVariation->price, 0, ',', '.') }}₫</span>
-                                            @else
-                                                <span class="sale-price">{{ number_format($product->minimum_price, 0, ',', '.') }}₫</span>
-                                            @endif
-                                        </span>
-                                    </div>
-                                    <div class="product-stock-box" style="margin-top: 5px;">
-                                        Số lượng: <strong id="variation-stock-quantity">{{ isset($selectedVariation) ? $selectedVariation->stock_quantity : $product->total_stock_quantity }}</strong>
-                                    </div>
+                                <p class="price">
+                                    <span class="woocommerce-Price-amount amount">
+                                        <bdi><span
+                                                class="woocommerce-Price-currencySymbol"></span>{{ number_format($product->minimum_price, 0, ',', '.') }}
+                                            <span style="font-size:0.9em;">VNĐ</span></bdi>
+                                    </span>
+                                </p>
+                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                    Số lượng: <strong>{{ $product->total_stock_quantity }}</strong>
                                 </div>
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
@@ -116,127 +110,71 @@
                                     <div id="qvsfw-variations-form-wrapper">
                                         <form class="variations_form cart js-add-to-cart-form" method="post"
                                             action="{{ route('client.products.add-to-cart') }}"
-                                            enctype="multipart/form-data">
+                                            enctype="multipart/form-data" data-product-name="{{ $product->name }}">
                                             @csrf
                                             @if ($product->total_stock_quantity <= 0)
                                                 <fieldset disabled style="opacity:0.7;pointer-events:none;">
                                             @endif
-                                            <table class="variations" cellspacing="0" role="presentation">
-                                                <tbody>
-                                                    @if ($colors->count())
-                                                        <tr>
-                                                            <th class="label"><label for="pa_color">Màu sắc</label></th>
-                                                            <td class="value">
-                                                                <div class="qvsfw-select-options-container qvsfw-select-options-container-type--color pa_color qvsfw-color-layout-style--layout-2"
-                                                                    data-attribute-name="Color"
-                                                                    style="margin-bottom: 10px;">
-                                                                    @foreach ($colors as $color)
-                                                                        @php
-                                                                            $isTransparent =
-                                                                                strtolower($color->name) ===
-                                                                                    'trong suốt' ||
-                                                                                $color->hex_code === '#FFFFFF00';
-                                                                            $variationWithImage = $product->variations
-                                                                                ->where('color_id', $color->id)
-                                                                                ->first();
-                                                                            $imageUrl =
-                                                                                $variationWithImage &&
-                                                                                $variationWithImage->images->first()
-                                                                                    ? asset(
-                                                                                        'storage/' .
-                                                                                            $variationWithImage->images->first()
-                                                                                                ->image_path,
-                                                                                    )
-                                                                                    : (isset($featuredImage)
-                                                                                        ? asset(
-                                                                                            'storage/' .
-                                                                                                $featuredImage->image_path,
-                                                                                        )
-                                                                                        : '');
-                                                                        @endphp
-                                                                        <span
-                                                                            class="qvsfw-select-option qvsfw-select-option--color"
-                                                                            data-value="{{ $color->id }}"
-                                                                            data-name="{{ $color->name }}"
-                                                                            data-image-url="{{ $imageUrl }}">
-                                                                            <span class="qvsfw-select-option-inner">
-                                                                                <span
-                                                                                    class="qvsfw-select-option-additional-holder">
-                                                                                    @if ($isTransparent)
-                                                                                        <span class="qvsfw-select-value"
-                                                                                            style="background: repeating-linear-gradient(45deg, #eee 0 8px, #fff 8px 16px); border: 2px solid #888; width: 30px; height: 30px; display: inline-block; vertical-align: middle;"
-                                                                                            title="{{ $color->name }}"></span>
-                                                                                    @else
-                                                                                        <span class="qvsfw-select-value"
-                                                                                            style="background-color: {{ $color->hex_code ?? '#ccc' }}; width: 30px; height: 30px; display: inline-block; vertical-align: middle;"
-                                                                                            title="{{ $color->name }}"></span>
-                                                                                    @endif
-                                                                                </span>
-                                                                            </span>
-                                                                        </span>
-                                                                    @endforeach
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                    @if ($sizes->count())
-                                                        <tr>
-                                                            <th class="label"><label for="custom_size">Kích thước</label>
-                                                            </th>
-                                                            <td class="value">
-                                                                <select name="size_id" id="custom_size"
-                                                                    class="custom-attribute-select"
-                                                                    style="min-width:80px;height:32px;border-radius:6px;border:1.5px solid #222;font-weight:bold;text-align:center;">
-                                                                    <option value="">Chọn kích thước</option>
-                                                                    @foreach ($sizes as $size)
-                                                                        <option value="{{ $size->id }}">
-                                                                            {{ $size->name }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                    @if ($sphericals->count())
-                                                        <tr>
-                                                            <th class="label"><label for="custom_spherical">Độ cận</label>
-                                                            </th>
-                                                            <td class="value">
-                                                                <select name="spherical_id" id="custom_spherical"
-                                                                    class="custom-attribute-select"
-                                                                    style="min-width:80px;height:32px;border-radius:6px;border:1.5px solid #222;font-weight:bold;text-align:center;">
-                                                                    <option value="">Chọn độ cận</option>
-                                                                    @foreach ($sphericals as $spherical)
-                                                                        <option value="{{ $spherical->id }}">
-                                                                            {{ $spherical->name }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                    @if ($cylindricals->count())
-                                                        <tr>
-                                                            <th class="label"><label for="custom_cylindrical">Độ
-                                                                    loạn</label></th>
-                                                            <td class="value">
-                                                                <select name="cylindrical_id" id="custom_cylindrical"
-                                                                    class="custom-attribute-select"
-                                                                    style="min-width:80px;height:32px;border-radius:6px;border:1.5px solid #222;font-weight:bold;text-align:center;">
-                                                                    <option value="">Chọn độ loạn</option>
-                                                                    @foreach ($cylindricals as $cylindrical)
-                                                                        <option value="{{ $cylindrical->id }}">
-                                                                            {{ $cylindrical->name }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                            <div style="margin-top:12px;text-align:left;">
-                                                <a class="reset_variations" href="#"
-                                                    style="font-size:14px;color:#007bff;cursor:pointer;">Clear tất cả lựa
-                                                    chọn</a>
-                                            </div>
+                                            @if ($colors->count())
+                                                <div class="variation-group">
+                                                    <div class="variation-label">Màu sắc:</div>
+                                                    <div class="variation-options" data-type="color">
+                                                        @foreach ($colors as $color)
+                                                            <button type="button" class="variation-btn color-btn"
+                                                                data-value="{{ $color->id }}">
+                                                                {{ $color->name }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                    <input type="hidden" name="color_id" class="variation-input"
+                                                        value="">
+                                                </div>
+                                            @endif
+                                            @if ($sizes->count())
+                                                <div class="variation-group">
+                                                    <div class="variation-label">Kích thước:</div>
+                                                    <div class="variation-options" data-type="size">
+                                                        @foreach ($sizes as $size)
+                                                            <button type="button" class="variation-btn size-btn"
+                                                                data-value="{{ $size->id }}">
+                                                                {{ $size->name }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                    <input type="hidden" name="size_id" class="variation-input"
+                                                        value="">
+                                                </div>
+                                            @endif
+                                            @if ($sphericals->count())
+                                                <div class="variation-group">
+                                                    <div class="variation-label">Độ cận:</div>
+                                                    <div class="variation-options" data-type="spherical">
+                                                        @foreach ($sphericals as $spherical)
+                                                            <button type="button" class="variation-btn spherical-btn"
+                                                                data-value="{{ $spherical->id }}">
+                                                                {{ $spherical->name }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                    <input type="hidden" name="spherical_id" class="variation-input"
+                                                        value="">
+                                                </div>
+                                            @endif
+                                            @if ($cylindricals->count())
+                                                <div class="variation-group">
+                                                    <div class="variation-label">Độ loạn:</div>
+                                                    <div class="variation-options" data-type="cylindrical">
+                                                        @foreach ($cylindricals as $cylindrical)
+                                                            <button type="button" class="variation-btn cylindrical-btn"
+                                                                data-value="{{ $cylindrical->id }}">
+                                                                {{ $cylindrical->name }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                    <input type="hidden" name="cylindrical_id" class="variation-input"
+                                                        value="">
+                                                </div>
+                                            @endif
                                             <div class="single_variation_wrap">
                                                 <div class="woocommerce-variation single_variation"></div>
                                                 <div class="woocommerce-variation-add-to-cart variations_button">
@@ -420,8 +358,8 @@
                                 <tr
                                     class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
                                     <th class="woocommerce-product-attributes-item__label">Dimensions</th>
-                                    <td class="woocommerce-product-attributes-item__value">1 × 2
-                                        × 3 cm</td>
+                                    <td class="woocommerce-product-attributes-item__value">1 &times; 2
+                                        &times; 3 cm</td>
                                 </tr>
                             </table>
                         </div>
@@ -621,176 +559,12 @@
                     </section>
                 </div>
             </div>
+        </main>
     </div>
-    </main>
-    </div><!-- close #qodef-page-inner div from header.php -->
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const slider = document.querySelector('.thumbnail-slider');
-            const prevBtn = document.querySelector('.slider-prev');
-            const nextBtn = document.querySelector('.slider-next');
-            const thumbnailWidth = 196; // 180px width + 16px margin-right
-            let currentPosition = 0;
-            const maxScroll = (slider.children.length - 3) * thumbnailWidth;
-
-            if (prevBtn && nextBtn) {
-                prevBtn.addEventListener('click', function() {
-                    if (currentPosition > 0) {
-                        currentPosition -= thumbnailWidth;
-                    } else {
-                        currentPosition = maxScroll; // Quay về ảnh cuối
-                    }
-                    slider.style.transform = `translateX(-${currentPosition}px)`;
-                });
-
-                nextBtn.addEventListener('click', function() {
-                    if (currentPosition < maxScroll) {
-                        currentPosition += thumbnailWidth;
-                    } else {
-                        currentPosition = 0; // Quay về ảnh đầu
-                    }
-                    slider.style.transform = `translateX(-${currentPosition}px)`;
-                });
-            }
-
-            // Prepare variations data from PHP (for JS)
-            window.productVariations = @json($variationsJson);
-
-            // Helper: get selected attribute values
-            function getSelectedAttributes() {
-                const colorEl = document.querySelector('.qvsfw-select-option--color.qvsfw-selected');
-                const colorId = colorEl ? colorEl.getAttribute('data-value') : '';
-                const sizeId = document.getElementById('custom_size') ? document.getElementById('custom_size').value : '';
-                const sphericalId = document.getElementById('custom_spherical') ? document.getElementById('custom_spherical').value : '';
-                const cylindricalId = document.getElementById('custom_cylindrical') ? document.getElementById('custom_cylindrical').value : '';
-                return { colorId, sizeId, sphericalId, cylindricalId };
-            }
-
-            // Attribute change handler
-            function onAttributeChange() {
-                const { colorId, sizeId, sphericalId, cylindricalId } = getSelectedAttributes();
-                const mainImg = document.getElementById('main-product-image');
-                const defaultImg = mainImg.dataset.defaultSrc || '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
-                const variationIdInput = document.querySelector('input[name="variation_id"]');
-                const priceBox = document.querySelector('.product-price-box');
-                const stockBox = document.getElementById('variation-stock-quantity');
-                const defaultPriceHtml = document.getElementById('default-price-html') ? document.getElementById('default-price-html').innerHTML : '';
-                const defaultStock = '{{ isset($selectedVariation) ? $selectedVariation->stock_quantity : $product->total_stock_quantity }}';
-
-                let matchingVariation = null;
-                if (colorId || sizeId || sphericalId || cylindricalId) {
-                    matchingVariation = window.productVariations.find(v =>
-                        (!colorId || v.color_id == colorId) &&
-                        (!sizeId || v.size_id == sizeId) &&
-                        (!sphericalId || v.spherical_id == sphericalId) &&
-                        (!cylindricalId || v.cylindrical_id == cylindricalId)
-                    );
-                }
-
-                if (matchingVariation) {
-                    mainImg.src = matchingVariation.image ? matchingVariation.image : defaultImg;
-                    if (priceBox) {
-                        let priceHtml = '';
-                        if (matchingVariation.sale_price && Number(matchingVariation.sale_price) < Number(matchingVariation.price)) {
-                            priceHtml = `<span class='old-price'>${Number(matchingVariation.price).toLocaleString()}₫</span> <span class='sale-price'>${Number(matchingVariation.sale_price).toLocaleString()}₫</span>`;
-                        } else {
-                            priceHtml = `<span class='sale-price'>${Number(matchingVariation.price).toLocaleString()}₫</span>`;
-                        }
-                        priceBox.innerHTML = priceHtml;
-                    }
-                    if (stockBox) stockBox.textContent = matchingVariation.stock_quantity;
-                    if (variationIdInput) variationIdInput.value = matchingVariation.id;
-                } else if (colorId) {
-                    const colorVariation = window.productVariations.find(v => v.color_id == colorId);
-                    if (colorVariation) {
-                        mainImg.src = colorVariation.image ? colorVariation.image : defaultImg;
-                        if (priceBox) {
-                            let minPrice = Math.min(...window.productVariations.filter(v => v.color_id == colorId).map(v => Number(v.sale_price && Number(v.sale_price) < Number(v.price) ? v.sale_price : v.price)));
-                            let maxPrice = Math.max(...window.productVariations.filter(v => v.color_id == colorId).map(v => Number(v.price)));
-                            let priceHtml = '';
-                            if (minPrice < maxPrice) {
-                                priceHtml = `<span class='sale-price'>${minPrice.toLocaleString()}₫</span> - <span class='sale-price'>${maxPrice.toLocaleString()}₫</span>`;
-                            } else {
-                                priceHtml = `<span class='sale-price'>${minPrice.toLocaleString()}₫</span>`;
-                            }
-                            priceBox.innerHTML = priceHtml;
-                        }
-                        if (stockBox) stockBox.textContent = colorVariation.stock_quantity;
-                        if (variationIdInput) variationIdInput.value = colorVariation.id;
-                    } else {
-                        mainImg.src = defaultImg;
-                        if (priceBox && defaultPriceHtml) priceBox.innerHTML = defaultPriceHtml;
-                        if (stockBox) stockBox.textContent = defaultStock;
-                    }
-                } else {
-                    mainImg.src = defaultImg;
-                    if (priceBox && defaultPriceHtml) priceBox.innerHTML = defaultPriceHtml;
-                    if (stockBox) stockBox.textContent = defaultStock;
-                    if (variationIdInput) variationIdInput.value = '{{ $selectedVariation->id ?? '' }}';
-                }
-            }
-
-            // Color select
-            document.querySelectorAll('.qvsfw-select-option--color').forEach(function(el) {
-                el.addEventListener('click', function() {
-                    document.querySelectorAll('.qvsfw-select-option--color').forEach(e => e.classList.remove('qvsfw-selected'));
-                    el.classList.add('qvsfw-selected');
-                    onAttributeChange();
-                });
-            });
-
-            // Other attribute selects
-            ['custom_size', 'custom_spherical', 'custom_cylindrical'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('change', onAttributeChange);
-                }
-            });
-
-            // Clear button: reset all selects and color
-            const clearBtn = document.querySelector('.reset_variations');
-            if (clearBtn) {
-                clearBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.custom-attribute-select').forEach(sel => sel.selectedIndex = 0);
-                    document.querySelectorAll('.qvsfw-select-option--color').forEach(el => el.classList.remove('qvsfw-selected'));
-                    const mainImg = document.getElementById('main-product-image');
-                    mainImg.src = mainImg.dataset.defaultSrc || '{{ isset($featuredImage) ? asset('storage/' . $featuredImage->image_path) : asset('') }}';
-                    onAttributeChange();
-                });
-            }
-
-            // Store default image src for reset
-            const mainImg = document.getElementById('main-product-image');
-            if (mainImg && !mainImg.dataset.defaultSrc) {
-                mainImg.dataset.defaultSrc = mainImg.src;
-            }
-
-            // Initial call to set image based on default selection (if any)
-            onAttributeChange();
-
-            // Tab switching logic
-            const tabLinks = document.querySelectorAll('.wc-tabs li');
-            const tabPanels = document.querySelectorAll('.woocommerce-Tabs-panel');
-            tabLinks.forEach(function(tab) {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    tabLinks.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    tabPanels.forEach(panel => panel.style.display = 'none');
-                    const target = tab.querySelector('a').getAttribute('href');
-                    document.querySelector(target).style.display = '';
-                });
-            });
-            // Mặc định mở tab đầu tiên
-            tabLinks[0].classList.add('active');
-            tabPanels[0].style.display = '';
-        });
-    </script>
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Add to cart functionality
                 document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
                     form.addEventListener('submit', function(e) {
                         e.preventDefault();
@@ -809,24 +583,35 @@
                                 if (msgContainer) {
                                     msgContainer.innerHTML = '';
                                 }
-                                // Tạo message mới
-                                var msg = document.createElement('div');
-                                msg.className = 'woocommerce-message';
-                                msg.setAttribute('role', 'alert');
-                                var productName = form.getAttribute('data-product-name');
-                                msg.innerHTML =
-                                    `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> “${productName}” đã được thêm vào giỏ hàng.`;
-                                if (msgContainer) {
-                                    msgContainer.appendChild(msg);
+                                if (data.success) {
+                                    var msg = document.createElement('div');
+                                    msg.className = 'woocommerce-message';
+                                    msg.setAttribute('role', 'alert');
+                                    var productName = form.getAttribute('data-product-name');
+                                    msg.innerHTML =
+                                        `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> &ldquo;${productName}&rdquo; đã được thêm vào giỏ hàng.`;
+                                    if (msgContainer) {
+                                        msgContainer.appendChild(msg);
+                                    }
+                                } else {
+                                    var msg = document.createElement('div');
+                                    msg.className = 'alert alert-danger';
+                                    msg.style =
+                                        'background: #ffeaea; border: 1.5px solid #e74c3c; color: #c0392b; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;';
+                                    msg.innerHTML =
+                                        '<span style="font-size: 22px;">&#9888;</span><span>' + (
+                                            data.message || 'Có lỗi xảy ra!') + '</span>' +
+                                        '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
+                                    if (msgContainer) {
+                                        msgContainer.appendChild(msg);
+                                    }
                                 }
                             })
                             .catch(() => alert('Có lỗi xảy ra!'));
                     });
                 });
-            });
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+
+                // Quantity buttons
                 document.querySelectorAll('.qodef-quantity-buttons').forEach(function(group) {
                     const minus = group.querySelector('.qodef-quantity-minus');
                     const plus = group.querySelector('.qodef-quantity-plus');
@@ -858,10 +643,274 @@
                         input.value = val;
                     });
                 });
+
+                // Color selection functionality
+                document.querySelectorAll('.color-option').forEach(function(option) {
+                    option.addEventListener('click', function() {
+                        // Remove active class from all options in the same group
+                        const colorOptions = this.closest('.color-options').querySelectorAll(
+                            '.color-option');
+                        colorOptions.forEach(opt => opt.classList.remove('active'));
+
+                        // Add active class to clicked option
+                        this.classList.add('active');
+
+                        // Update main product image if image URL is available
+                        const imageUrl = this.getAttribute('data-image-url');
+                        if (imageUrl && imageUrl !== '') {
+                            const mainImage = document.getElementById('main-product-image');
+                            if (mainImage) {
+                                mainImage.src = imageUrl;
+                            }
+                        }
+                    });
+                });
+
+                // Xử lý chọn biến thể dạng button group
+                document.querySelectorAll('.variation-options').forEach(function(group) {
+                    group.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('variation-btn')) {
+                            // Bỏ active các nút khác
+                            group.querySelectorAll('.variation-btn').forEach(btn => btn.classList
+                                .remove('active'));
+                            // Active nút vừa chọn
+                            e.target.classList.add('active');
+                            // Gán value vào input hidden
+                            const input = group.parentElement.querySelector('.variation-input');
+                            input.value = e.target.getAttribute('data-value');
+
+                            // Sau khi chọn, kiểm tra nếu đã chọn đủ các biến thể thì đổi ảnh
+                            showVariationImageIfSelected();
+                        }
+                    });
+                });
+
+                // Hàm kiểm tra và hiển thị ảnh biến thể nếu đã chọn đủ
+                function showVariationImageIfSelected() {
+                    // Lấy các giá trị đã chọn
+                    const colorId = document.querySelector('input[name="color_id"]')?.value || '';
+                    const sizeId = document.querySelector('input[name="size_id"]')?.value || '';
+                    const sphericalId = document.querySelector('input[name="spherical_id"]')?.value || '';
+                    const cylindricalId = document.querySelector('input[name="cylindrical_id"]')?.value || '';
+                    // Lấy variations từ biến blade
+                    const variations = window.variationsJson || [];
+                    // Tìm variation phù hợp
+                    let found = variations.find(v =>
+                        (!colorId || v.color_id === colorId) &&
+                        (!sizeId || v.size_id === sizeId) &&
+                        (!sphericalId || v.spherical_id === sphericalId) &&
+                        (!cylindricalId || v.cylindrical_id === cylindricalId)
+                    );
+                    // Nếu đã chọn đủ (tức là các thuộc tính nào có thì phải chọn)
+                    let enough = true;
+                    if (variations.length > 0) {
+                        if (variations[0].color_id && !colorId) enough = false;
+                        if (variations[0].size_id && !sizeId) enough = false;
+                        if (variations[0].spherical_id && !sphericalId) enough = false;
+                        if (variations[0].cylindrical_id && !cylindricalId) enough = false;
+                    }
+                    // Cập nhật input[name=variation_id] nếu tìm thấy
+                    var variationInput = document.querySelector('input[name="variation_id"]');
+                    if (variationInput) {
+                        if (found && enough) {
+                            variationInput.value = found.id;
+                        } else {
+                            variationInput.value = '';
+                        }
+                    }
+                    // Đổi ảnh nếu có
+                    if (found && enough && found.image) {
+                        const mainImage = document.getElementById('main-product-image');
+                        if (mainImage) {
+                            mainImage.src = found.image;
+                        }
+                    }
+                    // Disable nút nếu không có variation phù hợp
+                    var addBtn = document.querySelector('.single_add_to_cart_button');
+                    if (addBtn) {
+                        if (enough && (!found || !variationInput.value)) {
+                            addBtn.disabled = true;
+                            addBtn.style.opacity = 0.7;
+                            addBtn.style.pointerEvents = 'none';
+                        } else {
+                            addBtn.disabled = false;
+                            addBtn.style.opacity = '';
+                            addBtn.style.pointerEvents = '';
+                        }
+                    }
+                }
+
+                // Gán biến variationsJson từ blade
+                window.variationsJson = @json($variationsJson ?? []);
             });
         </script>
     @endpush
     <style>
+        /* Product Variations Styling */
+        .product-variations {
+            margin: 30px 0;
+            padding: 25px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .variation-group {
+            margin-bottom: 25px;
+        }
+
+        .variation-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .variation-label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Color Options */
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .color-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+
+        .color-option:hover {
+            border-color: #ddd;
+            background: #f8f8f8;
+        }
+
+        .color-option.active {
+            border-color: #000;
+            background: #f0f0f0;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 6px;
+            transition: transform 0.2s ease;
+        }
+
+        .color-option:hover .color-swatch {
+            transform: scale(1.1);
+        }
+
+        .color-option.active .color-swatch {
+            transform: scale(1.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-swatch.transparent {
+            background: repeating-linear-gradient(45deg, #eee 0 8px, #fff 8px 16px);
+            border: 2px solid #ccc;
+        }
+
+        .color-name {
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            line-height: 1.2;
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Select Dropdowns */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 10px;
+            pointer-events: none;
+        }
+
+        .variation-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .variation-select:hover {
+            border-color: #999;
+        }
+
+        .variation-select:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .variation-select option {
+            padding: 8px;
+            background: #fff;
+            color: #333;
+        }
+
+        /* Reset Button */
+        .variation-actions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .reset-variations {
+            background: none;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .reset-variations:hover {
+            background: #f5f5f5;
+            border-color: #999;
+            color: #333;
+        }
+
+        /* Existing styles */
         .woocommerce-message .wc-forward {
             border: 1.5px solid #222;
             background: #fff;
@@ -884,10 +933,89 @@
             background: #222;
             color: #fff;
         }
-        .old-price {
-    text-decoration: line-through;
-    color: #999;
-    margin-right: 8px;
-}
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-variations {
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .color-options {
+                gap: 8px;
+            }
+
+            .color-option {
+                min-width: 50px;
+                padding: 6px;
+            }
+
+            .color-swatch {
+                width: 28px;
+                height: 28px;
+            }
+
+            .color-name {
+                font-size: 10px;
+                max-width: 50px;
+            }
+
+            .variation-select {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+        }
+
+        /* Bỏ khung ngoài, chỉ còn từng nhóm rời nhau */
+        .product-variations-btn {
+            display: unset !important;
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .variation-group {
+            margin-bottom: 28px;
+        }
+
+        .variation-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #222;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .variation-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .variation-btn {
+            border: 2px solid #bbb;
+            background: #fff;
+            color: #111;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: border 0.2s, background 0.2s;
+            outline: none;
+        }
+
+        .variation-btn.active,
+        .variation-btn:focus {
+            border: 2.5px solid #111;
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .variation-btn:hover {
+            border: 2px solid #111;
+        }
     </style>
 @endsection

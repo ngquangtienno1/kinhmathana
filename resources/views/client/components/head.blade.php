@@ -469,9 +469,9 @@
         };
         /* ]]> */
     </script>
-    <script type="text/javascript"
+    {{-- <script type="text/javascript"
         src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.min4615.js?ver=9.1.4') }}"
-        id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script>
+        id="wc-add-to-cart-variation-js" defer="defer" data-wp-strategy="defer"></script> --}}
     <script type="text/javascript" id="wc-add-to-cart-js-extra">
         /* <![CDATA[ */
         var wc_add_to_cart_params = {

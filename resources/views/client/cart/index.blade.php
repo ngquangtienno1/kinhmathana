@@ -22,15 +22,14 @@
                         <div class="woocommerce">
                             <div id="qodef-woo-page" class="qodef--cart">
                                 <div class="woocommerce-notices-wrapper"></div>
-                                <form class="woocommerce-cart-form" action="https://neoocular.qodeinteractive.com/cart/"
-                                    method="post">
-
+                                <form id="bulk-remove-form" action="{{ route('client.cart.bulk-remove') }}" method="POST">
+                                    @csrf
                                     <table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents"
                                         cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th class="product-remove"><span class="screen-reader-text">Remove
-                                                        item</span></th>
+                                                <th style="width:32px;"><input type="checkbox" id="select-all-cart-items">
+                                                </th>
                                                 <th class="product-thumbnail"><span class="screen-reader-text">Thumbnail
                                                         image</span></th>
                                                 <th class="product-name">Sản phẩm</th>
@@ -46,9 +45,16 @@
                                                     $cartProduct = $item->variation
                                                         ? $item->variation->product
                                                         : $item->product;
-                                                    $featuredImage =
-                                                        $cartProduct->images->where('is_featured', true)->first() ??
-                                                        $cartProduct->images->first();
+                                                    if ($item->variation && $item->variation->images->count()) {
+                                                        $featuredImage =
+                                                            $item->variation->images
+                                                                ->where('is_featured', true)
+                                                                ->first() ?? $item->variation->images->first();
+                                                    } else {
+                                                        $featuredImage =
+                                                            $cartProduct->images->where('is_featured', true)->first() ??
+                                                            $cartProduct->images->first();
+                                                    }
                                                     $imagePath = $featuredImage
                                                         ? asset('storage/' . $featuredImage->image_path)
                                                         : asset('/path/to/default.jpg');
@@ -57,15 +63,9 @@
                                                         : $cartProduct->total_stock_quantity;
                                                 @endphp
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
-                                                    <td class="product-remove">
-                                                        <button type="button" class="remove btn-remove-cart-item"
-                                                            data-form-id="remove-cart-item-{{ $item->id }}"
-                                                            aria-label="Xóa {{ $cartProduct->name }} khỏi giỏ hàng"
-                                                            data-product_id="{{ $item->id }}"
-                                                            style="background:none;border:none;padding:0;margin:0;font-size:22px;line-height:1;color:#d00;cursor:pointer;">
-                                                            &times;
-                                                        </button>
-                                                    </td>
+                                                    <td><input type="checkbox" class="select-cart-item"
+                                                            name="selected_ids[]" value="{{ $item->id }}"></td>
+
                                                     <td class="product-thumbnail">
                                                         <a href="{{ route('client.products.show', $cartProduct->slug) }}">
                                                             <img src="{{ $imagePath }}" width="80"
@@ -112,35 +112,14 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="6">Giỏ hàng của bạn đang trống.</td>
+                                                    <td colspan="7">Giỏ hàng của bạn đang trống.</td>
                                                 </tr>
                                             @endforelse
 
                                             <tr>
-                                                <td colspan="6" class="actions">
-                                                    <div class="coupon" style="position:relative;">
-                                                        <label for="coupon_code" class="screen-reader-text">Mã giảm
-                                                            giá:</label>
-                                                        <input type="text" name="coupon_code" class="input-text"
-                                                            id="coupon_code" value="" placeholder="Nhập mã giảm giá"
-                                                            autocomplete="off" />
-                                                        <ul id="coupon-suggestions"
-                                                            style="display:none;position:absolute;top:100%;left:0;right:0;z-index:10;background:#fff;border:1px solid #ddd;list-style:none;padding:0;margin:5px 0 0 0;max-height:180px;overflow:auto;">
-                                                            @foreach ($promotions as $promo)
-                                                                <li class="coupon-suggestion-item"
-                                                                    data-code="{{ $promo->code }}"
-                                                                    style="padding:6px 12px;cursor:pointer;">
-                                                                    {{ $promo->code }} - {{ $promo->name }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                        <button type="button" class="button" id="apply-coupon-btn"
-                                                            name="apply_coupon" value="Áp dụng">Áp dụng</button>
-                                                    </div>
-                                                    <button type="submit" class="button" name="update_cart"
-                                                        value="Cập nhật giỏ hàng">Cập nhật giỏ hàng</button>
-                                                    <input type="hidden" id="woocommerce-cart-nonce"
-                                                        name="woocommerce-cart-nonce" value="665c378ca6" />
-                                                    <input type="hidden" name="_wp_http_referer" value="/cart/" />
+                                                <td colspan="7" class="actions">
+                                                    <button type="submit" class="button" id="bulk-remove-btn" disabled>Xoá
+                                                        các sản phẩm đã chọn</button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -183,8 +162,7 @@
                                             </tr>
                                             <tr class="cart-discount" style="display:none;">
                                                 <th>Giảm giá</th>
-                                                <td data-title="Giảm giá"><span
-                                                        class="woocommerce-Price-amount amount"><bdi
+                                                <td data-title="Giảm giá"><span class="woocommerce-Price-amount amount"><bdi
                                                             id="discount-amount">0₫</bdi></span></td>
                                             </tr>
                                             <tr class="order-total">
@@ -201,11 +179,8 @@
                                                 class="checkout-button button alt wc-forward">
                                                 Thanh toán</a>
                                         </div>
-
-
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -363,76 +338,51 @@
                 });
             });
 
-            // Gợi ý mã giảm giá
-            const input = document.getElementById('coupon_code');
-            const suggestionBox = document.getElementById('coupon-suggestions');
-            const suggestionItems = suggestionBox ? suggestionBox.querySelectorAll('.coupon-suggestion-item') : [];
-
-            if (input && suggestionBox) {
-                input.addEventListener('focus', function() {
-                    suggestionBox.style.display = 'block';
-                });
-                input.addEventListener('input', function() {
-                    const val = input.value.toLowerCase();
-                    suggestionItems.forEach(function(item) {
-                        if (item.dataset.code.toLowerCase().includes(val)) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                    suggestionBox.style.display = 'block';
-                });
-                document.addEventListener('click', function(e) {
-                    if (!suggestionBox.contains(e.target) && e.target !== input) {
-                        suggestionBox.style.display = 'none';
-                    }
-                });
-                suggestionItems.forEach(function(item) {
-                    item.addEventListener('click', function() {
-                        input.value = item.dataset.code;
-                        suggestionBox.style.display = 'none';
-                    });
-                });
+            // Chọn tất cả
+            function toggleBulkRemoveBtn() {
+                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb
+                    .checked);
+                document.getElementById('bulk-remove-btn').disabled = !anyChecked;
             }
+            document.getElementById('select-all-cart-items').addEventListener('change', function() {
+                const checked = this.checked;
+                document.querySelectorAll('.select-cart-item').forEach(cb => cb.checked = checked);
+                toggleBulkRemoveBtn();
+            });
+            document.querySelectorAll('.select-cart-item').forEach(function(cb) {
+                cb.addEventListener('change', toggleBulkRemoveBtn);
+            });
 
-            // Áp dụng mã giảm giá
-            document.getElementById('apply-coupon-btn').addEventListener('click', function() {
-                const code = input.value.trim();
-                if (!code) {
-                    alert('Vui lòng nhập mã giảm giá!');
+            // Khi submit form xoá nhiều, chỉ gửi các id đã chọn
+            document.getElementById('bulk-remove-form').addEventListener('submit', function(e) {
+                const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
+                if (checked.length === 0) {
+                    e.preventDefault();
                     return;
                 }
-                fetch("{{ route('client.cart.apply-voucher') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            voucher_code: code
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message || 'Áp dụng mã giảm giá thành công!');
-                            let discount = data.voucher.discount_amount || 0;
-                            let subtotal = parseInt(document.querySelector('.cart-subtotal bdi')
-                                .innerText.replace(/[^0-9]/g, '')) || 0;
-                            let total = subtotal - discount;
-                            if (total < 0) total = 0;
-                            document.querySelector('.cart-discount').style.display = '';
-                            document.getElementById('discount-amount').innerText = discount
-                                .toLocaleString('vi-VN') + '₫';
-                            document.querySelector('.order-total bdi').innerText = total.toLocaleString(
-                                'vi-VN') + '₫';
-                        } else {
-                            alert(data.message || 'Mã giảm giá không hợp lệ!');
-                        }
-                    })
-                    .catch(() => alert('Có lỗi xảy ra!'));
+                // Xoá các input cũ nếu có
+                this.querySelectorAll('input[name="selected_ids[]"]').forEach(i => i.remove());
+                // Thêm input cho từng id đã chọn
+                checked.forEach(cb => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'selected_ids[]';
+                    input.value = cb.value;
+                    this.appendChild(input);
+                });
+            });
+
+            // Xử lý nút "Xoá các sản phẩm đã chọn"
+            document.getElementById('bulk-remove-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
+                if (checked.length === 0) {
+                    alert('Vui lòng chọn sản phẩm để xoá!');
+                    return;
+                }
+                if (confirm('Bạn có chắc muốn xoá các sản phẩm đã chọn?')) {
+                    document.getElementById('bulk-remove-form').submit();
+                }
             });
 
             var alertBox = document.querySelector('.alert-success');

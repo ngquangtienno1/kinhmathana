@@ -21,7 +21,7 @@ class CartController extends Controller
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         // Lấy danh sách voucher đang hoạt động
@@ -102,6 +102,7 @@ class CartController extends Controller
         $item_total = number_format($price * $cartItem->quantity, 0, ',', '.');
         // Tính lại tổng tiền giỏ hàng
         $cart_total = Cart::where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
             ->get()
             ->sum(function ($item) {
                 if ($item->variation) {
@@ -129,11 +130,25 @@ class CartController extends Controller
         return redirect()->route('client.cart.index')->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng!');
     }
 
+    //xoá nhiều sản phẩm (Tuấn Anh)
+    public function bulkRemove(Request $request)
+    {
+        $user = Auth::user();
+        $ids = $request->input('selected_ids', []);
+        if (!is_array($ids) || empty($ids)) {
+
+            return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để xoá!');
+        }
+        Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
+        return redirect()->route('client.cart.index')->with('success', 'Đã xoá các sản phẩm đã chọn khỏi giỏ hàng!');
+    }
+
     public function showCheckoutForm()
     {
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
             ->get();
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
@@ -207,6 +222,7 @@ class CartController extends Controller
         // Tính tổng tiền giỏ hàng
         $cartItems = Cart::with(['variation.product'])
             ->where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
             ->get();
         $subtotal = $cartItems->sum(function ($item) {
             if ($item->variation) {
@@ -260,6 +276,7 @@ class CartController extends Controller
         $user = Auth::user();
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
             ->get();
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
