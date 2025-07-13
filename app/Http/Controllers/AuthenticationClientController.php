@@ -13,6 +13,8 @@ use App\Http\Requests\UserLoginRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
 
 class AuthenticationClientController extends BaseController
 {
@@ -140,5 +142,51 @@ class AuthenticationClientController extends BaseController
         return redirect()->back()->with([
             'message' => 'Có lỗi xảy ra, vui lòng thử lại'
         ]);
+    }
+
+    // Hiển thị form quên mật khẩu
+    public function showForgotPasswordForm()
+    {
+        return view('client.login.forgot-password');
+    }
+
+    // Gửi mail reset password
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        $status = Password::broker()->sendResetLink(
+            $request->only('email')
+        );
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('status', 'Đã gửi email xác nhận, vui lòng kiểm tra hộp thư của bạn!');
+        }
+        return back()->withErrors(['email' => 'Không thể gửi email. Vui lòng kiểm tra lại địa chỉ email hoặc thử lại sau.']);
+    }
+
+    // Hiển thị form đặt lại mật khẩu
+    public function showResetForm(Request $request, $token = null)
+    {
+        return view('client.login.reset-password', ['token' => $token, 'email' => $request->email]);
+    }
+
+    // Xử lý đặt lại mật khẩu
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+        $status = Password::broker()->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = bcrypt($password);
+                $user->save();
+            }
+        );
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('client.login')->with('status', __($status));
+        }
+        return back()->withErrors(['email' => [__($status)]]);
     }
 }

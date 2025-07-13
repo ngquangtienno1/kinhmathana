@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 @extends('client.layouts.app')
 
 @section('content')
@@ -82,3 +84,4 @@
         </form>
     </div>
 @endsection
+>>>>>>> 79b1bb162aabbc10017718859a748ba1c7c1e357
