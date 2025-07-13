@@ -3,7 +3,7 @@
 // ================== Client Controllers ==================
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Client\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Client\VoucherController;
@@ -44,11 +44,6 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
-
-
-
-
-
 
 // Authentication
 
@@ -97,14 +92,24 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::get('register', [AuthenticationClientController::class, 'register'])->name('register');
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
+    //Users routes 
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('index', [UserController::class, 'index'])->name('index');
+        Route::get('information',[ UserController::class, 'profile'])->name('information'); // Dạng lưới
+        Route::post('information', [UserController::class, 'update'])->name('information.update');
     // Route lấy chi tiết đơn hàng cho client (AJAX popup)
     Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
     Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
-
+    });
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('profile', [\App\Http\Controllers\Client\UserController::class, 'index'])->name('profile'); // Dạng lưới
+        Route::get('profile', [UserController::class, 'index'])->name('profile'); // Dạng lưới
     });
+    
+    Route::get('forgot-password', [AuthenticationClientController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('forgot-password', [AuthenticationClientController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('reset-password/{token}', [AuthenticationClientController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [AuthenticationClientController::class, 'reset'])->name('password.update');
     // Product routes
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');

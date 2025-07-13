@@ -1,6 +1,14 @@
 @extends('client.layouts.app')
 
 @section('content')
+    @if (session('error'))
+        <div class="alert alert-danger"
+            style="background: #ffeaea; border: 1.5px solid #e74c3c; color: #c0392b; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
+            <span style="font-size: 22px;">&#9888;</span>
+            <span>{{ session('error') }}</span>
+            <button type="button" class="close" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>
+        </div>
+    @endif
     <div id="qodef-page-outer">
         <div
             class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
@@ -797,7 +805,6 @@
                             })
                             .then(res => res.json())
                             .then(data => {
-                                // Xóa message cũ nếu có
                                 var msgContainer = document.getElementById('add-to-cart-message');
                                 if (msgContainer) {
                                     msgContainer.innerHTML = '';
@@ -814,6 +821,41 @@
                                 }
                             })
                             .catch(() => alert('Có lỗi xảy ra!'));
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.qodef-quantity-buttons').forEach(function(group) {
+                    const minus = group.querySelector('.qodef-quantity-minus');
+                    const plus = group.querySelector('.qodef-quantity-plus');
+                    const input = group.querySelector('input.qodef-quantity-input');
+                    let min = input.getAttribute('data-min');
+                    let max = input.getAttribute('data-max');
+                    min = min ? parseInt(min) : 1;
+                    max = max ? parseInt(max) : null;
+                    if (minus) {
+                        minus.addEventListener('click', function() {
+                            let val = parseInt(input.value) || min;
+                            if (val > min) {
+                                input.value = val - 1;
+                            }
+                        });
+                    }
+                    if (plus) {
+                        plus.addEventListener('click', function() {
+                            let val = parseInt(input.value) || min;
+                            if (!max || val < max) {
+                                input.value = val + 1;
+                            }
+                        });
+                    }
+                    input.addEventListener('change', function() {
+                        let val = parseInt(input.value) || min;
+                        if (val < min) val = min;
+                        if (max && val > max) val = max;
+                        input.value = val;
                     });
                 });
             });

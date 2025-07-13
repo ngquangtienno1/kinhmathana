@@ -1,542 +1,552 @@
 @extends('client.layouts.app')
 @section('title', 'Thanh toán đơn hàng')
 @section('content')
-    <div id="qodef-page-outer">
-        <div
-            class="qodef-page-title qodef-m qodef-title--breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
-            <div class="qodef-m-inner">
-                <div class="qodef-m-content qodef-content-grid  ">
-                    <h1 class="qodef-m-title entry-title">
-                        Thanh toán </h1>
-                    <div itemprop="breadcrumb" class="qodef-breadcrumbs">
-                        <a itemprop="url" class="qodef-breadcrumbs-link" href="/">
-                            <span itemprop="title">Trang chủ</span>
-                        </a>
-                        <span class="qodef-breadcrumbs-separator"></span>
-                        <span itemprop="title" class="qodef-breadcrumbs-current">Thanh toán</span>
+    <div class="checkout-page-wrapper">
+        <div class="checkout-main-flex">
+            <!-- Left: Customer Form -->
+            <div class="checkout-form-col">
+                <h1 class="checkout-title">THANH TOÁN</h1>
+
+                @if (session('success'))
+                    <div class="alert alert-success"
+                        style="margin-bottom: 16px; padding: 12px 16px; background: #e8f8f5; color: #148f77; border: 1.5px solid #1abc9c; border-radius: 6px;">
+                        {{ session('success') }}</div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger"
+                        style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
+                        {{ session('error') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger"
+                        style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
+                        <ul style="margin-bottom:0; padding-left: 20px;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                @endif
+
+                <form name="checkout" method="post" class="checkout-form" action="{{ route('client.cart.checkout') }}"
+                    enctype="multipart/form-data" novalidate="novalidate">
+                    @csrf
+                    <div class="checkout-form-group">
+                        <label for="receiver_name">Họ và tên <span class="required">*</span></label>
+                        <input type="text" class="checkout-input" name="receiver_name" id="receiver_name"
+                            placeholder="Họ và tên" value="{{ old('receiver_name', auth()->user()->name ?? '') }}">
+                    </div>
+                    <div class="checkout-form-group">
+                        <label for="receiver_phone">Số điện thoại <span class="required">*</span></label>
+                        <input type="text" class="checkout-input" name="receiver_phone" id="receiver_phone"
+                            placeholder="Số điện thoại" value="{{ old('receiver_phone', auth()->user()->phone ?? '') }}">
                 </div>
+                    <div class="checkout-form-group">
+                        <label for="receiver_email">Email <span class="required">*</span></label>
+                        <input type="email" class="checkout-input" name="receiver_email" id="receiver_email"
+                            placeholder="Email" value="{{ old('receiver_email', auth()->user()->email ?? '') }}">
             </div>
+                    <div class="checkout-form-group">
+                        <label for="address">Địa chỉ chi tiết <span class="required">*</span></label>
+                        <input type="text" class="checkout-input" name="address" id="address"
+                            placeholder="Địa chỉ chi tiết" value="{{ old('address', auth()->user()->address ?? '') }}">
         </div>
-        <div id="qodef-page-inner" class="qodef-content-grid">
-            <main id="qodef-page-content" class="qodef-grid qodef-layout--template " role="main">
-                <div class="qodef-grid-inner clear">
-                    <div class="qodef-grid-item qodef-page-content-section qodef-col--12">
-                        <div class="woocommerce">
-                            <div class="woocommerce-notices-wrapper"></div>
-                            <div id="qodef-woo-page" class="qodef--checkout">
-                                <div class="woocommerce-form-coupon-toggle">
-                                    <div class="woocommerce-info">
-                                        Bạn có mã giảm giá?
+                    <div class="checkout-form-group">
+                        <label for="note">Thông tin bổ sung :</label>
+                        <textarea name="note" class="checkout-input" id="note" placeholder="Thông tin bổ sung" rows="3">{{ old('note') }}</textarea>
                                     </div>
-                                    <!-- Form mã giảm giá chuyển sang đây -->
-                                    <form class="checkout_coupon woocommerce-form-coupon mt-4" method="post"
-                                        style="display:block;">
-                                        <p class="form-row form-row-first">
-                                            <label for="voucher_code" class="screen-reader-text">Mã giảm giá:</label>
-                                            <input type="text" name="voucher_code" class="input-text"
-                                                placeholder="Nhập mã giảm giá" id="voucher_code" value="">
-                                            <input type="hidden" id="applied_voucher" name="applied_voucher"
-                                                value="">
-                                        </p>
-                                        <p class="form-row form-row-last">
-                                            <button type="button" class="button" id="apply_voucher_btn">Áp dụng</button>
-                                        </p>
-                                        <div id="voucher_message" class="mt-2"></div>
-                                        <div>
-                                            @if (isset($promotions) && $promotions->count())
-                                                <div class="voucher-label">Voucher có sẵn:</div>
-                                                <div class="voucher-suggestion-list">
-                                                    @foreach ($promotions as $promotion)
-                                                        <span class="voucher-suggestion-item use-voucher"
-                                                            data-code="{{ $promotion->code }}">
-                                                            <i class="fa fa-ticket-alt"></i>{{ $promotion->code }} -
-                                                            {{ $promotion->name }}
-                                                        </span>
+                    <div class="checkout-form-group">
+                        <label class="checkout-label">Phương thức thanh toán</label>
+                        <div class="checkout-radio-group">
+                            @foreach ($paymentMethods as $method)
+                                <label class="checkout-radio">
+                                    <input type="radio" name="payment_method" value="{{ $method->code }}"
+                                        {{ $loop->first ? 'checked' : '' }}>
+                                    @if ($method->logo)
+                                        <img src="{{ asset('storage/' . $method->logo) }}" alt="{{ $method->name }}"
+                                            style="height: 20px; margin-right: 6px;">
+                                    @endif
+                                    <span>{{ $method->name }}</span>
+                                </label>
                                                     @endforeach
                                                 </div>
-                                            @endif
                                         </div>
-                                        <div class="clear"></div>
-                                    </form>
-                                </div>
-                                <div class="row">
-                                    <!-- Bên trái: Thông tin người nhận, địa chỉ, ghi chú, vận chuyển, thanh toán -->
-                                    <div class="col-12 col-md-6 order-md-1 mb-4">
-                                        <form name="checkout" method="post" class="checkout woocommerce-checkout"
-                                            action="{{ route('client.cart.checkout') }}" enctype="multipart/form-data"
-                                            novalidate="novalidate">
-                                            @csrf
-                                            <input type="hidden" name="customer_name" value="{{ auth()->user()->name }}">
-                                            <input type="hidden" name="customer_phone" value="{{ auth()->user()->phone }}">
-                                            <input type="hidden" name="customer_email" value="{{ auth()->user()->email }}">
-                                            <input type="hidden" name="customer_address"
-                                                value="{{ auth()->user()->address }}">
-                                            <input type="hidden" name="shipping_address"
-                                                value="{{ old('receiver_address', auth()->user()->address) }}">
-                                            <input type="hidden" name="applied_voucher" id="applied_voucher_hidden"
-                                                value="">
-                                            <input type="hidden" name="note" id="order_note_hidden" value="">
-                                            <h3>Thông tin người nhận</h3>
-                                            <div class="woocommerce-billing-fields__field-wrapper">
-                                                <p class="form-row form-row-first validate-required">
-                                                    <label for="receiver_name">Họ tên người nhận <abbr class="required"
-                                                            title="required">*</abbr></label>
-                                                    <span class="woocommerce-input-wrapper">
-                                                        <input type="text" class="input-text" name="receiver_name"
-                                                            id="receiver_name" placeholder=""
-                                                            value="{{ old('receiver_name', auth()->user()->name) }}">
-                                                    </span>
-                                                </p>
-                                                <p class="form-row form-row-last validate-required">
-                                                    <label for="receiver_phone">Số điện thoại <abbr class="required"
-                                                            title="required">*</abbr></label>
-                                                    <span class="woocommerce-input-wrapper">
-                                                        <input type="text" class="input-text" name="receiver_phone"
-                                                            id="receiver_phone" placeholder=""
-                                                            value="{{ old('receiver_phone', auth()->user()->phone) }}">
-                                                    </span>
-                                                </p>
-                                                <p class="form-row form-row-wide validate-required">
-                                                    <label for="receiver_address">Địa chỉ nhận hàng <abbr class="required"
-                                                            title="required">*</abbr></label>
-                                                    <span class="woocommerce-input-wrapper">
-                                                        <input type="text" class="input-text" name="receiver_address"
-                                                            id="receiver_address" placeholder=""
-                                                            value="{{ old('receiver_address', auth()->user()->address) }}">
-                                                    </span>
-                                                </p>
-                                                <p class="form-row form-row-wide">
-                                                    <label for="receiver_email">Email</label>
-                                                    <span class="woocommerce-input-wrapper">
-                                                        <input type="email" class="input-text" name="receiver_email"
-                                                            id="receiver_email" placeholder=""
-                                                            value="{{ old('receiver_email', auth()->user()->email) }}">
-                                                    </span>
-                                                </p>
-                                                <p class="form-row notes" id="order_comments_field">
-                                                    <label for="order_comments">Ghi chú đơn hàng <span
-                                                            class="optional">(tùy chọn)</span></label>
-                                                    <span class="woocommerce-input-wrapper">
-                                                        <textarea name="note" class="input-text" id="order_comments" placeholder="" rows="2" cols="5">{{ old('note') }}</textarea>
-                                                    </span>
-                                                </p>
-                                            </div>
-                                            <div class="shipping-methods-box" style="margin-bottom:24px;">
-                                                <h3 class="mb-5">Phương thức vận chuyển</h3>
-                                                <div class="row g-3">
-                                                    <div class="col-12 col-md-12">
-                                                        <div class="row">
-                                                            <div class="col-12 col-md-6">
-                                                                <div class="shipping-method-card"
-                                                                    style="border:1px solid #eee;  padding:12px; min-width:0;">
-                                                                    <div class="d-flex flex-wrap align-items-center mb-2">
-                                                                        <div class="form-check mb-0">
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="shipping_method" id="free_shipping"
-                                                                                value="free" checked>
-                                                                            <label class="form-check-label fs-8 text-body"
-                                                                                for="free_shipping">Miễn phí vận
-                                                                                chuyển</label>
-                                                                        </div>
-                                                                        <span
-                                                                            class="d-inline-block text-body-emphasis fw-bold ms-2">0₫</span>
-                                                                    </div>
-                                                                    <div class="ps-2">
-                                                                        <h6 class="text-body-tertiary mb-2">Dự kiến giao
-                                                                            hàng: 3-5 ngày</h6>
-                                                                        <h6 class="text-info lh-base mb-0">Giao hàng miễn
-                                                                            phí cho đơn hàng từ 500.000₫!</h6>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                    <div class="checkout-form-group">
+                        <label class="checkout-label">Phương thức vận chuyển</label>
+                        <div class="checkout-radio-group">
                                                             @foreach ($shippingProviders as $provider)
-                                                                <div class="col-12 col-md-6">
-                                                                    <div class="shipping-method-card"
-                                                                        style="border:1px solid #eee;  padding:12px; min-width:0;">
-                                                                        <div
-                                                                            class="d-flex flex-wrap align-items-center mb-2">
-                                                                            <div class="form-check mb-0">
-                                                                                <input class="form-check-input"
-                                                                                    type="radio" name="shipping_method"
-                                                                                    id="provider_{{ $provider->id }}"
-                                                                                    value="{{ $provider->code }}">
-                                                                                <label
-                                                                                    class="form-check-label fs-8 text-body"
-                                                                                    for="provider_{{ $provider->id }}">{{ $provider->name }}</label>
-                                                                            </div>
+                                <label class="checkout-radio"
+                                    style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 1rem; font-weight: 400; padding: 2px 0;">
+                                    <input type="radio" name="shipping_method" value="{{ $provider->code }}"
+                                        data-fee="{{ $provider->shippingFees->count() > 0 ? $provider->shippingFees->first()->base_fee : 30000 }}"
+                                        {{ $loop->first ? 'checked' : '' }} style="margin-right: 6px;">
+                                    @if ($provider->logo)
+                                        <img src="{{ asset('storage/' . $provider->logo) }}" alt="{{ $provider->name }}"
+                                            style="height: 20px; margin-right: 6px;">
+                                    @endif
+                                    <span>{{ $provider->name }}</span>
                                                                             <span
-                                                                                class="d-inline-block text-body-emphasis fw-bold ms-2">
+                                        style="color:#26b6c6; font-weight:600; margin-left:6px; min-width:70px; display:inline-block;">
                                                                                 @if ($provider->shippingFees->count() > 0)
-                                                                                    {{ number_format($provider->shippingFees->first()->base_fee, 0, ',', '.') }}₫
+                                            {{ number_format($provider->shippingFees->first()->base_fee, 0, ',', '.') }}đ
                                                                                 @else
-                                                                                    30.000₫
+                                            30.000đ
                                                                                 @endif
                                                                             </span>
                                                                             @if ($provider->code === 'GHN')
                                                                                 <span
-                                                                                    class="badge badge-phoenix badge-phoenix-warning ms-2 ms-lg-4 ms-xl-2">Phổ
+                                            style="background:#ffe082; color:#b26a00; border-radius:4px; padding:2px 6px; font-size:12px; margin-left:8px;">Phổ
                                                                                     biến</span>
                                                                             @endif
-                                                                        </div>
-                                                                        <div class="ps-2">
-                                                                            <h6 class="text-body-tertiary mb-2">
-                                                                                @if ($provider->code === 'GHTK')
-                                                                                    Dự kiến giao hàng: 2-3 ngày
-                                                                                @elseif($provider->code === 'VNPOST')
-                                                                                    Dự kiến giao hàng: 3-5 ngày
-                                                                                @elseif($provider->code === 'GHN')
-                                                                                    Dự kiến giao hàng: 1-2 ngày
-                                                                                @else
-                                                                                    Dự kiến giao hàng: 2-4 ngày
-                                                                                @endif
-                                                                            </h6>
-                                                                            <h6 class="text-info lh-base mb-0">
-                                                                                {{ $provider->description }}</h6>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                </label>
                                                             @endforeach
                                                         </div>
                                                     </div>
+                    <div class="checkout-form-group">
+                        <button type="submit" class="checkout-btn">Đặt hàng</button>
                                                 </div>
+                    <div class="checkout-privacy">
+                        Thông tin cá nhân của bạn sẽ được sử dụng để xử lý đơn hàng và cho các mục đích cụ thể khác đã được
+                        mô tả trong chính sách riêng tư của chúng tôi.
                                             </div>
-                                            <div id="payment" class="woocommerce-checkout-payment">
-                                                <h3 class="mb-5">Phương thức thanh toán</h3>
-                                                <div class="row g-4 mb-4">
-                                                    @foreach ($paymentMethods as $method)
-                                                        <div class="col-12 col-md-6">
-                                                            <div class="payment-method-card"
-                                                                style="border:1px solid #eee;  padding:12px; min-width:0;">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input"
-                                                                        id="payment_{{ $method->id }}" type="radio"
-                                                                        name="payment_method" value="{{ $method->code }}"
-                                                                        {{ old('payment_method') == $method->code ? 'checked' : '' }}>
-                                                                    <label class="form-check-label fs-8 text-body"
-                                                                        for="payment_{{ $method->id }}">
-                                                                        @if ($method->logo)
-                                                                            <img src="{{ asset('storage/' . $method->logo) }}"
-                                                                                alt="{{ $method->name }}" class="me-2"
-                                                                                style="height: 20px;">
-                                                                        @endif
-                                                                        {{ $method->name }}
-                                                                    </label>
+                    <input type="hidden" name="applied_voucher" id="applied_voucher_hidden" value="">
+                </form>
                                                                 </div>
+            <!-- Right: Order Summary -->
+            <div class="checkout-summary-col">
+                <div class="checkout-summary-box">
+                    <div class="checkout-voucher-row">
+                        <label for="voucher_code" class="checkout-voucher-label">Nhập mã giảm giá</label>
+                        <div class="checkout-voucher-flex">
+                            <input type="text" id="voucher_code" class="checkout-input"
+                                placeholder="Nhập mã giảm giá">
+                            <button type="button" class="checkout-voucher-btn">Áp dụng</button>
                                                             </div>
                                                         </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-row place-order">
-                                                    <button type="submit" class="button alt">Đặt hàng</button>
-                                                </div>
-                                            </div>
-                                        </form>
+                    <div id="voucher_message" style="margin-top:10px;"></div>
+                    <div class="checkout-summary-list">
+                        <div class="checkout-summary-header">
+                            <span>Sản phẩm</span>
+                            <span class="checkout-summary-price-label">Thành tiền</span>
                                     </div>
-                                    <!-- Bên phải: Thông tin đơn hàng, tổng tiền, mã giảm giá -->
-                                    <div class="col-12 col-md-6 order-md-2 mb-4">
-                                        <h3 id="order_review_heading">Đơn hàng của bạn</h3>
-                                        <div id="order_review" class="woocommerce-checkout-review-order">
-                                            <table class="table table-hover align-middle text-center table-order">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>Ảnh</th>
-                                                        <th>Sản phẩm</th>
-                                                        <th>Số lượng</th>
-                                                        <th>Thành tiền</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
                                                     @foreach ($cartItems as $item)
                                                         @php
-                                                            $product = $item->variation
-                                                                ? $item->variation->product
-                                                                : $item->product ?? null;
-                                                            $images =
-                                                                $product && isset($product->images)
-                                                                    ? $product->images
-                                                                    : collect();
-                                                            $featuredImage =
-                                                                $images->where('is_featured', true)->first() ??
-                                                                $images->first();
+                                $product = $item->variation ? $item->variation->product : $item->product ?? null;
+                                $images = $product && isset($product->images) ? $product->images : collect();
+                                $featuredImage = $images->where('is_featured', true)->first() ?? $images->first();
                                                             $imagePath = $featuredImage
                                                                 ? asset('storage/' . $featuredImage->image_path)
                                                                 : asset('/path/to/default.jpg');
                                                             $price = $item->variation
-                                                                ? $item->variation->sale_price ??
-                                                                    ($item->variation->price ?? 0)
+                                    ? $item->variation->sale_price ?? ($item->variation->price ?? 0)
                                                                 : $product->sale_price ?? ($product->price ?? 0);
                                                         @endphp
-                                                        <tr>
-                                                            <td>
-                                                                <img src="{{ $imagePath }}"
-                                                                    alt="{{ $product->name ?? 'Sản phẩm đã xóa' }}"
-                                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                            </td>
-                                                            <td class="text-start">
-                                                                <strong>{{ $product->name ?? 'Sản phẩm đã xóa' }}</strong>
-                                                                @if ($item->variation && $item->variation->name)
-                                                                    <div class="text-muted small">
-                                                                        ({{ $item->variation->name }})
-                                                                    </div>
-                                                                @endif
-                                                            </td>
-                                                            <td>{{ $item->quantity }}</td>
-                                                            <td>{{ number_format($price * $item->quantity, 0, ',', '.') }}₫
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td></td>
-                                                        <th colspan="2" class="text-end">Tạm tính</th>
-                                                        <td>{{ number_format(
-                                                            $cartItems->sum(function ($item) {
-                                                                $product = $item->variation ? $item->variation->product : $item->product ?? null;
-                                                                $price = $item->variation
-                                                                    ? $item->variation->sale_price ?? ($item->variation->price ?? 0)
-                                                                    : $product->sale_price ?? ($product->price ?? 0);
-                                                                return $price * $item->quantity;
-                                                            }),
-                                                            0,
-                                                            ',',
-                                                            '.',
-                                                        ) }}₫
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td></td>
-                                                        <th colspan="2" class="text-end">Giảm giá</th>
-                                                        <td><span class="discount-amount">-0₫</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td></td>
-                                                        <th colspan="2" class="text-end">Phí vận chuyển</th>
-                                                        <td><span class="shipping-cost">0₫</span></td>
-                                                    </tr>
-                                                    <tr class="fw-bold">
-                                                        <td></td>
-                                                        <th colspan="2" class="text-end">Tổng cộng</th>
-                                                        <td><span
-                                                                class="total-amount">{{ number_format(
-                                                                    $cartItems->sum(function ($item) {
-                                                                        $product = $item->variation ? $item->variation->product : $item->product ?? null;
-                                                                        $price = $item->variation
-                                                                            ? $item->variation->sale_price ?? ($item->variation->price ?? 0)
-                                                                            : $product->sale_price ?? ($product->price ?? 0);
-                                                                        return $price * $item->quantity;
-                                                                    }),
-                                                                    0,
-                                                                    ',',
-                                                                    '.',
-                                                                ) }}₫</span>
-                                                        </td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-
-                                    </div>
+                            <div class="checkout-summary-item">
+                                <div class="checkout-summary-img-wrap">
+                                    <img src="{{ $imagePath }}" alt="{{ $product->name ?? 'Sản phẩm đã xóa' }}">
                                 </div>
+                                <div class="checkout-summary-info">
+                                    <div class="checkout-summary-name">{{ $product->name ?? 'Sản phẩm đã xóa' }}</div>
+                                                                @if ($item->variation && $item->variation->name)
+                                        <div class="checkout-summary-variant">Màu sắc: {{ $item->variation->name }}</div>
+                                                                @endif
+                                </div>
+                                <div class="checkout-summary-qty">x{{ $item->quantity }}</div>
+                                <div class="checkout-summary-price">
+                                    {{ number_format($price * $item->quantity, 0, ',', '.') }}đ</div>
                             </div>
+                        @endforeach
+                    </div>
+                    <div class="checkout-summary-totals">
+                        <div class="checkout-summary-total-row">
+                            <span>Tạm tính</span>
+                            <span>{{ number_format($cartItems->sum(function ($item) {$product = $item->variation ? $item->variation->product : $item->product ?? null;$price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);return $price * $item->quantity;}),0,',','.') }}đ</span>
+                        </div>
+                        <div class="checkout-summary-total-row">
+                            <span>Phí vận chuyển</span>
+                            <span>30.000đ</span>
+                        </div>
+                        <div class="checkout-summary-total-row">
+                            <span>Giảm</span>
+                            <span>0đ</span>
+                        </div>
+                        <div class="checkout-summary-total-row checkout-summary-grand">
+                            <span>Tổng cộng</span>
+                            <span
+                                class="checkout-summary-grand-total">{{ number_format($cartItems->sum(function ($item) {$product = $item->variation ? $item->variation->product : $item->product ?? null;$price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);return $price * $item->quantity;}) + 30000,0,',','.') }}đ</span>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
+    
     <style>
-        .voucher-label {
-            font-weight: bold;
-            color: black;
-            margin-bottom: 10px;
+        .checkout-page-wrapper {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 32px 0 48px 0;
+            display: flex;
+            justify-content: center;
         }
 
-        .voucher-suggestion-list {
+        .checkout-main-flex {
             display: flex;
-            flex-wrap: wrap;
+            gap: 32px;
+            align-items: flex-start;
+        }
+
+        .checkout-form-col {
+            flex: 1 1 0;
+            background: #fff;
+            border-radius: 8px;
+            padding: 32px 32px 24px 32px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .checkout-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .checkout-form-group {
+            margin-bottom: 18px;
+        }
+
+        .checkout-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .checkout-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #fafbfc;
+            transition: border 0.2s;
+            margin-top: 4px;
+        }
+
+        .checkout-input:focus {
+            border-color: #111;
+            outline: none;
+            background: #fff;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .checkout-radio-group {
+            margin-top: 8px;
+        }
+
+        .checkout-radio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #4dd0e1;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background: #26b6c6;
+        }
+
+        .checkout-privacy {
+            font-size: 0.95rem;
+            color: #888;
+            margin-top: 18px;
+        }
+
+        .checkout-summary-col {
+            flex: 1 1 0;
+            min-width: 340px;
+            max-width: 800px;
+        }
+
+        .checkout-summary-box {
+            background: #f7f7f7;
+            border-radius: 8px;
+            padding: 28px 24px 24px 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .checkout-voucher-row {
+            margin-bottom: 18px;
+        }
+
+        .checkout-voucher-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .checkout-voucher-flex {
+            display: flex;
             gap: 10px;
         }
 
-        .voucher-suggestion-item {
-            background-color: #2c2c2c;
-            /* màu nền tối */
+        .checkout-voucher-flex .checkout-input {
+            flex: 1 1 0;
+            height: 48px;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .checkout-voucher-btn {
+            background: #111;
             color: #fff;
-            border: 1px solid #444;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 14px;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            padding: 0 28px;neoocular-core.min0899.css?ver=6.8.1
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
+            transition: background 0.2s;
+            height: 48px;
+            display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;    
+            margin: 0;
         }
 
-        .voucher-suggestion-item i {
-            color: #f1c40f;
-            /* màu vàng nổi bật cho icon */
+        .checkout-voucher-btn:hover {
+            background: #333;
         }
 
-        .voucher-suggestion-item:hover {
-            background-color: #3a3a3a;
-            border-color: #f1c40f;
-            box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
-            transform: translateY(-2px);
+        .checkout-summary-list {
+            margin-bottom: 18px;
+        }
+
+        .checkout-summary-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 1.08rem;
+            margin-bottom: 10px;
+        }
+
+        .checkout-summary-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ececec;
+        }
+
+        .checkout-summary-img-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-summary-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .checkout-summary-info {
+            flex: 1 1 0;
+        }
+
+        .checkout-summary-name {
+            font-weight: 500;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .checkout-summary-variant {
+            font-size: 0.95rem;
+            color: #888;
+        }
+
+        .checkout-summary-qty {
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin: 0 8px;
+        }
+
+        .checkout-summary-price {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: #222;
+            min-width: 90px;
+            text-align: right;
+        }
+
+        .checkout-summary-totals {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 14px;
+        }
+
+        .checkout-summary-total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+
+        .checkout-summary-grand {
+            font-weight: 700;
+            font-size: 1.13rem;
+            color: #222;
+        }
+
+        .checkout-summary-grand-total {
+            color: #26b6c6;
+            font-size: 1.18rem;
+            font-weight: 700;
+        }
+
+        /* .checkout-radio span {
+            font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+        } */
+
+        @media (max-width: 900px) {
+            .checkout-main-flex {
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            .checkout-form-col,
+            .checkout-summary-col {
+                max-width: 100%;
+                min-width: 0;
+                padding: 16px 8px;
+            }
+
+            .checkout-summary-box {
+                padding: 18px 8px 16px 8px;
+            }
         }
     </style>
+@endsection
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+        const voucherInput = document.getElementById('voucher_code');
+        const applyBtn = document.querySelector('.checkout-voucher-btn');
+        const voucherMessage = document.getElementById('voucher_message');
+        const appliedVoucherHidden = document.getElementById('applied_voucher_hidden');
+        const discountRow = document.querySelector(
+            '.checkout-summary-totals .checkout-summary-total-row:nth-child(3) span:last-child');
+        const totalRow = document.querySelector('.checkout-summary-grand-total');
+        const subtotal = Number(document.querySelector(
+                '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child')
+            .innerText.replace(/\D/g, ''));
+        const shipping = Number(document.querySelector(
+                '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child')
+            .innerText.replace(/\D/g, ''));
             const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
-            const shippingCostElement = document.querySelector('.shipping-cost');
-            const totalAmountElement = document.querySelector('.total-amount');
-            const discountAmountElement = document.querySelector('.discount-amount');
-            const voucherCodeInput = document.getElementById('voucher_code');
-            const applyVoucherBtn = document.getElementById('apply_voucher_btn');
-            const voucherMessage = document.getElementById('voucher_message');
-            const appliedVoucherInput = document.getElementById('applied_voucher');
-            const useVoucherBtns = document.querySelectorAll('.use-voucher');
+        const shippingRow = document.querySelector(
+            '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child');
 
-            @php
-                $subtotal = $cartItems->sum(function ($item) {
-                    $product = $item->variation ? $item->variation->product : $item->product ?? null;
-                    $price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);
-                    return $price * $item->quantity;
-                });
-            @endphp
-            const subtotal = {{ $subtotal }};
-            let appliedVoucher = null;
-            let discountAmount = 0;
-
-            // Tạo object chứa phí vận chuyển từ database
-            const shippingCosts = {
-                'free': 0
-            };
-
-            // Thêm phí vận chuyển từ các provider
-            @foreach ($shippingProviders as $provider)
-                @if ($provider->shippingFees->count() > 0)
-                    shippingCosts['{{ $provider->code }}'] = {{ $provider->shippingFees->first()->base_fee }};
-                @else
-                    shippingCosts['{{ $provider->code }}'] = 30000; // Giá mặc định nếu không có phí
-                @endif
-            @endforeach
-
-            // Xử lý nút áp dụng voucher
-            applyVoucherBtn.addEventListener('click', function() {
-                const voucherCode = voucherCodeInput.value.trim();
-                if (!voucherCode) {
-                    showVoucherMessage('Vui lòng nhập mã voucher!', 'danger');
+        applyBtn.addEventListener('click', function() {
+            const code = voucherInput.value.trim();
+            if (!code) {
+                showVoucherMessage('Vui lòng nhập mã giảm giá!', 'danger');
                     return;
                 }
-
-                applyVoucher(voucherCode);
-            });
-
-            // Xử lý nút sử dụng voucher có sẵn
-            useVoucherBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const voucherCode = this.dataset.code;
-                    voucherCodeInput.value = voucherCode;
-                    applyVoucher(voucherCode);
-                });
-            });
-
-            // Hàm áp dụng voucher
-            function applyVoucher(voucherCode) {
-                fetch('{{ route('client.cart.apply-voucher') }}', {
+            fetch("{{ route('client.cart.apply-voucher') }}", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content')
                         },
                         body: JSON.stringify({
-                            voucher_code: voucherCode
-                        })
+                        voucher_code: code
                     })
-                    .then(response => response.json())
+                })
+                .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            appliedVoucher = data.voucher;
-                            appliedVoucherInput.value = JSON.stringify(appliedVoucher);
-                            // Cập nhật input hidden trong form đặt hàng:
-                            var voucherHidden = document.getElementById('applied_voucher_hidden');
-                            if (voucherHidden) voucherHidden.value = JSON.stringify(appliedVoucher);
-                            discountAmount = data.voucher.discount_amount;
                             showVoucherMessage(data.message, 'success');
-                            updateTotals();
+                        appliedVoucherHidden.value = JSON.stringify(data.voucher);
+                        // Cập nhật số tiền giảm và tổng cộng
+                        if (discountRow && totalRow) {
+                            discountRow.innerText = '-' + formatCurrency(data.voucher
+                                .discount_amount);
+                            const newTotal = subtotal + shipping - data.voucher.discount_amount;
+                            totalRow.innerText = formatCurrency(newTotal);
+                        }
                         } else {
                             showVoucherMessage(data.message, 'danger');
+                        appliedVoucherHidden.value = '';
+                        if (discountRow && totalRow) {
+                            discountRow.innerText = '0đ';
+                            totalRow.innerText = formatCurrency(subtotal + shipping);
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showVoucherMessage('Có lỗi xảy ra khi áp dụng voucher!', 'danger');
-                    });
-            }
+                    }
+                })
+                .catch(() => {
+                    showVoucherMessage('Có lỗi xảy ra, vui lòng thử lại!', 'danger');
+                });
+        });
 
-            // Hàm hiển thị thông báo voucher
-            function showVoucherMessage(message, type) {
-                voucherMessage.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    ${message}
-                </div>`;
-            }
-
-            function updateTotals() {
-                const selectedShipping = document.querySelector('input[name="shipping_method"]:checked');
-                let shippingCost = selectedShipping ? shippingCosts[selectedShipping.value] : 0;
-                let discount = discountAmount;
-
-                // Nếu là voucher giảm phí ship
-                if (appliedVoucher && appliedVoucher.code === 'FREESHIP') {
-                    // Trừ vào phí ship, không để âm
-                    const shipDiscount = Math.min(shippingCost, appliedVoucher.discount_amount);
-                    shippingCost = Math.max(0, shippingCost - shipDiscount);
-                    // discount vẫn là 0 (không trừ vào hàng hóa)
-                    discount = 0;
+        shippingRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                let fee = Number(this.dataset.fee || 0);
+                let discount = 0;
+                if (discountRow) {
+                    discount = Number(discountRow.innerText.replace(/\D/g, ''));
                 }
-
-                const total = subtotal + shippingCost - discount;
-
-                shippingCostElement.textContent = shippingCost.toLocaleString('vi-VN') + '₫';
-                discountAmountElement.textContent = '-' + Math.abs(discount).toLocaleString('vi-VN') + '₫';
-                totalAmountElement.textContent = total.toLocaleString('vi-VN') + '₫';
-            }
-
-            shippingRadios.forEach(radio => {
-                radio.addEventListener('change', updateTotals);
+                if (shippingRow && totalRow) {
+                    shippingRow.innerText = formatCurrency(fee);
+                    totalRow.innerText = formatCurrency(subtotal + fee - discount);
+                }
             });
+        });
+        // Khi load trang, cập nhật phí ship và tổng cộng đúng với radio đang chọn
+        const checkedRadio = document.querySelector('input[name="shipping_method"]:checked');
+        if (checkedRadio) {
+            let fee = Number(checkedRadio.dataset.fee || 0);
+            let discount = 0;
+            if (discountRow) {
+                discount = Number(discountRow.innerText.replace(/\D/g, ''));
+            }
+            if (shippingRow && totalRow) {
+                shippingRow.innerText = formatCurrency(fee);
+                totalRow.innerText = formatCurrency(subtotal + fee - discount);
+            }
+        }
 
-            // Initialize totals
-            updateTotals();
+        function showVoucherMessage(msg, type) {
+            voucherMessage.innerHTML =
+                `<div style="padding:10px 16px;border-radius:6px;font-size:1rem;font-weight:500;${type==='success'?'background:#e8f8f5;color:#148f77;border:1.5px solid #1abc9c;':'background:#ffeaea;color:#c0392b;border:1.5px solid #e74c3c;'};margin-bottom:8px;">${msg}</div>`;
+        }
 
-            function updateVoucherDetail() {
-                const voucherDetail = document.querySelector('.voucher-detail');
-                const shippingVoucherDetail = document.querySelector('.shipping-voucher-detail');
-                voucherDetail.innerHTML = '';
-                shippingVoucherDetail.innerHTML = '';
-
-                if (appliedVoucher) {
-                    let detail =
-                        `<div><b>${appliedVoucher.name}</b> <span class="badge bg-success">${appliedVoucher.code}</span></div>`;
-                    if (appliedVoucher.description) {
-                        detail += `<div>${appliedVoucher.description}</div>`;
-                    }
-                    if (appliedVoucher.code === 'FREESHIP') {
-                        // Hiển thị ở phí vận chuyển
-                        shippingVoucherDetail.innerHTML = detail +
-                            `<div>Đã trừ: -${appliedVoucher.discount_amount.toLocaleString('vi-VN')}₫ vào phí vận chuyển</div>`;
-                    } else {
-                        // Hiển thị ở giảm giá tổng đơn
-                        voucherDetail.innerHTML = detail +
-                            `<div>Đã trừ: -${appliedVoucher.discount_amount.toLocaleString('vi-VN')}₫ vào tổng đơn</div>`;
-                    }
-                }
+        function formatCurrency(num) {
+            return Math.round(Number(num)).toLocaleString('vi-VN') + 'đ';
             }
         });
     </script>
-
-@endsection
