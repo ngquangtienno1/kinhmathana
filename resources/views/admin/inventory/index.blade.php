@@ -168,6 +168,14 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Số lượng<span class="text-danger">*</span></label>
+                                <button type="button" class="btn btn-outline-secondary quantity-btn" data-target="bulk">Nhập số lượng</button>
+                                <input type="hidden" name="bulk_quantity" id="bulk-quantity" required>
+                                @error('bulk_quantity')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-auto d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary" id="submit-bulk" disabled>
                                     <span class="fas fa-save me-2"></span>Thực hiện
@@ -503,6 +511,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             `);
                         });
                         $('#submit-bulk').prop('disabled', false);
+                        // Cập nhật số lượng đồng loạt từ bulk_quantity nếu có
+                        updateBulkQuantities();
                     } else {
                         tableBody.append('<tr><td colspan="4" class="text-center">Không có biến thể nào.</td></tr>');
                     }
@@ -513,6 +523,38 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    // Xử lý nút nhập số lượng cho giao dịch hàng loạt
+    const quantityBtn = document.querySelector('.quantity-btn');
+    if (quantityBtn) {
+        quantityBtn.addEventListener('click', function() {
+            const quantityInput = document.getElementById('bulk-quantity');
+            let quantity = '';
+            while (true) {
+                quantity = prompt('Nhập số lượng (phải lớn hơn 0):', quantityInput.value || '');
+                if (quantity === null) break; // Hủy prompt
+                quantity = parseInt(quantity);
+                if (isNaN(quantity) || quantity <= 0) {
+                    alert('Số lượng không hợp lệ! Vui lòng nhập lại một số lớn hơn 0.');
+                } else {
+                    quantityInput.value = quantity;
+                    updateBulkQuantities(); // Cập nhật số lượng cho tất cả biến thể
+                    break;
+                }
+            }
+        });
+    }
+
+    // Hàm cập nhật số lượng đồng loạt cho tất cả biến thể
+    function updateBulkQuantities() {
+        const bulkQuantity = document.getElementById('bulk-quantity').value;
+        if (bulkQuantity) {
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            quantityInputs.forEach(input => {
+                input.value = bulkQuantity;
+            });
+        }
+    }
 });
 </script>
 @endsection
