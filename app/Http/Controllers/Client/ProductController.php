@@ -193,6 +193,9 @@ class ProductController extends Controller
                 'spherical_id' => $v->spherical_id ? (string)$v->spherical_id : '',
                 'cylindrical_id' => $v->cylindrical_id ? (string)$v->cylindrical_id : '',
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
+                'price' => $v->price,
+                'sale_price' => $v->sale_price,
+                'stock_quantity' => $v->stock_quantity,
             ];
         })->values()->toArray();
 

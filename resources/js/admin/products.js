@@ -451,7 +451,138 @@ document.addEventListener("DOMContentLoaded", function () {
                 variationsContainer,
                 variableSkuInput
             );
+            // Sau khi tạo biến thể, prompt nhập giá cho tất cả biến thể
+            setTimeout(() => {
+                promptAllVariationPrices();
+            }, 200);
         });
+    // Prompt nhập giá cho tất cả biến thể (dạng alert/prompt tuần tự)
+    function promptAllVariationPrices() {
+        const variationRows = variationsContainer.getElementsByClassName("variation-row");
+        if (!variationRows.length) return;
+        let basePrice = null;
+        let salePrice = null;
+        // Nhập giá gốc trước, chỉ nhập lại nếu sai
+        while (true) {
+            basePrice = prompt("Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):", basePrice || "");
+            if (basePrice === null) return; // Hủy
+            basePrice = basePrice.replace(",", ".").trim();
+            if (!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+                alert("Vui lòng nhập giá gốc hợp lệ (số dương).");
+                continue;
+            }
+            break;
+        }
+        // Nhập giá khuyến mãi, chỉ bắt nhập lại giá khuyến mãi nếu sai
+        while (true) {
+            salePrice = prompt("Nhập giá khuyến mãi cho tất cả biến thể (có thể bỏ trống):", salePrice || "");
+            if (salePrice === null) return; // Hủy
+            if (salePrice === "") {
+                salePrice = "";
+                break;
+            }
+            salePrice = salePrice.replace(",", ".").trim();
+            if (!salePrice || isNaN(parseFloat(salePrice)) || parseFloat(salePrice) < 0) {
+                alert("Vui lòng nhập giá khuyến mãi hợp lệ (số dương hoặc để trống).");
+                continue;
+            }
+            if (parseFloat(salePrice) > parseFloat(basePrice)) {
+                alert("Giá khuyến mãi không được lớn hơn giá gốc!");
+                continue;
+            }
+            break;
+        }
+        // Gán giá trị vào tất cả biến thể
+        Array.from(variationRows).forEach((row) => {
+            const priceInput = row.querySelector('input[name$="[price]"]');
+            const salePriceInput = row.querySelector('input[name$="[sale_price]"]');
+            if (priceInput) priceInput.value = basePrice;
+            if (salePriceInput) salePriceInput.value = salePrice;
+        });
+    }
+    // Modal nhập giá cho biến thể
+    function showVariationPriceModal() {
+        const variationPriceModal = document.getElementById("variationPriceModal");
+        const variationPricesTableContainer = document.getElementById("variation-prices-table-container");
+        const variationPriceWarning = document.getElementById("variation-price-warning");
+        const saveVariationPricesBtn = document.getElementById("save-variation-prices");
+        const variationRows = variationsContainer.getElementsByClassName("variation-row");
+        if (!variationRows.length) return;
+        // Tạo bảng nhập giá
+        let tableHtml = '<table class="table table-bordered"><thead><tr><th>Tên biến thể</th><th>Giá gốc</th><th>Giá khuyến mãi</th></tr></thead><tbody>';
+        Array.from(variationRows).forEach((row, idx) => {
+            const name = row.querySelector('input[name$="[name]"]').value;
+            const price = row.querySelector('input[name$="[price]"]').value || '';
+            const salePrice = row.querySelector('input[name$="[sale_price]"]').value || '';
+            tableHtml += `<tr data-index="${idx}">`
+                + `<td>${name}</td>`
+                + `<td><input type="text" class="form-control modal-price-input" data-type="price" value="${price}" /></td>`
+                + `<td><input type="text" class="form-control modal-sale-price-input" data-type="sale_price" value="${salePrice}" /></td>`
+                + `</tr>`;
+        });
+        tableHtml += '</tbody></table>';
+        variationPricesTableContainer.innerHTML = tableHtml;
+        variationPriceWarning.classList.add("d-none");
+
+        // Gán sự kiện lưu
+        if (saveVariationPricesBtn) {
+            saveVariationPricesBtn.onclick = null;
+            saveVariationPricesBtn.onclick = function () {
+                const rows = variationPricesTableContainer.querySelectorAll("tbody tr");
+                let hasWarning = false;
+                let warningShown = false;
+                rows.forEach((tr) => {
+                    const priceInput = tr.querySelector('.modal-price-input');
+                    const salePriceInput = tr.querySelector('.modal-sale-price-input');
+                    const price = parseFloat((priceInput.value || '').replace(',', '.')) || 0;
+                    const salePrice = parseFloat((salePriceInput.value || '').replace(',', '.')) || 0;
+                    if (salePrice > price && !warningShown) {
+                        hasWarning = true;
+                        warningShown = true;
+                    }
+                });
+                if (hasWarning) {
+                    variationPriceWarning.classList.remove("d-none");
+                    return;
+                } else {
+                    variationPriceWarning.classList.add("d-none");
+                }
+                // Gán giá vào input của từng biến thể
+                const variationRows = variationsContainer.getElementsByClassName("variation-row");
+                rows.forEach((tr, idx) => {
+                    const priceInput = tr.querySelector('.modal-price-input');
+                    const salePriceInput = tr.querySelector('.modal-sale-price-input');
+                    const price = priceInput.value;
+                    const salePrice = salePriceInput.value;
+                    const vRow = variationRows[idx];
+                    if (vRow) {
+                        const vPriceInput = vRow.querySelector('input[name$="[price]"]');
+                        const vSalePriceInput = vRow.querySelector('input[name$="[sale_price]"]');
+                        if (vPriceInput) vPriceInput.value = price;
+                        if (vSalePriceInput) vSalePriceInput.value = salePrice;
+                    }
+                });
+                // Ẩn modal
+                if (window.bootstrap && window.bootstrap.Modal) {
+                    if (!variationPriceModal._bsModal) {
+                        variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
+                    }
+                    variationPriceModal._bsModal.hide();
+                } else {
+                    $(variationPriceModal).modal('hide');
+                }
+            };
+        }
+        // Hiển thị modal
+        if (window.bootstrap && window.bootstrap.Modal) {
+            if (!variationPriceModal._bsModal) {
+                variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
+            }
+            variationPriceModal._bsModal.show();
+        } else {
+            $(variationPriceModal).modal('show');
+        }
+    }
     }
 
     // Xử lý xóa biến thể

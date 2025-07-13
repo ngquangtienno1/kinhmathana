@@ -49,14 +49,14 @@
                                 <div class="search-box">
                                     <form class="position-relative" id="target-search-form">
                                         <input type="hidden" name="target_id" id="target_id" required>
-                                        <input class="form-control search-input search" type="search" 
-                                            id="target_search" 
-                                            placeholder="Tìm sản phẩm/biến thể theo tên hoặc SKU" 
+                                        <input class="form-control search-input search" type="search"
+                                            id="target_search"
+                                            placeholder="Tìm sản phẩm/biến thể theo tên hoặc SKU"
                                             autocomplete="off" />
                                         <span class="fas fa-search search-box-icon"></span>
                                     </form>
-                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2" 
-                                        id="targetSearchResults" 
+                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2"
+                                        id="targetSearchResults"
                                         style="width: 100%; max-height: 24rem; overflow-y: auto;">
                                         <div class="list-group list-group-flush" id="targetSearchResultsList">
                                             <!-- Search results will be loaded here -->
@@ -125,13 +125,13 @@
                                 <label class="form-label">Sản phẩm<span class="text-danger">*</span></label>
                                 <div class="search-box">
                                     <input type="hidden" name="product_id" id="product_id" required>
-                                    <input class="form-control search-input search" type="search" 
-                                        id="product_search" 
-                                        placeholder="Tìm sản phẩm theo tên hoặc SKU" 
+                                    <input class="form-control search-input search" type="search"
+                                        id="product_search"
+                                        placeholder="Tìm sản phẩm theo tên hoặc SKU"
                                         autocomplete="off" />
                                     <span class="fas fa-search search-box-icon"></span>
-                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2" 
-                                        id="productSearchResults" 
+                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2"
+                                        id="productSearchResults"
                                         style="width: 100%; max-height: 24rem; overflow-y: auto;">
                                         <div class="list-group list-group-flush" id="productSearchResultsList">
                                             <!-- Search results will be loaded here -->
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
     targetSearch.addEventListener('input', function() {
         clearTimeout(searchTimeout);
         const searchTerm = this.value.trim();
-        
+
         if (searchTerm.length < 2) {
             targetSearchResults.style.display = 'none';
             return;
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     targetSearchLoading.style.display = 'none';
-                    
+
                     if (data.results && data.results.length > 0) {
                         data.results.forEach(item => {
                             const div = document.createElement('div');

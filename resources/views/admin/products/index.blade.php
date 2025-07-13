@@ -95,7 +95,7 @@
                             <th class="sort white-space-nowrap align-middle ps-4">ID</th>
                             <th class="sort align-middle ps-4">Tên</th>
                             <th class="sort align-middle ps-4">Giá gốc</th>
-                            <th class="sort align-middle ps-4">Giá bán</th>
+                            <th class="sort align-middle ps-4">Giá km</th>
                             <th class="sort align-middle ps-4">Số lượng</th>
                             <th class="sort align-middle ps-4">Mô tả ngắn</th>
                             <th class="sort align-middle ps-4">Danh mục</th>
