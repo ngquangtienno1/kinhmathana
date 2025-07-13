@@ -1,6 +1,16 @@
 @extends('client.layouts.app')
 
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger mt-3">
+            {{ session('error') }}
+        </div>
+    @endif
     <div id="qodef-page-outer">
         <div class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
             <div class="qodef-m-inner">
@@ -204,6 +214,26 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Tạo sẵn div chứa flash message nếu chưa có
+    if (!document.getElementById('js-flash-message')) {
+        var flashDiv = document.createElement('div');
+        flashDiv.id = 'js-flash-message';
+        document.body.appendChild(flashDiv);
+    }
+    function showFlashMessage(message, type = 'success') {
+        var flashDiv = document.getElementById('js-flash-message');
+        flashDiv.innerHTML = `<div class="alert alert-${type}"
+            style="position: fixed; top: 100px; right: 20px; z-index: 9999; background: ${type === 'success' ? '#d4edda' : '#f8d7da'}; color: ${type === 'success' ? '#155724' : '#721c24'}; padding: 15px; border-radius: 5px; border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}; min-width: 220px;">
+            ${message}
+            <button type="button" class="close" onclick="this.parentElement.style.display='none'"
+                style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>
+        </div>`;
+        setTimeout(function() {
+            if (flashDiv.firstChild) {
+                flashDiv.firstChild.style.display = 'none';
+            }
+        }, 1800);
+    }
     document.querySelectorAll('.copy-voucher-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var code = btn.getAttribute('data-code');
@@ -218,24 +248,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
             }
-            // Hiện thông báo
-            var parent = btn.parentElement;
-            var msg = parent.querySelector('.copy-success-msg');
-            if (msg) {
-                msg.style.display = 'inline-block';
-            }
-            setTimeout(function() {
-                if (msg) {
-                    msg.style.display = 'none';
-                }
-            }, 1500);
-        });
-        btn.addEventListener('mouseleave', function() {
-            var parent = btn.parentElement;
-            var msg = parent.querySelector('.copy-success-msg');
-            if (msg) {
-                msg.style.display = 'none';
-            }
+            // Hiện thông báo flash giống layout
+            showFlashMessage('Sao chép mã thành công!', 'success');
         });
     });
 });
