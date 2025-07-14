@@ -255,6 +255,14 @@ class CartController extends Controller
         } else {
             $discountAmount = $promotion->discount_value;
         }
+        // Không để giảm vượt quá tổng đơn(Tuấn Anh)
+        $maxDiscount = $subtotal;
+        if (isset($shippingFee)) {
+            $maxDiscount += $shippingFee;
+        }
+        if ($discountAmount > $maxDiscount) {
+            $discountAmount = $maxDiscount;
+        }
 
         return response()->json([
             'success' => true,
@@ -334,6 +342,7 @@ class CartController extends Controller
         }
 
         $grandTotal = $subtotal + $shippingFee - $discountAmount;
+        if ($grandTotal < 0) $grandTotal = 0;
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
 
         // Lưu đơn hàng
@@ -359,6 +368,11 @@ class CartController extends Controller
             'status' => 'pending',
             'note' => $validated['note'] ?? '',
         ]);
+        // Nếu shipping_provider_id vẫn NULL nhưng $shippingProvider có id, cập nhật lại
+        if ($order->shipping_provider_id === null && $shippingProvider && $shippingProvider->id) {
+            $order->shipping_provider_id = $shippingProvider->id;
+            $order->save();
+        }
 
         // Lưu từng sản phẩm trong đơn hàng
         foreach ($cartItems as $item) {

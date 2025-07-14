@@ -96,10 +96,16 @@
                                             <span style="font-size:0.9em;">VNĐ</span></bdi>
                                     </span>
                                 </p>
-                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
-                                    Số lượng: <strong
-                                        id="variant-stock-quantity">{{ $product->total_stock_quantity }}</strong>
-                                </div>
+                                @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
+                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                        <strong id="variant-stock-quantity">Hết hàng</strong>
+                                    </div>
+                                @else
+                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                        Số lượng: <strong
+                                            id="variant-stock-quantity">{{ $selectedVariation->stock_quantity ?? $product->total_stock_quantity }}</strong>
+                                    </div>
+                                @endif
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
                                 </div>
@@ -451,8 +457,7 @@
                                                 @endphp
                                                 @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
                                                     <span class="qodef-woo-product-mark qodef-woo-onsale"
-                                                        style="position:absolute;top:10px;left:10px;z-index:2;">Giảm
-                                                        giá</span>
+                                                        style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                 @endif
                                                 <img width="600" height="431" src="{{ $relatedImagePath }}"
                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
@@ -564,21 +569,21 @@
                             $ids = json_decode($_COOKIE['recently_viewed_products'], true);
                             if (is_array($ids)) {
                                 // Loại bỏ sản phẩm hiện tại
-                                $ids = array_filter($ids, function($id) use ($product) {
+                                $ids = array_filter($ids, function ($id) use ($product) {
                                     return $id != $product->id;
                                 });
                                 if (count($ids)) {
                                     $recentlyViewed = \App\Models\Product::with(['images', 'categories', 'brand'])
                                         ->whereIn('id', $ids)
                                         ->get()
-                                        ->sortBy(function($item) use ($ids) {
+                                        ->sortBy(function ($item) use ($ids) {
                                             return array_search($item->id, $ids);
                                         });
                                 }
                             }
                         }
                     @endphp
-                    @if(!empty($recentlyViewed) && count($recentlyViewed))
+                    @if (!empty($recentlyViewed) && count($recentlyViewed))
                         <section class="recently-viewed products">
                             <h2 style="margin-top:32px; text-align:center;">Sản phẩm đã xem gần đây</h2>
                             <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
@@ -589,15 +594,16 @@
                                             <div class="qodef-e-inner">
                                                 <div class="qodef-woo-product-image" style="position:relative;">
                                                     @php
-                                                        $rvFeaturedImage = $rvProduct->images->where('is_featured', true)->first() ?? $rvProduct->images->first();
+                                                        $rvFeaturedImage =
+                                                            $rvProduct->images->where('is_featured', true)->first() ??
+                                                            $rvProduct->images->first();
                                                         $rvImagePath = $rvFeaturedImage
                                                             ? asset('storage/' . $rvFeaturedImage->image_path)
                                                             : asset('');
                                                     @endphp
                                                     @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
                                                         <span class="qodef-woo-product-mark qodef-woo-onsale"
-                                                            style="position:absolute;top:10px;left:10px;z-index:2;">Giảm
-                                                            giá</span>
+                                                            style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                     @endif
                                                     <img width="600" height="431" src="{{ $rvImagePath }}"
                                                         class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
@@ -651,7 +657,8 @@
                                                             data-shortcode-atts="{'button_behavior':'view','button_type':'icon','show_count':'','require_login':false}"
                                                             rel="noopener noreferrer">
                                                             <span class="qwfw-m-spinner qwfw-spinner-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 512 512">
                                                                     <path
                                                                         d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
                                                                     </path>
@@ -659,7 +666,8 @@
                                                             </span>
                                                             <span class="qwfw-m-icon qwfw--predefined">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                                    height="32" viewBox="0 0 32 32" fill="currentColor">
+                                                                    height="32" viewBox="0 0 32 32"
+                                                                    fill="currentColor">
                                                                     <g>
                                                                         <path
                                                                             d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
@@ -673,12 +681,13 @@
                                                         <a role="button" tabindex="0"
                                                             class="qqvfw-shortcode qqvfw-m qqvfw-quick-view-button qqvfw-type--icon-with-text"
                                                             data-item-id="{{ $rvProduct->id }}"
-                                                            data-quick-view-type="pop-up" data-quick-view-type-mobile="pop-up"
-                                                            href="#"
+                                                            data-quick-view-type="pop-up"
+                                                            data-quick-view-type-mobile="pop-up" href="#"
                                                             data-shortcode-atts="{'button_type':'icon-with-text'}"
                                                             rel="noopener noreferrer">
                                                             <span class="qqvfw-m-spinner"><svg class="qqvfw-svg--spinner"
-                                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 512 512">
                                                                     <path
                                                                         d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
                                                                     </path>
@@ -895,7 +904,16 @@
                     // Cập nhật số lượng tồn kho
                     var stockElem = document.getElementById('variant-stock-quantity');
                     if (found && enough && stockElem) {
-                        stockElem.textContent = found.stock_quantity ?? '0';
+                        if (found.stock_quantity === 0 || found.stock_quantity === '0') {
+                            stockElem.textContent = 'Hết hàng';
+                            if (addBtn) {
+                                addBtn.disabled = true;
+                                addBtn.style.opacity = 0.7;
+                                addBtn.style.pointerEvents = 'none';
+                            }
+                        } else {
+                            stockElem.textContent = found.stock_quantity;
+                        }
                     } else if (stockElem) {
                         stockElem.textContent = window.defaultTotalStockQuantity ?? '';
                     }
@@ -1181,21 +1199,22 @@
         }
     </style>
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var productId = '{{ $product->id }}';
-    var viewed = [];
-    var cookie = document.cookie.split('; ').find(row => row.startsWith('recently_viewed_products='));
-    if (cookie) {
-        try {
-            viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
-        } catch (e) {
-            viewed = [];
-        }
-    }
-    viewed = viewed.filter(id => id != productId);
-    viewed.unshift(productId);
-    viewed = viewed.slice(0, 8);
-    document.cookie = 'recently_viewed_products=' + encodeURIComponent(JSON.stringify(viewed)) + ';path=/;max-age=2592000';
-});
-</script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var productId = '{{ $product->id }}';
+            var viewed = [];
+            var cookie = document.cookie.split('; ').find(row => row.startsWith('recently_viewed_products='));
+            if (cookie) {
+                try {
+                    viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+                } catch (e) {
+                    viewed = [];
+                }
+            }
+            viewed = viewed.filter(id => id != productId);
+            viewed.unshift(productId);
+            viewed = viewed.slice(0, 8);
+            document.cookie = 'recently_viewed_products=' + encodeURIComponent(JSON.stringify(viewed)) +
+                ';path=/;max-age=2592000';
+        });
+    </script>
 @endsection

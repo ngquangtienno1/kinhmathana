@@ -428,8 +428,8 @@
         }
 
         /* .checkout-radio span {
-                font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-            } */
+                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -496,7 +496,9 @@
                         if (discountRow && totalRow) {
                             discountRow.innerText = '-' + formatCurrency(data.voucher
                                 .discount_amount);
-                            const newTotal = subtotal + shipping - data.voucher.discount_amount;
+                            const newTotal = Math.max(0, subtotal + shipping - data
+                                .voucher //Tuấn Anh
+                                .discount_amount);
                             totalRow.innerText = formatCurrency(newTotal);
                         }
                     } else {
@@ -522,7 +524,7 @@
                 }
                 if (shippingRow && totalRow) {
                     shippingRow.innerText = formatCurrency(fee);
-                    totalRow.innerText = formatCurrency(subtotal + fee - discount);
+                    totalRow.innerText = formatCurrency(Math.max(0, subtotal + fee - discount));
                 }
             });
         });
