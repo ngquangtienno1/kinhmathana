@@ -245,9 +245,13 @@ class ProductController extends Controller
                 'variations.*.price' => 'required|numeric|min:0',
                 'variations.*.sale_price' => 'nullable|numeric|min:0|lte:variations.*.price',
                 'variations.*.image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
+                'variations.*.color_id' => 'nullable|integer|exists:colors,id',
+                'variations.*.size_id' => 'nullable|integer|exists:sizes,id',
+                'variations.*.spherical_id' => 'nullable|integer|exists:sphericals,id',
+                'variations.*.cylindrical_id' => 'nullable|integer|exists:cylindricals,id',
                 'attributes' => 'required_if:product_type,variable|array',
                 'attributes.*.type' => 'required_with:attributes|in:color,size,spherical,cylindrical',
-                'attributes.*.values' => 'required_with:attributes|array',
+                'attributes.*.values' => 'sometimes|array',
                 'featured_image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
                 'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120',
             ];
@@ -262,20 +266,34 @@ class ProductController extends Controller
 
             $errors = [];
             foreach ($request->input('attributes', []) as $index => $attribute) {
-                if (!empty($attribute['values'])) {
-                    foreach ($attribute['values'] as $valueIndex => $value) {
-                        if ($attribute['type'] === 'color') {
-                            $colorExists = Color::where('name', $value)->exists();
-                            if (!$colorExists) {
-                                $errorKey = "attributes.$index.values.$valueIndex";
-                                $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách màu sắc.";
-                            }
-                        } elseif ($attribute['type'] === 'size') {
-                            $sizeExists = Size::where('name', $value)->exists();
-                            if (!$sizeExists) {
-                                $errorKey = "attributes.$index.values.$valueIndex";
-                                $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách kích thước.";
-                            }
+                if (empty($attribute['values']) || !is_array($attribute['values'])) {
+                    // Nếu không có values thì bỏ qua, không báo lỗi
+                    continue;
+                }
+                foreach ($attribute['values'] as $valueIndex => $value) {
+                    if ($attribute['type'] === 'color') {
+                        $colorExists = Color::where('id', $value)->exists();
+                        if (!$colorExists) {
+                            $errorKey = "attributes.$index.values.$valueIndex";
+                            $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách màu sắc.";
+                        }
+                    } elseif ($attribute['type'] === 'size') {
+                        $sizeExists = Size::where('id', $value)->exists();
+                        if (!$sizeExists) {
+                            $errorKey = "attributes.$index.values.$valueIndex";
+                            $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách kích thước.";
+                        }
+                    } elseif ($attribute['type'] === 'spherical') {
+                        $sphericalExists = Spherical::where('id', $value)->exists();
+                        if (!$sphericalExists) {
+                            $errorKey = "attributes.$index.values.$valueIndex";
+                            $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách độ cận.";
+                        }
+                    } elseif ($attribute['type'] === 'cylindrical') {
+                        $cylindricalExists = Cylindrical::where('id', $value)->exists();
+                        if (!$cylindricalExists) {
+                            $errorKey = "attributes.$index.values.$valueIndex";
+                            $errors[$errorKey] = "Giá trị '$value' không tồn tại trong danh sách độ loạn.";
                         }
                     }
                 }
@@ -341,39 +359,6 @@ class ProductController extends Controller
 
             if ($validated['product_type'] === 'variable' && !empty($validated['variations'])) {
                 foreach ($validated['variations'] as $index => $variationData) {
-                    $colorId = $sizeId = $sphericalId = $cylindricalId = null;
-                    $attributes = array_map('trim', explode('-', $variationData['name']));
-                    foreach ($validated['attributes'] as $attribute) {
-                        if ($attribute['type'] === 'color') {
-                            foreach ($attribute['values'] as $value) {
-                                if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $color = Color::where('name', $value)->first();
-                                    if ($color) $colorId = $color->id;
-                                }
-                            }
-                        } elseif ($attribute['type'] === 'size') {
-                            foreach ($attribute['values'] as $value) {
-                                if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $size = Size::where('name', $value)->first();
-                                    if ($size) $sizeId = $size->id;
-                                }
-                            }
-                        } elseif ($attribute['type'] === 'spherical') {
-                            foreach ($attribute['values'] as $value) {
-                                if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $spherical = Spherical::where('name', $value)->first();
-                                    if ($spherical) $sphericalId = $spherical->id;
-                                }
-                            }
-                        } elseif ($attribute['type'] === 'cylindrical') {
-                            foreach ($attribute['values'] as $value) {
-                                if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $cylindrical = Cylindrical::where('name', $value)->first();
-                                    if ($cylindrical) $cylindricalId = $cylindrical->id;
-                                }
-                            }
-                        }
-                    }
                     $variation = new Variation([
                         'product_id' => $product->id,
                         'name' => !empty(trim($variationData['name'] ?? '')) ? trim($variationData['name']) : 'Biến thể ' . ($index + 1),
@@ -381,10 +366,10 @@ class ProductController extends Controller
                         'price' => (float)$variationData['price'],
                         'sale_price' => isset($variationData['sale_price']) ? (float)$variationData['sale_price'] : null,
                         'stock_quantity' => 0,
-                        'color_id' => $colorId,
-                        'size_id' => $sizeId,
-                        'spherical_id' => $sphericalId,
-                        'cylindrical_id' => $cylindricalId,
+                        'color_id' => $variationData['color_id'] ?? null,
+                        'size_id' => $variationData['size_id'] ?? null,
+                        'spherical_id' => $variationData['spherical_id'] ?? null,
+                        'cylindrical_id' => $variationData['cylindrical_id'] ?? null,
                     ]);
                     $variation->save();
                     if (isset($variationData['image']) && $request->hasFile("variations.$index.image")) {
@@ -572,7 +557,7 @@ class ProductController extends Controller
                 $rules['variations.*.image'] = 'nullable|image|mimes:jpg,jpeg,png,gif,webp,tiff|max:5120';
                 $rules['attributes'] = 'nullable|array';
                 $rules['attributes.*.type'] = 'required_with:attributes|in:color,size,spherical,cylindrical';
-                $rules['attributes.*.values'] = 'required_with:attributes|array';
+                $rules['attributes.*.values'] = 'sometimes|array';
             }
 
             $validated = $request->validate($rules, $messages);
@@ -695,28 +680,28 @@ class ProductController extends Controller
                         if ($attribute['type'] === 'color') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $color = Color::where('name', $value)->first();
+                                    $color = Color::where('id', $value)->first();
                                     if ($color) $colorId = $color->id;
                                 }
                             }
                         } elseif ($attribute['type'] === 'size') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $size = Size::where('name', $value)->first();
+                                    $size = Size::where('id', $value)->first();
                                     if ($size) $sizeId = $size->id;
                                 }
                             }
                         } elseif ($attribute['type'] === 'spherical') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $spherical = Spherical::where('name', $value)->first();
+                                    $spherical = Spherical::where('id', $value)->first();
                                     if ($spherical) $sphericalId = $spherical->id;
                                 }
                             }
                         } elseif ($attribute['type'] === 'cylindrical') {
                             foreach ($attribute['values'] as $value) {
                                 if (in_array(trim((string)$value), array_map('trim', $attributes))) {
-                                    $cylindrical = Cylindrical::where('name', $value)->first();
+                                    $cylindrical = Cylindrical::where('id', $value)->first();
                                     if ($cylindrical) $cylindricalId = $cylindrical->id;
                                 }
                             }

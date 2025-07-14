@@ -4358,7 +4358,7 @@ body:not([class*="neoocular-core"])
     margin: 0;
     padding-bottom: 7px;
 }
-.qodef-mobile-header-navigation ul li ul li ul li:last-child > a {
+.qodef-mobile-header-navigation ul li ul li:last-child > a {
     padding-bottom: 0;
 }
 .qodef-mobile-header-navigation ul li ul li > a {
@@ -4484,19 +4484,6 @@ body:not([class*="neoocular-core"])
 }
 .qodef-header-navigation ul li.qodef-menu-item--narrow ul li {
     padding: 0 39px;
-}
-.qodef-header-navigation
-    ul
-    li.qodef-menu-item--narrow
-    ul
-    li.menu-item-has-children:hover
-    > ul {
-    opacity: 1;
-    visibility: visible;
-}
-.qodef-header-navigation ul li.qodef-menu-item--narrow ul ul {
-    top: calc(-21px - 12px);
-    left: 100%;
 }
 .qodef-header-navigation
     ul
@@ -5437,19 +5424,6 @@ body:not([class*="neoocular-core"])
 .widget
     .wp-block-woocommerce-product-search
     .wc-block-product-search__fields
-    .wc-block-product-search__button,
-.widget[class*="_search"]
-    .wc-block-product-search__fields
-    .wc-block-product-search__button {
-    position: relative;
-    display: flex;
-    margin: 0;
-    height: 60px;
-    width: 60px;
-}
-.widget
-    .wp-block-woocommerce-product-search
-    .wc-block-product-search__fields
     .wc-block-product-search__button
     svg,
 .widget[class*="_search"]
@@ -5620,7 +5594,9 @@ body:not([class*="neoocular-core"])
     .wc-block-product-search__field {
     margin: 0;
     padding: 15px 22px;
-    width: calc(100% - 60px);
+    width: 160px;
+    max-width: 100%;
+    font-size: 15px;
 }
 #qodef-top-area
     .widget
@@ -5634,8 +5610,11 @@ body:not([class*="neoocular-core"])
     position: relative;
     display: flex;
     margin: 0;
-    height: 60px;
-    width: 60px;
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
 }
 #qodef-top-area
     .widget
@@ -6483,7 +6462,9 @@ body:not([class*="neoocular-core"])
     .wc-block-product-search__field {
     margin: 0;
     padding: 15px 22px;
-    width: calc(100% - 60px);
+    width: 160px;
+    max-width: 100%;
+    font-size: 15px;
 }
 .qodef-mega-menu-widget-holder
     .widget
@@ -6497,8 +6478,11 @@ body:not([class*="neoocular-core"])
     position: relative;
     display: flex;
     margin: 0;
-    height: 60px;
-    width: 60px;
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
 }
 .qodef-mega-menu-widget-holder
     .widget

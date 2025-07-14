@@ -445,10 +445,10 @@
             .catch(error => {
                 console.error(error);
             });
-        window.colors = @json($colors->pluck('name'));
-        window.sizes = @json($sizes->pluck('name'));
-        window.spherical_values = @json($sphericals->pluck('name'));
-        window.cylindrical_values = @json($cylindricals->pluck('name'));
+        window.colors = @json($colors->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
+        window.sizes = @json($sizes->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
+        window.spherical_values = @json($sphericals->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
+        window.cylindrical_values = @json($cylindricals->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
     </script>
 @endpush
 

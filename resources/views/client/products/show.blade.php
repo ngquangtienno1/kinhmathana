@@ -97,7 +97,8 @@
                                     </span>
                                 </p>
                                 <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
-                                    Số lượng: <strong>{{ $product->total_stock_quantity }}</strong>
+                                    Số lượng: <strong
+                                        id="variant-stock-quantity">{{ $product->total_stock_quantity }}</strong>
                                 </div>
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
@@ -687,11 +688,18 @@
 
                 // Hàm kiểm tra và hiển thị ảnh biến thể nếu đã chọn đủ
                 function showVariationImageIfSelected() {
-                    // Lấy các giá trị đã chọn
+                    // Debug log
+                    console.log('variationsJson:', window.variationsJson);
                     const colorId = document.querySelector('input[name="color_id"]')?.value || '';
                     const sizeId = document.querySelector('input[name="size_id"]')?.value || '';
                     const sphericalId = document.querySelector('input[name="spherical_id"]')?.value || '';
                     const cylindricalId = document.querySelector('input[name="cylindrical_id"]')?.value || '';
+                    console.log('Selected:', {
+                        colorId,
+                        sizeId,
+                        sphericalId,
+                        cylindricalId
+                    });
                     // Lấy variations từ biến blade
                     const variations = window.variationsJson || [];
                     // Tìm variation phù hợp
@@ -738,10 +746,18 @@
                             addBtn.style.pointerEvents = '';
                         }
                     }
+                    // Cập nhật số lượng tồn kho
+                    var stockElem = document.getElementById('variant-stock-quantity');
+                    if (found && enough && stockElem) {
+                        stockElem.textContent = found.stock_quantity ?? '0';
+                    } else if (stockElem) {
+                        stockElem.textContent = window.defaultTotalStockQuantity ?? '';
+                    }
                 }
 
                 // Gán biến variationsJson từ blade
                 window.variationsJson = @json($variationsJson ?? []);
+                window.defaultTotalStockQuantity = {{ $product->total_stock_quantity }};
             });
         </script>
     @endpush

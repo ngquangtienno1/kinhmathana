@@ -44,6 +44,13 @@ class ProductController extends Controller
             });
         }
 
+        // Bộ lọc: Size
+        if ($request->has('sizes') && is_array($sizes = $request->input('sizes', []))) {
+            $query->whereHas('variations.size', function ($q) use ($sizes) {
+                $q->whereIn('sizes.id', $sizes);
+            });
+        }
+
         // Bộ lọc: Brands
         if ($request->has('brands') && is_array($brands = $request->input('brands', []))) {
             $query->whereIn('brand_id', $brands);
@@ -135,9 +142,15 @@ class ProductController extends Controller
         $products = $query->paginate(12);
         $categories = Category::withCount('products')->with('children')->where('is_active', true)->get();
         $colors = Color::all();
+        // Lấy tất cả size từ variations của các sản phẩm trong trang
+        $sizes = collect();
+        foreach ($products as $product) {
+            $sizes = $sizes->merge($product->variations->pluck('size')->filter());
+        }
+        $sizes = $sizes->unique('id')->values();
         $brands = Brand::where('is_active', true)->get();
 
-        return view('client.products.index', compact('products', 'categories', 'colors', 'brands'));
+        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'brands'));
     }
 
     /**
@@ -195,7 +208,7 @@ class ProductController extends Controller
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
                 'price' => $v->price,
                 'sale_price' => $v->sale_price,
-                'stock_quantity' => $v->stock_quantity,
+                'stock_quantity' => $v->stock_quantity, // Đảm bảo có trường này
             ];
         })->values()->toArray();
 
