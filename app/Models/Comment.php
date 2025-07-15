@@ -38,4 +38,8 @@ class Comment extends Model
     {
         return $this->belongsTo(News::class, 'entity_id');
     }
+    public function entity()
+    {
+        return $this->morphTo('entity', [Product::class, News::class]);
+    }
 }
