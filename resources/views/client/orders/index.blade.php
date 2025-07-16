@@ -71,16 +71,19 @@
                                     <div class="order-card-products">
                                         @foreach ($order->items as $item)
                                             <div class="order-product-row">
-                                                <img
-                                                    src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}">
-                                                <div class="product-info">
-                                                    <div class="product-name">{{ $item->product_name }}</div>
-                                                    @if (isset($item->variation_name) && $item->variation_name)
-                                                        <div class="product-variation">Phân loại:
-                                                            {{ $item->variation_name }}</div>
-                                                    @endif
-                                                    <div class="product-qty">x{{ $item->quantity }}</div>
-                                                </div>
+                                                <a href="{{ route('client.orders.show', $order->id) }}"
+                                                    style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1;">
+                                                    <img
+                                                        src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}">
+                                                    <div class="product-info">
+                                                        <div class="product-name">{{ $item->product_name }}</div>
+                                                        @if (isset($item->variation_name) && $item->variation_name)
+                                                            <div class="product-variation">Phân loại:
+                                                                {{ $item->variation_name }}</div>
+                                                        @endif
+                                                        <div class="product-qty">x{{ $item->quantity }}</div>
+                                                    </div>
+                                                </a>
                                                 <div class="product-price">{{ number_format($item->price, 0, ',', '.') }}₫
                                                 </div>
                                             </div>
