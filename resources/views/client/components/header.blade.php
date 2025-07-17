@@ -564,18 +564,19 @@
                                 </svg>
                             </a>
                             <div class="qodef-user-dropdown-menu"
-                                style="display: none; position: absolute; right: 0; top: 85px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); min-width: 180px; z-index: 1000; padding: 18px 0;">
+                                style="display: none; position: absolute; right: 0; top: 75px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); min-width: 180px; z-index: 1000; padding: 18px 0;">
                                 <ul style="list-style: none; margin: 0; padding: 0;">
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
-                                            style="color: #232323; text-decoration: none; display: block;">Profile</a></li>
-                                    <li style="padding: 8px 24px;"><a href="{{ route('client.users.information') }}"
+                                            style="color: #232323; text-decoration: none; display: block;">Tài khoản của
+                                            tôi</a></li>
+                                    {{-- <li style="padding: 8px 24px;"><a href="{{ route('client.users.information') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Edit Profile</a>
-                                    </li>
+                                    </li> --}}
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
-                                            style="color: #232323; text-decoration: none; display: block;">My Account</a>
+                                            style="color: #232323; text-decoration: none; display: block;">Đơn mua</a>
                                     </li>
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.logout') }}"
-                                            style="color: #d00; text-decoration: none; display: block;">Log Out</a></li>
+                                            style="color: #d00; text-decoration: none; display: block;">Đăng xuất</a></li>
                                 </ul>
                             </div>
                         </div>

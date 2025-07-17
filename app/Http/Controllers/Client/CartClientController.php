@@ -13,6 +13,7 @@ use App\Models\PromotionUsage;
 use App\Models\ShippingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CartClientController extends Controller
 {
@@ -387,6 +388,7 @@ class CartClientController extends Controller
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
+                'variation_id' => $item->variation ? $item->variation->id : null, // Lưu variation_id
                 'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
                 'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
                 'price' => $price,
@@ -424,5 +426,29 @@ class CartClientController extends Controller
         }
         Cart::where('user_id', $user->id)->delete();
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
+    }
+
+    //Tuấn Anh
+    public function addToCartDirect($data, $userId)
+    {
+        $query = [
+            'user_id' => $userId,
+            'product_id' => $data['product_id'],
+            'variation_id' => $data['variation_id'] ?? null,
+        ];
+
+        $cartItem = \App\Models\Cart::where($query)->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $data['quantity'];
+            $cartItem->save();
+        } else {
+            \App\Models\Cart::create([
+                'user_id' => $userId,
+                'product_id' => $data['product_id'],
+                'variation_id' => $data['variation_id'] ?? null,
+                'quantity' => $data['quantity'],
+            ]);
+        }
     }
 }

@@ -10,6 +10,7 @@ use App\Models\CancellationReason;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Client\CartClientController;
 
 class OrderClientController extends Controller
 {
@@ -100,6 +101,22 @@ class OrderClientController extends Controller
         $order->status = 'cancelled_by_customer';
         $order->cancelled_at = now();
         $order->save();
+
+        foreach ($order->items as $item) {
+            if ($item->variation_id) {
+                $variation = \App\Models\Variation::find($item->variation_id);
+                if ($variation) {
+                    $variation->stock_quantity += $item->quantity;
+                    $variation->save();
+                }
+            } else {
+                $product = \App\Models\Product::find($item->product_id);
+                if ($product) {
+                    $product->stock_quantity += $item->quantity;
+                    $product->save();
+                }
+            }
+        }
 
         return redirect()->route('client.orders.index')->with('success', 'Huỷ đơn hàng thành công!');
     }
@@ -213,6 +230,45 @@ class OrderClientController extends Controller
 
         return redirect()->route('client.orders.show', $order->id)
             ->with('success', 'Đã xác nhận nhận hàng thành công! Bây giờ bạn có thể đánh giá sản phẩm.');
+    }
+
+
+    //Tuấn Anh
+    public function reorder($id)
+    {
+        $user = Auth::user();
+        $order = Order::with('items')->where('user_id', $user->id)->where('status', 'completed')->findOrFail($id);
+        Log::info('Reorder - order items:', $order->items->toArray());
+        foreach ($order->items as $item) {
+            $variation = null;
+            $price = 0;
+            if ($item->variation_id) {
+                $variation = \App\Models\Variation::find($item->variation_id);
+                $price = $variation ? ($variation->sale_price ?? $variation->price) : 0;
+                Log::info('Reorder - found variation:', [
+                    'variation_id' => $item->variation_id,
+                    'variation' => $variation ? $variation->toArray() : null,
+                    'price' => $price
+                ]);
+            } else {
+                $product = \App\Models\Product::find($item->product_id);
+                $price = $product ? ($product->sale_price ?? $product->price) : 0;
+                Log::info('Reorder - found product:', [
+                    'product_id' => $item->product_id,
+                    'product' => $product ? $product->toArray() : null,
+                    'price' => $price
+                ]);
+            }
+            $cartData = [
+                'product_id' => $item->product_id,
+                'variation_id' => $item->variation_id ?? null,
+                'quantity' => $item->quantity,
+                'price' => $price,
+            ];
+            Log::info('Reorder - addToCartDirect data:', $cartData);
+            app(CartClientController::class)->addToCartDirect($cartData, $user->id);
+        }
+        return redirect()->route('client.cart.index')->with('success', 'Đã thêm lại sản phẩm vào giỏ hàng!');
     }
 
     public function reasons()

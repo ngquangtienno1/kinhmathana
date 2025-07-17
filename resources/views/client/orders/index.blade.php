@@ -65,7 +65,8 @@
                                             <b>Mã đơn hàng: #{{ $order->order_number }}</b>
                                         </div>
                                         <div class="order-status">
-                                            <span class="status-label">{{ $order->status_label }}</span>
+                                            <span
+                                                class="status-label status-{{ $order->status }}">{{ $order->status_label }}</span>
                                         </div>
                                     </div>
                                     <div class="order-card-products">
@@ -78,9 +79,12 @@
                                                     <div class="product-info">
                                                         <div class="product-name">{{ $item->product_name }}</div>
                                                         @php
-                                                            $options = $item->product_options
-                                                                ? json_decode($item->product_options, true)
-                                                                : [];
+                                                            $options = [];
+                                                            if (is_string($item->product_options)) {
+                                                                $options = json_decode($item->product_options, true);
+                                                            } elseif (is_array($item->product_options)) {
+                                                                $options = $item->product_options;
+                                                            }
                                                             $optionTexts = [];
                                                             if (!empty($options)) {
                                                                 if (array_key_exists('color', $options)) {
@@ -122,17 +126,6 @@
                                                     class="total-amount">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span>
                                             </div>
                                             <div class="order-actions">
-                                                @if (in_array($order->status, ['pending', 'confirmed', 'awaiting_pickup']))
-                                                    <button type="button" class="btn-cancel-order"
-                                                        data-order-id="{{ $order->id }}">Huỷ đơn hàng</button>
-                                                    <form id="cancel-order-form-{{ $order->id }}"
-                                                        action="{{ route('client.orders.cancel', $order->id) }}"
-                                                        method="POST" style="display:none;">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="cancellation_reason_id" value="">
-                                                    </form>
-                                                @endif
                                                 @if ($order->status == 'delivered')
                                                     <form
                                                         action="{{ route('client.orders.confirm-received', $order->id) }}"
@@ -143,7 +136,28 @@
                                                         <button>Đã Nhận Hàng</button>
                                                     </form>
                                                 @endif
-                                                <button>Liên Hệ Người Bán</button>
+                                                <div class="order-action-buttons">
+                                                    @if ($order->status == 'completed')
+                                                        <form action="{{ route('client.orders.reorder', $order->id) }}"
+                                                            method="POST" style="display:inline; margin:0;">
+                                                            @csrf
+                                                            <button type="submit" class="btn">Mua lại</button>
+                                                        </form>
+                                                    @endif
+                                                    @if (in_array($order->status, ['pending', 'confirmed', 'awaiting_pickup']))
+                                                        <button type="button" class="btn btn-black btn-cancel-order"
+                                                            data-order-id="{{ $order->id }}">Huỷ đơn hàng</button>
+                                                        <form id="cancel-order-form-{{ $order->id }}"
+                                                            action="{{ route('client.orders.cancel', $order->id) }}"
+                                                            method="POST" style="display:none;">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <input type="hidden" name="cancellation_reason_id"
+                                                                value="">
+                                                        </form>
+                                                    @endif
+                                                    <button class="btn btn-outline-black">Liên Hệ Người Bán</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -398,12 +412,34 @@
     }
 
     .status-label {
-        color: #222;
-        font-weight: 600;
-        background: #f0f0f0;
+        font-weight: 700;
+        font-size: 15px;
         border-radius: 4px;
-        padding: 2px 10px;
-        font-size: 13px;
+        padding: 4px 16px;
+        display: inline-block;
+        border: 1px solid transparent;
+        margin-bottom: 2px;
+    }
+
+    .status-label.status-completed,
+    .status-label.status-confirmed,
+    .status-label.status-pending,
+    .status-label.status-awaiting_pickup,
+    .status-label.status-shipping,
+    .status-label.status-delivered {
+        background: #e6f9ed;
+        color: #219150;
+        border: 1px solid #219150;
+        box-shadow: 0 1px 4px rgba(33, 145, 80, 0.08);
+    }
+
+    .status-label.status-cancelled_by_customer,
+    .status-label.status-cancelled_by_admin,
+    .status-label.status-delivery_failed {
+        background: #ffeaea;
+        color: #e53935;
+        border: 1px solid #e53935;
+        box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08);
     }
 
     .order-card-products {
@@ -510,5 +546,44 @@
     .order-actions {
         display: flex;
         gap: 8px;
+    }
+
+    .btn-black,
+    .btn-outline-black {
+        background: #222 !important;
+        color: #fff !important;
+        border: 1px solid #222 !important;
+        border-radius: 4px;
+        padding: 6px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        min-width: 120px;
+        text-align: center;
+        line-height: 1.2;
+        letter-spacing: 0;
+        text-transform: none;
+        margin-right: 8px;
+    }
+
+    .btn-outline-black {
+        background: #fff !important;
+        color: #222 !important;
+    }
+
+    .btn-black:hover,
+    .btn-outline-black:hover {
+        background: #111 !important;
+        color: #fff !important;
+    }
+
+    .order-action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .order-action-buttons form {
+        display: inline;
+        margin: 0;
     }
 </style>

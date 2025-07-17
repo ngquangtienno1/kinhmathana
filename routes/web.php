@@ -141,6 +141,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::patch('/{id}/confirm-received', [OrderClientController::class, 'confirmReceived'])->name('confirm-received');
         Route::get('/{order}/review/{item}', [OrderClientController::class, 'reviewForm'])->name('review.form');
         Route::post('/{order}/review/{item}', [OrderClientController::class, 'submitReview'])->name('review.submit');
+        Route::post('/{id}/reorder', [OrderClientController::class, 'reorder'])->name('reorder');
     });
 
     Route::get('/order-cancel-reasons', [OrderClientController::class, 'reasons'])->name('order-detail.reasons');

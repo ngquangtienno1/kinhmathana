@@ -1,23 +1,23 @@
 @extends('client.layouts.app')
 @section('title', 'Thanh toán đơn hàng')
 @section('content')
-<div
-            class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
-            <div class="qodef-m-inner">
-                <div class="qodef-m-content qodef-content-grid">
-                    <h1 class="qodef-m-title entry-title">
-                        Thanh toán </h1>
-                    <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
-                            href="../index.html"><span itemprop="title">Trang chủ</span></a><span
-                            class="qodef-breadcrumbs-separator"></span><span itemprop="title"
-                            class="qodef-breadcrumbs-current">Thanh toán</span></div>
-                </div>
+    <div
+        class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
+        <div class="qodef-m-inner">
+            <div class="qodef-m-content qodef-content-grid">
+                <h1 class="qodef-m-title entry-title">
+                    Thanh toán </h1>
+                <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
+                        href="../index.html"><span itemprop="title">Trang chủ</span></a><span
+                        class="qodef-breadcrumbs-separator"></span><span itemprop="title"
+                        class="qodef-breadcrumbs-current">Thanh toán</span></div>
             </div>
         </div>
+    </div>
     <div class="checkout-page-wrapper">
-        
+
         <div class="checkout-main-flex">
-            
+
             <!-- Left: Customer Form -->
             <div class="checkout-form-col">
 
@@ -50,22 +50,26 @@
                         <div class="checkout-form-group">
                             <label for="customer_name">Họ và tên khách hàng <span class="required">*</span></label>
                             <input type="text" class="checkout-input" name="customer_name" id="customer_name"
-                                placeholder="Họ và tên khách hàng" value="{{ old('customer_name', auth()->user()->name ?? '') }}">
+                                placeholder="Họ và tên khách hàng"
+                                value="{{ old('customer_name', auth()->user()->name ?? '') }}">
                         </div>
                         <div class="checkout-form-group">
                             <label for="customer_phone">Số điện thoại khách hàng <span class="required">*</span></label>
                             <input type="text" class="checkout-input" name="customer_phone" id="customer_phone"
-                                placeholder="Số điện thoại khách hàng" value="{{ old('customer_phone', auth()->user()->phone ?? '') }}">
+                                placeholder="Số điện thoại khách hàng"
+                                value="{{ old('customer_phone', auth()->user()->phone ?? '') }}">
                         </div>
                         <div class="checkout-form-group">
                             <label for="customer_email">Email khách hàng <span class="required">*</span></label>
                             <input type="email" class="checkout-input" name="customer_email" id="customer_email"
-                                placeholder="Email khách hàng" value="{{ old('customer_email', auth()->user()->email ?? '') }}">
+                                placeholder="Email khách hàng"
+                                value="{{ old('customer_email', auth()->user()->email ?? '') }}">
                         </div>
                         <div class="checkout-form-group">
                             <label for="customer_address">Địa chỉ khách hàng <span class="required">*</span></label>
                             <input type="text" class="checkout-input" name="customer_address" id="customer_address"
-                                placeholder="Địa chỉ khách hàng" value="{{ old('customer_address', auth()->user()->address ?? '') }}">
+                                placeholder="Địa chỉ khách hàng"
+                                value="{{ old('customer_address', auth()->user()->address ?? '') }}">
                         </div>
                     </div>
                     <div style="margin-bottom: 24px;">
@@ -296,7 +300,7 @@
 
         .checkout-btn {
             width: 100%;
-            background: #4dd0e1;
+            background: #111;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -468,8 +472,8 @@
         }
 
         /* .checkout-radio span {
-                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                } */
+                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                    } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
