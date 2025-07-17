@@ -53,7 +53,9 @@ use App\Http\Controllers\Client\UserController as ClientUserController;
 
 // Authentication
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Client\CartClientController;
 use App\Http\Controllers\Client\ContactController as ClientContactController;
+use App\Http\Controllers\Client\OrderClientController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 // Redirect login
@@ -101,7 +103,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
         // Route lấy chi tiết đơn hàng cho client (AJAX popup)
         Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
-        Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
+        Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
@@ -121,23 +123,23 @@ Route::prefix('client')->name('client.')->group(function () {
     });
 
     Route::prefix('cart')->name('cart.')->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('index');
-        Route::post('add', [CartController::class, 'add'])->name('add');
-        Route::post('update/{id}', [CartController::class, 'update'])->name('update');
-        Route::delete('remove/{id}', [CartController::class, 'remove'])->name('remove');
-        Route::get('checkout', [CartController::class, 'showCheckoutForm'])->name('checkout.form');
-        Route::post('checkout', [CartController::class, 'checkout'])->name('checkout');
-        Route::post('apply-voucher', [CartController::class, 'applyVoucher'])->name('apply-voucher');
-        Route::post('bulk-remove', [CartController::class, 'bulkRemove'])->name('bulk-remove');
+        Route::get('/', [CartClientController::class, 'index'])->name('index');
+        Route::post('add', [CartClientController::class, 'add'])->name('add');
+        Route::post('update/{id}', [CartClientController::class, 'update'])->name('update');
+        Route::delete('remove/{id}', [CartClientController::class, 'remove'])->name('remove');
+        Route::get('checkout', [CartClientController::class, 'showCheckoutForm'])->name('checkout.form');
+        Route::post('checkout', [CartClientController::class, 'checkout'])->name('checkout');
+        Route::post('apply-voucher', [CartClientController::class, 'applyVoucher'])->name('apply-voucher');
+        Route::post('bulk-remove', [CartClientController::class, 'bulkRemove'])->name('bulk-remove');
     });
 
     Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
-        Route::patch('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
-        Route::patch('/{id}/confirm-received', [OrderController::class, 'confirmReceived'])->name('confirm-received');
-        Route::get('/{order}/review/{item}', [OrderController::class, 'reviewForm'])->name('review.form');
-        Route::post('/{order}/review/{item}', [OrderController::class, 'submitReview'])->name('review.submit');
+        Route::get('/', [OrderClientController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderClientController::class, 'show'])->name('show');
+        Route::patch('/{id}/cancel', [OrderClientController::class, 'cancel'])->name('cancel');
+        Route::patch('/{id}/confirm-received', [OrderClientController::class, 'confirmReceived'])->name('confirm-received');
+        Route::get('/{order}/review/{item}', [OrderClientController::class, 'reviewForm'])->name('review.form');
+        Route::post('/{order}/review/{item}', [OrderClientController::class, 'submitReview'])->name('review.submit');
     });
 
     Route::prefix('blog')->name('blog.')->group(function () {
@@ -164,7 +166,6 @@ Route::prefix('client')->name('client.')->group(function () {
     // Route lấy danh sách lý do hủy đơn hàng cho client
     Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
 });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {

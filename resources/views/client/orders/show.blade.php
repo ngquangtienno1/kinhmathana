@@ -1,6 +1,21 @@
 @extends('client.layouts.app')
 @section('title', 'Đơn hàng của tôi')
 @section('content')
+    <div
+        class="qodef-page-title qodef-m qodef-title--breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
+        <div class="qodef-m-inner">
+            <div class="qodef-m-content qodef-content-grid">
+                <h1 class="qodef-m-title entry-title">Chi tiết đơn hàng</h1>
+                <div itemprop="breadcrumb" class="qodef-breadcrumbs">
+                    <a itemprop="url" class="qodef-breadcrumbs-link" href="/">
+                        <span itemprop="title">Trang chủ</span>
+                    </a>
+                    <span class="qodef-breadcrumbs-separator"></span>
+                    <span itemprop="title" class="qodef-breadcrumbs-current">Chi tiết đơn hàng</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container py-4" style="max-width: 1000px; margin: 0 auto;">
         {{-- Thanh trạng thái đơn hàng giống admin --}}
         @php
@@ -294,6 +309,19 @@
                     <span>Thành tiền:</span>
                     <span class="text-danger">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span>
                 </div>
+                @if ($order->status !== 'cancelled_by_customer' && $order->status !== 'cancelled_by_admin' && $order->status !== 'completed')
+                    <div class="alert alert-warning mt-3" role="alert">
+                        Vui lòng thanh toán <span
+                            class="text-danger fw-bold">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span> khi
+                        nhận hàng.
+                    </div>
+                    <div class="mt-2">
+                        <b>Phương thức thanh toán:</b>
+                        <span>
+                            {{ $order->paymentMethod->name ?? 'Không xác định' }}
+                        </span>
+                    </div>
+                @endif
             </div>
         </div>
 
