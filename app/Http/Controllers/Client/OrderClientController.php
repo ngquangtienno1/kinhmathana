@@ -10,7 +10,7 @@ use App\Models\ReviewImage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class OrderController extends Controller
+class OrderClientController extends Controller
 {
     public function index(Request $request)
     {

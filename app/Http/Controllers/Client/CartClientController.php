@@ -14,7 +14,7 @@ use App\Models\ShippingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class CartController extends Controller
+class CartClientController extends Controller
 {
     public function index()
     {
@@ -290,6 +290,10 @@ class CartController extends Controller
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
         $validated = $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_phone' => 'required|string|max:20',
+            'customer_email' => 'nullable|email',
+            'customer_address' => 'required|string|max:255',
             'receiver_name' => 'required|string|max:255',
             'receiver_phone' => 'required|string|max:20',
             'receiver_email' => 'nullable|email',
@@ -298,6 +302,9 @@ class CartController extends Controller
             'shipping_method' => 'required|string',
             'note' => 'nullable|string|max:1000',
         ], [
+            'customer_name.required' => 'Vui lòng nhập họ tên khách hàng.',
+            'customer_phone.required' => 'Vui lòng nhập số điện thoại khách hàng.',
+            'customer_address.required' => 'Vui lòng nhập địa chỉ khách hàng.',
             'receiver_name.required' => 'Vui lòng nhập họ tên người nhận.',
             'receiver_phone.required' => 'Vui lòng nhập số điện thoại người nhận.',
             'address.required' => 'Vui lòng nhập địa chỉ chi tiết.',
@@ -351,10 +358,10 @@ class CartController extends Controller
             'order_number' => 'DH' . time(),
             'promotion_id' => $promotion ? $promotion->id : null,
             'shipping_provider_id' => $shippingProvider ? $shippingProvider->id : null,
-            'customer_name' => $user->name,
-            'customer_phone' => $user->phone,
-            'customer_email' => $user->email,
-            'customer_address' => $user->address,
+            'customer_name' => $request->input('customer_name', $user->name),
+            'customer_phone' => $request->input('customer_phone', $user->phone),
+            'customer_email' => $request->input('customer_email', $user->email),
+            'customer_address' => $request->input('customer_address', $user->address),
             'receiver_name' => $validated['receiver_name'],
             'receiver_phone' => $validated['receiver_phone'],
             'receiver_email' => $validated['receiver_email'] ?? null,
