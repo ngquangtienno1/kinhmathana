@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Review;
 use App\Models\ReviewImage;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\CancellationReason;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class OrderClientController extends Controller
 {
@@ -68,32 +69,39 @@ class OrderClientController extends Controller
     public function cancel(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        if ($order->status !== 'pending') {
-            return response()->json(['success' => false, 'message' => 'Đơn hàng đã được duyệt hoặc thay đổi trạng thái, không thể hủy.']);
+        $allowCancelStatuses = ['pending', 'confirmed', 'awaiting_pickup'];
+        if (!in_array($order->status, $allowCancelStatuses)) {
+            return redirect()->route('client.orders.index')->with('error', 'Đơn hàng đã được duyệt hoặc thay đổi trạng thái, không thể hủy.');
         }
 
         $reasonId = $request->input('cancellation_reason_id');
         if (!$reasonId) {
-            return response()->json(['success' => false, 'message' => 'Vui lòng chọn lý do hủy đơn hàng!']);
+            return redirect()->route('client.orders.index')->with('error', 'Vui lòng chọn lý do hủy đơn hàng!');
         }
 
         if (str_starts_with($reasonId, 'other:')) {
             $newReason = trim(substr($reasonId, 6));
             if (!$newReason) {
-                return response()->json(['success' => false, 'message' => 'Vui lòng nhập lý do hủy mới!']);
+                return redirect()->route('client.orders.index')->with('error', 'Vui lòng nhập lý do hủy mới!');
             }
-            $order->cancellation_reason_id = null;
-            $order->cancellation_reason_text = $newReason;
+            $logData = [
+                'reason' => $newReason,
+                'type' => 'customer',
+                'is_active' => true,
+                'is_default' => false,
+            ];
+            Log::info('Tạo lý do huỷ mới từ khách:', $logData);
+            $reason = \App\Models\CancellationReason::create($logData);
+            $order->cancellation_reason_id = $reason->id;
         } else {
             $order->cancellation_reason_id = $reasonId;
-            $order->cancellation_reason_text = null;
         }
 
         $order->status = 'cancelled_by_customer';
         $order->cancelled_at = now();
         $order->save();
 
-        return response()->json(['success' => true]);
+        return redirect()->route('client.orders.index')->with('success', 'Huỷ đơn hàng thành công!');
     }
 
     public function reviewForm($orderId, $itemId)
@@ -205,5 +213,16 @@ class OrderClientController extends Controller
 
         return redirect()->route('client.orders.show', $order->id)
             ->with('success', 'Đã xác nhận nhận hàng thành công! Bây giờ bạn có thể đánh giá sản phẩm.');
+    }
+
+    public function reasons()
+    {
+        $reasons = CancellationReason::where([
+            'type' => 'customer',
+            'is_active' => true,
+            'is_default' => true,
+        ])->get(['id', 'reason']);
+        Log::info('Lấy danh sách lý do huỷ mặc định:', $reasons->toArray());
+        return response()->json($reasons);
     }
 }

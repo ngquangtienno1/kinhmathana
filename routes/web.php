@@ -34,28 +34,29 @@ use App\Http\Controllers\Admin\SphericalController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Admin\CylindricalController;
+use App\Http\Controllers\Client\CartClientController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Client\OrderClientController;
+use App\Http\Controllers\Client\OrderDetailController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
 use App\Http\Controllers\Admin\CancellationReasonController;
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-
 
 // Authentication
-
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\UserController as ClientUserController;
-
-// Authentication
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Client\CartClientController;
 use App\Http\Controllers\Client\ContactController as ClientContactController;
-use App\Http\Controllers\Client\OrderClientController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 // Redirect login
@@ -142,6 +143,8 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('/{order}/review/{item}', [OrderClientController::class, 'submitReview'])->name('review.submit');
     });
 
+    Route::get('/order-cancel-reasons', [OrderClientController::class, 'reasons'])->name('order-detail.reasons');
+
     Route::prefix('blog')->name('blog.')->group(function () {
         Route::get('/', [BlogController::class, 'index'])->name('index');
         Route::post('/{slug}/comment', [BlogController::class, 'comment'])->name('comment');
@@ -162,9 +165,6 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientContactController::class, 'index'])->name('index');
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
-
-    // Route lấy danh sách lý do hủy đơn hàng cho client
-    Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
 });
 
 // Admin routes group

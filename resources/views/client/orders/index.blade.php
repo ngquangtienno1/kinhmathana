@@ -77,7 +77,33 @@
                                                         src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}">
                                                     <div class="product-info">
                                                         <div class="product-name">{{ $item->product_name }}</div>
-                                                        @if (isset($item->variation_name) && $item->variation_name)
+                                                        @php
+                                                            $options = $item->product_options
+                                                                ? json_decode($item->product_options, true)
+                                                                : [];
+                                                            $optionTexts = [];
+                                                            if (!empty($options)) {
+                                                                if (array_key_exists('color', $options)) {
+                                                                    $optionTexts[] = trim($options['color']);
+                                                                }
+                                                                if (array_key_exists('size', $options)) {
+                                                                    $optionTexts[] = trim($options['size']);
+                                                                }
+                                                                if (array_key_exists('spherical', $options)) {
+                                                                    $optionTexts[] = trim($options['spherical']);
+                                                                }
+                                                                if (array_key_exists('cylindrical', $options)) {
+                                                                    $optionTexts[] = trim($options['cylindrical']);
+                                                                }
+                                                            }
+                                                            $optionTexts = array_filter($optionTexts, function ($v) {
+                                                                return $v !== null && $v !== '' && $v !== '-';
+                                                            });
+                                                        @endphp
+                                                        @if (!empty($optionTexts))
+                                                            <div class="product-variation">Phân loại:
+                                                                {{ implode(' - ', $optionTexts) }}</div>
+                                                        @elseif (isset($item->variation_name) && $item->variation_name)
                                                             <div class="product-variation">Phân loại:
                                                                 {{ $item->variation_name }}</div>
                                                         @endif
@@ -96,6 +122,17 @@
                                                     class="total-amount">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span>
                                             </div>
                                             <div class="order-actions">
+                                                @if (in_array($order->status, ['pending', 'confirmed', 'awaiting_pickup']))
+                                                    <button type="button" class="btn-cancel-order"
+                                                        data-order-id="{{ $order->id }}">Huỷ đơn hàng</button>
+                                                    <form id="cancel-order-form-{{ $order->id }}"
+                                                        action="{{ route('client.orders.cancel', $order->id) }}"
+                                                        method="POST" style="display:none;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="cancellation_reason_id" value="">
+                                                    </form>
+                                                @endif
                                                 @if ($order->status == 'delivered')
                                                     <form
                                                         action="{{ route('client.orders.confirm-received', $order->id) }}"
@@ -121,6 +158,97 @@
             </main>
         </div>
     </div>
+
+    @php
+        $cancelReasons = \App\Models\CancellationReason::where([
+            'type' => 'customer',
+            'is_active' => true,
+            'is_default' => true,
+        ])->get(['id', 'reason']);
+    @endphp
+    <!-- Modal chọn lý do huỷ -->
+    <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelReasonModalLabel">Chọn lý do huỷ đơn hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="cancel-reason-select" class="form-label">Lý do huỷ <span
+                                class="text-danger">*</span></label>
+                        <select class="form-select" id="cancel-reason-select">
+                            <option value="">-- Chọn lý do huỷ --</option>
+                            @foreach ($cancelReasons as $reason)
+                                <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
+                            @endforeach
+                            <option value="other">-- Khác (Nhập lý do mới) --</option>
+                        </select>
+                        <input type="text" class="form-control mt-2 d-none" id="cancel-reason-other"
+                            placeholder="Nhập lý do huỷ mới">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="confirm-cancel-reason">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @push('scripts')
+        <script>
+            let currentCancelOrderId = null;
+            document.addEventListener('DOMContentLoaded', function() {
+                // Lấy lý do huỷ khi mở modal
+                document.querySelectorAll('.btn-cancel-order').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        currentCancelOrderId = this.getAttribute('data-order-id');
+                        // Reset select và input mỗi lần mở popup
+                        let select = document.getElementById('cancel-reason-select');
+                        select.value = '';
+                        document.getElementById('cancel-reason-other').classList.add('d-none');
+                        document.getElementById('cancel-reason-other').value = '';
+                        var modal = new bootstrap.Modal(document.getElementById('cancelReasonModal'));
+                        modal.show();
+                    });
+                });
+                // Hiện ô nhập lý do mới nếu chọn "other"
+                document.getElementById('cancel-reason-select').addEventListener('change', function() {
+                    if (this.value === 'other') {
+                        document.getElementById('cancel-reason-other').classList.remove('d-none');
+                    } else {
+                        document.getElementById('cancel-reason-other').classList.add('d-none');
+                    }
+                });
+                // Xác nhận lý do huỷ
+                document.getElementById('confirm-cancel-reason').addEventListener('click', function() {
+                    let select = document.getElementById('cancel-reason-select');
+                    let other = document.getElementById('cancel-reason-other');
+                    let value = select.value;
+                    if (!value) {
+                        select.classList.add('is-invalid');
+                        return;
+                    }
+                    select.classList.remove('is-invalid');
+                    let reasonValue = value;
+                    if (value === 'other') {
+                        if (!other.value.trim()) {
+                            other.classList.add('is-invalid');
+                            return;
+                        }
+                        other.classList.remove('is-invalid');
+                        reasonValue = 'other:' + other.value.trim();
+                    }
+                    // Submit form
+                    let form = document.getElementById('cancel-order-form-' + currentCancelOrderId);
+                    form.querySelector('input[name="cancellation_reason_id"]').value = reasonValue;
+                    form.submit();
+                });
+            });
+        </script>
+    @endpush
 
 @endsection
 <style>
@@ -384,27 +512,3 @@
         gap: 8px;
     }
 </style>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.getElementById('show-search-btn');
-        var form = document.getElementById('order-search-form');
-        var input = form.querySelector('input[name="q"]');
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (form.style.display === 'none' || form.style.display === '') {
-                form.style.display = 'block';
-                setTimeout(function() {
-                    input.focus();
-                }, 100);
-            } else {
-                form.style.display = 'none';
-            }
-        });
-        // Ẩn form khi click ra ngoài
-        document.addEventListener('click', function(e) {
-            if (!form.contains(e.target) && e.target !== btn) {
-                form.style.display = 'none';
-            }
-        });
-    });
-</script>

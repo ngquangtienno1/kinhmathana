@@ -259,7 +259,33 @@
                                 </td>
                                 <td>
                                     <div class="fw-bold">{{ $item->product_name }}</div>
-                                    @if ($item->variation_name)
+                                    @php
+                                        $options = $item->product_options
+                                            ? json_decode($item->product_options, true)
+                                            : [];
+                                        $optionTexts = [];
+                                        if (!empty($options)) {
+                                            if (array_key_exists('color', $options)) {
+                                                $optionTexts[] = trim($options['color']);
+                                            }
+                                            if (array_key_exists('size', $options)) {
+                                                $optionTexts[] = trim($options['size']);
+                                            }
+                                            if (array_key_exists('spherical', $options)) {
+                                                $optionTexts[] = trim($options['spherical']);
+                                            }
+                                            if (array_key_exists('cylindrical', $options)) {
+                                                $optionTexts[] = trim($options['cylindrical']);
+                                            }
+                                        }
+                                        // Loại bỏ giá trị rỗng/null
+                                        $optionTexts = array_filter($optionTexts, function ($v) {
+                                            return $v !== null && $v !== '' && $v !== '-';
+                                        });
+                                    @endphp
+                                    @if (!empty($optionTexts))
+                                        <div class="text-muted small">Phân loại: {{ implode(' - ', $optionTexts) }}</div>
+                                    @elseif ($item->variation_name)
                                         <div class="text-muted small">Phân loại: {{ $item->variation_name }}</div>
                                     @endif
                                 </td>
@@ -276,8 +302,12 @@
                                                 ->exists();
                                         @endphp
                                         @if (!$reviewed)
-                                            <a href="{{ route('client.orders.review.form', [$order->id, $item->id]) }}"
-                                                class="btn btn-sm btn-outline-primary">Đánh giá</a>
+                                            <button type="button" class="btn btn-sm btn-outline-primary btn-review"
+                                                data-item-id="{{ $item->id }}"
+                                                data-product-name="{{ $item->product_name }}"
+                                                data-product-img="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
+                                                data-product-options='@json($item->product_options)'
+                                                data-order-id="{{ $order->id }}">Đánh giá</button>
                                         @else
                                             <span class="text-success">Đã đánh giá</span>
                                         @endif
@@ -309,7 +339,10 @@
                     <span>Thành tiền:</span>
                     <span class="text-danger">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span>
                 </div>
-                @if ($order->status !== 'cancelled_by_customer' && $order->status !== 'cancelled_by_admin' && $order->status !== 'completed')
+                @if (
+                    $order->status !== 'cancelled_by_customer' &&
+                        $order->status !== 'cancelled_by_admin' &&
+                        $order->status !== 'completed')
                     <div class="alert alert-warning mt-3" role="alert">
                         Vui lòng thanh toán <span
                             class="text-danger fw-bold">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span> khi
@@ -352,5 +385,244 @@
             </a>
         </div>
     </div>
+    <!-- Modal Đánh Giá Sản Phẩm -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="review-form" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalLabel">Đánh giá sản phẩm</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 d-flex align-items-start gap-3">
+                            <img id="modal-product-img" src="" alt=""
+                                style="width: 80px; height: 80px; object-fit: cover; border: 1px solid #ddd;">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold" id="modal-product-name"></div>
+                                <div class="text-muted small mt-1" id="modal-product-options"></div>
+                            </div>
+                        </div>
+                        <div class="border p-3 rounded-0" style="background: #fff;">
+                            <h6 class="fw-semibold mb-3">Đánh giá sản phẩm</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Chất lượng sản phẩm</label>
+                                <div id="star-rating" class="mb-1">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <span class="star fs-3" data-value="{{ $i }}">&#9733;</span>
+                                    @endfor
+                                    <input type="hidden" name="rating" id="rating" value="5">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Nội dung đánh giá</label>
+                                <textarea name="content" id="content" class="form-control rounded-0" rows="4" maxlength="1000"
+                                    oninput="updateCharCount()" required></textarea>
+                                <div class="text-end small text-muted mt-1"><span id="char-count">0</span>/1000 ký tự
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="images" class="form-label">Thêm hình ảnh (tối đa 5 ảnh)</label>
+                                <input type="file" name="images[]" id="images" class="form-control rounded-0"
+                                    multiple accept="image/*" onchange="previewImages()">
+                                <div class="d-flex flex-wrap mt-2 gap-2" id="image-preview"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="video" class="form-label">Thêm video (tối đa 1 video, dung lượng tối đa
+                                    50MB)</label>
+                                <input type="file" name="video" id="video" class="form-control rounded-0"
+                                    accept="video/*" onchange="previewVideo(); checkVideoSize();">
+                                <div class="text-danger small mt-1" id="video-size-warning" style="display:none;">Video
+                                    vượt quá dung lượng cho phép (50MB).</div>
+                                <div class="mt-2" id="video-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-dark">Gửi đánh giá</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Chọn Lý Do Huỷ Đơn Hàng (Đồng bộ giao diện) -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="font-family: inherit; color: #222; border-radius: 10px;">
+                <form id="cancel-order-form" method="POST" action="">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="cancelOrderModalLabel" style="font-family: inherit;">CHỌN LÝ
+                            DO HUỶ ĐƠN HÀNG</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="cancellation_reason_id" class="form-label fw-semibold" style="color: #222;">Lý do
+                                huỷ <span class="text-danger">*</span></label>
+                            <select class="form-select" name="cancellation_reason_id" id="cancellation_reason_id"
+                                required style="font-family: inherit; color: #222; border-radius: 6px;">
+                                <option value="">-- Chọn lý do huỷ --</option>
+                                <!-- Lý do sẽ được render động bằng JS hoặc blade -->
+                                <option value="other">-- Khác (Nhập lý do mới) --</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="other-reason-group" style="display:none;">
+                            <label for="other_reason" class="form-label">Lý do khác</label>
+                            <input type="text" class="form-control" name="other_reason" id="other_reason"
+                                maxlength="255" style="font-family: inherit; border-radius: 6px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="border-radius: 6px;">Đóng</button>
+                        <button type="submit" class="btn btn-dark" style="border-radius: 6px;">Xác nhận huỷ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Thêm Bootstrap JS nếu chưa có -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .star {
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.selected,
+        .star:hover,
+        .star:hover~.star {
+            color: #f39c12;
+        }
+
+        #image-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        #video-preview video {
+            width: 120px;
+            border: 1px solid #ccc;
+        }
+
+        #star-rating {
+            font-size: 0;
+        }
+
+        #star-rating .star {
+            font-size: 2rem;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-review').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    let itemId = this.getAttribute('data-item-id');
+                    let productName = this.getAttribute('data-product-name');
+                    let productImg = this.getAttribute('data-product-img');
+                    let productOptions = this.getAttribute('data-product-options');
+                    let orderId = this.getAttribute('data-order-id');
+                    let opts = productOptions ? JSON.parse(productOptions) : {};
+                    let optionsText = '';
+                    if (opts.sku) optionsText += 'Mã SP: ' + opts.sku + ' | ';
+                    if (opts.color) optionsText += 'Màu: ' + opts.color + ' ';
+                    if (opts.size) optionsText += '| Size: ' + opts.size;
+                    document.getElementById('modal-product-name').innerText = productName;
+                    document.getElementById('modal-product-img').src = productImg;
+                    document.getElementById('modal-product-options').innerText = optionsText;
+                    document.getElementById('review-form').action =
+                        `/orders/${orderId}/review/${itemId}`;
+                    document.getElementById('rating').value = 5;
+                    document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
+                        s.classList.toggle('selected', idx < 5);
+                    });
+                    document.getElementById('content').value = '';
+                    document.getElementById('char-count').innerText = 0;
+                    document.getElementById('images').value = '';
+                    document.getElementById('image-preview').innerHTML = '';
+                    document.getElementById('video').value = '';
+                    document.getElementById('video-preview').innerHTML = '';
+                    document.getElementById('video-size-warning').style.display = 'none';
+                    var reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+                    reviewModal.show();
+                });
+            });
+            document.querySelectorAll('#star-rating .star').forEach(function(star) {
+                star.addEventListener('click', function() {
+                    let value = this.getAttribute('data-value');
+                    document.getElementById('rating').value = value;
+                    document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
+                        s.classList.toggle('selected', idx < value);
+                    });
+                });
+            });
+        });
+
+        function updateCharCount() {
+            document.getElementById('char-count').innerText = document.getElementById('content').value.length;
+        }
+
+        function previewImages() {
+            let preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+            let files = document.getElementById('images').files;
+            for (let i = 0; i < files.length && i < 5; i++) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        function previewVideo() {
+            let preview = document.getElementById('video-preview');
+            preview.innerHTML = '';
+            let file = document.getElementById('video').files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let video = document.createElement('video');
+                    video.src = e.target.result;
+                    video.controls = true;
+                    preview.appendChild(video);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function checkVideoSize() {
+            let file = document.getElementById('video').files[0];
+            let warning = document.getElementById('video-size-warning');
+            if (file && file.size > 50 * 1024 * 1024) {
+                warning.style.display = 'block';
+                document.getElementById('video').value = '';
+                document.getElementById('video-preview').innerHTML = '';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var select = document.getElementById('cancellation_reason_id');
+            if (select) {
+                select.addEventListener('change', function() {
+                    document.getElementById('other-reason-group').style.display = this.value === 'other' ?
+                        'block' : 'none';
+                });
+            }
+        });
+    </script>
 @endsection

@@ -6,6 +6,7 @@
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @include('client.components.head')
 
 <style>
@@ -55,6 +56,16 @@
     </div><!-- close #qodef-page-wrapper div from header.php -->
     @include('client.components.script')
     @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var alertBox = document.querySelector('.alert-success, .alert-danger');
+            if (alertBox) {
+                setTimeout(function() {
+                    alertBox.style.display = 'none';
+                }, 3000); // 3 giây
+            }
+        });
+    </script>
 </body>
 
 </html>

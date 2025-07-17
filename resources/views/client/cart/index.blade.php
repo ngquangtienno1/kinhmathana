@@ -384,13 +384,6 @@
                     document.getElementById('bulk-remove-form').submit();
                 }
             });
-
-            var alertBox = document.querySelector('.alert-success');
-            if (alertBox) {
-                setTimeout(function() {
-                    alertBox.style.display = 'none';
-                }, 3000); // 3 giây
-            }
         });
     </script>
 @endpush

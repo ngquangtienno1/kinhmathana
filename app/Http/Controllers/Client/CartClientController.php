@@ -396,6 +396,8 @@ class CartClientController extends Controller
                 'product_options' => $item->variation ? json_encode([
                     'color' => $item->variation->color->name ?? null,
                     'size' => $item->variation->size->name ?? null,
+                    'spherical' => $item->variation->spherical->name ?? null,
+                    'cylindrical' => $item->variation->cylindrical->name ?? null,
                 ]) : null,
                 'note' => null,
             ]);
