@@ -212,8 +212,8 @@ class ProductController extends Controller
             ];
         })->values()->toArray();
 
-        // Lấy bình luận (comments) cho sản phẩm, mới nhất trước(TA)
-        $comments = $product->comments()->with('user')->orderByDesc('created_at')->get();
+        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt
+        $comments = $product->comments()->with('user')->where('status', 'đã duyệt')->orderByDesc('created_at')->get();
 
         return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
     }
@@ -317,5 +317,43 @@ class ProductController extends Controller
             }
             return back()->with('error', 'Không xác định được sản phẩm cần thêm vào giỏ hàng!');
         }
+    }
+    public function comment(Request $request, $productId)
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
+        }
+
+        // Kiểm tra nếu user đang bị cấm bình luận
+        if ($user->banned_until && now()->lt($user->banned_until)) {
+            return redirect()->back()->with('error', 'Bạn đã bị cấm bình luận đến ' . $user->banned_until->format('d/m/Y H:i'));
+        }
+        if ($user->status === 'bị chặn') {
+            return redirect()->back()->with('error', 'Tài khoản của bạn đã bị chặn bình luận.');
+        }
+
+        $product = Product::findOrFail($productId);
+
+        // Kiểm tra nếu user có bình luận nào bị chặn trong sản phẩm này hoặc toàn hệ thống
+        $hasBlockedComment = $user->comments()->where('status', 'chặn')->exists();
+        if ($hasBlockedComment) {
+            // Cấm user bình luận 1 ngày kể từ bây giờ
+            $user->banned_until = now()->addDay();
+            $user->save();
+            return redirect()->back()->with('error', 'Bạn đã bị cấm bình luận 1 ngày do có bình luận vi phạm.');
+        }
+
+        $product->comments()->create([
+            'user_id' => $user->id,
+            'content' => $request->input('content'),
+            'status' => 'chờ duyệt',
+        ]);
+
+        return redirect()->back()->with('success', 'Bình luận của bạn đã được gửi và đang chờ duyệt!');
     }
 }

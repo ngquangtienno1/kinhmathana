@@ -23,26 +23,39 @@ class OrderClientController extends Controller
         if ($status) {
             if ($status === 'cancelled') {
                 $query->whereIn('status', ['cancelled_by_customer', 'cancelled_by_admin']);
+            } elseif ($status === 'delivery_failed') {
+                $query->where('status', 'delivery_failed');
             } else {
                 $query->where('status', $status);
             }
         }
         // Bổ sung tìm kiếm theo mã đơn hàng hoặc tên sản phẩm
         if ($q) {
-            $query->where(function($sub) use ($q) {
+            $query->where(function ($sub) use ($q) {
                 $sub->where('order_number', 'like', "%$q%")
-                    ->orWhereHas('items', function($q2) use ($q) {
+                    ->orWhereHas('items', function ($q2) use ($q) {
                         $q2->where('product_name', 'like', "%$q%")
-                            ->orWhereHas('product', function($q3) use ($q) {
+                            ->orWhereHas('product', function ($q3) use ($q) {
                                 $q3->where('name', 'like', "%$q%")
                                     ->orWhere('slug', 'like', "%$q%")
-                                    ;
+                                ;
                             });
                     });
             });
         }
         $orders = $query->paginate(10);
-        return view('client.orders.index', compact('orders', 'status'));
+        $tabs = [
+            ['label' => 'Tất cả', 'status' => null],
+            ['label' => 'Chờ xác nhận', 'status' => 'pending'],
+            ['label' => 'Đã xác nhận', 'status' => 'confirmed'],
+            ['label' => 'Chờ lấy hàng', 'status' => 'awaiting_pickup'],
+            ['label' => 'Đang giao', 'status' => 'shipping'],
+            ['label' => 'Đã giao hàng', 'status' => 'delivered'],
+            ['label' => 'Đã hoàn thành', 'status' => 'completed'],
+            ['label' => 'Đã hủy', 'status' => 'cancelled'],
+            ['label' => 'Giao thất bại', 'status' => 'delivery_failed'],
+        ];
+        return view('client.orders.index', compact('orders', 'status', 'tabs'));
     }
 
     public function show($id)

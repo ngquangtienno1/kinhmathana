@@ -68,8 +68,8 @@
                 </div>
                 <!-- Export -->
                 <div class="col-auto d-flex align-items-center gap-2">
-                    <a href="{{ route('admin.customers.export', request()->query()) }}" class="btn btn-link text-body px-0 d-flex align-items-center"
-                        style="height: 40px;">
+                    <a href="{{ route('admin.customers.export', request()->query()) }}"
+                        class="btn btn-link text-body px-0 d-flex align-items-center" style="height: 40px;">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </a>
                 </div>
@@ -216,17 +216,24 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editTypeModalLabel{{ $customer->id }}">Cập nhật loại khách hàng</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="editTypeModalLabel{{ $customer->id }}">Cập nhật loại khách hàng
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="customer_type{{ $customer->id }}" class="form-label"><strong>Loại khách hàng</strong></label>
+                            <label for="customer_type{{ $customer->id }}" class="form-label"><strong>Loại khách
+                                    hàng</strong></label>
                             <select name="customer_type" id="customer_type{{ $customer->id }}" class="form-select">
-                                <option value="new" {{ $customer->customer_type == 'new' ? 'selected' : '' }}>Mới</option>
-                                <option value="regular" {{ $customer->customer_type == 'regular' ? 'selected' : '' }}>Thường</option>
-                                <option value="vip" {{ $customer->customer_type == 'vip' ? 'selected' : '' }}>VIP</option>
-                                <option value="potential" {{ $customer->customer_type == 'potential' ? 'selected' : '' }}>Tiềm năng</option>
+                                <option value="new" {{ $customer->customer_type == 'new' ? 'selected' : '' }}>Mới
+                                </option>
+                                <option value="regular" {{ $customer->customer_type == 'regular' ? 'selected' : '' }}>
+                                    Thường</option>
+                                <option value="vip" {{ $customer->customer_type == 'vip' ? 'selected' : '' }}>VIP
+                                </option>
+                                <option value="potential"
+                                    {{ $customer->customer_type == 'potential' ? 'selected' : '' }}>Tiềm năng</option>
                             </select>
                         </div>
                     </div>

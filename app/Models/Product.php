@@ -66,9 +66,9 @@ class Product extends Model
     }
 
     public function comments()
-    {
-        return $this->hasMany(Comment::class, 'entity_id')->where('entity_type', 'product');
-    }
+{
+    return $this->morphMany(Comment::class, 'entity');
+}
 
     // Scope để lấy sản phẩm hoạt động
     public function scopeActive($query)

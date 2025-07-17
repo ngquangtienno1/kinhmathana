@@ -3,56 +3,60 @@
 // ================== Client Controllers ==================
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Client\UserController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Client\VoucherController;
-use App\Http\Controllers\Client\BlogController;
-use App\Http\Controllers\Client\CartClientController;
-use App\Http\Controllers\Client\OrderClientController;
-use App\Http\Controllers\Client\FaqClientController;
-use App\Http\Controllers\Client\HomeController as ClientHomeController;
-use App\Http\Controllers\Client\ProductController as ClientProductController;
-use App\Http\Controllers\Client\ContactController as ClientContactController;
-
-// ================== Admin Controllers ===================
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Client\BlogController;
+use App\Http\Controllers\Client\CartController;
+
+// ================== Admin Controllers ===================
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Client\VoucherController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SphericalController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Admin\CylindricalController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentMethodController;
+use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
-
-// Authentication
-
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+
 
 // Authentication
-use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\AuthenticationClientController;
+
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Client\UserController as ClientUserController;
+
+// Authentication
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Client\CartClientController;
+use App\Http\Controllers\Client\ContactController as ClientContactController;
+use App\Http\Controllers\Client\OrderClientController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 // Redirect login
 Route::get('/', function () {
@@ -94,16 +98,16 @@ Route::prefix('client')->name('client.')->group(function () {
 
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('index', [UserController::class, 'index'])->name('index');
-        Route::get('information', [UserController::class, 'profile'])->name('information'); // Dạng lưới
-        Route::post('information', [UserController::class, 'update'])->name('information.update');
+        Route::get('index', [ClientUserController::class, 'index'])->name('index');
+        Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
+        Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
         // Route lấy chi tiết đơn hàng cho client (AJAX popup)
         Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
         Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('profile', [UserController::class, 'index'])->name('profile'); // Dạng lưới
+        Route::get('profile', [ClientUserController::class, 'index'])->name('profile'); // Dạng lưới
     });
 
     Route::get('forgot-password', [AuthenticationClientController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -115,6 +119,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
         Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
+        Route::post('{product}/comment', [ClientProductController::class, 'comment'])->name('comment');
     });
 
     Route::prefix('cart')->name('cart.')->group(function () {
@@ -161,7 +166,6 @@ Route::prefix('client')->name('client.')->group(function () {
     // Route lấy danh sách lý do hủy đơn hàng cho client
     Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
 });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {

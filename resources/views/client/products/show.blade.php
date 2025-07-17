@@ -418,26 +418,65 @@
                             id="tab-comments" role="tabpanel" aria-labelledby="tab-title-comments"
                             style="display:none;">
                             <h2>Bình luận</h2>
-                            @if ($comments->count() > 0)
-                                <div class="comments-list">
-                                    @foreach ($comments as $comment)
-                                        <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
-                                            <div style="display: flex; align-items: baseline; gap: 8px;">
-                                                <span
-                                                    style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
-                                                <span
-                                                    style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
-                                            </div>
-                                            <div style="margin-top: 2px; font-size: 15px; color: #222;">
-                                                {{ $comment->content }}</div>
+                            @foreach ($comments as $comment)
+                                <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div style="display: flex; align-items: baseline; gap: 8px;">
+                                        <span
+                                            style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
+                                        <span
+                                            style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                    </div>
+                                    <div style="margin-top: 2px; font-size: 15px; color: #222;">
+                                        {{ $comment->content }}
+                                    </div>
+                                    @if ($comment->replies && $comment->replies->count())
+                                        <div class="comment-replies" style="margin-left:32px; margin-top:8px;">
+                                            @foreach ($comment->replies as $reply)
+                                                <div class="reply-item"
+                                                    style="background:#f8f9fa; border-radius:6px; padding:8px 12px; margin-bottom:6px;">
+                                                    <div style="display: flex; align-items: baseline; gap: 8px;">
+                                                        <span
+                                                            style="font-weight: bold; color:#007bff;">{{ $reply->user->name ?? 'Admin' }}</span>
+                                                        <span
+                                                            style="font-size: 13px; color: #888;">{{ $reply->created_at->format('d/m/Y H:i') }}</span>
+                                                    </div>
+                                                    <div style="margin-top: 2px; font-size: 15px; color: #333;">
+                                                        {{ $reply->content }}
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    @endforeach
+                                    @endif
                                 </div>
+                            @endforeach
+                            @if (Auth::check())
+                                @if (Auth::user()->banned_until && now()->lt(Auth::user()->banned_until))
+                                    <div class="alert alert-warning" style="margin-top: 18px;">
+                                        Bạn đã bị cấm bình luận đến
+                                        {{ Auth::user()->banned_until->format('d/m/Y H:i') }}<br>
+                                        (Còn
+                                        {{ now()->diffForHumans(Auth::user()->banned_until, ['parts' => 2, 'short' => true]) }})
+                                    </div>
+                                @else
+                                    <form action="{{ route('client.products.comment', $product->id) }}" method="POST"
+                                        style="margin-top: 18px;">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="comment-content">Nội dung bình luận</label>
+                                            <textarea name="content" id="comment-content" class="form-control" rows="3" required
+                                                style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Gửi bình
+                                            luận</button>
+                                    </form>
+                                @endif
                             @else
-                                <p class="text-muted">Chưa có bình luận nào.</p>
+                                <p style="margin-top: 18px;">Bạn cần <a href="{{ route('client.login') }}">đăng nhập</a>
+                                    để bình luận.</p>
                             @endif
                         </div>
                     </div>
+
                     <section class="related products">
                         <h2>Sản phẩm liên quan</h2>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
