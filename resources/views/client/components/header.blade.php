@@ -552,45 +552,62 @@
                         </div>
                     @endguest
                     @auth
-                        <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
-                            <a href="{{ route('client.users.index') }}" class="qodef-user-dropdown-toggle">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
-                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
-                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
-                                        cy="4.594" r="4.094" />
-                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
-                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
-                                </svg>
-                            </a>
-                            <div class="qodef-user-dropdown-menu"
-                                style="display: none; position: absolute; right: 0; top: 85px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); min-width: 180px; z-index: 1000; padding: 18px 0;">
-                                <ul style="list-style: none; margin: 0; padding: 0;">
-                                    <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
-                                            style="color: #232323; text-decoration: none; display: block;">Profile</a></li>
-                                    <li style="padding: 8px 24px;"><a href="{{ route('client.users.information') }}"
-                                            style="color: #232323; text-decoration: none; display: block;">Edit Profile</a>
-                                    </li>
-                                    <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
-                                            style="color: #232323; text-decoration: none; display: block;">My Account</a>
-                                    </li>
-                                    <li style="padding: 8px 24px;"><a href="{{ route('client.logout') }}"
-                                            style="color: #d00; text-decoration: none; display: block;">Log Out</a></li>
-                                </ul>
+                        @php $role = Auth::user()->role_id ?? null; @endphp
+                        @if ($role == 3)
+                            <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
+                                <a href="{{ route('client.users.index') }}" class="qodef-user-dropdown-toggle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                        y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                        enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                        <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                            cy="4.594" r="4.094" />
+                                        <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                            d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                    </svg>
+                                </a>
+                                <div class="qodef-user-dropdown-menu"
+                                    style="display: none; position: absolute; right: 0; top: 85px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); min-width: 180px; z-index: 1000; padding: 18px 0;">
+                                    <ul style="list-style: none; margin: 0; padding: 0;">
+                                        <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
+                                                style="color: #232323; text-decoration: none; display: block;">Profile</a></li>
+                                        <li style="padding: 8px 24px;"><a href="{{ route('client.users.information') }}"
+                                                style="color: #232323; text-decoration: none; display: block;">Edit Profile</a>
+                                        </li>
+                                        <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
+                                                style="color: #232323; text-decoration: none; display: block;">My Account</a>
+                                        </li>
+                                        <li style="padding: 8px 24px;"><a href="{{ route('client.logout') }}"
+                                                style="color: #d00; text-decoration: none; display: block;">Log Out</a></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                var userWidget = document.querySelector('.qodef-user-logged--in');
-                                var dropdown = userWidget.querySelector('.qodef-user-dropdown-menu');
-                                userWidget.addEventListener('mouseenter', function() {
-                                    dropdown.style.display = 'block';
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var userWidget = document.querySelector('.qodef-user-logged--in');
+                                    var dropdown = userWidget.querySelector('.qodef-user-dropdown-menu');
+                                    userWidget.addEventListener('mouseenter', function() {
+                                        dropdown.style.display = 'block';
+                                    });
+                                    userWidget.addEventListener('mouseleave', function() {
+                                        dropdown.style.display = 'none';
+                                    });
                                 });
-                                userWidget.addEventListener('mouseleave', function() {
-                                    dropdown.style.display = 'none';
-                                });
-                            });
-                        </script>
+                            </script>
+                        @elseif ($role == 1 || $role == 2)
+                            <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
+                                <a href="#" onclick="event.preventDefault(); document.getElementById('force-logout-form').submit();" class="qodef-user-dropdown-toggle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                        y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                        enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                        <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                            cy="4.594" r="4.094" />
+                                        <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                            d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                    </svg>
+                                </a>
+                                <form id="force-logout-form" action="{{ route('client.logout') }}" method="GET" style="display: none;"></form>
+                            </div>
+                        @endif
                     @endauth
                 </div>
                 <div id="neoocular_core_woo_side_area_cart-2"

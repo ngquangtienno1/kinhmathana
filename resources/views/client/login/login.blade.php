@@ -224,7 +224,7 @@
                 <span class="text-danger">{{ $message }}</span>
             @enderror
             <div class="form-check">
-                <input class="form-check-input" id="basic-checkbox" type="checkbox" />
+                <input class="form-check-input" id="basic-checkbox" name="remember" type="checkbox" {{ old('remember') ? 'checked' : '' }} />
                 <label class="form-check-label mb-0" for="basic-checkbox">Lưu tài khoản</label>
             </div>
             <button class="btn btn-primary" type="submit"

@@ -15,6 +15,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthenticationClientController extends BaseController
 {
@@ -58,8 +59,14 @@ class AuthenticationClientController extends BaseController
                     ->withInput();
             }
 
+
             // Successful login
-            Auth::login($user, $request->has('remember'));
+            $remember = $request->has('remember');
+            Auth::login($user, $remember);
+            if ($remember) {
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+            }
             session()->put('user_id', Auth::id());
 
             Log::info('User logged in successfully', [
