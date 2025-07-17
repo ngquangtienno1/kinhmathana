@@ -99,8 +99,13 @@ class AuthenticationClientController extends BaseController
 
     public function logout()
     {
+
         if (Auth::check()) {
-            Log::info('User logged out', ['user_id' => Auth::id()]);
+            $user = Auth::user();
+            Log::info('User logged out', ['user_id' => $user->id]);
+            // Xóa remember_token khi logout
+            $user->setRememberToken(null);
+            $user->save();
             Auth::logout();
             session()->forget('user_id');
         }

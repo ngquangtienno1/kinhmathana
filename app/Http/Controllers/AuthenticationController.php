@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLoginRequest;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -59,9 +60,16 @@ class AuthenticationController extends BaseController
                     ->withInput();
             }
 
+
             // Login successful
             Auth::login($user, $request->has('remember'));
             session()->put('user_id', Auth::id());
+
+            // Force new remember_token if 'remember' is checked
+            if ($request->has('remember')) {
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+            }
 
             Log::info('User logged in successfully', [
                 'user_id' => $user->id,
@@ -94,8 +102,13 @@ class AuthenticationController extends BaseController
 
     public function logout()
     {
+
         if (Auth::check()) {
-            Log::info('User logged out', ['user_id' => Auth::id()]);
+            $user = Auth::user();
+            Log::info('User logged out', ['user_id' => $user->id]);
+            // Clear remember_token for security
+            $user->setRememberToken(null);
+            $user->save();
             Auth::logout();
             session()->forget('user_id');
         }
