@@ -97,9 +97,9 @@
                                     </span>
                                 </p>
                                 @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
-                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
                                         <strong id="variant-stock-quantity">Hết hàng</strong>
-                                    </div>
+                                </div>
                                 @else
                                     <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
                                         Số lượng: <strong
@@ -122,62 +122,62 @@
                                             @if ($product->total_stock_quantity <= 0)
                                                 <fieldset disabled style="opacity:0.7;pointer-events:none;">
                                             @endif
-                                            @if ($colors->count())
+                                                    @if ($colors->count())
                                                 <div class="variation-group">
                                                     <div class="variation-label">Màu sắc:</div>
                                                     <div class="variation-options" data-type="color">
-                                                        @foreach ($colors as $color)
+                                                                    @foreach ($colors as $color)
                                                             <button type="button" class="variation-btn color-btn"
                                                                 data-value="{{ $color->id }}">
                                                                 {{ $color->name }}
                                                             </button>
-                                                        @endforeach
-                                                    </div>
+                                                                    @endforeach
+                                                                </div>
                                                     <input type="hidden" name="color_id" class="variation-input"
                                                         value="">
                                                 </div>
-                                            @endif
-                                            @if ($sizes->count())
+                                                    @endif
+                                                    @if ($sizes->count())
                                                 <div class="variation-group">
                                                     <div class="variation-label">Kích thước:</div>
                                                     <div class="variation-options" data-type="size">
-                                                        @foreach ($sizes as $size)
+                                                                    @foreach ($sizes as $size)
                                                             <button type="button" class="variation-btn size-btn"
                                                                 data-value="{{ $size->id }}">
                                                                 {{ $size->name }}
                                                             </button>
-                                                        @endforeach
+                                                                    @endforeach
                                                     </div>
                                                     <input type="hidden" name="size_id" class="variation-input"
                                                         value="">
                                                 </div>
-                                            @endif
-                                            @if ($sphericals->count())
+                                                    @endif
+                                                    @if ($sphericals->count())
                                                 <div class="variation-group">
                                                     <div class="variation-label">Độ cận:</div>
                                                     <div class="variation-options" data-type="spherical">
-                                                        @foreach ($sphericals as $spherical)
+                                                                    @foreach ($sphericals as $spherical)
                                                             <button type="button" class="variation-btn spherical-btn"
                                                                 data-value="{{ $spherical->id }}">
                                                                 {{ $spherical->name }}
                                                             </button>
-                                                        @endforeach
+                                                                    @endforeach
                                                     </div>
                                                     <input type="hidden" name="spherical_id" class="variation-input"
                                                         value="">
                                                 </div>
-                                            @endif
-                                            @if ($cylindricals->count())
+                                                    @endif
+                                                    @if ($cylindricals->count())
                                                 <div class="variation-group">
                                                     <div class="variation-label">Độ loạn:</div>
                                                     <div class="variation-options" data-type="cylindrical">
-                                                        @foreach ($cylindricals as $cylindrical)
+                                                                    @foreach ($cylindricals as $cylindrical)
                                                             <button type="button" class="variation-btn cylindrical-btn"
                                                                 data-value="{{ $cylindrical->id }}">
                                                                 {{ $cylindrical->name }}
                                                             </button>
-                                                        @endforeach
-                                                    </div>
+                                                                    @endforeach
+                                            </div>
                                                     <input type="hidden" name="cylindrical_id" class="variation-input"
                                                         value="">
                                                 </div>
@@ -418,15 +418,15 @@
                             id="tab-comments" role="tabpanel" aria-labelledby="tab-title-comments"
                             style="display:none;">
                             <h2>Bình luận</h2>
-                            @foreach ($comments as $comment)
-                                <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
-                                    <div style="display: flex; align-items: baseline; gap: 8px;">
-                                        <span
-                                            style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
-                                        <span
-                                            style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
-                                    </div>
-                                    <div style="margin-top: 2px; font-size: 15px; color: #222;">
+                                    @foreach ($comments as $comment)
+                                        <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                            <div style="display: flex; align-items: baseline; gap: 8px;">
+                                                <span
+                                                    style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
+                                                <span
+                                                    style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                            </div>
+                                            <div style="margin-top: 2px; font-size: 15px; color: #222;">
                                         {{ $comment->content }}
                                     </div>
                                     @if ($comment->replies && $comment->replies->count())
@@ -443,8 +443,8 @@
                                                     <div style="margin-top: 2px; font-size: 15px; color: #333;">
                                                         {{ $reply->content }}
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                        </div>
+                                    @endforeach
                                         </div>
                                     @endif
                                 </div>
@@ -456,8 +456,8 @@
                                         {{ Auth::user()->banned_until->format('d/m/Y H:i') }}<br>
                                         (Còn
                                         {{ now()->diffForHumans(Auth::user()->banned_until, ['parts' => 2, 'short' => true]) }})
-                                    </div>
-                                @else
+                                </div>
+                            @else
                                     <form action="{{ route('client.products.comment', $product->id) }}" method="POST"
                                         style="margin-top: 18px;">
                                         @csrf
@@ -647,7 +647,7 @@
                                                     <img width="600" height="431" src="{{ $rvImagePath }}"
                                                         class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
                                                         alt="{{ $rvProduct->name }}" decoding="async" />
-                                                </div>
+                </div>
                                                 <div class="qodef-woo-product-content">
                                                     <h6 class="qodef-woo-product-title woocommerce-loop-product__link"><a
                                                             href="{{ route('client.products.show', $rvProduct->slug) }}">{{ $rvProduct->name }}</a>
@@ -752,13 +752,13 @@
                             </div>
                         </section>
                     @endif
-                </div>
             </div>
-        </main>
+    </div>
+    </main>
     </div>
     @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
                 // Add to cart functionality
                 document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
                     form.addEventListener('submit', function(e) {
@@ -788,7 +788,7 @@
                                     if (msgContainer) {
                                         msgContainer.appendChild(msg);
                                     }
-                                } else {
+                    } else {
                                     var msg = document.createElement('div');
                                     msg.className = 'alert alert-danger';
                                     msg.style =
@@ -889,10 +889,10 @@
                     const sphericalId = document.querySelector('input[name="spherical_id"]')?.value || '';
                     const cylindricalId = document.querySelector('input[name="cylindrical_id"]')?.value || '';
                     console.log('Selected:', {
-                        colorId,
-                        sizeId,
-                        sphericalId,
-                        cylindricalId
+                    colorId,
+                    sizeId,
+                    sphericalId,
+                    cylindricalId
                     });
                     // Lấy variations từ biến blade
                     const variations = window.variationsJson || [];
@@ -934,7 +934,7 @@
                             addBtn.disabled = true;
                             addBtn.style.opacity = 0.7;
                             addBtn.style.pointerEvents = 'none';
-                        } else {
+                    } else {
                             addBtn.disabled = false;
                             addBtn.style.opacity = '';
                             addBtn.style.pointerEvents = '';
@@ -949,8 +949,8 @@
                                 addBtn.disabled = true;
                                 addBtn.style.opacity = 0.7;
                                 addBtn.style.pointerEvents = 'none';
-                            }
-                        } else {
+                    }
+                } else {
                             stockElem.textContent = found.stock_quantity;
                         }
                     } else if (stockElem) {
