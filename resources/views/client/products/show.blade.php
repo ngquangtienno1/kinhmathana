@@ -241,25 +241,91 @@
                                 @endif
                                 <div
                                     class="qwfw-add-to-wishlist-wrapper qwfw--single qwfw-position--after-add-to-cart qwfw-item-type--icon-with-text qodef-neoocular-theme">
-                                    <a role="button" tabindex="0"
-                                        class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
-                                        href="index7f33.html?add_to_wishlist=921" data-item-id="921"
-                                        data-original-item-id="921" aria-label="Thêm vào danh sách yêu thích"
-                                        data-shortcode-atts="{"button_behavior":"view","button_type":"icon-with-text","show_count":"","require_login":false}"
-                                        rel="noopener noreferrer"> <span class="qwfw-m-spinner qwfw-spinner-icon"> <svg
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                                <path
-                                                    d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                </path>
-                                            </svg></span> <span class="qwfw-m-icon qwfw--predefined"> <svg
-                                                xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                viewBox="0 0 32 32" fill="currentColor">
-                                                <g>
+                                    @php
+                                        $inWishlist = false;
+                                        if (Auth::check()) {
+                                            $inWishlist = \App\Models\Wishlist::where('user_id', Auth::id())
+                                                ->where('product_id', $product->id)
+                                                ->exists();
+                                        }
+                                    @endphp
+                                    @if (Auth::check())
+                                        @if ($inWishlist)
+                                            <button type="button"
+                                                class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
+                                                style="background:none;border:none;padding:0;cursor:pointer;" disabled>
+                                                <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                    <!-- Trái tim đen fill -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                        viewBox="0 0 24 24" fill="black">
+                                                        <path
+                                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                    </svg>
+                                                </span>
+                                                <span class="qwfw-m-icon qwfw--predefined">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                        viewBox="0 0 32 32" fill="black">
+                                                        <path
+                                                            d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z" />
+                                                    </svg>
+                                                </span>
+                                                <span class="qwfw-m-text">Đã thêm vào yêu thích</span>
+                                            </button>
+                                        @else
+                                            <form method="POST" action="{{ route('client.wishlist.add') }}"
+                                                class="add-to-wishlist-form" style="display:inline;">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <button type="submit"
+                                                    class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
+                                                    style="background:none;border:none;padding:0;cursor:pointer;">
+                                                    <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                        <!-- Trái tim viền -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22"
+                                                            height="22" viewBox="0 0 24 24" fill="none"
+                                                            stroke="black" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round">
+                                                            <path
+                                                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span class="qwfw-m-icon qwfw--predefined">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                            height="32" viewBox="0 0 32 32" fill="none"
+                                                            stroke="black" stroke-width="2">
+                                                            <g>
+                                                                <path
+                                                                    d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="qwfw-m-text">Thêm vào yêu thích</span>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @else
+                                        <a href="{{ route('client.login') }}"
+                                            class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text">
+                                            <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                    viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
                                                     <path
-                                                        d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                </g>
-                                            </svg> </span> <span class="qwfw-m-text">Thêm vào yêu thích</span>
-                                    </a>
+                                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                </svg>
+                                            </span>
+                                            <span class="qwfw-m-icon qwfw--predefined">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                    viewBox="0 0 32 32" fill="none" stroke="black" stroke-width="2">
+                                                    <g>
+                                                        <path
+                                                            d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
+                                                    </g>
+                                                </svg>
+                                            </span>
+                                            <span class="qwfw-m-text">Thêm vào yêu thích</span>
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="product_meta">
                                     @if ($product->sku && $product->sku !== '0158')
@@ -393,22 +459,300 @@
                             id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
                             <h2>Đánh giá</h2>
                             @if ($product->reviews->count() > 0)
-                                <div class="reviews-list">
-                                    @foreach ($product->reviews as $review)
-                                        <div class="review-item mb-3 p-3 border rounded">
-                                            <div class="d-flex justify-content-between">
-                                                <strong>{{ $review->user->name ?? 'Người dùng ẩn danh' }}</strong>
-                                                <span>{{ $review->created_at->format('d/m/Y H:i') }}</span>
-                                            </div>
-                                            <div class="rating">
+                                <div class="dmx-review-section">
+                                    <div class="dmx-review-summary">
+                                        <div class="dmx-review-score">
+                                            <span
+                                                class="score">{{ number_format($product->reviews->avg('rating'), 1) }}</span>
+                                            <span class="score-max">/5</span>
+                                            <div class="score-stars">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     <span
-                                                        class="star {{ $i <= $review->rating ? 'filled' : '' }}">★</span>
+                                                        class="star{{ $i <= round($product->reviews->avg('rating')) ? ' filled' : '' }}">★</span>
                                                 @endfor
                                             </div>
-                                            <p class="mt-2">{{ $review->content }}</p>
+                                            <div class="score-count">{{ $product->reviews->count() }} đánh giá</div>
                                         </div>
-                                    @endforeach
+                                        <div class="dmx-review-breakdown">
+                                            @for ($i = 5; $i >= 1; $i--)
+                                                @php
+                                                    $count = $product->reviews->where('rating', $i)->count();
+                                                    $percent = $product->reviews->count()
+                                                        ? round(($count / $product->reviews->count()) * 100)
+                                                        : 0;
+                                                @endphp
+                                                <div class="breakdown-row">
+                                                    <span class="star-label">{{ $i }} <span
+                                                            class="star">★</span></span>
+                                                    <div class="progress-bar">
+                                                        <div class="progress" style="width: {{ $percent }}%"></div>
+                                                    </div>
+                                                    <span class="percent">{{ $percent }}%</span>
+                                                </div>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                    <div class="dmx-review-filter-bar" style="display:flex;gap:10px;margin-bottom:18px;">
+                                        <button class="review-filter-btn active" data-star="all">Tất Cả</button>
+                                        @for ($i = 5; $i >= 1; $i--)
+                                            <button class="review-filter-btn" data-star="{{ $i }}">
+                                                {{ $i }} Sao
+                                                ({{ $product->reviews->where('rating', $i)->count() }})
+                                            </button>
+                                        @endfor
+                                    </div>
+                                    <div class="dmx-review-list">
+                                        @php $totalReviews = $product->reviews->count(); @endphp
+                                        @foreach ($product->reviews->sortByDesc('created_at')->take(2) as $review)
+                                            <div class="dmx-review-item">
+                                                <div class="review-header">
+                                                    <span class="reviewer">{{ $review->user->name ?? 'Ẩn danh' }}</span>
+                                                    <span
+                                                        class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                                                </div>
+                                                @php
+                                                    $orderItem = null;
+                                                    if ($review->order_id && $review->product_id) {
+                                                        $orderItem = \App\Models\OrderItem::where(
+                                                            'order_id',
+                                                            $review->order_id,
+                                                        )
+                                                            ->where('product_id', $review->product_id)
+                                                            ->first();
+                                                    }
+                                                    $optionTexts = [];
+                                                    if ($orderItem && $orderItem->product_options) {
+                                                        $options = is_array($orderItem->product_options)
+                                                            ? $orderItem->product_options
+                                                            : json_decode($orderItem->product_options, true);
+                                                        if (!empty($options['color'])) {
+                                                            $optionTexts[] =
+                                                                'Màu sắc: <b>' . e($options['color']) . '</b>';
+                                                        }
+                                                        if (!empty($options['size'])) {
+                                                            $optionTexts[] =
+                                                                'Kích thước: <b>' . e($options['size']) . '</b>';
+                                                        }
+                                                        if (!empty($options['spherical'])) {
+                                                            $optionTexts[] =
+                                                                'Độ cận: <b>' . e($options['spherical']) . '</b>';
+                                                        }
+                                                        if (!empty($options['cylindrical'])) {
+                                                            $optionTexts[] =
+                                                                'Độ loạn: <b>' . e($options['cylindrical']) . '</b>';
+                                                        }
+                                                    }
+                                                @endphp
+                                                @if (!empty($optionTexts))
+                                                    <div class="review-variant mb-1" style="font-size:13px;color:#444;">
+                                                        <span>Phân loại hàng: {!! implode(' | ', $optionTexts) !!}</span>
+                                                    </div>
+                                                @endif
+                                                <div class="review-stars">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <span
+                                                            class="star{{ $i <= $review->rating ? ' filled' : '' }}">★</span>
+                                                    @endfor
+                                                </div>
+                                                <div class="review-content">{{ $review->content }}</div>
+                                                @if ($review->images && $review->images->count())
+                                                    <div class="review-media mt-2 d-flex flex-wrap gap-2">
+                                                        @foreach ($review->images as $media)
+                                                            @if ($media->image_path)
+                                                                <a href="{{ asset('storage/' . $media->image_path) }}"
+                                                                    target="_blank">
+                                                                    <img src="{{ asset('storage/' . $media->image_path) }}"
+                                                                        alt="Ảnh đánh giá"
+                                                                        style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
+                                                                </a>
+                                                            @endif
+                                                            @if ($media->video_path)
+                                                                <video src="{{ asset('storage/' . $media->video_path) }}"
+                                                                    controls
+                                                                    style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                @if ($review->reply)
+                                                    <div class="review-reply">
+                                                        <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                        <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                        @if ($totalReviews > 2)
+                                            @foreach ($product->reviews->sortByDesc('created_at')->slice(2) as $review)
+                                                <div class="dmx-review-item dmx-review-hidden" style="display:none;">
+                                                    <div class="review-header">
+                                                        <span
+                                                            class="reviewer">{{ $review->user->name ?? 'Ẩn danh' }}</span>
+                                                        <span
+                                                            class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                                                    </div>
+                                                    @php
+                                                        $orderItem = null;
+                                                        if ($review->order_id && $review->product_id) {
+                                                            $orderItem = \App\Models\OrderItem::where(
+                                                                'order_id',
+                                                                $review->order_id,
+                                                            )
+                                                                ->where('product_id', $review->product_id)
+                                                                ->first();
+                                                        }
+                                                        $optionTexts = [];
+                                                        if ($orderItem && $orderItem->product_options) {
+                                                            $options = is_array($orderItem->product_options)
+                                                                ? $orderItem->product_options
+                                                                : json_decode($orderItem->product_options, true);
+                                                            if (!empty($options['color'])) {
+                                                                $optionTexts[] =
+                                                                    'Màu sắc: <b>' . e($options['color']) . '</b>';
+                                                            }
+                                                            if (!empty($options['size'])) {
+                                                                $optionTexts[] =
+                                                                    'Kích thước: <b>' . e($options['size']) . '</b>';
+                                                            }
+                                                            if (!empty($options['spherical'])) {
+                                                                $optionTexts[] =
+                                                                    'Độ cận: <b>' . e($options['spherical']) . '</b>';
+                                                            }
+                                                            if (!empty($options['cylindrical'])) {
+                                                                $optionTexts[] =
+                                                                    'Độ loạn: <b>' .
+                                                                    e($options['cylindrical']) .
+                                                                    '</b>';
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    @if (!empty($optionTexts))
+                                                        <div class="review-variant mb-1"
+                                                            style="font-size:13px;color:#444;">
+                                                            <span>Phân loại hàng: {!! implode(' | ', $optionTexts) !!}</span>
+                                                        </div>
+                                                    @endif
+                                                    <div class="review-stars">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <span
+                                                                class="star{{ $i <= $review->rating ? ' filled' : '' }}">★</span>
+                                                        @endfor
+                                                    </div>
+                                                    <div class="review-content">{{ $review->content }}</div>
+                                                    @if ($review->images && $review->images->count())
+                                                        <div class="review-media mt-2 d-flex flex-wrap gap-2">
+                                                            @foreach ($review->images as $media)
+                                                                @if ($media->image_path)
+                                                                    <a href="{{ asset('storage/' . $media->image_path) }}"
+                                                                        target="_blank">
+                                                                        <img src="{{ asset('storage/' . $media->image_path) }}"
+                                                                            alt="Ảnh đánh giá"
+                                                                            style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
+                                                                    </a>
+                                                                @endif
+                                                                @if ($media->video_path)
+                                                                    <video
+                                                                        src="{{ asset('storage/' . $media->video_path) }}"
+                                                                        controls
+                                                                        style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                    @if ($review->reply)
+                                                        <div class="review-reply">
+                                                            <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                            <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <div class="dmx-review-actions">
+                                        <button class="btn btn-outline-dark" id="show-more-reviews"
+                                            style="display:{{ $totalReviews > 2 ? '' : 'none' }};">Xem thêm đánh
+                                            giá</button>
+                                        <button class="btn btn-outline-dark" id="collapse-reviews"
+                                            style="display:none;">Rút gọn</button>
+                                    </div>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var productId = '{{ $product->id }}';
+                                            var viewed = [];
+                                            var cookie = document.cookie.split('; ').find(row => row.startsWith('recently_viewed_products='));
+                                            if (cookie) {
+                                                try {
+                                                    viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+                                                } catch (e) {
+                                                    viewed = [];
+                                                }
+                                            }
+                                            viewed = viewed.filter(id => id != productId);
+                                            viewed.unshift(productId);
+                                            viewed = viewed.slice(0, 8);
+                                            document.cookie = 'recently_viewed_products=' + encodeURIComponent(JSON.stringify(viewed)) +
+                                                ';path=/;max-age=2592000';
+                                        });
+                                    </script>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var filterBtns = document.querySelectorAll('.review-filter-btn');
+                                            var btnShow = document.getElementById('show-more-reviews');
+                                            var btnCollapse = document.getElementById('collapse-reviews');
+
+                                            function updateShowMoreBtn() {
+                                                var activeBtn = document.querySelector('.review-filter-btn.active');
+                                                var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                                                var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                                                var filtered = reviews.filter(function(item) {
+                                                    if (star === 'all') return true;
+                                                    var count = 0;
+                                                    item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                                                        count++;
+                                                    });
+                                                    return parseInt(star) === count;
+                                                });
+                                                if (filtered.length > 2) {
+                                                    var allVisible = filtered.every(function(item) {
+                                                        return item.style.display !== 'none';
+                                                    });
+                                                    if (allVisible) {
+                                                        if (btnShow) btnShow.style.display = 'none';
+                                                        if (btnCollapse) btnCollapse.style.display = '';
+                                                    } else {
+                                                        if (btnShow) btnShow.style.display = '';
+                                                        if (btnCollapse) btnCollapse.style.display = 'none';
+                                                    }
+                                                } else {
+                                                    if (btnShow) btnShow.style.display = 'none';
+                                                    if (btnCollapse) btnCollapse.style.display = 'none';
+                                                }
+                                            }
+                                            filterBtns.forEach(function(btn) {
+                                                btn.addEventListener('click', function() {
+                                                    filterBtns.forEach(b => b.classList.remove('active'));
+                                                    btn.classList.add('active');
+                                                    var star = btn.getAttribute('data-star');
+                                                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                                                    var filtered = reviews.filter(function(item) {
+                                                        if (star === 'all') return true;
+                                                        var count = 0;
+                                                        item.querySelectorAll('.review-stars .star.filled').forEach(
+                                                            function() {
+                                                                count++;
+                                                            });
+                                                        return parseInt(star) === count;
+                                                    });
+                                                    filtered.forEach(function(item, idx) {
+                                                        item.style.display = idx < 2 ? '' : 'none';
+                                                    });
+                                                    updateShowMoreBtn();
+                                                });
+                                            });
+                                            updateShowMoreBtn();
+                                        });
+                                    </script>
                                 </div>
                             @else
                                 <p class="text-muted">Chưa có đánh giá nào.</p>
@@ -558,11 +902,9 @@
                                                         </span>
                                                         <span class="qwfw-m-icon qwfw--predefined">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                                height="32" viewBox="0 0 32 32" fill="currentColor">
-                                                                <g>
-                                                                    <path
-                                                                        d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                                </g>
+                                                                height="32" viewBox="0 0 32 32" fill="black">
+                                                                <path
+                                                                    d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z" />
                                                             </svg>
                                                         </span>
                                                     </a>
@@ -627,7 +969,7 @@
                             <h2 style="margin-top:32px; text-align:center;">Sản phẩm đã xem gần đây</h2>
                             <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
                                 <ul class="products columns-4">
-                                    @foreach ($recentlyViewed as $rvProduct)
+                                    @foreach ($recentlyViewed->take(4) as $rvProduct)
                                         <li
                                             class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                             <div class="qodef-e-inner">
@@ -695,24 +1037,8 @@
                                                             aria-label="Thêm vào danh sách yêu thích"
                                                             data-shortcode-atts="{'button_behavior':'view','button_type':'icon','show_count':'','require_login':false}"
                                                             rel="noopener noreferrer">
-                                                            <span class="qwfw-m-spinner qwfw-spinner-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 512 512">
-                                                                    <path
-                                                                        d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                                    </path>
-                                                                </svg>
-                                                            </span>
-                                                            <span class="qwfw-m-icon qwfw--predefined">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                                    height="32" viewBox="0 0 32 32"
-                                                                    fill="currentColor">
-                                                                    <g>
-                                                                        <path
-                                                                            d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                                    </g>
-                                                                </svg>
-                                                            </span>
+                                                            <span class="qwfw-m-spinner qwfw-spinner-icon">...</span>
+                                                            <span class="qwfw-m-icon qwfw--predefined">...</span>
                                                         </a>
                                                     </div>
                                                     <div
@@ -724,13 +1050,7 @@
                                                             data-quick-view-type-mobile="pop-up" href="#"
                                                             data-shortcode-atts="{'button_type':'icon-with-text'}"
                                                             rel="noopener noreferrer">
-                                                            <span class="qqvfw-m-spinner"><svg class="qqvfw-svg--spinner"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 512 512">
-                                                                    <path
-                                                                        d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                                    </path>
-                                                                </svg></span>
+                                                            <span class="qqvfw-m-spinner">...</span>
                                                             <span class="qqvfw-m-icon qqvfw-icon--predefined"><span
                                                                     class="qodef-icon-linear-icons lnr-eye lnr"></span></span>
                                                             <span class="qqvfw-m-text"></span>
@@ -740,12 +1060,10 @@
                                                         class="button product_type_simple add_to_cart_button ajax_add_to_cart"
                                                         data-product_id="{{ $rvProduct->id }}"
                                                         data-product_sku="{{ $rvProduct->sku }}"
-                                                        aria-label="Thêm vào giỏ hàng: "{{ $rvProduct->name }}""
+                                                        aria-label="Thêm vào giỏ hàng: {{ $rvProduct->name }}"
                                                         rel="nofollow">Thêm vào giỏ hàng</a>
                                                 </div>
                                             </div>
-                                            <a href="{{ route('client.products.show', $rvProduct->slug) }}"
-                                                class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -1236,6 +1554,247 @@
         .variation-btn:hover {
             border: 2px solid #111;
         }
+
+        .dmx-review-section {
+            background: #fff;
+            color: #111;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            padding: 32px 24px;
+            margin-bottom: 32px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dmx-review-summary {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
+
+        .dmx-review-score {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .dmx-review-score .score {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .dmx-review-score .score-max {
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        .dmx-review-score .score-stars {
+            margin: 8px 0;
+        }
+
+        .dmx-review-score .star {
+            color: #bbb;
+            font-size: 1.3rem;
+        }
+
+        .dmx-review-score .star.filled {
+            color: #f7b500;
+        }
+
+        .dmx-review-score .score-count {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .dmx-review-breakdown {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .star-label {
+            min-width: 40px;
+            color: #111;
+            font-weight: 500;
+        }
+
+        .star-label .star {
+            color: #f7b500;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 8px;
+        }
+
+        .progress {
+            height: 100%;
+            background: #111;
+            border-radius: 4px;
+        }
+
+        .percent {
+            min-width: 32px;
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        .dmx-review-list {
+            margin-top: 24px;
+        }
+
+        .dmx-review-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 18px 16px;
+            margin-bottom: 18px;
+            background: #fafafa;
+        }
+
+        .review-header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .review-date {
+            color: #888;
+            font-size: 0.95em;
+            font-weight: 400;
+        }
+
+        .review-stars {
+            margin-bottom: 6px;
+        }
+
+        .review-stars .star {
+            color: #bbb;
+            font-size: 1.1rem;
+        }
+
+        .review-stars .star.filled {
+            color: #f7b500;
+        }
+
+        .review-content {
+            color: #222;
+            font-size: 1.08em;
+            margin-bottom: 8px;
+        }
+
+        .review-reply {
+            background: #f5f5f5;
+            border-left: 3px solid #111;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .reply-label {
+            color: #111;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .reply-content {
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .dmx-review-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .btn.btn-dark {
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 28px;
+            font-weight: 600;
+            font-size: 1.08em;
+            transition: background 0.2s;
+        }
+
+        .btn.btn-dark:hover {
+            background: #333;
+        }
+
+        .btn.btn-outline-dark {
+            background: #fff;
+            color: #111;
+            border: 1.5px solid #111;
+            border-radius: 6px;
+            padding: 10px 28px;
+            font-weight: 600;
+            font-size: 1.08em;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn.btn-outline-dark:hover {
+            background: #111;
+            color: #fff;
+        }
+
+        .review-media {
+            margin-top: 6px;
+            gap: 10px;
+        }
+
+        .review-media img,
+        .review-media video {
+            transition: box-shadow 0.2s;
+        }
+
+        .review-media img:hover,
+        .review-media video:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            border-color: #bbb;
+        }
+
+        .review-variant {
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 2px;
+        }
+
+        .review-variant b {
+            color: #111;
+            font-weight: 500;
+        }
+
+        .review-filter-btn {
+            border: 1.5px solid #eee;
+            color: #222;
+            background: #fff;
+            padding: 7px 18px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: border 0.2s, color 0.2s;
+        }
+
+        .review-filter-btn.active {
+            border: 1.5px solid #f44336 !important;
+            color: #f44336 !important;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1254,6 +1813,125 @@
             viewed = viewed.slice(0, 8);
             document.cookie = 'recently_viewed_products=' + encodeURIComponent(JSON.stringify(viewed)) +
                 ';path=/;max-age=2592000';
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filterBtns = document.querySelectorAll('.review-filter-btn');
+            var btnShow = document.getElementById('show-more-reviews');
+            var btnCollapse = document.getElementById('collapse-reviews');
+
+            function updateShowMoreBtn() {
+                var activeBtn = document.querySelector('.review-filter-btn.active');
+                var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                var filtered = reviews.filter(function(item) {
+                    if (star === 'all') return true;
+                    var count = 0;
+                    item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                        count++;
+                    });
+                    return parseInt(star) === count;
+                });
+                if (filtered.length > 2) {
+                    var allVisible = filtered.every(function(item) {
+                        return item.style.display !== 'none';
+                    });
+                    if (allVisible) {
+                        if (btnShow) btnShow.style.display = 'none';
+                        if (btnCollapse) btnCollapse.style.display = '';
+                    } else {
+                        if (btnShow) btnShow.style.display = '';
+                        if (btnCollapse) btnCollapse.style.display = 'none';
+                    }
+                } else {
+                    if (btnShow) btnShow.style.display = 'none';
+                    if (btnCollapse) btnCollapse.style.display = 'none';
+                }
+            }
+            filterBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    var star = btn.getAttribute('data-star');
+                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                    var filtered = reviews.filter(function(item) {
+                        if (star === 'all') return true;
+                        var count = 0;
+                        item.querySelectorAll('.review-stars .star.filled').forEach(
+                            function() {
+                                count++;
+                            });
+                        return parseInt(star) === count;
+                    });
+                    filtered.forEach(function(item, idx) {
+                        item.style.display = idx < 2 ? '' : 'none';
+                    });
+                    updateShowMoreBtn();
+                });
+            });
+            updateShowMoreBtn();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filterBtns = document.querySelectorAll('.review-filter-btn');
+            var btnShow = document.getElementById('show-more-reviews');
+            var btnCollapse = document.getElementById('collapse-reviews');
+
+            if (btnShow && btnCollapse) {
+                btnShow.addEventListener('click', function() {
+                    var activeBtn = document.querySelector('.review-filter-btn.active');
+                    var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                    var filtered = reviews.filter(function(item) {
+                        if (star === 'all') return true;
+                        var count = 0;
+                        item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                            count++;
+                        });
+                        return parseInt(star) === count;
+                    });
+                    filtered.forEach(function(item) {
+                        item.style.display = '';
+                    });
+                    btnShow.style.display = 'none';
+                    btnCollapse.style.display = '';
+                });
+                btnCollapse.addEventListener('click', function() {
+                    var activeBtn = document.querySelector('.review-filter-btn.active');
+                    var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                    var filtered = reviews.filter(function(item) {
+                        if (star === 'all') return true;
+                        var count = 0;
+                        item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                            count++;
+                        });
+                        return parseInt(star) === count;
+                    });
+                    filtered.forEach(function(item, idx) {
+                        item.style.display = idx < 2 ? '' : 'none';
+                    });
+                    btnShow.style.display = filtered.length > 2 ? '' : 'none';
+                    btnCollapse.style.display = 'none';
+                    var reviewPanel = document.querySelector('.woocommerce-Tabs-panel--reviews');
+                    if (reviewPanel) {
+                        reviewPanel.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    } else {
+                        var reviewList = document.querySelector('.dmx-review-list');
+                        if (reviewList) {
+                            reviewList.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            }
         });
     </script>
 @endsection

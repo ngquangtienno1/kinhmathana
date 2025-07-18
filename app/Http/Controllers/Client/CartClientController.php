@@ -13,8 +13,9 @@ use App\Models\PromotionUsage;
 use App\Models\ShippingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-class CartController extends Controller
+class CartClientController extends Controller
 {
     public function index()
     {
@@ -143,15 +144,28 @@ class CartController extends Controller
         return redirect()->route('client.cart.index')->with('success', 'Đã xoá các sản phẩm đã chọn khỏi giỏ hàng!');
     }
 
-    public function showCheckoutForm()
+    public function showCheckoutForm(Request $request)
     {
         $user = Auth::user();
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds) {
+            $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
+            Log::info('IDs used for filtering cart', ['ids' => $ids]);
+            $checkoutItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
+            $checkoutItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+        Log::info('Cart items for checkout', ['cart_item_ids' => $checkoutItems->pluck('id')->toArray()]);
+        if ($checkoutItems->isEmpty()) {
+            return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để thanh toán!');
         }
 
         // Lấy danh sách phương thức vận chuyển đang hoạt động cùng với phí vận chuyển
@@ -178,7 +192,7 @@ class CartController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('client.cart.checkout', compact('cartItems', 'shippingProviders', 'paymentMethods', 'promotions'));
+        return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions'));
     }
 
     public function applyVoucher(Request $request)
@@ -351,10 +365,10 @@ class CartController extends Controller
             'order_number' => 'DH' . time(),
             'promotion_id' => $promotion ? $promotion->id : null,
             'shipping_provider_id' => $shippingProvider ? $shippingProvider->id : null,
-            'customer_name' => $user->name,
-            'customer_phone' => $user->phone,
-            'customer_email' => $user->email,
-            'customer_address' => $user->address,
+            'customer_name' => $validated['receiver_name'],
+            'customer_phone' => $validated['receiver_phone'],
+            'customer_email' => $validated['receiver_email'] ?? null,
+            'customer_address' => $validated['address'],
             'receiver_name' => $validated['receiver_name'],
             'receiver_phone' => $validated['receiver_phone'],
             'receiver_email' => $validated['receiver_email'] ?? null,
@@ -380,6 +394,7 @@ class CartController extends Controller
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
+                'variation_id' => $item->variation ? $item->variation->id : null, // Lưu variation_id
                 'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
                 'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
                 'price' => $price,
@@ -389,6 +404,8 @@ class CartController extends Controller
                 'product_options' => $item->variation ? json_encode([
                     'color' => $item->variation->color->name ?? null,
                     'size' => $item->variation->size->name ?? null,
+                    'spherical' => $item->variation->spherical->name ?? null,
+                    'cylindrical' => $item->variation->cylindrical->name ?? null,
                 ]) : null,
                 'note' => null,
             ]);
@@ -415,5 +432,29 @@ class CartController extends Controller
         }
         Cart::where('user_id', $user->id)->delete();
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
+    }
+
+    //Tuấn Anh
+    public function addToCartDirect($data, $userId)
+    {
+        $query = [
+            'user_id' => $userId,
+            'product_id' => $data['product_id'],
+            'variation_id' => $data['variation_id'] ?? null,
+        ];
+
+        $cartItem = \App\Models\Cart::where($query)->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += $data['quantity'];
+            $cartItem->save();
+        } else {
+            \App\Models\Cart::create([
+                'user_id' => $userId,
+                'product_id' => $data['product_id'],
+                'variation_id' => $data['variation_id'] ?? null,
+                'quantity' => $data['quantity'],
+            ]);
+        }
     }
 }

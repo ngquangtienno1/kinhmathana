@@ -64,7 +64,9 @@
                                                 @endphp
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
                                                     <td><input type="checkbox" class="select-cart-item"
-                                                            name="selected_ids[]" value="{{ $item->id }}"></td>
+                                                            name="selected_ids[]" value="{{ $item->id }}"
+                                                            data-price="{{ $item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price }}"
+                                                            data-qty="{{ $item->quantity }}"></td>
 
                                                     <td class="product-thumbnail">
                                                         <a href="{{ route('client.products.show', $cartProduct->slug) }}">
@@ -156,28 +158,34 @@
                                             @endphp
                                             <tr class="cart-subtotal">
                                                 <th>Tạm tính</th>
-                                                <td data-title="Tạm tính"><span
-                                                        class="woocommerce-Price-amount amount"><bdi>{{ number_format($subtotal, 0, ',', '.') }}₫</bdi></span>
+                                                <td data-title="Tạm tính"><span class="woocommerce-Price-amount amount"><bdi
+                                                            class="cart-subtotal-value">{{ number_format($subtotal, 0, ',', '.') }}₫</bdi></span>
                                                 </td>
                                             </tr>
                                             <tr class="cart-discount" style="display:none;">
                                                 <th>Giảm giá</th>
-                                                <td data-title="Giảm giá"><span class="woocommerce-Price-amount amount"><bdi
+                                                <td data-title="Giảm giá"><span
+                                                        class="woocommerce-Price-amount amount"><bdi
                                                             id="discount-amount">0₫</bdi></span></td>
                                             </tr>
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
                                                 <td data-title="Tổng cộng"><strong><span
-                                                            class="woocommerce-Price-amount amount"><bdi>{{ number_format($subtotal, 0, ',', '.') }}₫</bdi></span></strong>
+                                                            class="woocommerce-Price-amount amount"><bdi
+                                                                class="order-total-value">{{ number_format($subtotal, 0, ',', '.') }}₫</bdi></span></strong>
                                                 </td>
                                             </tr>
                                         </table>
 
                                         <div class="wc-proceed-to-checkout">
 
-                                            <a href="{{ route('client.cart.checkout') }}"
-                                                class="checkout-button button alt wc-forward">
-                                                Thanh toán</a>
+                                            <form id="bulk-checkout-form"
+                                                action="{{ route('client.cart.checkout.form') }}" method="GET"
+                                                style="display:inline;">
+                                                <input type="hidden" name="selected_ids" id="selected_checkout_ids">
+                                                <button type="button" class="button" id="bulk-checkout-btn">Thanh
+                                                    toán</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -385,12 +393,40 @@
                 }
             });
 
-            var alertBox = document.querySelector('.alert-success');
-            if (alertBox) {
-                setTimeout(function() {
-                    alertBox.style.display = 'none';
-                }, 3000); // 3 giây
+            // Xử lý nút "Thanh toán" chỉ cho sản phẩm đã chọn
+            document.getElementById('bulk-checkout-btn').addEventListener('click', function(e) {
+                const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
+                let selectedIds = checked.map(cb => cb.value);
+                if (selectedIds.length === 0) {
+                    // Nếu không tick gì, lấy toàn bộ id trong giỏ hàng
+                    selectedIds = Array.from(document.querySelectorAll('.select-cart-item')).map(cb => cb
+                        .value);
+                }
+                document.getElementById('selected_checkout_ids').value = selectedIds.join(',');
+                document.getElementById('bulk-checkout-form').submit();
+            });
+
+            function updateCartTotalsBySelection() {
+                let subtotal = 0;
+                document.querySelectorAll('.select-cart-item:checked').forEach(function(cb) {
+                    const price = parseFloat(cb.getAttribute('data-price')) || 0;
+                    const qty = parseInt(cb.getAttribute('data-qty')) || 1;
+                    subtotal += price * qty;
+                });
+                document.querySelectorAll('.cart-subtotal-value').forEach(function(el) {
+                    el.innerText = subtotal.toLocaleString('vi-VN') + '₫';
+                });
+                document.querySelectorAll('.order-total-value').forEach(function(el) {
+                    el.innerHTML = '<strong>' + subtotal.toLocaleString('vi-VN') + '₫</strong>';
+                });
             }
+            document.querySelectorAll('.select-cart-item').forEach(function(cb) {
+                cb.addEventListener('change', updateCartTotalsBySelection);
+            });
+            document.getElementById('select-all-cart-items').addEventListener('change',
+                updateCartTotalsBySelection);
+            // Gọi lần đầu để đồng bộ khi load trang
+            updateCartTotalsBySelection();
         });
     </script>
 @endpush

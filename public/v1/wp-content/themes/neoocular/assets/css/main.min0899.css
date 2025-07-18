@@ -1365,7 +1365,6 @@ textarea {
     }
 }
 .qodef-theme-button,
-button[type="submit"],
 input[type="submit"] {
     position: relative;
     display: inline-flex;
