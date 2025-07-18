@@ -144,15 +144,28 @@ class CartClientController extends Controller
         return redirect()->route('client.cart.index')->with('success', 'Đã xoá các sản phẩm đã chọn khỏi giỏ hàng!');
     }
 
-    public function showCheckoutForm()
+    public function showCheckoutForm(Request $request)
     {
         $user = Auth::user();
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds) {
+            $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
+            Log::info('IDs used for filtering cart', ['ids' => $ids]);
+            $checkoutItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
+            $checkoutItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+        Log::info('Cart items for checkout', ['cart_item_ids' => $checkoutItems->pluck('id')->toArray()]);
+        if ($checkoutItems->isEmpty()) {
+            return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để thanh toán!');
         }
 
         // Lấy danh sách phương thức vận chuyển đang hoạt động cùng với phí vận chuyển
@@ -179,7 +192,7 @@ class CartClientController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('client.cart.checkout', compact('cartItems', 'shippingProviders', 'paymentMethods', 'promotions'));
+        return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions'));
     }
 
     public function applyVoucher(Request $request)

@@ -112,13 +112,15 @@
             width: 120px;
             border: 1px solid #ccc;
         }
+
         #star-rating {
             font-size: 0;
         }
+
         #star-rating .star {
-            font-size: 2rem; /* hoặc giá trị bạn muốn */
+            font-size: 2rem;
+            /* hoặc giá trị bạn muốn */
         }
-        
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

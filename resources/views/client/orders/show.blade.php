@@ -282,9 +282,13 @@
                                         $optionTexts = array_filter($optionTexts, function ($v) {
                                             return $v !== null && $v !== '' && $v !== '-';
                                         });
+                                        $variantText = !empty($optionTexts)
+                                            ? implode(' - ', $optionTexts)
+                                            : $item->variation_name ?? '';
                                     @endphp
                                     @if (!empty($optionTexts))
-                                        <div class="text-muted small">Phân loại: {{ implode(' - ', $optionTexts) }}</div>
+                                        <div class="text-muted small">Phân loại:
+                                            {{ str_replace(' - ', ' | ', implode(' - ', $optionTexts)) }}</div>
                                     @elseif ($item->variation_name)
                                         <div class="text-muted small">Phân loại: {{ $item->variation_name }}</div>
                                     @endif
@@ -307,7 +311,10 @@
                                                 data-product-name="{{ $item->product_name }}"
                                                 data-product-img="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
                                                 data-product-options='@json($item->product_options)'
-                                                data-order-id="{{ $order->id }}">Đánh giá</button>
+                                                data-product-variant="{{ $variantText }}"
+                                                data-order-id="{{ $order->id }}"
+                                                data-review-url="{{ route('client.orders.review.form', [$order->id, $item->id]) }}">Đánh
+                                                giá</button>
                                         @else
                                             <span class="text-success">Đã đánh giá</span>
                                         @endif
@@ -530,17 +537,16 @@
                     let productName = this.getAttribute('data-product-name');
                     let productImg = this.getAttribute('data-product-img');
                     let productOptions = this.getAttribute('data-product-options');
+                    let productVariant = this.getAttribute('data-product-variant');
                     let orderId = this.getAttribute('data-order-id');
                     let opts = productOptions ? JSON.parse(productOptions) : {};
-                    let optionsText = '';
-                    if (opts.sku) optionsText += 'Mã SP: ' + opts.sku + ' | ';
-                    if (opts.color) optionsText += 'Màu: ' + opts.color + ' ';
-                    if (opts.size) optionsText += '| Size: ' + opts.size;
+                    let optionsText = productVariant ? ('Phân loại: ' + productVariant.replace(
+                        / - /g, ' | ')) : '';
                     document.getElementById('modal-product-name').innerText = productName;
                     document.getElementById('modal-product-img').src = productImg;
                     document.getElementById('modal-product-options').innerText = optionsText;
-                    document.getElementById('review-form').action =
-                        `/orders/${orderId}/review/${itemId}`;
+                    document.getElementById('review-form').action = btn.getAttribute(
+                        'data-review-url');
                     document.getElementById('rating').value = 5;
                     document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
                         s.classList.toggle('selected', idx < 5);
