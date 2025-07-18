@@ -46,53 +46,29 @@
                     enctype="multipart/form-data" novalidate="novalidate">
                     @csrf
                     <div style="margin-bottom: 24px;">
-                        <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:12px;">Thông tin khách hàng</h3>
-                        <div class="checkout-form-group">
-                            <label for="customer_name">Họ và tên khách hàng <span class="required">*</span></label>
-                            <input type="text" class="checkout-input" name="customer_name" id="customer_name"
-                                placeholder="Họ và tên khách hàng"
-                                value="{{ old('customer_name', auth()->user()->name ?? '') }}">
-                        </div>
-                        <div class="checkout-form-group">
-                            <label for="customer_phone">Số điện thoại khách hàng <span class="required">*</span></label>
-                            <input type="text" class="checkout-input" name="customer_phone" id="customer_phone"
-                                placeholder="Số điện thoại khách hàng"
-                                value="{{ old('customer_phone', auth()->user()->phone ?? '') }}">
-                        </div>
-                        <div class="checkout-form-group">
-                            <label for="customer_email">Email khách hàng <span class="required">*</span></label>
-                            <input type="email" class="checkout-input" name="customer_email" id="customer_email"
-                                placeholder="Email khách hàng"
-                                value="{{ old('customer_email', auth()->user()->email ?? '') }}">
-                        </div>
-                        <div class="checkout-form-group">
-                            <label for="customer_address">Địa chỉ khách hàng <span class="required">*</span></label>
-                            <input type="text" class="checkout-input" name="customer_address" id="customer_address"
-                                placeholder="Địa chỉ khách hàng"
-                                value="{{ old('customer_address', auth()->user()->address ?? '') }}">
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 24px;">
                         <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:12px;">Thông tin người nhận</h3>
                         <div class="checkout-form-group">
                             <label for="receiver_name">Họ và tên người nhận <span class="required">*</span></label>
                             <input type="text" class="checkout-input" name="receiver_name" id="receiver_name"
-                                placeholder="Họ và tên người nhận" value="{{ old('receiver_name') }}">
+                                placeholder="Họ và tên người nhận"
+                                value="{{ old('receiver_name', auth()->user()->name ?? '') }}">
                         </div>
                         <div class="checkout-form-group">
                             <label for="receiver_phone">Số điện thoại người nhận <span class="required">*</span></label>
                             <input type="text" class="checkout-input" name="receiver_phone" id="receiver_phone"
-                                placeholder="Số điện thoại người nhận" value="{{ old('receiver_phone') }}">
+                                placeholder="Số điện thoại người nhận"
+                                value="{{ old('receiver_phone', auth()->user()->phone ?? '') }}">
                         </div>
                         <div class="checkout-form-group">
                             <label for="receiver_email">Email người nhận <span class="required">*</span></label>
                             <input type="email" class="checkout-input" name="receiver_email" id="receiver_email"
-                                placeholder="Email người nhận" value="{{ old('receiver_email') }}">
+                                placeholder="Email người nhận"
+                                value="{{ old('receiver_email', auth()->user()->email ?? '') }}">
                         </div>
                         <div class="checkout-form-group">
                             <label for="address">Địa chỉ chi tiết <span class="required">*</span></label>
                             <input type="text" class="checkout-input" name="address" id="address"
-                                placeholder="Địa chỉ chi tiết" value="{{ old('address') }}">
+                                placeholder="Địa chỉ chi tiết" value="{{ old('address', auth()->user()->address ?? '') }}">
                         </div>
                     </div>
                     <div class="checkout-form-group">
@@ -472,8 +448,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                    } */
+                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
