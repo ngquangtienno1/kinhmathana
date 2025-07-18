@@ -31,6 +31,7 @@ use App\Http\Controllers\Client\VoucherController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SphericalController;
+use App\Http\Controllers\Client\WishlistController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Admin\CylindricalController;
@@ -43,15 +44,15 @@ use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\CancellationReasonController;
-
-
-// Authentication
-
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 
 // Authentication
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
 use App\Http\Controllers\Client\UserController as ClientUserController;
@@ -165,6 +166,12 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('contact')->name('contact.')->group(function () {
         Route::get('/', [ClientContactController::class, 'index'])->name('index');
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
+    });
+
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('index');
+        Route::post('/add', [WishlistController::class, 'addToWishlist'])->name('add');
+        Route::post('/remove', [WishlistController::class, 'removeFromWishlist'])->name('remove');
     });
 });
 
@@ -613,7 +620,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
     });
 
     // Quản lý ticket

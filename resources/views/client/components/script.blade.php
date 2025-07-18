@@ -890,9 +890,9 @@
     };
     /* ]]> */
 </script>
-<script type="text/javascript"
+{{-- <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/qode-wishlist-for-woocommerce/assets/js/main.min62ea.js?ver=1.2') }}"
-    id="qode-wishlist-for-woocommerce-main-js"></script>
+    id="qode-wishlist-for-woocommerce-main-js"></script> --}}
 {{-- <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce-premium/assets/js/main.min4bf4.js?ver=1.0.3') }}"
     id="qode-variation-swatches-for-woocommerce-premium-main-js"></script> --}}
