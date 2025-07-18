@@ -17,7 +17,7 @@ class ProductSeeder extends Seeder
         try {
             // Tạo dữ liệu mẫu cho các thuộc tính nếu chưa có
             $this->createAttributes();
-            
+
             // Tạo sản phẩm
             $this->createProducts();
         } catch (\Exception $e) {
@@ -55,16 +55,16 @@ class ProductSeeder extends Seeder
 
     private function createProducts(): void
     {
-        // Tạo 3 sản phẩm đơn giản
+        // Tạo 3 sản phẩm đơn giản (simple)
         Product::factory()
             ->count(3)
-            ->state(['product_type' => 'simple'])
+            ->state(['product_type' => 'simple', 'status' => 'Hoạt động'])
             ->create();
 
-        // Tạo 3 sản phẩm có biến thể
+        // Tạo 3 sản phẩm có biến thể (variable)
         Product::factory()
             ->count(3)
-            ->state(['product_type' => 'variable'])
+            ->state(['product_type' => 'variable', 'status' => 'Hoạt động'])
             ->create();
     }
 }

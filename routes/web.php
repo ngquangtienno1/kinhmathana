@@ -620,7 +620,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
     });
 
     // Quản lý ticket
