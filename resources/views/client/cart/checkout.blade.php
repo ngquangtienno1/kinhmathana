@@ -43,7 +43,7 @@
                 @endif
 
                 <form name="checkout" method="post" class="checkout-form" action="{{ route('client.cart.checkout') }}"
-                    enctype="multipart/form-data" novalidate="novalidate">
+                    enctype="multipart/form-data" novalidate="novalidate" id="checkout-form">
                     @csrf
                     <div style="margin-bottom: 24px;">
                         <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:12px;">Thông tin người nhận</h3>
@@ -123,7 +123,9 @@
                         </div>
                     </div>
                     <div class="checkout-form-group">
-                        <button type="submit" class="checkout-btn">Đặt hàng</button>
+                        <button type="submit" class="checkout-btn" id="checkout-btn">Đặt hàng</button>
+                        <button type="button" id="momo-btn" class="checkout-btn"
+                            style="background:#a50064;display:none;margin-top:10px;">Thanh toán MoMo</button>
                     </div>
                     <div class="checkout-privacy">
                         Thông tin cá nhân của bạn sẽ được sử dụng để xử lý đơn hàng và cho các mục đích cụ thể khác đã được
@@ -448,8 +450,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                } */
+                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                    } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -570,5 +572,28 @@
         function formatCurrency(num) {
             return Math.round(Number(num)).toLocaleString('vi-VN') + 'đ';
         }
+
+        const momoBtn = document.getElementById('momo-btn');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const form = document.getElementById('checkout-form');
+        const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+
+        function toggleMomoBtn() {
+            const selected = document.querySelector('input[name="payment_method"]:checked');
+            if (selected && selected.value === 'momo') {
+                momoBtn.style.display = 'block';
+                checkoutBtn.style.display = 'none';
+            } else {
+                momoBtn.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+            }
+        }
+        paymentRadios.forEach(r => r.addEventListener('change', toggleMomoBtn));
+        toggleMomoBtn();
+
+        momoBtn.addEventListener('click', function() {
+            form.action = "{{ route('client.cart.momo-payment') }}";
+            form.submit();
+        });
     });
 </script>

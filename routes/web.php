@@ -104,7 +104,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
         // Route lấy chi tiết đơn hàng cho client (AJAX popup)
-        Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
+        Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderClientController::class, 'show'])->name('order-detail.show');
         Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
@@ -133,6 +133,10 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('checkout', [CartClientController::class, 'checkout'])->name('checkout');
         Route::post('apply-voucher', [CartClientController::class, 'applyVoucher'])->name('apply-voucher');
         Route::post('bulk-remove', [CartClientController::class, 'bulkRemove'])->name('bulk-remove');
+
+        //Thanh toán momo
+        Route::post('momo-payment', [CartClientController::class, 'momo_payment'])->name('momo-payment');
+        Route::get('thankyou', [App\Http\Controllers\Client\CartClientController::class, 'momoThankYou'])->name('thankyou');
     });
 
     Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
@@ -620,7 +624,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
         Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
     });
 
     // Quản lý ticket
