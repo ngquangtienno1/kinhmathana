@@ -14,6 +14,7 @@ use App\Models\ShippingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Payment;
 
 class CartClientController extends Controller
 {
@@ -663,6 +664,21 @@ class CartClientController extends Controller
                 $order->status = 'confirmed';
                 $order->save();
                 Cart::where('user_id', $order->user_id)->delete();
+
+                // Tạo bản ghi payment nếu chưa có
+                if (!Payment::where('transaction_code', $orderId)->exists()) {
+                    Payment::create([
+                        'order_id' => $order->id,
+                        'status' => 'đã hoàn thành',
+                        'transaction_code' => $orderId,
+                        'payment_method_id' => $order->payment_method_id,
+                        'amount' => $order->total_amount,
+                        'note' => 'Thanh toán qua MoMo',
+                        'paid_at' => now(),
+                        'user_id' => $order->user_id,
+                    ]);
+                }
+
                 return view('client.cart.thankyou');
             } elseif (in_array($resultCode, [7002, '7002'])) {
                 return view('client.cart.thankyou', ['pending' => true]);
