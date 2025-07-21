@@ -438,6 +438,17 @@ class CartClientController extends Controller
         // Cập nhật lại loại khách hàng
         $this->updateCustomerAfterOrder($user->id);
 
+        // Gửi email xác nhận đơn hàng cho khách hàng
+        try {
+            if ($order->receiver_email) {
+                \Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
+            } elseif ($order->customer_email) {
+                \Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Lỗi gửi mail OrderPlaced (client): ' . $e->getMessage());
+        }
+
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
     }
 
@@ -878,6 +889,17 @@ class CartClientController extends Controller
                         ]);
                     }
 
+                    // Gửi email xác nhận đơn hàng khi thanh toán VNPAY thành công
+                    try {
+                        if ($order->receiver_email) {
+                            \Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
+                        } elseif ($order->customer_email) {
+                            \Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
+                        }
+                    } catch (\Exception $e) {
+                        \Log::error('Lỗi gửi mail OrderPlaced (VNPAY): ' . $e->getMessage());
+                    }
+
                     return view('client.cart.thankyou');
                 } else {
                     return redirect()->route('client.cart.checkout.form')->with('error', 'Thanh toán thất bại hoặc bị huỷ! (Mã: ' . $vnp_ResponseCode . ')');
@@ -911,6 +933,17 @@ class CartClientController extends Controller
                         'paid_at' => now(),
                         'user_id' => $order->user_id,
                     ]);
+                }
+
+                // Gửi email xác nhận đơn hàng khi thanh toán MoMo thành công
+                try {
+                    if ($order->receiver_email) {
+                        \Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
+                    } elseif ($order->customer_email) {
+                        \Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Lỗi gửi mail OrderPlaced (MoMo): ' . $e->getMessage());
                 }
 
                 return view('client.cart.thankyou');

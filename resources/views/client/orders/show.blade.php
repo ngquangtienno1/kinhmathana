@@ -156,8 +156,9 @@
                 <small class="text-muted">Ngày tạo:
                     {{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '' }}</small>
             </div>
-            <span class="badge bg-dark text-white text-capitalize"
-                style="font-size: 16px;">{{ $order->status_label }}</span>
+            <span class="status-label status-{{ $order->status }} text-capitalize">
+                {{ $order->status_label }}
+            </span>
         </div>
 
         @php
@@ -528,6 +529,35 @@
         #star-rating .star {
             font-size: 2rem;
         }
+        .status-label {
+        font-weight: 700;
+        font-size: 15px;
+        border-radius: 4px;
+        padding: 4px 16px;
+        display: inline-block;
+        border: 1px solid transparent;
+        margin-bottom: 2px;
+    }
+        .status-label.status-completed,
+    .status-label.status-confirmed,
+    .status-label.status-pending,
+    .status-label.status-awaiting_pickup,
+    .status-label.status-shipping,
+    .status-label.status-delivered {
+        background: #e6f9ed;
+        color: #219150;
+        border: 1px solid #219150;
+        box-shadow: 0 1px 4px rgba(33, 145, 80, 0.08);
+    }
+
+    .status-label.status-cancelled_by_customer,
+    .status-label.status-cancelled_by_admin,
+    .status-label.status-delivery_failed {
+        background: #ffeaea;
+        color: #e53935;
+        border: 1px solid #e53935;
+        box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08);
+    }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
