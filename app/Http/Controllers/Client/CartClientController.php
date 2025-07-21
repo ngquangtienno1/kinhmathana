@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Payment;
+use App\Models\Customer;
 use App\Models\OrderItem;
 use App\Models\Promotion;
 use App\Models\Variation;
@@ -11,10 +13,9 @@ use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\PromotionUsage;
 use App\Models\ShippingProvider;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use App\Models\Payment;
 
 class CartClientController extends Controller
 {
@@ -433,6 +434,10 @@ class CartClientController extends Controller
             $promotion->increment('used_count');
         }
         Cart::where('user_id', $user->id)->delete();
+
+        // Cập nhật lại loại khách hàng
+        $this->updateCustomerAfterOrder($user->id);
+
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
     }
 
@@ -445,13 +450,13 @@ class CartClientController extends Controller
             'variation_id' => $data['variation_id'] ?? null,
         ];
 
-        $cartItem = \App\Models\Cart::where($query)->first();
+        $cartItem = Cart::where($query)->first();
 
         if ($cartItem) {
             $cartItem->quantity += $data['quantity'];
             $cartItem->save();
         } else {
-            \App\Models\Cart::create([
+            Cart::create([
                 'user_id' => $userId,
                 'product_id' => $data['product_id'],
                 'variation_id' => $data['variation_id'] ?? null,
@@ -838,6 +843,9 @@ class CartClientController extends Controller
         // Xoá giỏ hàng sau khi tạo đơn (nếu muốn)
         Cart::where('user_id', $user->id)->delete();
 
+        // Cập nhật lại loại khách hàng (VNPAY)
+        $this->updateCustomerAfterOrder($user->id);
+
         // Redirect sang VNPAY
         return redirect()->to($vnp_Url);
     }
@@ -913,6 +921,26 @@ class CartClientController extends Controller
             }
         } else {
             return redirect()->route('client.cart.checkout.form')->with('error', 'Không tìm thấy đơn hàng!');
+        }
+    }
+
+    private function updateCustomerAfterOrder($userId)
+    {
+        $customer = Customer::where('user_id', $userId)->first();
+        if ($customer) {
+            $orders = $customer->orders()
+                ->where('payment_status', 'paid')
+                ->whereIn('status', ['delivered', 'completed'])
+                ->get();
+            $customer->total_orders = $orders->count();
+            $customer->total_spent = $orders->sum(function ($order) {
+                $calculatedSubtotal = $order->items->sum(function ($item) {
+                    return $item->price * $item->quantity;
+                });
+                return $calculatedSubtotal - ($order->promotion_amount ?? 0) + ($order->shipping_fee ?? 0);
+            });
+            $customer->save();
+            $customer->updateCustomerType();
         }
     }
 }
