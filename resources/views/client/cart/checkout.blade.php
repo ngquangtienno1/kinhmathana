@@ -595,5 +595,37 @@
             form.action = "{{ route('client.cart.momo-payment') }}";
             form.submit();
         });
+
+        const vnpayBtn = document.createElement('button');
+        vnpayBtn.type = 'button';
+        vnpayBtn.id = 'vnpay-btn';
+        vnpayBtn.className = 'checkout-btn';
+        vnpayBtn.style = 'background:#0064d2;display:none;margin-top:10px;';
+        vnpayBtn.innerText = 'Thanh toán VNPAY';
+        checkoutBtn.parentNode.insertBefore(vnpayBtn, momoBtn.nextSibling);
+
+        function togglePaymentBtns() {
+            const selected = document.querySelector('input[name="payment_method"]:checked');
+            if (selected && selected.value === 'momo') {
+                momoBtn.style.display = 'block';
+                vnpayBtn.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+            } else if (selected && selected.value === 'vnpay') {
+                momoBtn.style.display = 'none';
+                vnpayBtn.style.display = 'block';
+                checkoutBtn.style.display = 'none';
+            } else {
+                momoBtn.style.display = 'none';
+                vnpayBtn.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+            }
+        }
+        paymentRadios.forEach(r => r.addEventListener('change', togglePaymentBtns));
+        togglePaymentBtns();
+
+        vnpayBtn.addEventListener('click', function() {
+            form.action = "{{ route('client.cart.vnpay-payment') }}";
+            form.submit();
+        });
     });
 </script>

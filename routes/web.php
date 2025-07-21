@@ -104,8 +104,8 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
         // Route lấy chi tiết đơn hàng cho client (AJAX popup)
-        Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderClientController::class, 'show'])->name('order-detail.show');
-        Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderClientController::class, 'cancel'])->name('orders.cancel');
+        Route::get('order-detail/{id}', [OrderClientController::class, 'show'])->name('order-detail.show');
+        Route::patch('/orders/{id}/cancel', [OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
@@ -136,6 +136,7 @@ Route::prefix('client')->name('client.')->group(function () {
 
         //Thanh toán momo
         Route::post('momo-payment', [CartClientController::class, 'momo_payment'])->name('momo-payment');
+        Route::post('vnpay-payment', [CartClientController::class, 'vnpay_payment'])->name('vnpay-payment');
         Route::get('thankyou', [App\Http\Controllers\Client\CartClientController::class, 'momoThankYou'])->name('thankyou');
     });
 
