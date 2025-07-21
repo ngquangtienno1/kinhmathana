@@ -44,6 +44,21 @@ class UserSeeder extends Seeder
             'phone_verified_at' => now(),
         ]);
 
+        // Tạo tài khoản khách hàng mặc định
+        User::create([
+            'name' => 'Customer',
+            'email' => 'ajast@example.org',
+            'password' => Hash::make('password'),
+            'address' => '456 Staff Street',
+            'phone' => '0987654321',
+            'date_birth' => '1995-01-01',
+            'gender' => 'female',
+            'status_user' => 'active',
+            'role_id' => 3, // Staff role
+            'email_verified_at' => now(),
+            'phone_verified_at' => now(),
+        ]);
+
         // Tạo thêm 20 tài khoản ngẫu nhiên
         User::factory()->count(10)->create([
             'role_id' => 3, // Customer role
