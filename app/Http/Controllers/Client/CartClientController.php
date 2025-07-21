@@ -613,11 +613,14 @@ class CartClientController extends Controller
             $promotion->increment('used_count');
         }
 
-        // Gọi MoMo
-        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
-        $partnerCode = 'MOMOBKUN20180529';
-        $accessKey = 'klm05TvNBzhg7h7j';
-        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        // Lấy cấu hình MoMo từ bảng payment_methods
+        $paymentMethod = PaymentMethod::where('code', 'momo')->first();
+        $apiSettings = $paymentMethod && $paymentMethod->api_settings ? json_decode($paymentMethod->api_settings, true) : [];
+        $partnerCode = $paymentMethod->api_key ?? '';
+        $accessKey = $apiSettings['accessKey'] ?? '';
+        $secretKey = $paymentMethod->api_secret ?? '';
+        $endpoint = $paymentMethod->api_endpoint ?? 'https://test-payment.momo.vn/v2/gateway/api/create';
+
         $orderInfo = "Thanh toán qua MoMo";
         $amount = (string) intval($grandTotal);
         $orderId = $momoOrderId;
@@ -783,11 +786,13 @@ class CartClientController extends Controller
             $promotion->increment('used_count');
         }
 
-        // Tạo URL thanh toán VNPAY
-        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        // Lấy cấu hình VNPAY từ bảng payment_methods
+        $paymentMethod = PaymentMethod::where('code', 'vnpay')->first();
+        $apiSettings = $paymentMethod && $paymentMethod->api_settings ? json_decode($paymentMethod->api_settings, true) : [];
+        $vnp_Url = $paymentMethod->api_endpoint ?? 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
         $vnp_Returnurl = route('client.cart.thankyou');
-        $vnp_TmnCode = "1VYBIYQP";
-        $vnp_HashSecret = "NOH6MBGNLQL9O9OMMFMZ2AX8NIEP50W1";
+        $vnp_TmnCode = $paymentMethod->api_key ?? '';
+        $vnp_HashSecret = $paymentMethod->api_secret ?? '';
 
         $vnp_TxnRef = $vnpOrderId;
         $vnp_OrderInfo = 'Thanh toán đơn hàng #' . $order->order_number;
@@ -841,8 +846,8 @@ class CartClientController extends Controller
     {
         // Xử lý callback cho VNPAY
         if ($request->has('vnp_TransactionNo')) {
-            $vnp_TxnRef = $request->input('vnp_TxnRef'); 
-            $vnp_ResponseCode = $request->input('vnp_ResponseCode'); 
+            $vnp_TxnRef = $request->input('vnp_TxnRef');
+            $vnp_ResponseCode = $request->input('vnp_ResponseCode');
             $order = Order::where('payment_gateway', 'vnpay')->where('payment_gateway_order_id', $vnp_TxnRef)->first();
 
             if ($order) {

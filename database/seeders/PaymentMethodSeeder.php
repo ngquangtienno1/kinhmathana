@@ -22,33 +22,36 @@ class PaymentMethodSeeder extends Seeder
                 'sort_order' => 1
             ],
             [
-                'name' => 'Chuyển khoản ngân hàng',
-                'code' => 'banking',
-                'description' => 'Chuyển khoản trực tiếp qua ngân hàng',
-                'is_active' => true,
-                'sort_order' => 2
-            ],
-            [
                 'name' => 'Ví điện tử MoMo',
                 'code' => 'momo',
                 'description' => 'Thanh toán qua ví điện tử MoMo',
+                'api_key' => 'MOMOBKUN20180529', // partnerCode
+                'api_secret' => 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa', // secretKey
+                'api_endpoint' => 'https://test-payment.momo.vn/v2/gateway/api/create',
+                'api_settings' => json_encode([
+                    'accessKey' => 'klm05TvNBzhg7h7j'
+                ]),
                 'is_active' => true,
-                'sort_order' => 3
+                'sort_order' => 2
             ],
             [
                 'name' => 'Ví điện tử VNPay',
                 'code' => 'vnpay',
                 'description' => 'Thanh toán qua ví điện tử VNPay',
+                'api_key' => '1VYBIYQP', // vnp_TmnCode
+                'api_secret' => 'NOH6MBGNLQL9O9OMMFMZ2AX8NIEP50W1', // vnp_HashSecret
+                'api_endpoint' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+                'api_settings' => null,
+                'is_active' => true,
+                'sort_order' => 3
+            ],
+            [
+                'name' => 'Ví điện tử ZaloPay',
+                'code' => 'zalopay',
+                'description' => 'Thanh toán qua ví điện tử ZaloPay',
                 'is_active' => true,
                 'sort_order' => 4
             ],
-            [
-                'name' => 'Thẻ tín dụng/ghi nợ',
-                'code' => 'card',
-                'description' => 'Thanh toán qua thẻ tín dụng hoặc thẻ ghi nợ',
-                'is_active' => true,
-                'sort_order' => 5
-            ]
         ];
 
         foreach ($paymentMethods as $method) {
