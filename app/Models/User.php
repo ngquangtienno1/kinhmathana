@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Models\Otp;
@@ -42,7 +43,7 @@ class User extends Authenticatable
     ];
     protected $casts = [
         'banned_until' => 'datetime',
-         'created_at' => 'datetime',
+        'created_at' => 'datetime',
     ];
     protected $hidden = ['password', 'remember_token'];
     protected function casts(): array
@@ -124,5 +125,19 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'from_id')->orWhere('to_id', $this->id);
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'from_id');
+    }
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'to_id');
     }
 }
