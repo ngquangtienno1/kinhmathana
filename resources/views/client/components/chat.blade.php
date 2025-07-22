@@ -214,12 +214,4 @@
             showChatTooltip();
         }
     });
-
-    // Đẩy nút back to top lên cao hơn nút chat nếu có
-    document.addEventListener('DOMContentLoaded', function() {
-        var backToTop = document.getElementById('qodef-back-to-top');
-        if (backToTop) {
-            backToTop.style.bottom = '90px'; // Đặt cao hơn nút chat (nút chat bottom: 20px)
-        }
-    });
 </script>
