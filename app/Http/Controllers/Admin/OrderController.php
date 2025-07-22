@@ -207,14 +207,18 @@ class OrderController extends Controller
                 'note' => 'Đơn hàng được tạo'
             ]);
 
-            // Gửi email xác nhận đơn hàng
-            if ($order->user && $order->user->email) {
-                Mail::to($order->user->email)->send(new OrderPlaced($order));
-            } elseif ($order->customer_email) {
-                Mail::to($order->customer_email)->send(new OrderPlaced($order));
-            }
-
             DB::commit();
+
+            // Gửi email xác nhận đơn hàng sau khi commit
+            try {
+                if ($order->user && $order->user->email) {
+                    Mail::to($order->user->email)->send(new OrderPlaced($order));
+                } elseif ($order->customer_email) {
+                    Mail::to($order->customer_email)->send(new OrderPlaced($order));
+                }
+            } catch (\Exception $e) {
+                Log::error('Lỗi gửi mail OrderPlaced: ' . $e->getMessage());
+            }
             return redirect()
                 ->route('admin.orders.show', $order)
                 ->with('success', 'Tạo đơn hàng thành công');
