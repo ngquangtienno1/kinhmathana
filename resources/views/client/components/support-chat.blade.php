@@ -1,7 +1,3 @@
-<a id="qodef-back-to-top" href="#" class="qodef--predefined">
-    <span class="qodef-back-to-top-icon">
-        <span class="qodef-icon-elegant-icons arrow_carrot-up"></span> </span>
-</a>
 <div id="qodef-subscribe-popup-modal" class="qodef-sp-holder qodef-sp-prevent-session">
     <div class="qodef-sp-inner">
         <a class="qodef-sp-close" href="javascript:void(0)">

@@ -1,8 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Events\MyEvent;
+
 // ================== Client Controllers ==================
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
@@ -44,6 +47,7 @@ use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+use App\Http\Controllers\Admin\ChatAdminController;
 
 
 // Authentication
@@ -178,6 +182,8 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('/add', [WishlistController::class, 'addToWishlist'])->name('add');
         Route::post('/remove', [WishlistController::class, 'removeFromWishlist'])->name('remove');
     });
+    Route::post('/chat/send', [ChatAdminController::class, 'send'])->name('chat.send');
+    Route::get('/chat/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('chat.conversation');
 });
 
 // Admin routes group
@@ -624,8 +630,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
-        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+        Route::put('/{promotion}', [PromotionController::class, 'update']);
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
     });
 
     // Quản lý ticket
@@ -737,5 +743,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:gui-email-lien-he']);
         Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
             ->middleware(['permission:gui-email-lien-he']);
+    });
+
+    // Chat routes
+    Route::prefix('chat')->name('chat.')->middleware(['permission:xem-chat'])->group(function () {
+        Route::get('/', [ChatAdminController::class, 'index'])->name('index');
+        Route::get('/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('conversation');
+        Route::post('/send', [ChatAdminController::class, 'send'])->name('send');
     });
 });
