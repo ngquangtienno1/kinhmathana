@@ -79,8 +79,7 @@
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image">
                                                 @if ($product->sale_price && $product->sale_price < $product->price)
-                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">Giảm
-                                                        giá</span>
+                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">sale</span>
                                                 @endif
                                                 @if ($product->images->isNotEmpty())
                                                     <img loading="lazy" width="600" height="431"
@@ -428,42 +427,6 @@
                                     @endforeach
                                     <!-- Bỏ nút lọc cỡ -->
                                 </form>
-                            </div>
-                            <div class="widget widget_block" data-area="shop-sidebar">
-                                <div data-block-name="woocommerce/product-search" data-label=""
-                                    data-form-id="wc-block-product-search-0"
-                                    class="wc-block-product-search wp-block-woocommerce-product-search">
-                                    <form role="search" method="get" action="{{ route('client.products.index') }}">
-                                        <label for="wc-block-search__input-1"
-                                            class="wc-block-product-search__label"></label>
-                                        <div class="wc-block-product-search__fields">
-                                            <input type="search" id="wc-block-search__input-1"
-                                                class="wc-block-product-search__field" placeholder="Tìm kiếm sản phẩm..."
-                                                name="s" value="{{ request('s') }}" />
-                                            <button type="submit" class="wc-block-product-search__button"
-                                                aria-label="Tìm kiếm">
-                                                <svg aria-hidden="true" role="img" focusable="false"
-                                                    class="dashicon dashicons-arrow-right-alt2"
-                                                    xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                    viewBox="0 0 20 20">
-                                                    <path d="M6 15l5-5-5-5 1-2 7 7-7 7z" />
-                                                </svg>
-                                            </button>
-                                            <input type="hidden" name="post_type" value="product" />
-                                            @foreach (request()->except(['s', 'post_type']) as $key => $value)
-                                                @if (is_array($value))
-                                                    @foreach ($value as $v)
-                                                        <input type="hidden" name="{{ $key }}[]"
-                                                            value="{{ $v }}" />
-                                                    @endforeach
-                                                @else
-                                                    <input type="hidden" name="{{ $key }}"
-                                                        value="{{ $value }}" />
-                                                @endif
-                                            @endforeach
-                                        </div>
-                                    </form>
-                                </div>
                             </div>
                             <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
                                 <figure class="wp-block-image size-large"><a href="../vouchers/index.html"><img
