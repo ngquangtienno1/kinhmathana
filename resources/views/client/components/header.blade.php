@@ -139,7 +139,7 @@
             <nav class="qodef-header-navigation" role="navigation" aria-label="Top Menu">
                 <ul id="menu-main-menu-1" class="menu">
                     <li
-                        class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow">
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-111 qodef--hide-link qodef-menu-item--narrow {{ request()->routeIs('client.home') ? 'current-menu-ancestor current-menu-parent' : '' }}">
                         <a href="{{ route('client.home') }}"><span class="qodef-menu-item-text">Trang chủ<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
@@ -152,7 +152,7 @@
                                 </svg></span></a>
                     </li>
                     <li
-                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-112 qodef--hide-link qodef-menu-item--narrow">
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-112 qodef--hide-link qodef-menu-item--narrow {{ request()->is('about-us*') || request()->is('who-we-are*') || request()->is('our-staff*') || request()->is('meet-the-doctor*') || request()->routeIs('client.voucher.index') || request()->is('pricing-plans*') || request()->is('book-an-appointment*') || request()->is('get-in-touch*') || request()->routeIs('client.faq.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
                         <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Trang<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
@@ -223,7 +223,7 @@
                         </div>
                     </li>
                     <li
-                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-113 qodef--hide-link qodef-menu-item--wide">
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-113 qodef--hide-link qodef-menu-item--wide {{ request()->routeIs('client.products.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
                         <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Sản phẩm<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
@@ -468,7 +468,7 @@
                         </div>
                     </li>
                     <li
-                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-114 qodef--hide-link qodef-menu-item--narrow">
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-114 qodef--hide-link qodef-menu-item--narrow {{ request()->routeIs('client.blog.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
                         <a href="{{ route('client.blog.index') }}"><span class="qodef-menu-item-text">Tin tức<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
@@ -480,9 +480,11 @@
                                     </g>
                                 </svg></span></a>
                     </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747"><a
-                            href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Liên
-                                Hệ</span></a></li>
+                    <li
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747 {{ request()->routeIs('client.contact.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
+                        <a href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Liên
+                                Hệ</span></a>
+                    </li>
                 </ul>
             </nav>
             <div class="qodef-widget-holder qodef--one">
@@ -531,7 +533,8 @@
                                             height="15.453px" viewBox="0 0 18 15.453"
                                             enable-background="new 0 0 18 15.453" xml:space="preserve">
                                             <g>
-                                                <path d="M18,5.272v0.035v0.035c0,0.023-0.006,0.059-0.018,0.105c-0.012,0.047-0.018,0.083-0.018,0.105c-0.023,0.961-0.217,1.881-0.58,2.76s-0.797,1.641-1.301,2.285c-0.504,0.645-1.102,1.248-1.793,1.811s-1.318,1.02-1.881,1.371s-1.148,0.673-1.757,0.967c-0.61,0.293-1.02,0.475-1.23,0.545S9.047,15.42,8.93,15.468c-0.118-0.047-0.281-0.111-0.492-0.193c-0.211-0.083-0.615-0.264-1.213-0.545s-1.172-0.598-1.723-0.949c-0.551-0.352-1.166-0.814-1.846-1.389c-0.68-0.574-1.271-1.178-1.775-1.811C1.376,9.948,0.949,9.192,0.598,8.313s-0.54-1.798-0.563-2.76c0-0.023-0.006-0.058-0.018-0.105C0.005,5.401,0,5.366,0,5.343V5.308c0-0.023,0-0.047,0-0.07c0.023-1.383,0.533-2.596,1.529-3.639c0.996-1.042,2.174-1.564,3.533-1.564c1.594,0,2.906,0.691,3.938,2.074c1.031-1.383,2.343-2.074,3.937-2.074c1.359,0,2.537,0.522,3.533,1.564C17.466,2.642,17.976,3.854,18,5.237V5.272z M16.875,5.343c0-0.023,0-0.047,0-0.07c-0.023-1.125-0.422-2.092-1.195-2.9s-1.688-1.213-2.742-1.213c-1.219,0-2.227,0.54-3.023,1.617C9.68,3.081,9.375,3.233,9,3.233c-0.375,0-0.68-0.152-0.914-0.457C7.289,1.699,6.281,1.159,5.063,1.159c-1.055,0-1.969,0.404-2.742,1.213s-1.172,1.775-1.195,2.9c0,0.023,0,0.047,0,0.07C1.148,5.39,1.16,5.437,1.16,5.483C1.183,6.515,1.429,7.5,1.898,8.437c0.469,0.938,1.002,1.711,1.6,2.32c0.598,0.61,1.295,1.184,2.092,1.723c0.796,0.54,1.441,0.926,1.934,1.16c0.492,0.234,0.961,0.445,1.406,0.633c0.445-0.188,0.919-0.398,1.424-0.633c0.504-0.234,1.16-0.621,1.968-1.16c0.809-0.539,1.518-1.113,2.127-1.723c0.609-0.609,1.154-1.383,1.635-2.32c0.48-0.937,0.732-1.91,0.756-2.918C16.839,5.448,16.851,5.39,16.875,5.343z"/>
+                                                <path
+                                                    d="M18,5.272v0.035v0.035c0,0.023-0.006,0.059-0.018,0.105c-0.012,0.047-0.018,0.083-0.018,0.105c-0.023,0.961-0.217,1.881-0.58,2.76s-0.797,1.641-1.301,2.285c-0.504,0.645-1.102,1.248-1.793,1.811s-1.318,1.02-1.881,1.371s-1.148,0.673-1.757,0.967c-0.61,0.293-1.02,0.475-1.23,0.545S9.047,15.42,8.93,15.468c-0.118-0.047-0.281-0.111-0.492-0.193c-0.211-0.083-0.615-0.264-1.213-0.545s-1.172-0.598-1.723-0.949c-0.551-0.352-1.166-0.814-1.846-1.389c-0.68-0.574-1.271-1.178-1.775-1.811C1.376,9.948,0.949,9.192,0.598,8.313s-0.54-1.798-0.563-2.76c0-0.023-0.006-0.058-0.018-0.105C0.005,5.401,0,5.366,0,5.343V5.308c0-0.023,0-0.047,0-0.07c0.023-1.383,0.533-2.596,1.529-3.639c0.996-1.042,2.174-1.564,3.533-1.564c1.594,0,2.906,0.691,3.938,2.074c1.031-1.383,2.343-2.074,3.937-2.074c1.359,0,2.537,0.522,3.533,1.564C17.466,2.642,17.976,3.854,18,5.237V5.272z M16.875,5.343c0-0.023,0-0.047,0-0.07c-0.023-1.125-0.422-2.092-1.195-2.9s-1.688-1.213-2.742-1.213c-1.219,0-2.227,0.54-3.023,1.617C9.68,3.081,9.375,3.233,9,3.233c-0.375,0-0.68-0.152-0.914-0.457C7.289,1.699,6.281,1.159,5.063,1.159c-1.055,0-1.969,0.404-2.742,1.213s-1.172,1.775-1.195,2.9c0,0.023,0,0.047,0,0.07C1.148,5.39,1.16,5.437,1.16,5.483C1.183,6.515,1.429,7.5,1.898,8.437c0.469,0.938,1.002,1.711,1.6,2.32c0.598,0.61,1.295,1.184,2.092,1.723c0.796,0.54,1.441,0.926,1.934,1.16c0.492,0.234,0.961,0.445,1.406,0.633c0.445-0.188,0.919-0.398,1.424-0.633c0.504-0.234,1.16-0.621,1.968-1.16c0.809-0.539,1.518-1.113,2.127-1.723c0.609-0.609,1.154-1.383,1.635-2.32c0.48-0.937,0.732-1.91,0.756-2.918C16.839,5.448,16.851,5.39,16.875,5.343z" />
                                             </g>
                                         </svg></span>
                                     <span class="qodef-wishlist-count">{{ $wishlistCount }}</span>
@@ -1135,7 +1138,7 @@
                         </div>
                     </li>
                     <li
-                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-114 qodef--hide-link qodef-menu-item--narrow">
+                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-114 qodef--hide-link qodef-menu-item--narrow {{ request()->routeIs('client.blog.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
                         <a href="{{ route('client.blog.index') }}"><span class="qodef-menu-item-text">Tin tức<svg
                                     class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
@@ -1147,9 +1150,11 @@
                                     </g>
                                 </svg></span></a>
                     </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747"><a
-                            href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Liên
-                                Hệ</span></a></li>
+                    <li
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4747 {{ request()->routeIs('client.contact.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
+                        <a href="{{ route('client.contact.index') }}"><span class="qodef-menu-item-text">Liên
+                                Hệ</span></a>
+                    </li>
                 </ul>
             </nav>
             <div class="qodef-widget-holder qodef--one">
@@ -1165,7 +1170,7 @@
                                             enable-background="new 0 0 18 15.453" xml:space="preserve">
                                             <g>
                                                 <path
-                                                    d="M18,5.272v0.035v0.035c0,0.023-0.006,0.059-0.018,0.105c-0.012,0.047-0.018,0.083-0.018,0.105\tc-0.023,0.961-0.217,1.881-0.58,2.76s-0.797,1.641-1.301,2.285c-0.504,0.645-1.102,1.248-1.793,1.811s-1.318,1.02-1.881,1.371 s-1.148,0.673-1.757,0.967c-0.61,0.293-1.02,0.475-1.23,0.545S9.047,15.42,8.93,15.468c-0.118-0.047-0.281-0.111-0.492-0.193 c-0.211-0.083-0.615-0.264-1.213-0.545s-1.172-0.598-1.723-0.949c-0.551-0.352-1.166-0.814-1.846-1.389 c-0.68-0.574-1.271-1.178-1.775-1.811C1.376,9.948,0.949,9.192,0.598,8.313s-0.54-1.798-0.563-2.76 c0-0.023-0.006-0.058-0.018-0.105C0.005,5.401,0,5.366,0,5.343V5.308c0-0.023,0-0.047,0-0.07c0.023-1.383,0.533-2.596,1.529-3.639 c0.996-1.042,2.174-1.564,3.533-1.564c1.594,0,2.906,0.691,3.938,2.074c1.031-1.383,2.343-2.074,3.937-2.074 c1.359,0,2.537,0.522,3.533,1.564C17.466,2.642,17.976,3.854,18,5.237V5.272z M16.875,5.343c0-0.023,0-0.047,0-0.07 c-0.023-1.125-0.422-2.092-1.195-2.9s-1.688-1.213-2.742-1.213c-1.219,0-2.227,0.54-3.023,1.617C9.68,3.081,9.375,3.233,9,3.233 c-0.375,0-0.68-0.152-0.914-0.457C7.289,1.699,6.281,1.159,5.063,1.159c-1.055,0-1.969,0.404-2.742,1.213s-1.172,1.775-1.195,2.9 c0,0.023,0,0.047,0,0.07C1.148,5.39,1.16,5.437,1.16,5.483C1.183,6.515,1.429,7.5,1.898,8.437c0.469,0.938,1.002,1.711,1.6,2.32 c0.598,0.61,1.295,1.184,2.092,1.723c0.796,0.54,1.441,0.926,1.934,1.16c0.492,0.234,0.961,0.445,1.406,0.633 c0.445-0.188,0.919-0.398,1.424-0.633c0.504-0.234,1.16-0.621,1.968-1.16c0.809-0.539,1.518-1.113,2.127-1.723 c0.609-0.609,1.154-1.383,1.635-2.32c0.48-0.937,0.732-1.91,0.756-2.918C16.839,5.448,16.851,5.39,16.875,5.343z" />
+                                                    d="M18,5.272v0.035v0.035c0,0.023-0.006,0.059-0.018,0.105c-0.012,0.047-0.018,0.083-0.018,0.105\tc-0.023,0.961-0.217,1.881-0.58,2.76s-0.797,1.641-1.301,2.285c-0.504,0.645-1.102,1.248-1.793,1.811s-1.318,1.02-1.881,1.371 s-1.148,0.673-1.757,0.967c-0.61,0.293-1.02,0.475-1.23,0.545S9.047,15.42,8.93,15.468c-0.118-0.047-0.281-0.111-0.492-0.193 c-0.211-0.083-0.615-0.264-1.213-0.545s-1.172-0.598-1.723-0.949c-0.551-0.352-1.166-0.814-1.846-1.389 c-0.68-0.574-1.271-1.178-1.775-1.811C1.376,9.948,0.949,9.192,0.598,8.313s-0.54-1.798-0.563-2.76 c0-0.023-0.006-0.058-0.018-0.105C0.005,5.401,0,5.366,0,5.343V5.308c0-0.023,0-0.047,0-0.07c0.023-1.383,0.533-2.596,1.529-3.639 c0.996-1.042,2.174-1.564,3.533-1.564c1.594,0,2.906,0.691,3.938,2.074c1.031-1.383,2.343-2.074,3.937-2.074 c1.359,0,2.537,0.522,3.533,1.564C17.466,2.642,17.976,3.854,18,5.237V5.272z M16.875,5.343c0-0.023,0-0.047,0-0.07 c-0.023-1.125-0.422-2.092-1.195-2.9s-1.688-1.213-2.742-1.213c-1.219,0-2.227,0.54-3.023,1.617C9.68,3.081,9.375,3.233,9,3.233 c-0.375,0-0.68-0.152-0.914-0.457C7.289,1.699,6.281,1.159,5.063,1.159c-1.055,0-1.969,0.404-2.742,1.213s-1.172,1.775-1.195,2.9c0,0.023,0,0.047,0,0.07C1.148,5.39,1.16,5.437,1.16,5.483C1.183,6.515,1.429,7.5,1.898,8.437c0.469,0.938,1.002,1.711,1.6,2.32c0.598,0.61,1.295,1.184,2.092,1.723c0.796,0.54,1.441,0.926,1.934,1.16c0.492,0.234,0.961,0.445,1.406,0.633 c0.445-0.188,0.919-0.398,1.424-0.633c0.504-0.234,1.16-0.621,1.968-1.16c0.809-0.539,1.518-1.113,2.127-1.723 c0.609-0.609,1.154-1.383,1.635-2.32c0.48-0.937,0.732-1.91,0.756-2.918C16.839,5.448,16.851,5.39,16.875,5.343z" />
                                             </g>
                                         </svg></span>
                                     <span class="qodef-wishlist-count">0</span>
