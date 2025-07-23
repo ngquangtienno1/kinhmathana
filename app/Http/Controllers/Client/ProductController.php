@@ -20,6 +20,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        \Log::info('Search request', $request->all());
         $query = Product::with(['categories', 'brand', 'images', 'variations.color'])
             ->active();
 
@@ -109,7 +110,7 @@ class ProductController extends Controller
         }
 
         // Tìm kiếm
-        $search = $request->input('search') ?? $request->input('s');
+        $search = $request->input('q') ?? $request->input('search') ?? $request->input('s');
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")

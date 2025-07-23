@@ -246,6 +246,9 @@
                                         if (Auth::check()) {
                                             $inWishlist = \App\Models\Wishlist::where('user_id', Auth::id())
                                                 ->where('product_id', $product->id)
+                                                ->when(request('variation_id'), function ($q) {
+                                                    $q->where('variation_id', request('variation_id'));
+                                                })
                                                 ->exists();
                                         }
                                     @endphp
@@ -276,9 +279,13 @@
                                                 class="add-to-wishlist-form" style="display:inline;">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <input type="hidden" name="variation_id" id="wishlist-variation-id"
+                                                    value="{{ $selectedVariation->id ?? '' }}">
                                                 <button type="submit"
                                                     class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
-                                                    style="background:none;border:none;padding:0;cursor:pointer;">
+                                                    style="background:none;border:none;padding:0;cursor:pointer;"
+                                                    id="add-to-wishlist-btn"
+                                                    {{ empty($selectedVariation->id) ? 'disabled' : '' }}>
                                                     <span class="qwfw-m-spinner qwfw-spinner-icon">
                                                         <!-- Trái tim viền -->
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="22"
@@ -291,17 +298,35 @@
                                                     </span>
                                                     <span class="qwfw-m-icon qwfw--predefined">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                            height="32" viewBox="0 0 32 32" fill="none"
-                                                            stroke="black" stroke-width="2">
-                                                            <g>
-                                                                <path
-                                                                    d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                            </g>
+                                                            height="32" viewBox="0 0 32 32" fill="black">
+                                                            <path
+                                                                d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
                                                         </svg>
                                                     </span>
                                                     <span class="qwfw-m-text">Thêm vào yêu thích</span>
                                                 </button>
                                             </form>
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    function updateWishlistBtn() {
+                                                        var variationId = document.querySelector('input[name="variation_id"]')?.value;
+                                                        var btn = document.getElementById('add-to-wishlist-btn');
+                                                        if (btn) {
+                                                            btn.disabled = !variationId;
+                                                        }
+                                                        var wishlistInput = document.getElementById('wishlist-variation-id');
+                                                        if (wishlistInput && variationId) {
+                                                            wishlistInput.value = variationId;
+                                                        }
+                                                    }
+                                                    document.querySelectorAll('.variation-btn').forEach(function(btn) {
+                                                        btn.addEventListener('click', function() {
+                                                            setTimeout(updateWishlistBtn, 100); // Đợi input hidden cập nhật
+                                                        });
+                                                    });
+                                                    updateWishlistBtn();
+                                                });
+                                            </script>
                                         @endif
                                     @else
                                         <a href="{{ route('client.login') }}"

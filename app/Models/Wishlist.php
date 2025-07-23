@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Wishlist extends Model
 {
-    protected $fillable = ['user_id', 'product_id'];
+    protected $fillable = ['user_id', 'product_id', 'variation_id'];
 
     public function user()
     {
@@ -17,4 +17,9 @@ class Wishlist extends Model
     {
         return $this->belongsTo(Product::class);
     }
-} 
+
+    public function variation()
+    {
+        return $this->belongsTo(\App\Models\Variation::class, 'variation_id');
+    }
+}

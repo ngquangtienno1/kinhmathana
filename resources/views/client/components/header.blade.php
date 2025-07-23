@@ -494,10 +494,10 @@
                     <div class="widget qodef-search-widget">
 
                         <form id="searchform" class="qodef-search-form" method="get"
-                            action="https://neoocular.qodeinteractive.com/">
+                            action="{{ route('client.products.index') }}">
                             <div class="qodef-search-form-inner clear">
-                                <input type="text" class="search-field" name="s" placeholder="Search"
-                                    value="">
+                                <input type="text" class="search-field" name="q"
+                                    placeholder="Tìm kiếm sản phẩm..." value="{{ request('q') }}">
                                 <span class="qodef-m-underline"></span>
                                 <button type="submit" class="qodef-search-form-button"><svg
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -578,9 +578,6 @@
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Tài khoản của
                                             tôi</a></li>
-                                    {{-- <li style="padding: 8px 24px;"><a href="{{ route('client.users.information') }}"
-                                            style="color: #232323; text-decoration: none; display: block;">Edit Profile</a>
-                                    </li> --}}
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Đơn mua</a>
                                     </li>
@@ -591,13 +588,15 @@
                         </div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
-                                var userWidget = document.querySelector('.qodef-user-logged--in');
-                                var dropdown = userWidget.querySelector('.qodef-user-dropdown-menu');
-                                userWidget.addEventListener('mouseenter', function() {
-                                    dropdown.style.display = 'block';
-                                });
-                                userWidget.addEventListener('mouseleave', function() {
-                                    dropdown.style.display = 'none';
+                                var userWidget = document.querySelectorAll('.qodef-user-logged--in');
+                                userWidget.forEach(function(widget) {
+                                    var dropdown = widget.querySelector('.qodef-user-dropdown-menu');
+                                    widget.addEventListener('mouseenter', function() {
+                                        dropdown.style.display = 'block';
+                                    });
+                                    widget.addEventListener('mouseleave', function() {
+                                        dropdown.style.display = 'none';
+                                    });
                                 });
                             });
                         </script>
@@ -1158,11 +1157,45 @@
                 </ul>
             </nav>
             <div class="qodef-widget-holder qodef--one">
-                <div id="neoocular_core_qode_wishlist-3"
-                    class="widget widget_neoocular_core_qode_wishlist qodef-sticky-right">
+                <div id="neoocular_core_search-2"
+                    class="widget widget_neoocular_core_search qodef-header-widget-area-one"
+                    data-area="header-widget-one">
+                    <div class="widget qodef-search-widget">
+
+                        <form id="searchform" class="qodef-search-form" method="get"
+                            action="{{ route('client.products.index') }}">
+                            <div class="qodef-search-form-inner clear">
+                                <input type="text" class="search-field" name="q"
+                                    placeholder="Tìm kiếm sản phẩm..." value="{{ request('q') }}">
+                                <span class="qodef-m-underline"></span>
+                                <button type="submit" class="qodef-search-form-button"><svg
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        x="0px" y="0px" width="15.22px" height="15.1px" viewBox="0 0 15.22 15.1"
+                                        enable-background="new 0 0 15.22 15.1" xml:space="preserve">
+                                        <circle fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                            cx="9.053" cy="6.167" r="5.667" />
+                                        <line fill="none" stroke="currentColor" stroke-width="1.2"
+                                            stroke-linecap="round" stroke-miterlimit="10" x1="0.6"
+                                            y1="14.5" x2="4.746" y2="10.354" />
+                                    </svg></button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                @php
+                    $wishlistCount = 0;
+                    if (Auth::check()) {
+                        $wishlistCount = \App\Models\Wishlist::where('user_id', Auth::id())->count();
+                    }
+                @endphp
+                <div id="neoocular_core_qode_wishlist-2"
+                    class="widget widget_neoocular_core_qode_wishlist qodef-header-widget-area-one"
+                    data-area="header-widget-one">
                     <div class="qodef-wishlist-widget-holder">
                         <div class="qodef-wishlist-inner" style="margin: 0 6px 0 0">
-                            <a href="#" class="qodef-wishlist-widget-link" title="View Wishlist">
+                            <a href="{{ route('client.wishlist.index') }}" class="qodef-wishlist-widget-link"
+                                title="View Wishlist">
                                 <span class="qodef-wishlist-icon-count-holder">
                                     <span class="qodef-wishlist-widget-icon"><svg xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="18px"
@@ -1170,32 +1203,77 @@
                                             enable-background="new 0 0 18 15.453" xml:space="preserve">
                                             <g>
                                                 <path
-                                                    d="M18,5.272v0.035v0.035c0,0.023-0.006,0.059-0.018,0.105c-0.012,0.047-0.018,0.083-0.018,0.105\tc-0.023,0.961-0.217,1.881-0.58,2.76s-0.797,1.641-1.301,2.285c-0.504,0.645-1.102,1.248-1.793,1.811s-1.318,1.02-1.881,1.371 s-1.148,0.673-1.757,0.967c-0.61,0.293-1.02,0.475-1.23,0.545S9.047,15.42,8.93,15.468c-0.118-0.047-0.281-0.111-0.492-0.193 c-0.211-0.083-0.615-0.264-1.213-0.545s-1.172-0.598-1.723-0.949c-0.551-0.352-1.166-0.814-1.846-1.389 c-0.68-0.574-1.271-1.178-1.775-1.811C1.376,9.948,0.949,9.192,0.598,8.313s-0.54-1.798-0.563-2.76 c0-0.023-0.006-0.058-0.018-0.105C0.005,5.401,0,5.366,0,5.343V5.308c0-0.023,0-0.047,0-0.07c0.023-1.383,0.533-2.596,1.529-3.639 c0.996-1.042,2.174-1.564,3.533-1.564c1.594,0,2.906,0.691,3.938,2.074c1.031-1.383,2.343-2.074,3.937-2.074 c1.359,0,2.537,0.522,3.533,1.564C17.466,2.642,17.976,3.854,18,5.237V5.272z M16.875,5.343c0-0.023,0-0.047,0-0.07 c-0.023-1.125-0.422-2.092-1.195-2.9s-1.688-1.213-2.742-1.213c-1.219,0-2.227,0.54-3.023,1.617C9.68,3.081,9.375,3.233,9,3.233 c-0.375,0-0.68-0.152-0.914-0.457C7.289,1.699,6.281,1.159,5.063,1.159c-1.055,0-1.969,0.404-2.742,1.213s-1.172,1.775-1.195,2.9c0,0.023,0,0.047,0,0.07C1.148,5.39,1.16,5.437,1.16,5.483C1.183,6.515,1.429,7.5,1.898,8.437c0.469,0.938,1.002,1.711,1.6,2.32c0.598,0.61,1.295,1.184,2.092,1.723c0.796,0.54,1.441,0.926,1.934,1.16c0.492,0.234,0.961,0.445,1.406,0.633 c0.445-0.188,0.919-0.398,1.424-0.633c0.504-0.234,1.16-0.621,1.968-1.16c0.809-0.539,1.518-1.113,2.127-1.723 c0.609-0.609,1.154-1.383,1.635-2.32c0.48-0.937,0.732-1.91,0.756-2.918C16.839,5.448,16.851,5.39,16.875,5.343z" />
+                                                    d="M18,5.272v0.035v0.035c0,0.023-0.006,0.059-0.018,0.105c-0.012,0.047-0.018,0.083-0.018,0.105c-0.023,0.961-0.217,1.881-0.58,2.76s-0.797,1.641-1.301,2.285c-0.504,0.645-1.102,1.248-1.793,1.811s-1.318,1.02-1.881,1.371s-1.148,0.673-1.757,0.967c-0.61,0.293-1.02,0.475-1.23,0.545S9.047,15.42,8.93,15.468c-0.118-0.047-0.281-0.111-0.492-0.193c-0.211-0.083-0.615-0.264-1.213-0.545s-1.172-0.598-1.723-0.949c-0.551-0.352-1.166-0.814-1.846-1.389c-0.68-0.574-1.271-1.178-1.775-1.811C1.376,9.948,0.949,9.192,0.598,8.313s-0.54-1.798-0.563-2.76c0-0.023-0.006-0.058-0.018-0.105C0.005,5.401,0,5.366,0,5.343V5.308c0-0.023,0-0.047,0-0.07c0.023-1.383,0.533-2.596,1.529-3.639c0.996-1.042,2.174-1.564,3.533-1.564c1.594,0,2.906,0.691,3.938,2.074c1.031-1.383,2.343-2.074,3.937-2.074c1.359,0,2.537,0.522,3.533,1.564C17.466,2.642,17.976,3.854,18,5.237V5.272z M16.875,5.343c0-0.023,0-0.047,0-0.07c-0.023-1.125-0.422-2.092-1.195-2.9s-1.688-1.213-2.742-1.213c-1.219,0-2.227,0.54-3.023,1.617C9.68,3.081,9.375,3.233,9,3.233c-0.375,0-0.68-0.152-0.914-0.457C7.289,1.699,6.281,1.159,5.063,1.159c-1.055,0-1.969,0.404-2.742,1.213s-1.172,1.775-1.195,2.9c0,0.023,0,0.047,0,0.07C1.148,5.39,1.16,5.437,1.16,5.483C1.183,6.515,1.429,7.5,1.898,8.437c0.469,0.938,1.002,1.711,1.6,2.32c0.598,0.61,1.295,1.184,2.092,1.723c0.796,0.54,1.441,0.926,1.934,1.16c0.492,0.234,0.961,0.445,1.406,0.633c0.445-0.188,0.919-0.398,1.424-0.633c0.504-0.234,1.16-0.621,1.968-1.16c0.809-0.539,1.518-1.113,2.127-1.723c0.609-0.609,1.154-1.383,1.635-2.32c0.48-0.937,0.732-1.91,0.756-2.918C16.839,5.448,16.851,5.39,16.875,5.343z" />
                                             </g>
                                         </svg></span>
-                                    <span class="qodef-wishlist-count">0</span>
+                                    <span class="qodef-wishlist-count">{{ $wishlistCount }}</span>
                                 </span>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div id="neoocular_membership_login_opener-6"
-                    class="widget widget_neoocular_membership_login_opener qodef-sticky-right">
-                    <div class="qodef-login-opener-widget qodef-user-logged--out">
-                        <a href="#" class="qodef-login-opener">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                                y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
-                                enable-background="new 0 0 16.289 16.087" xml:space="preserve">
-                                <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
-                                    cy="4.594" r="4.094" />
-                                <path fill="none" stroke="currentColor" stroke-miterlimit="10"
-                                    d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
-                            </svg>
-                        </a>
-                    </div>
+                <div id="neoocular_membership_login_opener-4"
+                    class="widget widget_neoocular_membership_login_opener qodef-header-widget-area-one"
+                    data-area="header-widget-one">
+                    @guest
+                        <div class="qodef-login-opener-widget qodef-user-logged--out">
+                            <a href="{{ route('client.login') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+                            </a>
+                        </div>
+                    @endguest
+                    @auth
+                        <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
+                            <a href="{{ route('client.users.index') }}" class="qodef-user-dropdown-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+                            </a>
+                            <div class="qodef-user-dropdown-menu"
+                                style="display: none; position: absolute; right: 0; top: 75px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); min-width: 180px; z-index: 1000; padding: 18px 0;">
+                                <ul style="list-style: none; margin: 0; padding: 0;">
+                                    <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
+                                            style="color: #232323; text-decoration: none; display: block;">Tài khoản của
+                                            tôi</a></li>
+                                    <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
+                                            style="color: #232323; text-decoration: none; display: block;">Đơn mua</a>
+                                    </li>
+                                    <li style="padding: 8px 24px;"><a href="{{ route('client.logout') }}"
+                                            style="color: #d00; text-decoration: none; display: block;">Đăng xuất</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var userWidget = document.querySelectorAll('.qodef-user-logged--in');
+                                userWidget.forEach(function(widget) {
+                                    var dropdown = widget.querySelector('.qodef-user-dropdown-menu');
+                                    widget.addEventListener('mouseenter', function() {
+                                        dropdown.style.display = 'block';
+                                    });
+                                    widget.addEventListener('mouseleave', function() {
+                                        dropdown.style.display = 'none';
+                                    });
+                                });
+                            });
+                        </script>
+                    @endauth
                 </div>
-                <div id="neoocular_core_woo_side_area_cart-4"
-                    class="widget widget_neoocular_core_woo_side_area_cart qodef-sticky-right">
+                <div id="neoocular_core_woo_side_area_cart-2"
+                    class="widget widget_neoocular_core_woo_side_area_cart qodef-header-widget-area-one"
+                    data-area="header-widget-one">
                     <div class="qodef-widget-side-area-cart-inner">
                         <a itemprop="url" class="qodef-m-opener" href="{{ route('client.cart.index') }}">
                             <span class="qodef-m-opener-icon">
