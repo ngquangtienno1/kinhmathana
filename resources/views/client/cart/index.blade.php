@@ -79,8 +79,23 @@
                                                             {{ $cartProduct->name }}
                                                         </a>
                                                         <div>
-                                                            @if ($item->variation && $item->variation->name)
-                                                                <small>Phân loại: {{ $item->variation->name }}</small>
+                                                            @if ($item->variation)
+                                                                <small>
+                                                                    @php $v = $item->variation; @endphp
+                                                                    Phân loại:
+                                                                    @if ($v->color)
+                                                                        Màu: {{ $v->color->name }}
+                                                                    @endif
+                                                                    @if ($v->size)
+                                                                        | Size: {{ $v->size->name }}
+                                                                    @endif
+                                                                    @if ($v->spherical)
+                                                                        | Độ cận: {{ $v->spherical->name }}
+                                                                    @endif
+                                                                    @if ($v->cylindrical)
+                                                                        | Độ loạn: {{ $v->cylindrical->name }}
+                                                                    @endif
+                                                                </small>
                                                             @endif
                                                         </div>
                                                     </td>

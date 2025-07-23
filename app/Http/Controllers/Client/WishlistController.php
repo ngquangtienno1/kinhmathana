@@ -21,19 +21,28 @@ class WishlistController extends Controller
     // Thêm vào wishlist
     public function addToWishlist(Request $request)
     {
+
         $user = Auth::user();
         if (!$user) {
             return redirect()->route('client.login')->with('error', 'Bạn cần đăng nhập!');
         }
         $productId = $request->input('product_id');
+        $variationId = $request->input('variation_id');
         if (!$productId || !Product::find($productId)) {
             return redirect()->back()->with('error', 'Sản phẩm không tồn tại!');
         }
-        $exists = Wishlist::where('user_id', $user->id)->where('product_id', $productId)->exists();
+        $exists = Wishlist::where('user_id', $user->id)
+            ->where('product_id', $productId)
+            ->where('variation_id', $variationId)
+            ->exists();
         if ($exists) {
             return redirect()->back()->with('error', 'Sản phẩm đã có trong yêu thích!');
         }
-        Wishlist::create(['user_id' => $user->id, 'product_id' => $productId]);
+        Wishlist::create([
+            'user_id' => $user->id,
+            'product_id' => $productId,
+            'variation_id' => $variationId,
+        ]);
         return redirect()->back()->with('success', 'Đã thêm vào yêu thích!');
     }
 
@@ -48,4 +57,4 @@ class WishlistController extends Controller
         Wishlist::where('user_id', $user->id)->where('product_id', $productId)->delete();
         return redirect()->back()->with('success', 'Đã xóa khỏi yêu thích!');
     }
-} 
+}
