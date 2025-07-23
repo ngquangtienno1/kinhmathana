@@ -1,3 +1,6 @@
+@php
+    $logoUrl = getSetting('logo_url') ?? asset('images/default-logo.png');
+@endphp
 <footer id="qodef-page-footer" role="contentinfo">
     <div id="qodef-page-footer-top-area">
         <div id="qodef-page-footer-top-area-inner" class="qodef-content-grid">
@@ -6,11 +9,21 @@
                 <div class="qodef-grid-inner clear">
                     <div class="qodef-grid-item">
                         <div id="media_image-2" class="widget widget_media_image"
-                            data-area="qodef-footer-top-area-column-1"><a href="index.html"><img loading="lazy"
-                                    width="188" height="89"
-                                    src="{{ asset('v1/wp-content/uploads/2021/08/logo-footer-img.jpg') }}"
-                                    class="image wp-image-6507  attachment-full size-full" alt="c"
-                                    style="max-width: 100%; height: auto;" decoding="async" /></a></div>
+                            data-area="qodef-footer-top-area-column-1"><a href="{{ route('client.home') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 150" width="220"
+                                    height="150">
+                                    <!-- HANA -->
+                                    <text x="50%" y="50%" text-anchor="middle"
+                                        style="font-family: Arial, sans-serif; font-size: 70px; font-weight: bold; letter-spacing: 14px; fill: #000;">
+                                        HANA
+                                    </text>
+                                    <!-- EYEWEAR -->
+                                    <text x="50%" y="80%" text-anchor="middle"
+                                        style="font-family: Arial, sans-serif; font-size: 22px; letter-spacing: 12px; fill: #000;">
+                                        EYEWEAR
+                                    </text>
+                                </svg>
+                            </a></div>
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-2" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-2">

@@ -1,5 +1,11 @@
 <div id="qodef-top-area">
     <div id="qodef-top-area-inner">
+        @php
+            $contactEmail = getSetting('contact_email');
+            $hotline = getSetting('hotline');
+            $address = getSetting('address');
+            $logoUrl = getSetting('logo_url') ?? asset('images/default-logo.png');
+        @endphp
         <div class="qodef-widget-holder qodef--left">
             <div id="neoocular_core_social_icons_group-10"
                 class="widget widget_neoocular_core_social_icons_group qodef-top-bar-widget">
@@ -26,14 +32,12 @@
             <div id="neoocular_core_icon_list_item-2"
                 class="widget widget_neoocular_core_icon_list_item qodef-top-bar-widget">
                 <div class="qodef-icon-list-item qodef-icon--icon-pack">
-                    <p class="qodef-e-title"> <a itemprop="url"
-                            href="cdn-cgi/l/email-protection.html#93fdf6fcfcf0e6fff2e1d3f6ebf2fee3fff6bdf0fcfe"
-                            target="_self"> <span class="qodef-e-title-inner"> <span
+                    <p class="qodef-e-title"> <a itemprop="url" href="mailto:{{ $contactEmail }}" target="_self"> <span
+                                class="qodef-e-title-inner"> <span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal">
                                     <span class="qodef-icon-elegant-icons icon_mail_alt qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text"><span
-                                        class="__cf_email__"
-                                        data-cfemail="a7c9c2c8c8c4d2cbc6d5e7c2dfc6cad7cbc289c4c8ca">hanaeyewear@gmail.com</span></span>
+                                        style="font-size: 13px"></span> </span> <span
+                                    class="qodef-e-title-text">{{ $contactEmail }}</span>
                             </span> </a> </p>
                 </div>
             </div>
@@ -42,27 +46,26 @@
             <div id="neoocular_core_icon_list_item-3"
                 class="widget widget_neoocular_core_icon_list_item qodef-top-bar-widget">
                 <div class="qodef-icon-list-item qodef-icon--icon-pack">
-                    <p class="qodef-e-title"> <a itemprop="url"
-                            href="https://www.google.com/maps/place/235+N+Edison+St,+Arlington,+VA+22203,+Сједињене+Државе/@38.8707177,-77.1215461,17z/data=!4m13!1m7!3m6!1s0x89c25fa49a2e2aab:0xa1eaf390d7f05233!2zMzR0aCBBdmUsIFF1ZWVucywgTlksINCh0ZjQtdC00LjRmtC10L3QtSDQlNGA0LbQsNCy0LU!3b1!8m2!3d40.7543519!4d-73.8794607!3m4!1s0x89b7b4140e49133d:0x6babc70bb7855a6b!8m2!3d38.8700651!4d-77.1206735"
-                            target="_blank"> <span class="qodef-e-title-inner"> <span
+                    <p class="qodef-e-title"> <a itemprop="url" href="#" target="_blank"> <span
+                                class="qodef-e-title-inner"> <span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 7px 0 0"> <span
                                         class="qodef-icon-elegant-icons icon_pin_alt qodef-icon qodef-e"
-                                        style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">Trịnh
-                                    Văn Bô, Nam Từ Liêm, Hà Nội</span>
+                                        style="font-size: 13px"></span> </span> <span
+                                    class="qodef-e-title-text">{{ $address }}</span>
                             </span> </a> </p>
                 </div>
             </div>
             <div id="neoocular_core_icon_list_item-4"
                 class="widget widget_neoocular_core_icon_list_item qodef-top-bar-widget">
                 <div class="qodef-icon-list-item qodef-icon--icon-pack">
-                    <p class="qodef-e-title"> <a itemprop="url" href="tel:+34936915450" target="_self"> <span
+                    <p class="qodef-e-title"> <a itemprop="url" href="tel:{{ $hotline }}" target="_self"> <span
                                 class="qodef-e-title-inner"> <span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
                                     style="margin: 0 5px 0 -2px"> <span
                                         class="qodef-icon-elegant-icons icon_mobile qodef-icon qodef-e"
                                         style="font-size: 13px"></span> </span> <span class="qodef-e-title-text">SĐT:
-                                    +84936915450</span> </span> </a> </p>
+                                    {{ $hotline }}</span> </span> </a> </p>
                 </div>
             </div>
             <div id="neoocular_core_icon_list_item-5"
@@ -83,56 +86,18 @@
         <div class="qodef-header-wrapper">
             <div class="qodef-header-logo">
                 <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--svg-path"
-                    href="index.html" rel="home">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                        stroke="none" viewBox="0 0 118 48" enable-background="new 0 0 118 48" xml:space="preserve">
-                        <g>
-                            <g>
-                                <path
-                                    d="M29.736,43.063c0.3-0.513,0.707-0.923,1.22-1.229s1.072-0.459,1.678-0.459c0.6,0,1.157,0.153,1.67,0.459
-    c0.513,0.306,0.922,0.717,1.229,1.233c0.306,0.516,0.459,1.07,0.459,1.665c0,0.605-0.152,1.164-0.455,1.674
-    c-0.303,0.51-0.713,0.915-1.229,1.215c-0.516,0.3-1.074,0.45-1.674,0.45c-0.606,0-1.165-0.148-1.678-0.445
-    c-0.513-0.298-0.919-0.701-1.22-1.211c-0.3-0.51-0.45-1.071-0.45-1.683C29.286,44.133,29.436,43.576,29.736,43.063z
-     M30.672,45.903c0.204,0.354,0.481,0.636,0.833,0.846s0.737,0.315,1.157,0.315c0.414,0,0.792-0.104,1.134-0.311
-    c0.342-0.207,0.613-0.489,0.814-0.847c0.201-0.356,0.302-0.748,0.302-1.174c0-0.427-0.102-0.819-0.306-1.18
-    c-0.204-0.359-0.48-0.645-0.828-0.854c-0.348-0.21-0.729-0.315-1.143-0.315c-0.42,0-0.802,0.105-1.147,0.315
-    c-0.345,0.21-0.618,0.495-0.819,0.854c-0.201,0.36-0.301,0.753-0.301,1.18C30.366,45.159,30.468,45.549,30.672,45.903z" />
-                                <path d="M45.59,47.883c-0.34,0.126-0.71,0.189-1.112,0.189c-0.678,0-1.27-0.148-1.777-0.445c-0.507-0.298-0.897-0.696-1.17-1.197
-    s-0.409-1.052-0.409-1.651c0-0.654,0.136-1.239,0.409-1.755c0.273-0.517,0.654-0.92,1.143-1.211
-    c0.49-0.291,1.045-0.437,1.669-0.437c0.384,0,0.739,0.051,1.066,0.153c0.327,0.102,0.617,0.23,0.869,0.387l-0.414,0.981
-    c-0.486-0.343-0.981-0.514-1.485-0.514c-0.384,0-0.742,0.104-1.075,0.311s-0.599,0.489-0.797,0.846
-    c-0.198,0.357-0.297,0.749-0.297,1.175c0,0.45,0.091,0.854,0.274,1.211c0.183,0.356,0.444,0.636,0.783,0.837
-    c0.339,0.201,0.73,0.302,1.175,0.302c0.317,0,0.604-0.049,0.859-0.145c0.255-0.096,0.469-0.219,0.644-0.369l0.44,0.937
-    C46.194,47.625,45.929,47.757,45.59,47.883z" />
-                                <path d="M53.063,46.344c0.132,0.216,0.312,0.389,0.54,0.518c0.228,0.129,0.477,0.193,0.747,0.193c0.282,0,0.538-0.063,0.77-0.188
-    c0.23-0.126,0.412-0.297,0.544-0.514c0.133-0.216,0.198-0.452,0.198-0.711v-4.193h1.035v4.221c0,0.468-0.112,0.884-0.338,1.246
-    c-0.225,0.363-0.532,0.647-0.922,0.851c-0.391,0.204-0.819,0.307-1.287,0.307s-0.896-0.103-1.282-0.307
-    c-0.388-0.203-0.692-0.487-0.914-0.851c-0.222-0.362-0.333-0.778-0.333-1.246v-4.221h1.044v4.193
-    C52.865,45.894,52.932,46.128,53.063,46.344z" />
-                                <path d="M63.784,41.448v5.544h3.23V48h-4.283v-6.552H63.784z" />
-                                <path d="M75.906,46.461h-2.385L72.891,48h-1.035l2.898-6.822h0.063L77.715,48h-1.206L75.906,46.461z M75.555,45.561l-0.819-2.069
-    l-0.846,2.069H75.555z" />
-                                <path d="M86.553,48l-1.477-2.277h-0.107h-0.945V48h-1.053v-6.552h1.845c0.731,0,1.318,0.186,1.76,0.558
-    c0.44,0.372,0.661,0.889,0.661,1.548c0,0.402-0.086,0.775-0.257,1.121c-0.171,0.345-0.439,0.61-0.806,0.796L87.768,48H86.553z
-     M84.024,44.715h0.936c0.42,0,0.725-0.115,0.914-0.347c0.188-0.23,0.283-0.49,0.283-0.778c0-0.168-0.036-0.337-0.108-0.509
-    c-0.071-0.171-0.194-0.317-0.368-0.44c-0.175-0.123-0.402-0.185-0.685-0.185h-0.972V44.715z" />
-                            </g>
-                            <g>
-                                <path
-                                    d="M23.546,1.03v27.213h-0.142L5.108,11.724l0.107,15.454h-5.223V0h0.213l18.261,16.769L18.359,1.03H23.546z" />
-                                <path
-                                    d="M93.029,7.496c1.195-2.06,2.818-3.7,4.867-4.92c2.048-1.22,4.268-1.83,6.661-1.83c2.392,0,4.612,0.61,6.661,1.83
-    c2.048,1.22,3.683,2.86,4.903,4.92c1.219,2.061,1.83,4.276,1.83,6.644c0,2.416-0.611,4.643-1.83,6.679
-    c-1.22,2.038-2.855,3.654-4.903,4.85c-2.049,1.196-4.269,1.794-6.661,1.794c-2.416,0-4.642-0.598-6.679-1.794
-    c-2.037-1.196-3.654-2.812-4.849-4.85c-1.196-2.037-1.794-4.263-1.794-6.679C91.235,11.772,91.833,9.557,93.029,7.496z
-     M97.647,18.332c0.723,1.279,1.705,2.291,2.949,3.037c1.243,0.746,2.623,1.119,4.139,1.119c1.468,0,2.807-0.373,4.015-1.119
-    c1.208-0.746,2.155-1.753,2.842-3.019c0.687-1.267,1.031-2.67,1.031-4.21c0-1.563-0.356-2.984-1.067-4.263
-    c-0.71-1.279-1.675-2.292-2.895-3.038c-1.22-0.746-2.576-1.119-4.068-1.119s-2.849,0.373-4.068,1.119
-    c-1.22,0.746-2.185,1.759-2.896,3.038c-0.711,1.279-1.066,2.7-1.066,4.263C96.564,15.656,96.925,17.053,97.647,18.332z" />
-                                <polygon
-                                    points="58,22 58,17 68,17 68,12 58,12 58,6 71,6 71,1 53,1 53,12 42,12 42,17 53,17 53,27 71,27 71,22 		" />
-                            </g>
-                        </g>
+                    href="{{ route('client.home') }}" rel="home">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 150" width="160" height="150">
+                        <!-- HANA -->
+                        <text x="50%" y="50%" text-anchor="middle"
+                            style="font-family: Arial, sans-serif; font-size: 70px; font-weight: bold; letter-spacing: 14px; fill: #000;">
+                            HANA
+                        </text>
+                        <!-- EYEWEAR -->
+                        <text x="50%" y="80%" text-anchor="middle"
+                            style="font-family: Arial, sans-serif; font-size: 22px; letter-spacing: 12px; fill: #000;">
+                            EYEWEAR
+                        </text>
                     </svg>
                 </a>
             </div>
@@ -224,8 +189,8 @@
                     </li>
                     <li
                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-113 qodef--hide-link qodef-menu-item--wide {{ request()->routeIs('client.products.index') ? 'current-menu-ancestor current-menu-parent' : '' }}">
-                        <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Sản phẩm<svg
-                                    class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
+                        <a href="{{ route('client.products.index') }}"><span class="qodef-menu-item-text">Sản
+                                phẩm<svg class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"
                                     viewBox="0 0 32 32">
                                     <g>
@@ -753,58 +718,21 @@
     <div class="qodef-header-sticky qodef-custom-header-layout qodef-skin--dark qodef-appearance--down">
         <div class="qodef-header-sticky-inner ">
             <a itemprop="url" class="qodef-header-logo-link qodef-height--set qodef-source--svg-path"
-                href="index.html" rel="home">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                    stroke="none" viewBox="0 0 118 48" enable-background="new 0 0 118 48" xml:space="preserve">
-                    <g>
-                        <g>
-                            <path
-                                d="M29.736,43.063c0.3-0.513,0.707-0.923,1.22-1.229s1.072-0.459,1.678-0.459c0.6,0,1.157,0.153,1.67,0.459
-    c0.513,0.306,0.922,0.717,1.229,1.233c0.306,0.516,0.459,1.07,0.459,1.665c0,0.605-0.152,1.164-0.455,1.674
-    c-0.303,0.51-0.713,0.915-1.229,1.215c-0.516,0.3-1.074,0.45-1.674,0.45c-0.606,0-1.165-0.148-1.678-0.445
-    c-0.513-0.298-0.919-0.701-1.22-1.211c-0.3-0.51-0.45-1.071-0.45-1.683C29.286,44.133,29.436,43.576,29.736,43.063z
-     M30.672,45.903c0.204,0.354,0.481,0.636,0.833,0.846s0.737,0.315,1.157,0.315c0.414,0,0.792-0.104,1.134-0.311
-    c0.342-0.207,0.613-0.489,0.814-0.847c0.201-0.356,0.302-0.748,0.302-1.174c0-0.427-0.102-0.819-0.306-1.18
-    c-0.204-0.359-0.48-0.645-0.828-0.854c-0.348-0.21-0.729-0.315-1.143-0.315c-0.42,0-0.802,0.105-1.147,0.315
-    c-0.345,0.21-0.618,0.495-0.819,0.854c-0.201,0.36-0.301,0.753-0.301,1.18C30.366,45.159,30.468,45.549,30.672,45.903z" />
-                            <path d="M45.59,47.883c-0.34,0.126-0.71,0.189-1.112,0.189c-0.678,0-1.27-0.148-1.777-0.445c-0.507-0.298-0.897-0.696-1.17-1.197
-    s-0.409-1.052-0.409-1.651c0-0.654,0.136-1.239,0.409-1.755c0.273-0.517,0.654-0.92,1.143-1.211
-    c0.49-0.291,1.045-0.437,1.669-0.437c0.384,0,0.739,0.051,1.066,0.153c0.327,0.102,0.617,0.23,0.869,0.387l-0.414,0.981
-    c-0.486-0.343-0.981-0.514-1.485-0.514c-0.384,0-0.742,0.104-1.075,0.311s-0.599,0.489-0.797,0.846
-    c-0.198,0.357-0.297,0.749-0.297,1.175c0,0.45,0.091,0.854,0.274,1.211c0.183,0.356,0.444,0.636,0.783,0.837
-    c0.339,0.201,0.73,0.302,1.175,0.302c0.317,0,0.604-0.049,0.859-0.145c0.255-0.096,0.469-0.219,0.644-0.369l0.44,0.937
-    C46.194,47.625,45.929,47.757,45.59,47.883z" />
-                            <path d="M53.063,46.344c0.132,0.216,0.312,0.389,0.54,0.518c0.228,0.129,0.477,0.193,0.747,0.193c0.282,0,0.538-0.063,0.77-0.188
-    c0.23-0.126,0.412-0.297,0.544-0.514c0.133-0.216,0.198-0.452,0.198-0.711v-4.193h1.035v4.221c0,0.468-0.112,0.884-0.338,1.246
-    c-0.225,0.363-0.532,0.647-0.922,0.851c-0.391,0.204-0.819,0.307-1.287,0.307s-0.896-0.103-1.282-0.307
-    c-0.388-0.203-0.692-0.487-0.914-0.851c-0.222-0.362-0.333-0.778-0.333-1.246v-4.221h1.044v4.193
-    C52.865,45.894,52.932,46.128,53.063,46.344z" />
-                            <path d="M63.784,41.448v5.544h3.23V48h-4.283v-6.552H63.784z" />
-                            <path d="M75.906,46.461h-2.385L72.891,48h-1.035l2.898-6.822h0.063L77.715,48h-1.206L75.906,46.461z M75.555,45.561l-0.819-2.069
-    l-0.846,2.069H75.555z" />
-                            <path d="M86.553,48l-1.477-2.277h-0.107h-0.945V48h-1.053v-6.552h1.845c0.731,0,1.318,0.186,1.76,0.558
-    c0.44,0.372,0.661,0.889,0.661,1.548c0,0.402-0.086,0.775-0.257,1.121c-0.171,0.345-0.439,0.61-0.806,0.796L87.768,48H86.553z
-     M84.024,44.715h0.936c0.42,0,0.725-0.115,0.914-0.347c0.188-0.23,0.283-0.49,0.283-0.778c0-0.168-0.036-0.337-0.108-0.509
-    c-0.071-0.171-0.194-0.317-0.368-0.44c-0.175-0.123-0.402-0.185-0.685-0.185h-0.972V44.715z" />
-                        </g>
-                        <g>
-                            <path
-                                d="M23.546,1.03v27.213h-0.142L5.108,11.724l0.107,15.454h-5.223V0h0.213l18.261,16.769L18.359,1.03H23.546z" />
-                            <path
-                                d="M93.029,7.496c1.195-2.06,2.818-3.7,4.867-4.92c2.048-1.22,4.268-1.83,6.661-1.83c2.392,0,4.612,0.61,6.661,1.83
-    c2.048,1.22,3.683,2.86,4.903,4.92c1.219,2.061,1.83,4.276,1.83,6.644c0,2.416-0.611,4.643-1.83,6.679
-    c-1.22,2.038-2.855,3.654-4.903,4.85c-2.049,1.196-4.269,1.794-6.661,1.794c-2.416,0-4.642-0.598-6.679-1.794
-    c-2.037-1.196-3.654-2.812-4.849-4.85c-1.196-2.037-1.794-4.263-1.794-6.679C91.235,11.772,91.833,9.557,93.029,7.496z
-     M97.647,18.332c0.723,1.279,1.705,2.291,2.949,3.037c1.243,0.746,2.623,1.119,4.139,1.119c1.468,0,2.807-0.373,4.015-1.119
-    c1.208-0.746,2.155-1.753,2.842-3.019c0.687-1.267,1.031-2.67,1.031-4.21c0-1.563-0.356-2.984-1.067-4.263
-    c-0.71-1.279-1.675-2.292-2.895-3.038c-1.22-0.746-2.576-1.119-4.068-1.119s-2.849,0.373-4.068,1.119
-    c-1.22,0.746-2.185,1.759-2.896,3.038c-0.711,1.279-1.066,2.7-1.066,4.263C96.564,15.656,96.925,17.053,97.647,18.332z" />
-                            <polygon
-                                points="58,22 58,17 68,17 68,12 58,12 58,6 71,6 71,1 53,1 53,12 42,12 42,17 53,17 53,27 71,27 71,22 		" />
-                        </g>
-                    </g>
+                href="{{ route('client.home') }}" rel="home">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 150" width="160" height="150">
+                    <!-- HANA -->
+                    <text x="50%" y="50%" text-anchor="middle"
+                        style="font-family: Arial, sans-serif; font-size: 70px; font-weight: bold; letter-spacing: 14px; fill: #000;">
+                        HANA
+                    </text>
+                    <!-- EYEWEAR -->
+                    <text x="50%" y="80%" text-anchor="middle"
+                        style="font-family: Arial, sans-serif; font-size: 22px; letter-spacing: 12px; fill: #000;">
+                        EYEWEAR
+                    </text>
                 </svg>
             </a>
+
             <nav class="qodef-header-navigation" role="navigation" aria-label="Top Menu">
                 <ul id="menu-main-menu-2" class="menu">
                     <li

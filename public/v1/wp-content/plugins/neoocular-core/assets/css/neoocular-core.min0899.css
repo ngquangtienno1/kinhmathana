@@ -1034,12 +1034,12 @@
     left: 0;
     transform: translateY(-50%);
 }
-#qodef-page-header .qodef-header-logo-link.qodef-source--svg-path svg {
+/* #qodef-page-header .qodef-header-logo-link.qodef-source--svg-path svg {
     display: block;
     fill: currentColor;
     stroke: none;
     height: 100%;
-}
+} */
 #qodef-page-header .qodef-header-logo-link.qodef-source--textual {
     font-family: "Work Sans", sans-serif;
     font-weight: 600;
