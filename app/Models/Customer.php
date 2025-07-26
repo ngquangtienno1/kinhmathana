@@ -36,7 +36,10 @@ class Customer extends Model
 
     public function updateCustomerType()
     {
-        if ($this->total_spent >= 5000000 || $this->total_orders >= 10) {
+        if (
+            $this->total_spent >= 5000000
+            || $this->total_orders >= 10
+        ) {
             $this->customer_type = 'vip';
         } elseif ($this->created_at->diffInDays(now()) <= 7) {
             $this->customer_type = 'new';
@@ -45,7 +48,6 @@ class Customer extends Model
         } else {
             $this->customer_type = 'regular';
         }
-        $this->save();
     }
 
     public function getCalculatedTotalSpentAttribute()

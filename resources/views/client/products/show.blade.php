@@ -96,9 +96,16 @@
                                             <span style="font-size:0.9em;">VNĐ</span></bdi>
                                     </span>
                                 </p>
-                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
-                                    Số lượng: <strong>{{ $product->total_stock_quantity }}</strong>
-                                </div>
+                                @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
+                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                        <strong id="variant-stock-quantity">Hết hàng</strong>
+                                    </div>
+                                @else
+                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+                                        Số lượng: <strong
+                                            id="variant-stock-quantity">{{ $selectedVariation->stock_quantity ?? $product->total_stock_quantity }}</strong>
+                                    </div>
+                                @endif
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
                                 </div>
@@ -234,25 +241,116 @@
                                 @endif
                                 <div
                                     class="qwfw-add-to-wishlist-wrapper qwfw--single qwfw-position--after-add-to-cart qwfw-item-type--icon-with-text qodef-neoocular-theme">
-                                    <a role="button" tabindex="0"
-                                        class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
-                                        href="index7f33.html?add_to_wishlist=921" data-item-id="921"
-                                        data-original-item-id="921" aria-label="Thêm vào danh sách yêu thích"
-                                        data-shortcode-atts="{"button_behavior":"view","button_type":"icon-with-text","show_count":"","require_login":false}"
-                                        rel="noopener noreferrer"> <span class="qwfw-m-spinner qwfw-spinner-icon"> <svg
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                                <path
-                                                    d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                </path>
-                                            </svg></span> <span class="qwfw-m-icon qwfw--predefined"> <svg
-                                                xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                viewBox="0 0 32 32" fill="currentColor">
-                                                <g>
+                                    @php
+                                        $inWishlist = false;
+                                        if (Auth::check()) {
+                                            $inWishlist = \App\Models\Wishlist::where('user_id', Auth::id())
+                                                ->where('product_id', $product->id)
+                                                ->when(request('variation_id'), function ($q) {
+                                                    $q->where('variation_id', request('variation_id'));
+                                                })
+                                                ->exists();
+                                        }
+                                    @endphp
+                                    @if (Auth::check())
+                                        @if ($inWishlist)
+                                            <button type="button"
+                                                class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
+                                                style="background:none;border:none;padding:0;cursor:pointer;" disabled>
+                                                <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                    <!-- Trái tim đen fill -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                        viewBox="0 0 24 24" fill="black">
+                                                        <path
+                                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                    </svg>
+                                                </span>
+                                                <span class="qwfw-m-icon qwfw--predefined">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                        viewBox="0 0 32 32" fill="black">
+                                                        <path
+                                                            d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z" />
+                                                    </svg>
+                                                </span>
+                                                <span class="qwfw-m-text">Đã thêm vào yêu thích</span>
+                                            </button>
+                                        @else
+                                            <form method="POST" action="{{ route('client.wishlist.add') }}"
+                                                class="add-to-wishlist-form" style="display:inline;">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <input type="hidden" name="variation_id" id="wishlist-variation-id"
+                                                    value="{{ $selectedVariation->id ?? '' }}">
+                                                <button type="submit"
+                                                    class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text"
+                                                    style="background:none;border:none;padding:0;cursor:pointer;"
+                                                    id="add-to-wishlist-btn"
+                                                    {{ empty($selectedVariation->id) ? 'disabled' : '' }}>
+                                                    <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                        <!-- Trái tim viền -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22"
+                                                            height="22" viewBox="0 0 24 24" fill="none"
+                                                            stroke="black" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round">
+                                                            <path
+                                                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span class="qwfw-m-icon qwfw--predefined">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                            height="32" viewBox="0 0 32 32" fill="black">
+                                                            <path
+                                                                d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span class="qwfw-m-text">Thêm vào yêu thích</span>
+                                                </button>
+                                            </form>
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    function updateWishlistBtn() {
+                                                        var variationId = document.querySelector('input[name="variation_id"]')?.value;
+                                                        var btn = document.getElementById('add-to-wishlist-btn');
+                                                        if (btn) {
+                                                            btn.disabled = !variationId;
+                                                        }
+                                                        var wishlistInput = document.getElementById('wishlist-variation-id');
+                                                        if (wishlistInput && variationId) {
+                                                            wishlistInput.value = variationId;
+                                                        }
+                                                    }
+                                                    document.querySelectorAll('.variation-btn').forEach(function(btn) {
+                                                        btn.addEventListener('click', function() {
+                                                            setTimeout(updateWishlistBtn, 100); // Đợi input hidden cập nhật
+                                                        });
+                                                    });
+                                                    updateWishlistBtn();
+                                                });
+                                            </script>
+                                        @endif
+                                    @else
+                                        <a href="{{ route('client.login') }}"
+                                            class="qwfw-shortcode qwfw-m  qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon-with-text">
+                                            <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                    viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
                                                     <path
-                                                        d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                </g>
-                                            </svg> </span> <span class="qwfw-m-text">Thêm vào yêu thích</span>
-                                    </a>
+                                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                </svg>
+                                            </span>
+                                            <span class="qwfw-m-icon qwfw--predefined">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                    viewBox="0 0 32 32" fill="none" stroke="black" stroke-width="2">
+                                                    <g>
+                                                        <path
+                                                            d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
+                                                    </g>
+                                                </svg>
+                                            </span>
+                                            <span class="qwfw-m-text">Thêm vào yêu thích</span>
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="product_meta">
                                     @if ($product->sku && $product->sku !== '0158')
@@ -386,22 +484,300 @@
                             id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
                             <h2>Đánh giá</h2>
                             @if ($product->reviews->count() > 0)
-                                <div class="reviews-list">
-                                    @foreach ($product->reviews as $review)
-                                        <div class="review-item mb-3 p-3 border rounded">
-                                            <div class="d-flex justify-content-between">
-                                                <strong>{{ $review->user->name ?? 'Người dùng ẩn danh' }}</strong>
-                                                <span>{{ $review->created_at->format('d/m/Y H:i') }}</span>
-                                            </div>
-                                            <div class="rating">
+                                <div class="dmx-review-section">
+                                    <div class="dmx-review-summary">
+                                        <div class="dmx-review-score">
+                                            <span
+                                                class="score">{{ number_format($product->reviews->avg('rating'), 1) }}</span>
+                                            <span class="score-max">/5</span>
+                                            <div class="score-stars">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     <span
-                                                        class="star {{ $i <= $review->rating ? 'filled' : '' }}">★</span>
+                                                        class="star{{ $i <= round($product->reviews->avg('rating')) ? ' filled' : '' }}">★</span>
                                                 @endfor
                                             </div>
-                                            <p class="mt-2">{{ $review->content }}</p>
+                                            <div class="score-count">{{ $product->reviews->count() }} đánh giá</div>
                                         </div>
-                                    @endforeach
+                                        <div class="dmx-review-breakdown">
+                                            @for ($i = 5; $i >= 1; $i--)
+                                                @php
+                                                    $count = $product->reviews->where('rating', $i)->count();
+                                                    $percent = $product->reviews->count()
+                                                        ? round(($count / $product->reviews->count()) * 100)
+                                                        : 0;
+                                                @endphp
+                                                <div class="breakdown-row">
+                                                    <span class="star-label">{{ $i }} <span
+                                                            class="star">★</span></span>
+                                                    <div class="progress-bar">
+                                                        <div class="progress" style="width: {{ $percent }}%"></div>
+                                                    </div>
+                                                    <span class="percent">{{ $percent }}%</span>
+                                                </div>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                    <div class="dmx-review-filter-bar" style="display:flex;gap:10px;margin-bottom:18px;">
+                                        <button class="review-filter-btn active" data-star="all">Tất Cả</button>
+                                        @for ($i = 5; $i >= 1; $i--)
+                                            <button class="review-filter-btn" data-star="{{ $i }}">
+                                                {{ $i }} Sao
+                                                ({{ $product->reviews->where('rating', $i)->count() }})
+                                            </button>
+                                        @endfor
+                                    </div>
+                                    <div class="dmx-review-list">
+                                        @php $totalReviews = $product->reviews->count(); @endphp
+                                        @foreach ($product->reviews->sortByDesc('created_at')->take(2) as $review)
+                                            <div class="dmx-review-item">
+                                                <div class="review-header">
+                                                    <span class="reviewer">{{ $review->user->name ?? 'Ẩn danh' }}</span>
+                                                    <span
+                                                        class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                                                </div>
+                                                @php
+                                                    $orderItem = null;
+                                                    if ($review->order_id && $review->product_id) {
+                                                        $orderItem = \App\Models\OrderItem::where(
+                                                            'order_id',
+                                                            $review->order_id,
+                                                        )
+                                                            ->where('product_id', $review->product_id)
+                                                            ->first();
+                                                    }
+                                                    $optionTexts = [];
+                                                    if ($orderItem && $orderItem->product_options) {
+                                                        $options = is_array($orderItem->product_options)
+                                                            ? $orderItem->product_options
+                                                            : json_decode($orderItem->product_options, true);
+                                                        if (!empty($options['color'])) {
+                                                            $optionTexts[] =
+                                                                'Màu sắc: <b>' . e($options['color']) . '</b>';
+                                                        }
+                                                        if (!empty($options['size'])) {
+                                                            $optionTexts[] =
+                                                                'Kích thước: <b>' . e($options['size']) . '</b>';
+                                                        }
+                                                        if (!empty($options['spherical'])) {
+                                                            $optionTexts[] =
+                                                                'Độ cận: <b>' . e($options['spherical']) . '</b>';
+                                                        }
+                                                        if (!empty($options['cylindrical'])) {
+                                                            $optionTexts[] =
+                                                                'Độ loạn: <b>' . e($options['cylindrical']) . '</b>';
+                                                        }
+                                                    }
+                                                @endphp
+                                                @if (!empty($optionTexts))
+                                                    <div class="review-variant mb-1" style="font-size:13px;color:#444;">
+                                                        <span>Phân loại hàng: {!! implode(' | ', $optionTexts) !!}</span>
+                                                    </div>
+                                                @endif
+                                                <div class="review-stars">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <span
+                                                            class="star{{ $i <= $review->rating ? ' filled' : '' }}">★</span>
+                                                    @endfor
+                                                </div>
+                                                <div class="review-content">{{ $review->content }}</div>
+                                                @if ($review->images && $review->images->count())
+                                                    <div class="review-media mt-2 d-flex flex-wrap gap-2">
+                                                        @foreach ($review->images as $media)
+                                                            @if ($media->image_path)
+                                                                <a href="{{ asset('storage/' . $media->image_path) }}"
+                                                                    target="_blank">
+                                                                    <img src="{{ asset('storage/' . $media->image_path) }}"
+                                                                        alt="Ảnh đánh giá"
+                                                                        style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
+                                                                </a>
+                                                            @endif
+                                                            @if ($media->video_path)
+                                                                <video src="{{ asset('storage/' . $media->video_path) }}"
+                                                                    controls
+                                                                    style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                @if ($review->reply)
+                                                    <div class="review-reply">
+                                                        <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                        <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                        @if ($totalReviews > 2)
+                                            @foreach ($product->reviews->sortByDesc('created_at')->slice(2) as $review)
+                                                <div class="dmx-review-item dmx-review-hidden" style="display:none;">
+                                                    <div class="review-header">
+                                                        <span
+                                                            class="reviewer">{{ $review->user->name ?? 'Ẩn danh' }}</span>
+                                                        <span
+                                                            class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                                                    </div>
+                                                    @php
+                                                        $orderItem = null;
+                                                        if ($review->order_id && $review->product_id) {
+                                                            $orderItem = \App\Models\OrderItem::where(
+                                                                'order_id',
+                                                                $review->order_id,
+                                                            )
+                                                                ->where('product_id', $review->product_id)
+                                                                ->first();
+                                                        }
+                                                        $optionTexts = [];
+                                                        if ($orderItem && $orderItem->product_options) {
+                                                            $options = is_array($orderItem->product_options)
+                                                                ? $orderItem->product_options
+                                                                : json_decode($orderItem->product_options, true);
+                                                            if (!empty($options['color'])) {
+                                                                $optionTexts[] =
+                                                                    'Màu sắc: <b>' . e($options['color']) . '</b>';
+                                                            }
+                                                            if (!empty($options['size'])) {
+                                                                $optionTexts[] =
+                                                                    'Kích thước: <b>' . e($options['size']) . '</b>';
+                                                            }
+                                                            if (!empty($options['spherical'])) {
+                                                                $optionTexts[] =
+                                                                    'Độ cận: <b>' . e($options['spherical']) . '</b>';
+                                                            }
+                                                            if (!empty($options['cylindrical'])) {
+                                                                $optionTexts[] =
+                                                                    'Độ loạn: <b>' .
+                                                                    e($options['cylindrical']) .
+                                                                    '</b>';
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    @if (!empty($optionTexts))
+                                                        <div class="review-variant mb-1"
+                                                            style="font-size:13px;color:#444;">
+                                                            <span>Phân loại hàng: {!! implode(' | ', $optionTexts) !!}</span>
+                                                        </div>
+                                                    @endif
+                                                    <div class="review-stars">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <span
+                                                                class="star{{ $i <= $review->rating ? ' filled' : '' }}">★</span>
+                                                        @endfor
+                                                    </div>
+                                                    <div class="review-content">{{ $review->content }}</div>
+                                                    @if ($review->images && $review->images->count())
+                                                        <div class="review-media mt-2 d-flex flex-wrap gap-2">
+                                                            @foreach ($review->images as $media)
+                                                                @if ($media->image_path)
+                                                                    <a href="{{ asset('storage/' . $media->image_path) }}"
+                                                                        target="_blank">
+                                                                        <img src="{{ asset('storage/' . $media->image_path) }}"
+                                                                            alt="Ảnh đánh giá"
+                                                                            style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
+                                                                    </a>
+                                                                @endif
+                                                                @if ($media->video_path)
+                                                                    <video
+                                                                        src="{{ asset('storage/' . $media->video_path) }}"
+                                                                        controls
+                                                                        style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                    @if ($review->reply)
+                                                        <div class="review-reply">
+                                                            <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                            <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <div class="dmx-review-actions">
+                                        <button class="btn btn-outline-dark" id="show-more-reviews"
+                                            style="display:{{ $totalReviews > 2 ? '' : 'none' }};">Xem thêm đánh
+                                            giá</button>
+                                        <button class="btn btn-outline-dark" id="collapse-reviews"
+                                            style="display:none;">Rút gọn</button>
+                                    </div>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var productId = '{{ $product->id }}';
+                                            var viewed = [];
+                                            var cookie = document.cookie.split('; ').find(row => row.startsWith('recently_viewed_products='));
+                                            if (cookie) {
+                                                try {
+                                                    viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+                                                } catch (e) {
+                                                    viewed = [];
+                                                }
+                                            }
+                                            viewed = viewed.filter(id => id != productId);
+                                            viewed.unshift(productId);
+                                            viewed = viewed.slice(0, 8);
+                                            document.cookie = 'recently_viewed_products=' + encodeURIComponent(JSON.stringify(viewed)) +
+                                                ';path=/;max-age=2592000';
+                                        });
+                                    </script>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var filterBtns = document.querySelectorAll('.review-filter-btn');
+                                            var btnShow = document.getElementById('show-more-reviews');
+                                            var btnCollapse = document.getElementById('collapse-reviews');
+
+                                            function updateShowMoreBtn() {
+                                                var activeBtn = document.querySelector('.review-filter-btn.active');
+                                                var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                                                var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                                                var filtered = reviews.filter(function(item) {
+                                                    if (star === 'all') return true;
+                                                    var count = 0;
+                                                    item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                                                        count++;
+                                                    });
+                                                    return parseInt(star) === count;
+                                                });
+                                                if (filtered.length > 2) {
+                                                    var allVisible = filtered.every(function(item) {
+                                                        return item.style.display !== 'none';
+                                                    });
+                                                    if (allVisible) {
+                                                        if (btnShow) btnShow.style.display = 'none';
+                                                        if (btnCollapse) btnCollapse.style.display = '';
+                                                    } else {
+                                                        if (btnShow) btnShow.style.display = '';
+                                                        if (btnCollapse) btnCollapse.style.display = 'none';
+                                                    }
+                                                } else {
+                                                    if (btnShow) btnShow.style.display = 'none';
+                                                    if (btnCollapse) btnCollapse.style.display = 'none';
+                                                }
+                                            }
+                                            filterBtns.forEach(function(btn) {
+                                                btn.addEventListener('click', function() {
+                                                    filterBtns.forEach(b => b.classList.remove('active'));
+                                                    btn.classList.add('active');
+                                                    var star = btn.getAttribute('data-star');
+                                                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                                                    var filtered = reviews.filter(function(item) {
+                                                        if (star === 'all') return true;
+                                                        var count = 0;
+                                                        item.querySelectorAll('.review-stars .star.filled').forEach(
+                                                            function() {
+                                                                count++;
+                                                            });
+                                                        return parseInt(star) === count;
+                                                    });
+                                                    filtered.forEach(function(item, idx) {
+                                                        item.style.display = idx < 2 ? '' : 'none';
+                                                    });
+                                                    updateShowMoreBtn();
+                                                });
+                                            });
+                                            updateShowMoreBtn();
+                                        });
+                                    </script>
                                 </div>
                             @else
                                 <p class="text-muted">Chưa có đánh giá nào.</p>
@@ -411,26 +787,65 @@
                             id="tab-comments" role="tabpanel" aria-labelledby="tab-title-comments"
                             style="display:none;">
                             <h2>Bình luận</h2>
-                            @if ($comments->count() > 0)
-                                <div class="comments-list">
-                                    @foreach ($comments as $comment)
-                                        <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
-                                            <div style="display: flex; align-items: baseline; gap: 8px;">
-                                                <span
-                                                    style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
-                                                <span
-                                                    style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
-                                            </div>
-                                            <div style="margin-top: 2px; font-size: 15px; color: #222;">
-                                                {{ $comment->content }}</div>
+                            @foreach ($comments as $comment)
+                                <div class="comment-item" style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div style="display: flex; align-items: baseline; gap: 8px;">
+                                        <span
+                                            style="font-weight: bold;">{{ $comment->user->name ?? 'Người dùng ẩn danh' }}</span>
+                                        <span
+                                            style="font-size: 13px; color: #888;">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                    </div>
+                                    <div style="margin-top: 2px; font-size: 15px; color: #222;">
+                                        {{ $comment->content }}
+                                    </div>
+                                    @if ($comment->replies && $comment->replies->count())
+                                        <div class="comment-replies" style="margin-left:32px; margin-top:8px;">
+                                            @foreach ($comment->replies as $reply)
+                                                <div class="reply-item"
+                                                    style="background:#f8f9fa; border-radius:6px; padding:8px 12px; margin-bottom:6px;">
+                                                    <div style="display: flex; align-items: baseline; gap: 8px;">
+                                                        <span
+                                                            style="font-weight: bold; color:#007bff;">{{ $reply->user->name ?? 'Admin' }}</span>
+                                                        <span
+                                                            style="font-size: 13px; color: #888;">{{ $reply->created_at->format('d/m/Y H:i') }}</span>
+                                                    </div>
+                                                    <div style="margin-top: 2px; font-size: 15px; color: #333;">
+                                                        {{ $reply->content }}
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    @endforeach
+                                    @endif
                                 </div>
+                            @endforeach
+                            @if (Auth::check())
+                                @if (Auth::user()->banned_until && now()->lt(Auth::user()->banned_until))
+                                    <div class="alert alert-warning" style="margin-top: 18px;">
+                                        Bạn đã bị cấm bình luận đến
+                                        {{ Auth::user()->banned_until->format('d/m/Y H:i') }}<br>
+                                        (Còn
+                                        {{ now()->diffForHumans(Auth::user()->banned_until, ['parts' => 2, 'short' => true]) }})
+                                    </div>
+                                @else
+                                    <form action="{{ route('client.products.comment', $product->id) }}" method="POST"
+                                        style="margin-top: 18px;">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="comment-content">Nội dung bình luận</label>
+                                            <textarea name="content" id="comment-content" class="form-control" rows="3" required
+                                                style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Gửi bình
+                                            luận</button>
+                                    </form>
+                                @endif
                             @else
-                                <p class="text-muted">Chưa có bình luận nào.</p>
+                                <p style="margin-top: 18px;">Bạn cần <a href="{{ route('client.login') }}">đăng nhập</a>
+                                    để bình luận.</p>
                             @endif
                         </div>
                     </div>
+
                     <section class="related products">
                         <h2>Sản phẩm liên quan</h2>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
@@ -450,8 +865,7 @@
                                                 @endphp
                                                 @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
                                                     <span class="qodef-woo-product-mark qodef-woo-onsale"
-                                                        style="position:absolute;top:10px;left:10px;z-index:2;">Giảm
-                                                        giá</span>
+                                                        style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                 @endif
                                                 <img width="600" height="431" src="{{ $relatedImagePath }}"
                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
@@ -513,11 +927,9 @@
                                                         </span>
                                                         <span class="qwfw-m-icon qwfw--predefined">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                                height="32" viewBox="0 0 32 32" fill="currentColor">
-                                                                <g>
-                                                                    <path
-                                                                        d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                                </g>
+                                                                height="32" viewBox="0 0 32 32" fill="black">
+                                                                <path
+                                                                    d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z" />
                                                             </svg>
                                                         </span>
                                                     </a>
@@ -557,6 +969,132 @@
                             </ul>
                         </div>
                     </section>
+                    @php
+                        $recentlyViewed = [];
+                        if (isset($_COOKIE['recently_viewed_products'])) {
+                            $ids = json_decode($_COOKIE['recently_viewed_products'], true);
+                            if (is_array($ids)) {
+                                // Loại bỏ sản phẩm hiện tại
+                                $ids = array_filter($ids, function ($id) use ($product) {
+                                    return $id != $product->id;
+                                });
+                                if (count($ids)) {
+                                    $recentlyViewed = \App\Models\Product::with(['images', 'categories', 'brand'])
+                                        ->whereIn('id', $ids)
+                                        ->get()
+                                        ->sortBy(function ($item) use ($ids) {
+                                            return array_search($item->id, $ids);
+                                        });
+                                }
+                            }
+                        }
+                    @endphp
+                    @if (!empty($recentlyViewed) && count($recentlyViewed))
+                        <section class="recently-viewed products">
+                            <h2 style="margin-top:32px; text-align:center;">Sản phẩm đã xem gần đây</h2>
+                            <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
+                                <ul class="products columns-4">
+                                    @foreach ($recentlyViewed->take(4) as $rvProduct)
+                                        <li
+                                            class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
+                                            <div class="qodef-e-inner">
+                                                <div class="qodef-woo-product-image" style="position:relative;">
+                                                    @php
+                                                        $rvFeaturedImage =
+                                                            $rvProduct->images->where('is_featured', true)->first() ??
+                                                            $rvProduct->images->first();
+                                                        $rvImagePath = $rvFeaturedImage
+                                                            ? asset('storage/' . $rvFeaturedImage->image_path)
+                                                            : asset('');
+                                                    @endphp
+                                                    @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
+                                                        <span class="qodef-woo-product-mark qodef-woo-onsale"
+                                                            style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
+                                                    @endif
+                                                    <img width="600" height="431" src="{{ $rvImagePath }}"
+                                                        class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+                                                        alt="{{ $rvProduct->name }}" decoding="async" />
+                                                </div>
+                                                <div class="qodef-woo-product-content">
+                                                    <h6 class="qodef-woo-product-title woocommerce-loop-product__link"><a
+                                                            href="{{ route('client.products.show', $rvProduct->slug) }}">{{ $rvProduct->name }}</a>
+                                                    </h6>
+                                                    <div class="qodef-woo-product-categories qodef-e-info">
+                                                        @foreach ($rvProduct->categories as $category)
+                                                            <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
+                                                                rel="tag">{{ $category->name }}</a>
+                                                            @if (!$loop->last)
+                                                                <span class="qodef-info-separator-single"></span>
+                                                            @endif
+                                                        @endforeach
+                                                        <div class="qodef-info-separator-end"></div>
+                                                    </div>
+                                                    <span class="price">
+                                                        @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
+                                                            <del aria-hidden="true">
+                                                                <span class="woocommerce-Price-amount amount">
+                                                                    <bdi>{{ number_format($rvProduct->price, 0, ',', '.') }}đ</bdi>
+                                                                </span>
+                                                            </del>
+                                                            <span class="screen-reader-text">Giá gốc:
+                                                                {{ number_format($rvProduct->price, 0, ',', '.') }}đ.</span>
+                                                            <ins aria-hidden="true">
+                                                                <span class="woocommerce-Price-amount amount">
+                                                                    <bdi>{{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                </span>
+                                                            </ins>
+                                                            <span class="screen-reader-text">Giá khuyến mãi:
+                                                                {{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ.</span>
+                                                        @else
+                                                            <span class="woocommerce-Price-amount amount">
+                                                                <bdi>{{ number_format($rvProduct->price ?? $rvProduct->minimum_price, 0, ',', '.') }}đ</bdi>
+                                                            </span>
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                                <div class="qodef-woo-product-image-inner">
+                                                    <div
+                                                        class="qwfw-add-to-wishlist-wrapper qwfw--loop qwfw-position--after-add-to-cart qwfw-item-type--icon qodef-neoocular-theme">
+                                                        <a role="button" tabindex="0"
+                                                            class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon"
+                                                            href="#" data-item-id="{{ $rvProduct->id }}"
+                                                            data-original-item-id="{{ $rvProduct->id }}"
+                                                            aria-label="Thêm vào danh sách yêu thích"
+                                                            data-shortcode-atts="{'button_behavior':'view','button_type':'icon','show_count':'','require_login':false}"
+                                                            rel="noopener noreferrer">
+                                                            <span class="qwfw-m-spinner qwfw-spinner-icon">...</span>
+                                                            <span class="qwfw-m-icon qwfw--predefined">...</span>
+                                                        </a>
+                                                    </div>
+                                                    <div
+                                                        class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
+                                                        <a role="button" tabindex="0"
+                                                            class="qqvfw-shortcode qqvfw-m qqvfw-quick-view-button qqvfw-type--icon-with-text"
+                                                            data-item-id="{{ $rvProduct->id }}"
+                                                            data-quick-view-type="pop-up"
+                                                            data-quick-view-type-mobile="pop-up" href="#"
+                                                            data-shortcode-atts="{'button_type':'icon-with-text'}"
+                                                            rel="noopener noreferrer">
+                                                            <span class="qqvfw-m-spinner">...</span>
+                                                            <span class="qqvfw-m-icon qqvfw-icon--predefined"><span
+                                                                    class="qodef-icon-linear-icons lnr-eye lnr"></span></span>
+                                                            <span class="qqvfw-m-text"></span>
+                                                        </a>
+                                                    </div>
+                                                    <a href="{{ route('client.products.show', $rvProduct->slug) }}"
+                                                        class="button product_type_simple add_to_cart_button ajax_add_to_cart"
+                                                        data-product_id="{{ $rvProduct->id }}"
+                                                        data-product_sku="{{ $rvProduct->sku }}"
+                                                        aria-label="Thêm vào giỏ hàng: {{ $rvProduct->name }}"
+                                                        rel="nofollow">Thêm vào giỏ hàng</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </section>
+                    @endif
                 </div>
             </div>
         </main>
@@ -687,11 +1225,18 @@
 
                 // Hàm kiểm tra và hiển thị ảnh biến thể nếu đã chọn đủ
                 function showVariationImageIfSelected() {
-                    // Lấy các giá trị đã chọn
+                    // Debug log
+                    console.log('variationsJson:', window.variationsJson);
                     const colorId = document.querySelector('input[name="color_id"]')?.value || '';
                     const sizeId = document.querySelector('input[name="size_id"]')?.value || '';
                     const sphericalId = document.querySelector('input[name="spherical_id"]')?.value || '';
                     const cylindricalId = document.querySelector('input[name="cylindrical_id"]')?.value || '';
+                    console.log('Selected:', {
+                        colorId,
+                        sizeId,
+                        sphericalId,
+                        cylindricalId
+                    });
                     // Lấy variations từ biến blade
                     const variations = window.variationsJson || [];
                     // Tìm variation phù hợp
@@ -738,10 +1283,27 @@
                             addBtn.style.pointerEvents = '';
                         }
                     }
+                    // Cập nhật số lượng tồn kho
+                    var stockElem = document.getElementById('variant-stock-quantity');
+                    if (found && enough && stockElem) {
+                        if (found.stock_quantity === 0 || found.stock_quantity === '0') {
+                            stockElem.textContent = 'Hết hàng';
+                            if (addBtn) {
+                                addBtn.disabled = true;
+                                addBtn.style.opacity = 0.7;
+                                addBtn.style.pointerEvents = 'none';
+                            }
+                        } else {
+                            stockElem.textContent = found.stock_quantity;
+                        }
+                    } else if (stockElem) {
+                        stockElem.textContent = window.defaultTotalStockQuantity ?? '';
+                    }
                 }
 
                 // Gán biến variationsJson từ blade
                 window.variationsJson = @json($variationsJson ?? []);
+                window.defaultTotalStockQuantity = {{ $product->total_stock_quantity }};
             });
         </script>
     @endpush
@@ -1017,5 +1579,384 @@
         .variation-btn:hover {
             border: 2px solid #111;
         }
+
+        .dmx-review-section {
+            background: #fff;
+            color: #111;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            padding: 32px 24px;
+            margin-bottom: 32px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dmx-review-summary {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
+
+        .dmx-review-score {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .dmx-review-score .score {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .dmx-review-score .score-max {
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        .dmx-review-score .score-stars {
+            margin: 8px 0;
+        }
+
+        .dmx-review-score .star {
+            color: #bbb;
+            font-size: 1.3rem;
+        }
+
+        .dmx-review-score .star.filled {
+            color: #f7b500;
+        }
+
+        .dmx-review-score .score-count {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .dmx-review-breakdown {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .star-label {
+            min-width: 40px;
+            color: #111;
+            font-weight: 500;
+        }
+
+        .star-label .star {
+            color: #f7b500;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 8px;
+        }
+
+        .progress {
+            height: 100%;
+            background: #111;
+            border-radius: 4px;
+        }
+
+        .percent {
+            min-width: 32px;
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        .dmx-review-list {
+            margin-top: 24px;
+        }
+
+        .dmx-review-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 18px 16px;
+            margin-bottom: 18px;
+            background: #fafafa;
+        }
+
+        .review-header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .review-date {
+            color: #888;
+            font-size: 0.95em;
+            font-weight: 400;
+        }
+
+        .review-stars {
+            margin-bottom: 6px;
+        }
+
+        .review-stars .star {
+            color: #bbb;
+            font-size: 1.1rem;
+        }
+
+        .review-stars .star.filled {
+            color: #f7b500;
+        }
+
+        .review-content {
+            color: #222;
+            font-size: 1.08em;
+            margin-bottom: 8px;
+        }
+
+        .review-reply {
+            background: #f5f5f5;
+            border-left: 3px solid #111;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .reply-label {
+            color: #111;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .reply-content {
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .dmx-review-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .btn.btn-dark {
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 28px;
+            font-weight: 600;
+            font-size: 1.08em;
+            transition: background 0.2s;
+        }
+
+        .btn.btn-dark:hover {
+            background: #333;
+        }
+
+        .btn.btn-outline-dark {
+            background: #fff;
+            color: #111;
+            border: 1.5px solid #111;
+            border-radius: 6px;
+            padding: 10px 28px;
+            font-weight: 600;
+            font-size: 1.08em;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn.btn-outline-dark:hover {
+            background: #111;
+            color: #fff;
+        }
+
+        .review-media {
+            margin-top: 6px;
+            gap: 10px;
+        }
+
+        .review-media img,
+        .review-media video {
+            transition: box-shadow 0.2s;
+        }
+
+        .review-media img:hover,
+        .review-media video:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            border-color: #bbb;
+        }
+
+        .review-variant {
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 2px;
+        }
+
+        .review-variant b {
+            color: #111;
+            font-weight: 500;
+        }
+
+        .review-filter-btn {
+            border: 1.5px solid #eee;
+            color: #222;
+            background: #fff;
+            padding: 7px 18px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: border 0.2s, color 0.2s;
+        }
+
+        .review-filter-btn.active {
+            border: 1.5px solid #f44336 !important;
+            color: #f44336 !important;
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var productId = '{{ $product->id }}';
+            var viewed = [];
+            var cookie = document.cookie.split('; ').find(row => row.startsWith('recently_viewed_products='));
+            if (cookie) {
+                try {
+                    viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+                } catch (e) {
+                    viewed = [];
+                }
+            }
+            viewed = viewed.filter(id => id != productId);
+            viewed.unshift(productId);
+            viewed = viewed.slice(0, 8);
+            document.cookie = 'recently_viewed_products=' + encodeURIComponent(JSON.stringify(viewed)) +
+                ';path=/;max-age=2592000';
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filterBtns = document.querySelectorAll('.review-filter-btn');
+            var btnShow = document.getElementById('show-more-reviews');
+            var btnCollapse = document.getElementById('collapse-reviews');
+
+            function updateShowMoreBtn() {
+                var activeBtn = document.querySelector('.review-filter-btn.active');
+                var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                var filtered = reviews.filter(function(item) {
+                    if (star === 'all') return true;
+                    var count = 0;
+                    item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                        count++;
+                    });
+                    return parseInt(star) === count;
+                });
+                if (filtered.length > 2) {
+                    var allVisible = filtered.every(function(item) {
+                        return item.style.display !== 'none';
+                    });
+                    if (allVisible) {
+                        if (btnShow) btnShow.style.display = 'none';
+                        if (btnCollapse) btnCollapse.style.display = '';
+                    } else {
+                        if (btnShow) btnShow.style.display = '';
+                        if (btnCollapse) btnCollapse.style.display = 'none';
+                    }
+                } else {
+                    if (btnShow) btnShow.style.display = 'none';
+                    if (btnCollapse) btnCollapse.style.display = 'none';
+                }
+            }
+            filterBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    var star = btn.getAttribute('data-star');
+                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                    var filtered = reviews.filter(function(item) {
+                        if (star === 'all') return true;
+                        var count = 0;
+                        item.querySelectorAll('.review-stars .star.filled').forEach(
+                            function() {
+                                count++;
+                            });
+                        return parseInt(star) === count;
+                    });
+                    filtered.forEach(function(item, idx) {
+                        item.style.display = idx < 2 ? '' : 'none';
+                    });
+                    updateShowMoreBtn();
+                });
+            });
+            updateShowMoreBtn();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filterBtns = document.querySelectorAll('.review-filter-btn');
+            var btnShow = document.getElementById('show-more-reviews');
+            var btnCollapse = document.getElementById('collapse-reviews');
+
+            if (btnShow && btnCollapse) {
+                btnShow.addEventListener('click', function() {
+                    var activeBtn = document.querySelector('.review-filter-btn.active');
+                    var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                    var filtered = reviews.filter(function(item) {
+                        if (star === 'all') return true;
+                        var count = 0;
+                        item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                            count++;
+                        });
+                        return parseInt(star) === count;
+                    });
+                    filtered.forEach(function(item) {
+                        item.style.display = '';
+                    });
+                    btnShow.style.display = 'none';
+                    btnCollapse.style.display = '';
+                });
+                btnCollapse.addEventListener('click', function() {
+                    var activeBtn = document.querySelector('.review-filter-btn.active');
+                    var star = activeBtn ? activeBtn.getAttribute('data-star') : 'all';
+                    var reviews = Array.from(document.querySelectorAll('.dmx-review-item'));
+                    var filtered = reviews.filter(function(item) {
+                        if (star === 'all') return true;
+                        var count = 0;
+                        item.querySelectorAll('.review-stars .star.filled').forEach(function() {
+                            count++;
+                        });
+                        return parseInt(star) === count;
+                    });
+                    filtered.forEach(function(item, idx) {
+                        item.style.display = idx < 2 ? '' : 'none';
+                    });
+                    btnShow.style.display = filtered.length > 2 ? '' : 'none';
+                    btnCollapse.style.display = 'none';
+                    var reviewPanel = document.querySelector('.woocommerce-Tabs-panel--reviews');
+                    if (reviewPanel) {
+                        reviewPanel.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    } else {
+                        var reviewList = document.querySelector('.dmx-review-list');
+                        if (reviewList) {
+                            reviewList.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

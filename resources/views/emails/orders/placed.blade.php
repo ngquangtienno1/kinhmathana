@@ -150,7 +150,8 @@
                     <strong>Họ tên:</strong> {{ $order->user->name }}<br>
                     <strong>Email:</strong> {{ $order->user->email }}<br>
                     <strong>Số điện thoại:</strong> {{ $order->user->phone }}<br>
-                    <strong>Địa chỉ:</strong> {{ $order->user->address }}
+                    <strong>Địa chỉ:</strong> {{ $order->user->address }}<br>
+                    <strong>Phương thức thanh toán:</strong> {{ $order->paymentMethod->name ?? 'Không xác định' }}
                 </p>
             </div>
         </div>

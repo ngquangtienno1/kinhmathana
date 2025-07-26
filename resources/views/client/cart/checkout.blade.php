@@ -1,11 +1,25 @@
 @extends('client.layouts.app')
 @section('title', 'Thanh toán đơn hàng')
 @section('content')
+    <div
+        class="qodef-page-title qodef-m qodef-title--standard-with-breadcrumbs qodef-alignment--left qodef-vertical-alignment--header-bottom qodef--has-image">
+        <div class="qodef-m-inner">
+            <div class="qodef-m-content qodef-content-grid">
+                <h1 class="qodef-m-title entry-title">
+                    Thanh toán </h1>
+                <div itemprop="breadcrumb" class="qodef-breadcrumbs"><a itemprop="url" class="qodef-breadcrumbs-link"
+                        href="../index.html"><span itemprop="title">Trang chủ</span></a><span
+                        class="qodef-breadcrumbs-separator"></span><span itemprop="title"
+                        class="qodef-breadcrumbs-current">Thanh toán</span></div>
+            </div>
+        </div>
+    </div>
     <div class="checkout-page-wrapper">
+
         <div class="checkout-main-flex">
+
             <!-- Left: Customer Form -->
             <div class="checkout-form-col">
-                <h1 class="checkout-title">THANH TOÁN</h1>
 
                 @if (session('success'))
                     <div class="alert alert-success"
@@ -29,27 +43,33 @@
                 @endif
 
                 <form name="checkout" method="post" class="checkout-form" action="{{ route('client.cart.checkout') }}"
-                    enctype="multipart/form-data" novalidate="novalidate">
+                    enctype="multipart/form-data" novalidate="novalidate" id="checkout-form">
                     @csrf
-                    <div class="checkout-form-group">
-                        <label for="receiver_name">Họ và tên <span class="required">*</span></label>
-                        <input type="text" class="checkout-input" name="receiver_name" id="receiver_name"
-                            placeholder="Họ và tên" value="{{ old('receiver_name', auth()->user()->name ?? '') }}">
-                    </div>
-                    <div class="checkout-form-group">
-                        <label for="receiver_phone">Số điện thoại <span class="required">*</span></label>
-                        <input type="text" class="checkout-input" name="receiver_phone" id="receiver_phone"
-                            placeholder="Số điện thoại" value="{{ old('receiver_phone', auth()->user()->phone ?? '') }}">
-                    </div>
-                    <div class="checkout-form-group">
-                        <label for="receiver_email">Email <span class="required">*</span></label>
-                        <input type="email" class="checkout-input" name="receiver_email" id="receiver_email"
-                            placeholder="Email" value="{{ old('receiver_email', auth()->user()->email ?? '') }}">
-                    </div>
-                    <div class="checkout-form-group">
-                        <label for="address">Địa chỉ chi tiết <span class="required">*</span></label>
-                        <input type="text" class="checkout-input" name="address" id="address"
-                            placeholder="Địa chỉ chi tiết" value="{{ old('address', auth()->user()->address ?? '') }}">
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:12px;">Thông tin người nhận</h3>
+                        <div class="checkout-form-group">
+                            <label for="receiver_name">Họ và tên người nhận <span class="required">*</span></label>
+                            <input type="text" class="checkout-input" name="receiver_name" id="receiver_name"
+                                placeholder="Họ và tên người nhận"
+                                value="{{ old('receiver_name', auth()->user()->name ?? '') }}">
+                        </div>
+                        <div class="checkout-form-group">
+                            <label for="receiver_phone">Số điện thoại người nhận <span class="required">*</span></label>
+                            <input type="text" class="checkout-input" name="receiver_phone" id="receiver_phone"
+                                placeholder="Số điện thoại người nhận"
+                                value="{{ old('receiver_phone', auth()->user()->phone ?? '') }}">
+                        </div>
+                        <div class="checkout-form-group">
+                            <label for="receiver_email">Email người nhận <span class="required">*</span></label>
+                            <input type="email" class="checkout-input" name="receiver_email" id="receiver_email"
+                                placeholder="Email người nhận"
+                                value="{{ old('receiver_email', auth()->user()->email ?? '') }}">
+                        </div>
+                        <div class="checkout-form-group">
+                            <label for="address">Địa chỉ chi tiết <span class="required">*</span></label>
+                            <input type="text" class="checkout-input" name="address" id="address"
+                                placeholder="Địa chỉ chi tiết" value="{{ old('address', auth()->user()->address ?? '') }}">
+                        </div>
                     </div>
                     <div class="checkout-form-group">
                         <label for="note">Thông tin bổ sung :</label>
@@ -103,7 +123,9 @@
                         </div>
                     </div>
                     <div class="checkout-form-group">
-                        <button type="submit" class="checkout-btn">Đặt hàng</button>
+                        <button type="submit" class="checkout-btn" id="checkout-btn">Đặt hàng</button>
+                        <button type="button" id="momo-btn" class="checkout-btn"
+                            style="background:#a50064;display:none;margin-top:10px;">Thanh toán MoMo</button>
                     </div>
                     <div class="checkout-privacy">
                         Thông tin cá nhân của bạn sẽ được sử dụng để xử lý đơn hàng và cho các mục đích cụ thể khác đã được
@@ -129,7 +151,7 @@
                             <span>Sản phẩm</span>
                             <span class="checkout-summary-price-label">Thành tiền</span>
                         </div>
-                        @foreach ($cartItems as $item)
+                        @foreach ($checkoutItems as $item)
                             @php
                                 $product = $item->variation ? $item->variation->product : $item->product ?? null;
                                 $images = $product && isset($product->images) ? $product->images : collect();
@@ -160,7 +182,7 @@
                     <div class="checkout-summary-totals">
                         <div class="checkout-summary-total-row">
                             <span>Tạm tính</span>
-                            <span>{{ number_format($cartItems->sum(function ($item) {$product = $item->variation ? $item->variation->product : $item->product ?? null;$price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);return $price * $item->quantity;}),0,',','.') }}đ</span>
+                            <span>{{ number_format($checkoutItems->sum(function ($item) {$product = $item->variation ? $item->variation->product : $item->product ?? null;$price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);return $price * $item->quantity;}),0,',','.') }}đ</span>
                         </div>
                         <div class="checkout-summary-total-row">
                             <span>Phí vận chuyển</span>
@@ -173,7 +195,7 @@
                         <div class="checkout-summary-total-row checkout-summary-grand">
                             <span>Tổng cộng</span>
                             <span
-                                class="checkout-summary-grand-total">{{ number_format($cartItems->sum(function ($item) {$product = $item->variation ? $item->variation->product : $item->product ?? null;$price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);return $price * $item->quantity;}) + 30000,0,',','.') }}đ</span>
+                                class="checkout-summary-grand-total">{{ number_format($checkoutItems->sum(function ($item) {$product = $item->variation ? $item->variation->product : $item->product ?? null;$price = $item->variation ? $item->variation->sale_price ?? ($item->variation->price ?? 0) : $product->sale_price ?? ($product->price ?? 0);return $price * $item->quantity;}) + 30000,0,',','.') }}đ</span>
                         </div>
                     </div>
                 </div>
@@ -256,7 +278,7 @@
 
         .checkout-btn {
             width: 100%;
-            background: #4dd0e1;
+            background: #111;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -428,8 +450,8 @@
         }
 
         /* .checkout-radio span {
-                font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-            } */
+                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                    } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -496,7 +518,9 @@
                         if (discountRow && totalRow) {
                             discountRow.innerText = '-' + formatCurrency(data.voucher
                                 .discount_amount);
-                            const newTotal = subtotal + shipping - data.voucher.discount_amount;
+                            const newTotal = Math.max(0, subtotal + shipping - data
+                                .voucher //Tuấn Anh
+                                .discount_amount);
                             totalRow.innerText = formatCurrency(newTotal);
                         }
                     } else {
@@ -522,7 +546,7 @@
                 }
                 if (shippingRow && totalRow) {
                     shippingRow.innerText = formatCurrency(fee);
-                    totalRow.innerText = formatCurrency(subtotal + fee - discount);
+                    totalRow.innerText = formatCurrency(Math.max(0, subtotal + fee - discount));
                 }
             });
         });
@@ -548,5 +572,60 @@
         function formatCurrency(num) {
             return Math.round(Number(num)).toLocaleString('vi-VN') + 'đ';
         }
+
+        const momoBtn = document.getElementById('momo-btn');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const form = document.getElementById('checkout-form');
+        const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+
+        function toggleMomoBtn() {
+            const selected = document.querySelector('input[name="payment_method"]:checked');
+            if (selected && selected.value === 'momo') {
+                momoBtn.style.display = 'block';
+                checkoutBtn.style.display = 'none';
+            } else {
+                momoBtn.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+            }
+        }
+        paymentRadios.forEach(r => r.addEventListener('change', toggleMomoBtn));
+        toggleMomoBtn();
+
+        momoBtn.addEventListener('click', function() {
+            form.action = "{{ route('client.cart.momo-payment') }}";
+            form.submit();
+        });
+
+        const vnpayBtn = document.createElement('button');
+        vnpayBtn.type = 'button';
+        vnpayBtn.id = 'vnpay-btn';
+        vnpayBtn.className = 'checkout-btn';
+        vnpayBtn.style = 'background:#0064d2;display:none;margin-top:10px;';
+        vnpayBtn.innerText = 'Thanh toán VNPAY';
+        checkoutBtn.parentNode.insertBefore(vnpayBtn, momoBtn.nextSibling);
+
+        function togglePaymentBtns() {
+            const selected = document.querySelector('input[name="payment_method"]:checked');
+            if (selected && selected.value === 'momo') {
+                momoBtn.style.display = 'block';
+                vnpayBtn.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+            } else if (selected && selected.value === 'vnpay') {
+                momoBtn.style.display = 'none';
+                vnpayBtn.style.display = 'block';
+                checkoutBtn.style.display = 'none';
+            } else {
+                momoBtn.style.display = 'none';
+                vnpayBtn.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+            }
+        }
+        paymentRadios.forEach(r => r.addEventListener('change', togglePaymentBtns));
+        togglePaymentBtns();
+
+        vnpayBtn.addEventListener('click', function() {
+            form.action = "{{ route('client.cart.vnpay-payment') }}";
+            form.submit();
+        });
     });
 </script>

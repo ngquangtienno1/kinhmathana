@@ -6,6 +6,9 @@
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @include('client.components.head')
 
 <style>
@@ -52,9 +55,21 @@
         @include('client.components.footer')
 
         @include('client.components.support-chat')
-    </div><!-- close #qodef-page-wrapper div from header.php -->
+        @include('client.components.chat')
+        @include('client.components.ai-chat')
+    </div>
     @include('client.components.script')
     @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var alertBox = document.querySelector('.alert-success, .alert-danger');
+            if (alertBox) {
+                setTimeout(function() {
+                    alertBox.style.display = 'none';
+                }, 3000); // 3 giây
+            }
+        });
+    </script>
 </body>
 
 </html>

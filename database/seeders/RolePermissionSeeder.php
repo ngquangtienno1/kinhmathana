@@ -392,6 +392,9 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Xem giao dịch kho', 'slug' => 'xem-giao-dich-kho', 'description' => 'Cho phép xem lịch sử giao dịch kho', 'group_permissions' => 'Kho'],
             ['name' => 'Thêm giao dịch kho', 'slug' => 'them-giao-dich-kho', 'description' => 'Cho phép thực hiện nhập/xuất kho', 'group_permissions' => 'Kho'],
             ['name' => 'In phiếu kho', 'slug' => 'in-phieu-kho', 'description' => 'Cho phép in phiếu kho', 'group_permissions' => 'Kho'],
+
+            // Quản lý khách hàng
+            ['name' => 'Xem hộp thư khách hàng', 'slug' => 'xem-chat', 'description' => 'Cho phép xem hộp thư khách hàng', 'group_permissions' => 'Khásch hàng'],
         ];
 
         // Thêm timestamps cho mỗi permission

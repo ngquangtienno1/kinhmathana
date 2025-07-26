@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @stack('styles')
@@ -252,7 +252,7 @@
                     </div>
                 </div>
             </div>
-            @include('admin.components.support-chat')
+            {{-- @include('admin.components.support-chat') --}}
         </main><!-- ===============================================-->
         <!--    End of Main Content-->
         <!-- ===============================================-->

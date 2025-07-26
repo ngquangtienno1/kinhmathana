@@ -20,16 +20,18 @@ document.addEventListener("DOMContentLoaded", function () {
         "set-variations-sale-price"
     );
 
-    console.log(
-        "setVariationsSalePriceBtn initialized:",
-        setVariationsSalePriceBtn
-    );
-
     // Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
     const colors = window.colors || [];
     const sizes = window.sizes || [];
-    const spherical_values = window.spherical_values || [];
-    const cylindrical_values = window.cylindrical_values || [];
+    let spherical_values = window.spherical_values || [];
+    let cylindrical_values = window.cylindrical_values || [];
+    // Nếu là mảng chuỗi, convert sang object {id, name}
+    if (typeof spherical_values[0] === 'string') {
+        spherical_values = spherical_values.map((name, idx) => ({ id: (window.spherical_ids ? window.spherical_ids[idx] : name), name }));
+    }
+    if (typeof cylindrical_values[0] === 'string') {
+        cylindrical_values = cylindrical_values.map((name, idx) => ({ id: (window.cylindrical_ids ? window.cylindrical_ids[idx] : name), name }));
+    }
 
     // Tự động sinh SKU và Slug
     function generateSkuAndSlug(name, prefix = "") {
@@ -128,19 +130,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="col-md-3">
                     <select name="attributes[${index}][type]" class="form-select attribute-type" data-index="${index}">
                         ${availableTypes
-                            .map(
-                                (t) =>
-                                    `<option value="${t}">${
-                                        t === "color"
-                                            ? "Màu sắc"
-                                            : t === "size"
-                                            ? "Kích thước"
-                                            : t === "spherical"
-                                            ? "Độ cận"
-                                            : "Độ loạn"
-                                    }</option>`
-                            )
-                            .join("")}
+                    .map(
+                        (t) =>
+                            `<option value="${t}">${t === "color"
+                                ? "Màu sắc"
+                                : t === "size"
+                                    ? "Kích thước"
+                                    : t === "spherical"
+                                        ? "Độ cận"
+                                        : "Độ loạn"
+                            }</option>`
+                    )
+                    .join("")}
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -165,10 +166,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     selectedType === "color"
                         ? colors
                         : selectedType === "size"
-                        ? sizes
-                        : selectedType === "spherical"
-                        ? spherical_values
-                        : cylindrical_values;
+                            ? sizes
+                            : selectedType === "spherical"
+                                ? spherical_values
+                                : cylindrical_values;
 
                 if (options.length === 0) {
                     valuesContainer.innerHTML =
@@ -177,14 +178,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 options.forEach((option) => {
+                    const value = (option.id !== undefined && option.id !== null) ? String(option.id) : '';
+                    const label = option.name || option;
                     const div = document.createElement("div");
                     div.className = "form-check";
                     div.innerHTML = `
                         <input type="checkbox" class="form-check-input attribute-value-checkbox"
                             name="attributes[${rowIndex}][values][]"
-                            value="${option}"
+                            value="${value}"
                             data-index="${rowIndex}">
-                        <label class="form-check-label">${option}</label>
+                        <label class="form-check-label">${label}</label>
                     `;
                     valuesContainer.appendChild(div);
                 });
@@ -207,9 +210,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     ).map((cb) => cb.value);
                     tagsContainer.innerHTML = "";
                     selectedValues.forEach((value) => {
+                        let label = value;
+                        if (typeSelect.value === "color") label = colors.find(c => c.id == value)?.name || value;
+                        else if (typeSelect.value === "size") label = sizes.find(s => s.id == value)?.name || value;
+                        else if (typeSelect.value === "spherical") label = spherical_values.find(s => s.id == value)?.name || value;
+                        else if (typeSelect.value === "cylindrical") label = cylindrical_values.find(c => c.id == value)?.name || value;
+
                         const tag = document.createElement("span");
                         tag.className = "tag";
-                        tag.innerHTML = `${value}<input type="hidden" name="attributes[${rowIndex}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                        tag.innerHTML = `${label}<input type="hidden" name="attributes[${rowIndex}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
                         tagsContainer.appendChild(tag);
                     });
                     checkGenerateButton();
@@ -262,16 +271,14 @@ document.addEventListener("DOMContentLoaded", function () {
             typeSelect.innerHTML = availableTypes
                 .map(
                     (t) =>
-                        `<option value="${t}" ${
-                            t === currentType ? "selected" : ""
-                        }>${
-                            t === "color"
-                                ? "Màu sắc"
-                                : t === "size"
+                        `<option value="${t}" ${t === currentType ? "selected" : ""
+                        }>${t === "color"
+                            ? "Màu sắc"
+                            : t === "size"
                                 ? "Kích thước"
                                 : t === "spherical"
-                                ? "Độ cận"
-                                : "Độ loạn"
+                                    ? "Độ cận"
+                                    : "Độ loạn"
                         }</option>`
                 )
                 .join("");
@@ -302,9 +309,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function checkGenerateButton() {
         if (!attributesContainer || !generateVariationsBtn) {
-            console.log(
-                "attributesContainer hoặc generateVariationsBtn không tồn tại"
-            );
             return;
         }
         const attributeRows =
@@ -317,12 +321,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
             }
         }
-        console.log("hasValues:", hasValues);
-        console.log(
-            "variationsContainer children:",
-            variationsContainer.children.length
-        );
-        console.log("setVariationsSalePriceBtn:", setVariationsSalePriceBtn);
         generateVariationsBtn.style.display = hasValues ? "block" : "none";
         variationsContainer.style.display =
             hasValues && variationsContainer.children.length > 0
@@ -338,6 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Sửa generateCombinations:
     function generateCombinations(attributes) {
         if (attributes.length === 0) return [[]];
         const first = attributes[0];
@@ -346,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const result = [];
         for (let val of first.values) {
             for (let combo of combinationsOfRest) {
-                result.push([val.trim(), ...combo.map((v) => v.trim())]);
+                result.push([{ type: first.type, value: val.trim() }, ...combo]);
             }
         }
         return result;
@@ -357,7 +356,6 @@ document.addEventListener("DOMContentLoaded", function () {
         variationsContainer,
         variableSkuInput
     ) {
-        console.log("Running updateVariations");
         const attributeRows = Array.from(
             attributesContainer.getElementsByClassName("attribute-row")
         );
@@ -374,11 +372,12 @@ document.addEventListener("DOMContentLoaded", function () {
             .filter((attr) => attr);
 
         if (!attributes.length) {
-            console.log("No attributes selected");
             alert("Vui lòng chọn ít nhất một giá trị cho một thuộc tính!");
             return;
         }
 
+        const rawCombinations = generateCombinations(attributes);
+        const combinationNames = rawCombinations.map((combo) => Array.isArray(combo) ? combo.join(' - ') : Object.values(combo).join(' - '));
         const existingVariationNames = Array.from(
             variationsContainer.getElementsByClassName("variation-row")
         )
@@ -386,13 +385,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.querySelector('input[name$="[name]"]')?.value.trim()
             )
             .filter((name) => name);
-        const combinations = generateCombinations(attributes)
-            .map((combo) => combo.join(" - "))
-            .filter((name) => !existingVariationNames.includes(name));
+        const newCombinations = rawCombinations
+            .map((combo, idx) => ({ combo, name: combinationNames[idx] }))
+            .filter(({ name }) => !existingVariationNames.includes(name));
 
-        console.log("Combinations:", combinations);
-        if (!combinations.length) {
-            console.log("No new combinations to create");
+        if (!newCombinations.length) {
             alert("Không có tổ hợp biến thể mới để tạo.");
             return;
         }
@@ -403,25 +400,43 @@ document.addEventListener("DOMContentLoaded", function () {
         if (setVariationsSalePriceBtn)
             setVariationsSalePriceBtn.style.display = "block";
 
-        combinations.forEach((name, idx) => {
-            const globalIndex =
-                variationsContainer.getElementsByClassName(
-                    "variation-row"
-                ).length;
+        newCombinations.forEach(({ combo }, idx) => {
+            const globalIndex = variationsContainer.getElementsByClassName("variation-row").length;
             const skuPrefix = variableSkuInput?.value.trim() || "VAR";
+            let color_id = '', size_id = '', spherical_id = '', cylindrical_id = '';
+            let colorName = '', sizeName = '', sphericalName = '', cylindricalName = '';
+            combo.forEach(item => {
+                if (item.type === 'color') {
+                    color_id = item.value;
+                    colorName = colors.find(c => String(c.id) == color_id)?.name || '';
+                }
+                if (item.type === 'size') {
+                    size_id = item.value;
+                    sizeName = sizes.find(s => String(s.id) == size_id)?.name || '';
+                }
+                if (item.type === 'spherical') {
+                    spherical_id = item.value;
+                    sphericalName = spherical_values.find(s => String(s.id) == spherical_id)?.name || '';
+                }
+                if (item.type === 'cylindrical') {
+                    cylindrical_id = item.value;
+                    cylindricalName = cylindrical_values.find(c => String(c.id) == cylindrical_id)?.name || '';
+                }
+            });
+            const nameParts = [colorName, sizeName, sphericalName, cylindricalName].filter(Boolean);
+            const name = nameParts.join(' - ');
             const row = document.createElement("div");
             row.className = "variation-row row g-2 mb-2";
             row.innerHTML = `
                 <div class="col-md-2">
                     <input type="text" name="variations[${globalIndex}][name]" value="${name}" class="form-control" placeholder="Tên biến thể" readonly>
+                    <input type="hidden" name="variations[${globalIndex}][color_id]" value="${color_id}">
+                    <input type="hidden" name="variations[${globalIndex}][size_id]" value="${size_id}">
+                    <input type="hidden" name="variations[${globalIndex}][spherical_id]" value="${spherical_id}">
+                    <input type="hidden" name="variations[${globalIndex}][cylindrical_id]" value="${cylindrical_id}">
                 </div>
                 <div class="col-md-2">
-                    <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${name
-                .toLowerCase()
-                .replace(
-                    /\s+/g,
-                    "-"
-                )}" class="form-control" placeholder="Mã sản phẩm">
+                    <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${name.toLowerCase().replace(/\s+/g, "-")}" class="form-control" placeholder="Mã sản phẩm">
                 </div>
                 <div class="col-md-1">
                     <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 234.56)">
@@ -438,10 +453,6 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
             variationsContainer.appendChild(row);
         });
-        console.log(
-            "Variations created, count:",
-            variationsContainer.children.length
-        );
     }
 
     if (generateVariationsBtn && attributesContainer && variationsContainer) {
@@ -456,133 +467,133 @@ document.addEventListener("DOMContentLoaded", function () {
                 promptAllVariationPrices();
             }, 200);
         });
-    // Prompt nhập giá cho tất cả biến thể (dạng alert/prompt tuần tự)
-    function promptAllVariationPrices() {
-        const variationRows = variationsContainer.getElementsByClassName("variation-row");
-        if (!variationRows.length) return;
-        let basePrice = null;
-        let salePrice = null;
-        // Nhập giá gốc trước, chỉ nhập lại nếu sai
-        while (true) {
-            basePrice = prompt("Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):", basePrice || "");
-            if (basePrice === null) return; // Hủy
-            basePrice = basePrice.replace(",", ".").trim();
-            if (!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
-                alert("Vui lòng nhập giá gốc hợp lệ (số dương).");
-                continue;
-            }
-            break;
-        }
-        // Nhập giá khuyến mãi, chỉ bắt nhập lại giá khuyến mãi nếu sai
-        while (true) {
-            salePrice = prompt("Nhập giá khuyến mãi cho tất cả biến thể (có thể bỏ trống):", salePrice || "");
-            if (salePrice === null) return; // Hủy
-            if (salePrice === "") {
-                salePrice = "";
+        // Prompt nhập giá cho tất cả biến thể (dạng alert/prompt tuần tự)
+        function promptAllVariationPrices() {
+            const variationRows = variationsContainer.getElementsByClassName("variation-row");
+            if (!variationRows.length) return;
+            let basePrice = null;
+            let salePrice = null;
+            // Nhập giá gốc trước, chỉ nhập lại nếu sai
+            while (true) {
+                basePrice = prompt("Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):", basePrice || "");
+                if (basePrice === null) return; // Hủy
+                basePrice = basePrice.replace(",", ".").trim();
+                if (!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+                    alert("Vui lòng nhập giá gốc hợp lệ (số dương).");
+                    continue;
+                }
                 break;
             }
-            salePrice = salePrice.replace(",", ".").trim();
-            if (!salePrice || isNaN(parseFloat(salePrice)) || parseFloat(salePrice) < 0) {
-                alert("Vui lòng nhập giá khuyến mãi hợp lệ (số dương hoặc để trống).");
-                continue;
+            // Nhập giá khuyến mãi, chỉ bắt nhập lại giá khuyến mãi nếu sai
+            while (true) {
+                salePrice = prompt("Nhập giá khuyến mãi cho tất cả biến thể (có thể bỏ trống):", salePrice || "");
+                if (salePrice === null) return; // Hủy
+                if (salePrice === "") {
+                    salePrice = "";
+                    break;
+                }
+                salePrice = salePrice.replace(",", ".").trim();
+                if (!salePrice || isNaN(parseFloat(salePrice)) || parseFloat(salePrice) < 0) {
+                    alert("Vui lòng nhập giá khuyến mãi hợp lệ (số dương hoặc để trống).");
+                    continue;
+                }
+                if (parseFloat(salePrice) > parseFloat(basePrice)) {
+                    alert("Giá khuyến mãi không được lớn hơn giá gốc!");
+                    continue;
+                }
+                break;
             }
-            if (parseFloat(salePrice) > parseFloat(basePrice)) {
-                alert("Giá khuyến mãi không được lớn hơn giá gốc!");
-                continue;
-            }
-            break;
+            // Gán giá trị vào tất cả biến thể
+            Array.from(variationRows).forEach((row) => {
+                const priceInput = row.querySelector('input[name$="[price]"]');
+                const salePriceInput = row.querySelector('input[name$="[sale_price]"]');
+                if (priceInput) priceInput.value = basePrice;
+                if (salePriceInput) salePriceInput.value = salePrice;
+            });
         }
-        // Gán giá trị vào tất cả biến thể
-        Array.from(variationRows).forEach((row) => {
-            const priceInput = row.querySelector('input[name$="[price]"]');
-            const salePriceInput = row.querySelector('input[name$="[sale_price]"]');
-            if (priceInput) priceInput.value = basePrice;
-            if (salePriceInput) salePriceInput.value = salePrice;
-        });
-    }
-    // Modal nhập giá cho biến thể
-    function showVariationPriceModal() {
-        const variationPriceModal = document.getElementById("variationPriceModal");
-        const variationPricesTableContainer = document.getElementById("variation-prices-table-container");
-        const variationPriceWarning = document.getElementById("variation-price-warning");
-        const saveVariationPricesBtn = document.getElementById("save-variation-prices");
-        const variationRows = variationsContainer.getElementsByClassName("variation-row");
-        if (!variationRows.length) return;
-        // Tạo bảng nhập giá
-        let tableHtml = '<table class="table table-bordered"><thead><tr><th>Tên biến thể</th><th>Giá gốc</th><th>Giá khuyến mãi</th></tr></thead><tbody>';
-        Array.from(variationRows).forEach((row, idx) => {
-            const name = row.querySelector('input[name$="[name]"]').value;
-            const price = row.querySelector('input[name$="[price]"]').value || '';
-            const salePrice = row.querySelector('input[name$="[sale_price]"]').value || '';
-            tableHtml += `<tr data-index="${idx}">`
-                + `<td>${name}</td>`
-                + `<td><input type="text" class="form-control modal-price-input" data-type="price" value="${price}" /></td>`
-                + `<td><input type="text" class="form-control modal-sale-price-input" data-type="sale_price" value="${salePrice}" /></td>`
-                + `</tr>`;
-        });
-        tableHtml += '</tbody></table>';
-        variationPricesTableContainer.innerHTML = tableHtml;
-        variationPriceWarning.classList.add("d-none");
+        // Modal nhập giá cho biến thể
+        function showVariationPriceModal() {
+            const variationPriceModal = document.getElementById("variationPriceModal");
+            const variationPricesTableContainer = document.getElementById("variation-prices-table-container");
+            const variationPriceWarning = document.getElementById("variation-price-warning");
+            const saveVariationPricesBtn = document.getElementById("save-variation-prices");
+            const variationRows = variationsContainer.getElementsByClassName("variation-row");
+            if (!variationRows.length) return;
+            // Tạo bảng nhập giá
+            let tableHtml = '<table class="table table-bordered"><thead><tr><th>Tên biến thể</th><th>Giá gốc</th><th>Giá khuyến mãi</th></tr></thead><tbody>';
+            Array.from(variationRows).forEach((row, idx) => {
+                const name = row.querySelector('input[name$="[name]"]').value;
+                const price = row.querySelector('input[name$="[price]"]').value || '';
+                const salePrice = row.querySelector('input[name$="[sale_price]"]').value || '';
+                tableHtml += `<tr data-index="${idx}">`
+                    + `<td>${name}</td>`
+                    + `<td><input type="text" class="form-control modal-price-input" data-type="price" value="${price}" /></td>`
+                    + `<td><input type="text" class="form-control modal-sale-price-input" data-type="sale_price" value="${salePrice}" /></td>`
+                    + `</tr>`;
+            });
+            tableHtml += '</tbody></table>';
+            variationPricesTableContainer.innerHTML = tableHtml;
+            variationPriceWarning.classList.add("d-none");
 
-        // Gán sự kiện lưu
-        if (saveVariationPricesBtn) {
-            saveVariationPricesBtn.onclick = null;
-            saveVariationPricesBtn.onclick = function () {
-                const rows = variationPricesTableContainer.querySelectorAll("tbody tr");
-                let hasWarning = false;
-                let warningShown = false;
-                rows.forEach((tr) => {
-                    const priceInput = tr.querySelector('.modal-price-input');
-                    const salePriceInput = tr.querySelector('.modal-sale-price-input');
-                    const price = parseFloat((priceInput.value || '').replace(',', '.')) || 0;
-                    const salePrice = parseFloat((salePriceInput.value || '').replace(',', '.')) || 0;
-                    if (salePrice > price && !warningShown) {
-                        hasWarning = true;
-                        warningShown = true;
+            // Gán sự kiện lưu
+            if (saveVariationPricesBtn) {
+                saveVariationPricesBtn.onclick = null;
+                saveVariationPricesBtn.onclick = function () {
+                    const rows = variationPricesTableContainer.querySelectorAll("tbody tr");
+                    let hasWarning = false;
+                    let warningShown = false;
+                    rows.forEach((tr) => {
+                        const priceInput = tr.querySelector('.modal-price-input');
+                        const salePriceInput = tr.querySelector('.modal-sale-price-input');
+                        const price = parseFloat((priceInput.value || '').replace(',', '.')) || 0;
+                        const salePrice = parseFloat((salePriceInput.value || '').replace(',', '.')) || 0;
+                        if (salePrice > price && !warningShown) {
+                            hasWarning = true;
+                            warningShown = true;
+                        }
+                    });
+                    if (hasWarning) {
+                        variationPriceWarning.classList.remove("d-none");
+                        return;
+                    } else {
+                        variationPriceWarning.classList.add("d-none");
                     }
-                });
-                if (hasWarning) {
-                    variationPriceWarning.classList.remove("d-none");
-                    return;
-                } else {
-                    variationPriceWarning.classList.add("d-none");
-                }
-                // Gán giá vào input của từng biến thể
-                const variationRows = variationsContainer.getElementsByClassName("variation-row");
-                rows.forEach((tr, idx) => {
-                    const priceInput = tr.querySelector('.modal-price-input');
-                    const salePriceInput = tr.querySelector('.modal-sale-price-input');
-                    const price = priceInput.value;
-                    const salePrice = salePriceInput.value;
-                    const vRow = variationRows[idx];
-                    if (vRow) {
-                        const vPriceInput = vRow.querySelector('input[name$="[price]"]');
-                        const vSalePriceInput = vRow.querySelector('input[name$="[sale_price]"]');
-                        if (vPriceInput) vPriceInput.value = price;
-                        if (vSalePriceInput) vSalePriceInput.value = salePrice;
+                    // Gán giá vào input của từng biến thể
+                    const variationRows = variationsContainer.getElementsByClassName("variation-row");
+                    rows.forEach((tr, idx) => {
+                        const priceInput = tr.querySelector('.modal-price-input');
+                        const salePriceInput = tr.querySelector('.modal-sale-price-input');
+                        const price = priceInput.value;
+                        const salePrice = salePriceInput.value;
+                        const vRow = variationRows[idx];
+                        if (vRow) {
+                            const vPriceInput = vRow.querySelector('input[name$="[price]"]');
+                            const vSalePriceInput = vRow.querySelector('input[name$="[sale_price]"]');
+                            if (vPriceInput) vPriceInput.value = price;
+                            if (vSalePriceInput) vSalePriceInput.value = salePrice;
+                        }
+                    });
+                    // Ẩn modal
+                    if (window.bootstrap && window.bootstrap.Modal) {
+                        if (!variationPriceModal._bsModal) {
+                            variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
+                        }
+                        variationPriceModal._bsModal.hide();
+                    } else {
+                        $(variationPriceModal).modal('hide');
                     }
-                });
-                // Ẩn modal
-                if (window.bootstrap && window.bootstrap.Modal) {
-                    if (!variationPriceModal._bsModal) {
-                        variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
-                    }
-                    variationPriceModal._bsModal.hide();
-                } else {
-                    $(variationPriceModal).modal('hide');
-                }
-            };
-        }
-        // Hiển thị modal
-        if (window.bootstrap && window.bootstrap.Modal) {
-            if (!variationPriceModal._bsModal) {
-                variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
+                };
             }
-            variationPriceModal._bsModal.show();
-        } else {
-            $(variationPriceModal).modal('show');
+            // Hiển thị modal
+            if (window.bootstrap && window.bootstrap.Modal) {
+                if (!variationPriceModal._bsModal) {
+                    variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
+                }
+                variationPriceModal._bsModal.show();
+            } else {
+                $(variationPriceModal).modal('show');
+            }
         }
-    }
     }
 
     // Xử lý xóa biến thể
@@ -619,6 +630,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // Xử lý submit form
     document.querySelectorAll("form").forEach((form) => {
         form.addEventListener("submit", function (e) {
+            // Log toàn bộ dữ liệu form
+            const formData = new FormData(form);
+            // --- BẮT ĐẦU SỬA: Lọc attributes không có values ---
+            // Tìm tất cả các attribute-row
+            const attributeRows = attributesContainer?.getElementsByClassName("attribute-row") || [];
+            Array.from(attributeRows).forEach((row, idx) => {
+                const checkedValues = row.querySelectorAll('.attribute-value-checkbox:checked');
+                if (checkedValues.length === 0) {
+                    // Xóa toàn bộ input name="attributes[idx][type]" và name="attributes[idx][values][]"
+                    row.querySelectorAll('[name^="attributes[' + idx + ']"]').forEach(input => {
+                        input.disabled = true;
+                    });
+                }
+            });
+            // --- KẾT THÚC SỬA ---
+            const entries = {};
+            for (let [key, value] of formData.entries()) {
+                entries[key] = value;
+            }
             const priceInput = form.querySelector('input[name="price"]');
             const salePriceInput = form.querySelector(
                 'input[name="sale_price"]'
@@ -674,6 +704,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 e.preventDefault();
                 alert("Vui lòng nhập giá hợp lệ (số dương).");
             }
+            // Log variations gửi lên
+            const variations = [];
+            const variationRows = variationsContainer?.getElementsByClassName("variation-row") || [];
+            Array.from(variationRows).forEach((row, idx) => {
+                const name = row.querySelector('input[name$="[name]"]')?.value;
+                const color_id = row.querySelector('input[name$="[color_id]"]')?.value;
+                const size_id = row.querySelector('input[name$="[size_id]"]')?.value;
+                const spherical_id = row.querySelector('input[name$="[spherical_id]"]')?.value;
+                const cylindrical_id = row.querySelector('input[name$="[cylindrical_id]"]')?.value;
+                variations.push({ name, color_id, size_id, spherical_id, cylindrical_id });
+            });
         });
     });
 
@@ -753,8 +794,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         : 0;
                     if (parseFloat(parsedSalePrice) > priceValue) {
                         alert(
-                            `Giá khuyến mãi (${parsedSalePrice}) không được lớn hơn giá gốc (${priceValue}) cho biến thể "${
-                                row.querySelector('input[name$="[name]"]').value
+                            `Giá khuyến mãi (${parsedSalePrice}) không được lớn hơn giá gốc (${priceValue}) cho biến thể "${row.querySelector('input[name$="[name]"]').value
                             }".`
                         );
                         hasError = true;

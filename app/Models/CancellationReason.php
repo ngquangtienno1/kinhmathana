@@ -14,7 +14,13 @@ class CancellationReason extends Model
     protected $fillable = [
         'reason',
         'type',
-        'is_active'
+        'is_active',
+        'is_default',
+    ];
+
+    protected $casts = [
+        'is_default' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     protected $dates = ['deleted_at'];

@@ -1,49 +1,54 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Events\MyEvent;
+
 // ================== Client Controllers ==================
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Client\UserController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Client\VoucherController;
-use App\Http\Controllers\Client\BlogController;
-use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\OrderController;
-use App\Http\Controllers\Client\FaqClientController;
-use App\Http\Controllers\Client\HomeController as ClientHomeController;
-use App\Http\Controllers\Client\ProductController as ClientProductController;
-use App\Http\Controllers\Client\ContactController as ClientContactController;
-
-// ================== Admin Controllers ===================
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Client\BlogController;
+use App\Http\Controllers\Client\CartController;
+
+// ================== Admin Controllers ===================
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Client\VoucherController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SphericalController;
+use App\Http\Controllers\Client\WishlistController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Client\FaqClientController;
 use App\Http\Controllers\Admin\CylindricalController;
+use App\Http\Controllers\Client\CartClientController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Client\OrderClientController;
+use App\Http\Controllers\Client\OrderDetailController;
 use App\Http\Controllers\Admin\PaymentMethodController;
+use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
+use App\Http\Controllers\Admin\ChatAdminController;
+
 
 // Authentication
 
@@ -51,8 +56,13 @@ use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
 // Authentication
-use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\AuthenticationClientController;
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Client\UserController as ClientUserController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Client\ContactController as ClientContactController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 
 // Redirect login
 Route::get('/', function () {
@@ -94,16 +104,16 @@ Route::prefix('client')->name('client.')->group(function () {
 
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('index', [UserController::class, 'index'])->name('index');
-        Route::get('information', [UserController::class, 'profile'])->name('information'); // Dạng lưới
-        Route::post('information', [UserController::class, 'update'])->name('information.update');
+        Route::get('index', [ClientUserController::class, 'index'])->name('index');
+        Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
+        Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
         // Route lấy chi tiết đơn hàng cho client (AJAX popup)
-        Route::get('order-detail/{id}', [\App\Http\Controllers\Client\OrderDetailController::class, 'show'])->name('order-detail.show');
-        Route::patch('/orders/{id}/cancel', [\App\Http\Controllers\Client\OrderController::class, 'cancel'])->name('orders.cancel');
+        Route::get('order-detail/{id}', [OrderClientController::class, 'show'])->name('order-detail.show');
+        Route::patch('/orders/{id}/cancel', [OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('profile', [UserController::class, 'index'])->name('profile'); // Dạng lưới
+        Route::get('profile', [ClientUserController::class, 'index'])->name('profile'); // Dạng lưới
     });
 
     Route::get('forgot-password', [AuthenticationClientController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -115,27 +125,36 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
         Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
+        Route::post('{product}/comment', [ClientProductController::class, 'comment'])->name('comment');
     });
 
     Route::prefix('cart')->name('cart.')->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('index');
-        Route::post('add', [CartController::class, 'add'])->name('add');
-        Route::post('update/{id}', [CartController::class, 'update'])->name('update');
-        Route::delete('remove/{id}', [CartController::class, 'remove'])->name('remove');
-        Route::get('checkout', [CartController::class, 'showCheckoutForm'])->name('checkout.form');
-        Route::post('checkout', [CartController::class, 'checkout'])->name('checkout');
-        Route::post('apply-voucher', [CartController::class, 'applyVoucher'])->name('apply-voucher');
-        Route::post('bulk-remove', [CartController::class, 'bulkRemove'])->name('bulk-remove');
+        Route::get('/', [CartClientController::class, 'index'])->name('index');
+        Route::post('add', [CartClientController::class, 'add'])->name('add');
+        Route::post('update/{id}', [CartClientController::class, 'update'])->name('update');
+        Route::delete('remove/{id}', [CartClientController::class, 'remove'])->name('remove');
+        Route::get('checkout', [CartClientController::class, 'showCheckoutForm'])->name('checkout.form');
+        Route::post('checkout', [CartClientController::class, 'checkout'])->name('checkout');
+        Route::post('apply-voucher', [CartClientController::class, 'applyVoucher'])->name('apply-voucher');
+        Route::post('bulk-remove', [CartClientController::class, 'bulkRemove'])->name('bulk-remove');
+
+        //Thanh toán momo
+        Route::post('momo-payment', [CartClientController::class, 'momo_payment'])->name('momo-payment');
+        Route::post('vnpay-payment', [CartClientController::class, 'vnpay_payment'])->name('vnpay-payment');
+        Route::get('thankyou', [App\Http\Controllers\Client\CartClientController::class, 'momoThankYou'])->name('thankyou');
     });
 
     Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
-        Route::patch('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
-        Route::patch('/{id}/confirm-received', [OrderController::class, 'confirmReceived'])->name('confirm-received');
-        Route::get('/{order}/review/{item}', [OrderController::class, 'reviewForm'])->name('review.form');
-        Route::post('/{order}/review/{item}', [OrderController::class, 'submitReview'])->name('review.submit');
+        Route::get('/', [OrderClientController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderClientController::class, 'show'])->name('show');
+        Route::patch('/{id}/cancel', [OrderClientController::class, 'cancel'])->name('cancel');
+        Route::patch('/{id}/confirm-received', [OrderClientController::class, 'confirmReceived'])->name('confirm-received');
+        Route::get('/{order}/review/{item}', [OrderClientController::class, 'reviewForm'])->name('review.form');
+        Route::post('/{order}/review/{item}', [OrderClientController::class, 'submitReview'])->name('review.submit');
+        Route::post('/{id}/reorder', [OrderClientController::class, 'reorder'])->name('reorder');
     });
+
+    Route::get('/order-cancel-reasons', [OrderClientController::class, 'reasons'])->name('order-detail.reasons');
 
     Route::prefix('blog')->name('blog.')->group(function () {
         Route::get('/', [BlogController::class, 'index'])->name('index');
@@ -158,10 +177,23 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
 
-    // Route lấy danh sách lý do hủy đơn hàng cho client
-    Route::get('/order-cancel-reasons', [\App\Http\Controllers\Client\OrderDetailController::class, 'reasons'])->name('client.order-detail.reasons');
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('index');
+        Route::post('/add', [WishlistController::class, 'addToWishlist'])->name('add');
+        Route::post('/remove', [WishlistController::class, 'removeFromWishlist'])->name('remove');
+    });
+    Route::post('/chat/send', [ChatAdminController::class, 'send'])->name('chat.send');
+    Route::get('/chat/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('chat.conversation');
+
+    // AI Chat routes
+    Route::prefix('ai-chat')->name('ai-chat.')->group(function () {
+        Route::post('/send', [\App\Http\Controllers\Client\AIChatController::class, 'chat'])->name('send');
+        Route::get('/history', [\App\Http\Controllers\Client\AIChatController::class, 'getChatHistory'])->name('history');
+        Route::delete('/clear', [\App\Http\Controllers\Client\AIChatController::class, 'clearChatHistory'])->name('clear');
+        Route::get('/stats', [\App\Http\Controllers\Client\AIChatController::class, 'getChatStats'])->name('stats')->middleware('auth');
+        Route::get('/test-enhanced', [\App\Http\Controllers\Client\AIChatController::class, 'testEnhanced'])->name('test-enhanced');
+    });
 });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Admin routes group
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->group(function () {
@@ -607,7 +639,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
-        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
+        Route::put('/{promotion}', [PromotionController::class, 'update']);
         Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
     });
 
@@ -720,5 +752,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:gui-email-lien-he']);
         Route::post('/{contact}/reply', [ContactController::class, 'sendReply'])->name('sendReply')
             ->middleware(['permission:gui-email-lien-he']);
+    });
+
+    // Chat routes
+    Route::prefix('chat')->name('chat.')->middleware(['permission:xem-chat'])->group(function () {
+        Route::get('/', [ChatAdminController::class, 'index'])->name('index');
+        Route::get('/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('conversation');
+        Route::post('/send', [ChatAdminController::class, 'send'])->name('send');
     });
 });

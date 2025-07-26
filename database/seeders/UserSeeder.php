@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Tạo tài khoản admin mặc định
+        // // Tạo tài khoản admin mặc định
         // User::create([
         //     'name' => 'Admin',
         //     'email' => 'admin@example.com',
@@ -44,15 +44,36 @@ class UserSeeder extends Seeder
         //     'phone_verified_at' => now(),
         // ]);
 
-        // Tạo thêm 20 tài khoản ngẫu nhiên
-        User::factory()->count(1)->create([
-            'name' => 'văn khoa',
-            'email' => 'vkhoa66422@gmail.com',
+        // // Tạo tài khoản khách hàng mặc định
+        // User::create([
+        //     'name' => 'Customer',
+        //     'email' => 'ajast@example.org',
+        //     'password' => Hash::make('password'),
+        //     'address' => '456 Staff Street',
+        //     'phone' => '0987654321',
+        //     'date_birth' => '1995-01-01',
+        //     'gender' => 'female',
+        //     'status_user' => 'active',
+        //     'role_id' => 3, // Staff role
+        //     'email_verified_at' => now(),
+        //     'phone_verified_at' => now(),
+        // ]);
+
+        // // Tạo thêm 20 tài khoản ngẫu nhiên
+        // User::factory()->count(10)->create([
+        //     'role_id' => 3, // Customer role
+        //     'status_user' => 'active',
+        // ]);
+
+         // Tạo tài khoản khách hàng mặc định
+         User::create([
+            'name' => 'Quang TiếnTiến',
+            'email' => 'tiennqph51552@gmail.comcom',
             'password' => Hash::make('password'),
             'address' => '456 Staff Street',
             'phone' => '0987654321',
             'date_birth' => '1995-01-01',
-            'gender' => 'male',
+            'gender' => 'female',
             'status_user' => 'active',
             'role_id' => 3, // Staff role
             'email_verified_at' => now(),

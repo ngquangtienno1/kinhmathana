@@ -82,7 +82,7 @@ class SliderController extends Controller
             $dataNew = $request->validate([
                 'title' => 'required|string|max:125',
                 'description' => 'nullable|string',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
                 'url' => 'nullable|url|max:255',
                 'sort_order' => 'nullable|integer',
                 'is_active' => 'nullable|boolean',
@@ -137,7 +137,7 @@ class SliderController extends Controller
             $dataNew = $request->validate([
                 'title' => 'required|string|max:125',
                 'description' => 'nullable|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
                 'url' => 'nullable|url|max:255',
                 'sort_order' => 'nullable|integer',
                 'is_active' => 'nullable|boolean',

@@ -13,11 +13,15 @@ class Payment extends Model
         'order_id',
         'status',
         'transaction_code',
-        'payment_method_id'
+        'payment_method_id',
+        'amount',
+        'note',
+        'paid_at',
+        'user_id',
     ];
     protected $casts = [
-    'paid_at' => 'datetime',
-];
+        'paid_at' => 'datetime',
+    ];
 
 
     public $timestamps = ['created_at'];

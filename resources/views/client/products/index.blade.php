@@ -79,8 +79,7 @@
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image">
                                                 @if ($product->sale_price && $product->sale_price < $product->price)
-                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">Giảm
-                                                        giá</span>
+                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">sale</span>
                                                 @endif
                                                 @if ($product->images->isNotEmpty())
                                                     <img loading="lazy" width="600" height="431"
@@ -276,6 +275,42 @@
                     </div>
                     <div class="qodef-grid-item qodef-page-sidebar-section qodef-col--3 qodef-col-pull--9">
                         <aside id="qodef-page-sidebar" role="complementary">
+                            <div class="widget widget_block" data-area="shop-sidebar">
+                                <div data-block-name="woocommerce/product-search" data-label=""
+                                    data-form-id="wc-block-product-search-0"
+                                    class="wc-block-product-search wp-block-woocommerce-product-search">
+                                    <form role="search" method="get" action="{{ route('client.products.index') }}">
+                                        <label for="wc-block-search__input-1"
+                                            class="wc-block-product-search__label"></label>
+                                        <div class="wc-block-product-search__fields">
+                                            <input type="search" id="wc-block-search__input-1"
+                                                class="wc-block-product-search__field" placeholder="Tìm kiếm sản phẩm..."
+                                                name="s" value="{{ request('s') }}" />
+                                            <button type="submit" class="wc-block-product-search__button"
+                                                aria-label="Tìm kiếm">
+                                                <svg aria-hidden="true" role="img" focusable="false"
+                                                    class="dashicon dashicons-arrow-right-alt2"
+                                                    xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                    viewBox="0 0 20 20">
+                                                    <path d="M6 15l5-5-5-5 1-2 7 7-7 7z" />
+                                                </svg>
+                                            </button>
+                                            <input type="hidden" name="post_type" value="product" />
+                                            @foreach (request()->except(['s', 'post_type']) as $key => $value)
+                                                @if (is_array($value))
+                                                    @foreach ($value as $v)
+                                                        <input type="hidden" name="{{ $key }}[]"
+                                                            value="{{ $v }}" />
+                                                    @endforeach
+                                                @else
+                                                    <input type="hidden" name="{{ $key }}"
+                                                        value="{{ $value }}" />
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             <div class="widget woocommerce widget_product_categories" data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Danh mục sản phẩm</h5>
                                 <ul class="product-categories">
@@ -332,128 +367,66 @@
                                 </form>
 
                             </div>
-                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
-                                data-area="shop-sidebar">
-                                <h5 class="qodef-widget-title">Lọc theo giới tính</h5>
-                                <ul class="woocommerce-widget-layered-nav-list">
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexcfb7.html?filter_gender=unisex&amp;query_type_gender=or">Unisex</a>
-                                        <span class="count">(17)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexe312.html?filter_gender=male&amp;query_type_gender=or">Male</a>
-                                        <span class="count">(10)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexee24.html?filter_gender=female&amp;query_type_gender=or">Female</a>
-                                        <span class="count">(20)</span>
-                                    </li>
-                                </ul>
-                            </div>
+
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
                                 data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Lọc theo màu sắc</h5>
-                                <ul class="woocommerce-widget-layered-nav-list">
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index5e9e.html?filter_color=bronze&amp;query_type_color=or">Bronze</a>
-                                        <span class="count">(18)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index2eb4.html?filter_color=orange&amp;query_type_color=or">Orange</a>
-                                        <span class="count">(18)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index9d90.html?filter_color=purple&amp;query_type_color=or">Purple</a>
-                                        <span class="count">(9)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index4ded.html?filter_color=dark-green&amp;query_type_color=or">Dark
-                                            Green</a> <span class="count">(2)</span></li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexdb6c.html?filter_color=blue&amp;query_type_color=or">Blue</a>
-                                        <span class="count">(1)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexd323.html?filter_color=gold&amp;query_type_color=or">Gold</a>
-                                        <span class="count">(18)</span>
-                                    </li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexc3cf.html?filter_color=silver&amp;query_type_color=or">Silver</a>
-                                        <span class="count">(16)</span>
-                                    </li>
-                                </ul>
+                                <form method="get" action="{{ route('client.products.index') }}"
+                                    class="auto-submit-on-change">
+                                    <ul class="woocommerce-widget-layered-nav-list">
+                                        @foreach ($colors as $color)
+                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                <label style="cursor:pointer;">
+                                                    <input type="checkbox" name="colors[]" value="{{ $color->id }}"
+                                                        {{ in_array($color->id, (array) request('colors', [])) ? 'checked' : '' }}>
+                                                    {{ $color->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @foreach (request()->except(['colors']) as $key => $value)
+                                        @if (is_array($value))
+                                            @foreach ($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]"
+                                                    value="{{ $v }}" />
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $key }}"
+                                                value="{{ $value }}" />
+                                        @endif
+                                    @endforeach
+                                    <!-- Bỏ nút lọc màu -->
+                                </form>
                             </div>
                             <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
                                 data-area="shop-sidebar">
                                 <h5 class="qodef-widget-title">Lọc theo kích cỡ</h5>
-                                <ul class="woocommerce-widget-layered-nav-list">
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index0513.html?filter_size=m&amp;query_type_size=or">M</a> <span
-                                            class="count">(23)</span></li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index8175.html?filter_size=s&amp;query_type_size=or">S</a> <span
-                                            class="count">(15)</span></li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexb129.html?filter_size=xs&amp;query_type_size=or">XS</a> <span
-                                            class="count">(9)</span></li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="indexe712.html?filter_size=xl&amp;query_type_size=or">XL</a> <span
-                                            class="count">(16)</span></li>
-                                    <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term "><a
-                                            rel="nofollow"
-                                            href="index8160.html?filter_size=l&amp;query_type_size=or">L</a> <span
-                                            class="count">(22)</span></li>
-                                </ul>
-                            </div>
-                            <div class="widget widget_block" data-area="shop-sidebar">
-                                <div data-block-name="woocommerce/product-search" data-label=""
-                                    data-form-id="wc-block-product-search-0"
-                                    class="wc-block-product-search wp-block-woocommerce-product-search">
-                                    <form role="search" method="get" action="{{ route('client.products.index') }}">
-                                        <label for="wc-block-search__input-1"
-                                            class="wc-block-product-search__label"></label>
-                                        <div class="wc-block-product-search__fields">
-                                            <input type="search" id="wc-block-search__input-1"
-                                                class="wc-block-product-search__field" placeholder="Tìm kiếm sản phẩm..."
-                                                name="s" value="{{ request('s') }}" />
-                                            <button type="submit" class="wc-block-product-search__button"
-                                                aria-label="Tìm kiếm">
-                                                <svg aria-hidden="true" role="img" focusable="false"
-                                                    class="dashicon dashicons-arrow-right-alt2"
-                                                    xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                    viewBox="0 0 20 20">
-                                                    <path d="M6 15l5-5-5-5 1-2 7 7-7 7z" />
-                                                </svg>
-                                            </button>
-                                            <input type="hidden" name="post_type" value="product" />
-                                            @foreach (request()->except(['s', 'post_type']) as $key => $value)
-                                                @if (is_array($value))
-                                                    @foreach ($value as $v)
-                                                        <input type="hidden" name="{{ $key }}[]"
-                                                            value="{{ $v }}" />
-                                                    @endforeach
-                                                @else
-                                                    <input type="hidden" name="{{ $key }}"
-                                                        value="{{ $value }}" />
-                                                @endif
+                                <form method="get" action="{{ route('client.products.index') }}"
+                                    class="auto-submit-on-change">
+                                    <ul class="woocommerce-widget-layered-nav-list">
+                                        @foreach ($sizes as $size)
+                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                <label style="cursor:pointer;">
+                                                    <input type="checkbox" name="sizes[]" value="{{ $size->id }}"
+                                                        {{ in_array($size->id, (array) request('sizes', [])) ? 'checked' : '' }}>
+                                                    {{ $size->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @foreach (request()->except(['sizes']) as $key => $value)
+                                        @if (is_array($value))
+                                            @foreach ($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]"
+                                                    value="{{ $v }}" />
                                             @endforeach
-                                        </div>
-                                    </form>
-                                </div>
+                                        @else
+                                            <input type="hidden" name="{{ $key }}"
+                                                value="{{ $value }}" />
+                                        @endif
+                                    @endforeach
+                                    <!-- Bỏ nút lọc cỡ -->
+                                </form>
                             </div>
                             <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
                                 <figure class="wp-block-image size-large"><a href="../vouchers/index.html"><img
@@ -470,3 +443,13 @@
         </div>
     </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.auto-submit-on-change input[type="checkbox"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                this.closest('form').submit();
+            });
+        });
+    });
+</script>

@@ -20,6 +20,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        \Log::info('Search request', $request->all());
         $query = Product::with(['categories', 'brand', 'images', 'variations.color'])
             ->active();
 
@@ -41,6 +42,13 @@ class ProductController extends Controller
         if ($request->has('colors') && is_array($colors = $request->input('colors', []))) {
             $query->whereHas('variations.color', function ($q) use ($colors) {
                 $q->whereIn('colors.id', $colors);
+            });
+        }
+
+        // Bộ lọc: Size
+        if ($request->has('sizes') && is_array($sizes = $request->input('sizes', []))) {
+            $query->whereHas('variations.size', function ($q) use ($sizes) {
+                $q->whereIn('sizes.id', $sizes);
             });
         }
 
@@ -102,7 +110,7 @@ class ProductController extends Controller
         }
 
         // Tìm kiếm
-        $search = $request->input('search') ?? $request->input('s');
+        $search = $request->input('q') ?? $request->input('search') ?? $request->input('s');
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -135,9 +143,15 @@ class ProductController extends Controller
         $products = $query->paginate(12);
         $categories = Category::withCount('products')->with('children')->where('is_active', true)->get();
         $colors = Color::all();
+        // Lấy tất cả size từ variations của các sản phẩm trong trang
+        $sizes = collect();
+        foreach ($products as $product) {
+            $sizes = $sizes->merge($product->variations->pluck('size')->filter());
+        }
+        $sizes = $sizes->unique('id')->values();
         $brands = Brand::where('is_active', true)->get();
 
-        return view('client.products.index', compact('products', 'categories', 'colors', 'brands'));
+        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'brands'));
     }
 
     /**
@@ -195,12 +209,12 @@ class ProductController extends Controller
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
                 'price' => $v->price,
                 'sale_price' => $v->sale_price,
-                'stock_quantity' => $v->stock_quantity,
+                'stock_quantity' => $v->stock_quantity, // Đảm bảo có trường này
             ];
         })->values()->toArray();
 
-        // Lấy bình luận (comments) cho sản phẩm, mới nhất trước(TA)
-        $comments = $product->comments()->with('user')->orderByDesc('created_at')->get();
+        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt
+        $comments = $product->comments()->with('user')->where('status', 'đã duyệt')->orderByDesc('created_at')->get();
 
         return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
     }
@@ -304,5 +318,43 @@ class ProductController extends Controller
             }
             return back()->with('error', 'Không xác định được sản phẩm cần thêm vào giỏ hàng!');
         }
+    }
+    public function comment(Request $request, $productId)
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
+        }
+
+        // Kiểm tra nếu user đang bị cấm bình luận
+        if ($user->banned_until && now()->lt($user->banned_until)) {
+            return redirect()->back()->with('error', 'Bạn đã bị cấm bình luận đến ' . $user->banned_until->format('d/m/Y H:i'));
+        }
+        if ($user->status === 'bị chặn') {
+            return redirect()->back()->with('error', 'Tài khoản của bạn đã bị chặn bình luận.');
+        }
+
+        $product = Product::findOrFail($productId);
+
+        // Kiểm tra nếu user có bình luận nào bị chặn trong sản phẩm này hoặc toàn hệ thống
+        $hasBlockedComment = $user->comments()->where('status', 'chặn')->exists();
+        if ($hasBlockedComment) {
+            // Cấm user bình luận 1 ngày kể từ bây giờ
+            $user->banned_until = now()->addDay();
+            $user->save();
+            return redirect()->back()->with('error', 'Bạn đã bị cấm bình luận 1 ngày do có bình luận vi phạm.');
+        }
+
+        $product->comments()->create([
+            'user_id' => $user->id,
+            'content' => $request->input('content'),
+            'status' => 'chờ duyệt',
+        ]);
+
+        return redirect()->back()->with('success', 'Bình luận của bạn đã được gửi và đang chờ duyệt!');
     }
 }
