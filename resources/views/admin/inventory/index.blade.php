@@ -168,6 +168,14 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Số lượng<span class="text-danger">*</span></label>
+                                <button type="button" class="btn btn-outline-secondary quantity-btn" data-target="bulk">Nhập số lượng</button>
+                                <input type="hidden" name="bulk_quantity" id="bulk-quantity" required>
+                                @error('bulk_quantity')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-auto d-flex align-items-end">
                                 <button type="button" class="btn btn-outline-secondary me-2" id="add-quantity-btn">Thêm số lượng</button>
                             </div>
@@ -508,6 +516,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             `);
                         });
                         $('#submit-bulk').prop('disabled', false);
+                        // Cập nhật số lượng đồng loạt từ bulk_quantity nếu có
+                        updateBulkQuantities();
                     } else {
                         tableBody.append('<tr><td colspan="4" class="text-center">Không có biến thể nào.</td></tr>');
                     }
