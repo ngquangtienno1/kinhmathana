@@ -74,7 +74,8 @@ class AuthenticationController extends BaseController
                 return redirect()->route('admin.home')
                     ->with('message', 'Đăng nhập thành công');
             } else if ($user->role_id == 3) {
-                return redirect()->route('client');
+                return redirect()->route('client.home')
+                    ->with('message', 'Đăng nhập thành công');
             } else {
                 Auth::logout(); // Đăng xuất ngay lập tức
                 return redirect()->route('login')
