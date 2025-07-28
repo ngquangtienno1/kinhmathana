@@ -169,6 +169,9 @@
                                 @enderror
                             </div>
                             <div class="col-auto d-flex align-items-end">
+                                <button type="button" class="btn btn-outline-secondary me-2" id="add-quantity-btn">Thêm số lượng</button>
+                            </div>
+                            <div class="col-auto d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary" id="submit-bulk" disabled>
                                     <span class="fas fa-save me-2"></span>Thực hiện
                                 </button>
@@ -209,15 +212,15 @@
                                 <input class="form-control search-input search" type="search" name="search"
                                     placeholder="Tìm SKU hoặc tên sản phẩm" value="{{ request('search') }}" />
                                 <span class="fas fa-search search-box-icon"></span>
-                    </div>
+                            </div>
                             <div style="min-width:160px;">
                                 <select name="type" class="form-select" onchange="this.form.submit()">
-                            <option value="">Tất cả loại giao dịch</option>
-                            <option value="import" {{ request('type') === 'import' ? 'selected' : '' }}>Nhập kho</option>
-                            <option value="export" {{ request('type') === 'export' ? 'selected' : '' }}>Xuất kho</option>
-                            <option value="adjust" {{ request('type') === 'adjust' ? 'selected' : '' }}>Điều chỉnh kho</option>
-                        </select>
-                    </div>
+                                    <option value="">Tất cả loại giao dịch</option>
+                                    <option value="import" {{ request('type') === 'import' ? 'selected' : '' }}>Nhập kho</option>
+                                    <option value="export" {{ request('type') === 'export' ? 'selected' : '' }}>Xuất kho</option>
+                                    <option value="adjust" {{ request('type') === 'adjust' ? 'selected' : '' }}>Điều chỉnh kho</option>
+                                </select>
+                            </div>
                             <div class="form-check d-flex align-items-center ms-2 mb-0">
                                 <input type="checkbox" name="low_stock" class="form-check-input me-2" id="lowStockCheckbox"
                                     {{ request('low_stock') ? 'checked' : '' }} onchange="this.form.submit()">
@@ -229,8 +232,8 @@
 
                 <div class="table-responsive scrollbar">
                     <table class="table table-hover table-sm align-middle rounded-3 shadow-sm mb-0 fs-9">
-                <thead>
-                    <tr>
+                        <thead>
+                            <tr>
                                 <th class="align-middle ps-4">Mã giao dịch</th>
                                 <th class="align-middle ps-4">Sản phẩm/Biến thể</th>
                                 <th class="align-middle ps-4">Mã phiếu nhập</th>
@@ -240,68 +243,68 @@
                                 <th class="align-middle ps-4">Người thực hiện</th>
                                 <th class="align-middle ps-4">Ngày</th>
                                 <th class="align-middle text-end pe-0 ps-4">Thao tác</th>
-                    </tr>
-                </thead>
+                            </tr>
+                        </thead>
                         <tbody class="list">
-                @foreach ($inventories as $inventory)
-                    <tr>
+                            @foreach ($inventories as $inventory)
+                                <tr>
                                     <td class="reference align-middle ps-4">{{ $inventory->reference }}</td>
                                     <td class="product align-middle ps-4">
-                            @if ($inventory->variation)
-                                {{ $inventory->variation->product->name ?? 'N/A' }} - {{ $inventory->variation->name }} (SKU: {{ $inventory->variation->sku }})
-                            @elseif ($inventory->product)
-                                {{ $inventory->product->name ?? 'N/A' }} (SKU: {{ $inventory->product->sku }})
-                            @else
-                                N/A
-                            @endif
-                        </td>
+                                        @if ($inventory->variation)
+                                            {{ $inventory->variation->product->name ?? 'N/A' }} - {{ $inventory->variation->name }} (SKU: {{ $inventory->variation->sku }})
+                                        @elseif ($inventory->product)
+                                            {{ $inventory->product->name ?? 'N/A' }} (SKU: {{ $inventory->product->sku }})
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="import_code align-middle ps-4">{{ $inventory->importDocument->code ?? 'N/A' }}</td>
                                     <td class="type align-middle ps-4">
-                            @if ($inventory->type === 'import')
+                                        @if ($inventory->type === 'import')
                                             <span class="badge bg-success">Nhập kho</span>
-                            @elseif ($inventory->type === 'export')
+                                        @elseif ($inventory->type === 'export')
                                             <span class="badge bg-danger">Xuất kho</span>
-                            @else
+                                        @else
                                             <span class="badge bg-warning">Điều chỉnh</span>
-                            @endif
-                        </td>
+                                        @endif
+                                    </td>
                                     <td class="quantity align-middle ps-4">{{ $inventory->quantity }}</td>
                                     <td class="current_stock align-middle ps-4">
-                            @if ($inventory->variation)
-                                {{ $inventory->variation->stock_quantity ?? 'N/A' }}
-                                @if ($inventory->variation && $inventory->variation->stock_quantity <= $inventory->variation->stock_alert_threshold)
-                                    <span class="badge bg-warning">Tồn thấp</span>
-                                @endif
-                            @elseif ($inventory->product)
-                                {{ $inventory->product->stock_quantity ?? 'N/A' }}
-                                @if ($inventory->product && $inventory->product->stock_quantity <= 10)
-                                    <span class="badge bg-warning">Tồn thấp</span>
-                                @endif
-                            @else
-                                N/A
-                            @endif
-                        </td>
+                                        @if ($inventory->variation)
+                                            {{ $inventory->variation->stock_quantity ?? 'N/A' }}
+                                            @if ($inventory->variation && $inventory->variation->stock_quantity <= $inventory->variation->stock_alert_threshold)
+                                                <span class="badge bg-warning">Tồn thấp</span>
+                                            @endif
+                                        @elseif ($inventory->product)
+                                            {{ $inventory->product->stock_quantity ?? 'N/A' }}
+                                            @if ($inventory->product && $inventory->product->stock_quantity <= 10)
+                                                <span class="badge bg-warning">Tồn thấp</span>
+                                            @endif
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="user align-middle ps-4">{{ $inventory->user->name ?? 'N/A' }}</td>
                                     <td class="date align-middle ps-4">{{ $inventory->created_at->format('d/m/Y H:i') }}</td>
-                        <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
-                            <div class="btn-reveal-trigger position-static">
-                                <button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <span class="fas fa-ellipsis-h fs-10"></span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end py-2">
-                                    <a class="dropdown-item" href="{{ route('admin.inventory.show', $inventory->id) }}">Xem</a>
-                                    <a class="dropdown-item"
-                                        href="{{ route('admin.inventory.inventory-print', $inventory->id) }}">In phiếu</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+                                    <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
+                                        <div class="btn-reveal-trigger position-static">
+                                            <button
+                                                class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                                type="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                                <span class="fas fa-ellipsis-h fs-10"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                                <a class="dropdown-item" href="{{ route('admin.inventory.show', $inventory->id) }}">Xem</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.inventory.inventory-print', $inventory->id) }}">In phiếu</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
@@ -447,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 productId.value = item.id;
                                 productSearch.value = item.text;
                                 productSearchResults.style.display = 'none';
-                                // Trigger load biến thể như cũ
+                                // Trigger load biến thể
                                 const event = new Event('change', { bubbles: true });
                                 productId.dispatchEvent(event);
                             });
@@ -464,12 +467,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }, 300);
     });
+
     // Đóng dropdown khi click ra ngoài
     document.addEventListener('click', function(e) {
         if (!productSearch.contains(e.target) && !productSearchResults.contains(e.target)) {
             productSearchResults.style.display = 'none';
         }
     });
+
     // Reset khi submit hoặc chuyển tab
     productSearch.form && productSearch.form.addEventListener('reset', function() {
         productId.value = '';
@@ -512,6 +517,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+    });
+
+    // Xử lý nút Thêm số lượng
+    $('#add-quantity-btn').on('click', function() {
+        let quantity;
+        do {
+            quantity = prompt('Nhập số lượng (phải là số lớn hơn 0):');
+            if (quantity === null) return; // Người dùng bấm Cancel
+            quantity = parseFloat(quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                alert('Vui lòng nhập một số lượng hợp lệ (lớn hơn 0).');
+            }
+        } while (isNaN(quantity) || quantity <= 0);
+
+        // Cập nhật tất cả các ô số lượng trong bảng biến thể
+        const quantityInputs = document.querySelectorAll('#variations-table .quantity-input');
+        quantityInputs.forEach(input => {
+            input.value = Math.floor(quantity); // Đảm bảo là số nguyên
+        });
     });
 });
 </script>

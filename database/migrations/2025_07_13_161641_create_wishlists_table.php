@@ -15,6 +15,7 @@ return new class extends Migration
         $table->id();
         $table->unsignedBigInteger('user_id');
         $table->unsignedBigInteger('product_id');
+         $table->unsignedBigInteger('variation_id')->nullable();
         $table->timestamps();
         $table->unique(['user_id', 'product_id']);
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
