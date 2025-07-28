@@ -132,6 +132,17 @@
                         mô tả trong chính sách riêng tư của chúng tôi.
                     </div>
                     <input type="hidden" name="applied_voucher" id="applied_voucher_hidden" value="">
+                    @php
+                        $selectedIds = request()->input('selected_ids');
+                        if (is_string($selectedIds)) {
+                            $selectedIds = explode(',', $selectedIds);
+                        }
+                    @endphp
+                    @if (!empty($selectedIds))
+                        @foreach ($selectedIds as $id)
+                            <input type="hidden" name="selected_ids[]" value="{{ $id }}">
+                        @endforeach
+                    @endif
                 </form>
             </div>
             <!-- Right: Order Summary -->
@@ -450,8 +461,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                    } */
+                                                                                                                                                font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                            } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {

@@ -298,12 +298,22 @@ class CartClientController extends Controller
     public function checkout(Request $request)
     {
         $user = Auth::user();
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds) {
+            $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
         if ($cartItems->isEmpty()) {
-            return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
+            return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để thanh toán!');
         }
         $validated = $request->validate([
             'receiver_name' => 'required|string|max:255',
