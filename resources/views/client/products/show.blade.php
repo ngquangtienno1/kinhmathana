@@ -91,9 +91,20 @@
                                 </div>
                                 <p class="price">
                                     <span class="woocommerce-Price-amount amount">
-                                        <bdi><span
-                                                class="woocommerce-Price-currencySymbol"></span>{{ number_format($product->minimum_price, 0, ',', '.') }}
-                                            <span style="font-size:0.9em;">VNĐ</span></bdi>
+                                        <bdi>
+                                            <span class="woocommerce-Price-currencySymbol"></span>
+                                            @if (isset($selectedVariation) &&
+                                                    $selectedVariation->sale_price &&
+                                                    $selectedVariation->sale_price < $selectedVariation->price)
+                                                <del>{{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ</del>
+                                                <ins>{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}
+                                                    VNĐ</ins>
+                                            @elseif(isset($selectedVariation))
+                                                {{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ
+                                            @else
+                                                {{ number_format($product->minimum_price, 0, ',', '.') }} VNĐ
+                                            @endif
+                                        </bdi>
                                     </span>
                                 </p>
                                 @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
