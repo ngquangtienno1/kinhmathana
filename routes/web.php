@@ -124,7 +124,7 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
-        Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
+        Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart');
         Route::post('{product}/comment', [ClientProductController::class, 'comment'])->name('comment');
     });
 

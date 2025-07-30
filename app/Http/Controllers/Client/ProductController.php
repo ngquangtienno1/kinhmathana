@@ -207,8 +207,8 @@ class ProductController extends Controller
                 'spherical_id' => $v->spherical_id ? (string)$v->spherical_id : '',
                 'cylindrical_id' => $v->cylindrical_id ? (string)$v->cylindrical_id : '',
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
-                'price' => $v->price,
-                'sale_price' => $v->sale_price,
+                'price' => (float) $v->price,
+                'sale_price' => (float) $v->sale_price,
                 'stock_quantity' => $v->stock_quantity, // Đảm bảo có trường này
             ];
         })->values()->toArray();
@@ -226,10 +226,13 @@ class ProductController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập!'], 401);
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!'
+                ], 401);
             }
-            return redirect()->route('client.login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+            return redirect()->back()->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
         }
 
         $quantity = $request->input('quantity', 1);
@@ -272,7 +275,6 @@ class ProductController extends Controller
             if ($request->ajax()) {
                 return response()->json(['success' => true]);
             }
-            // return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
         } elseif ($productId) {
             $product = Product::find($productId);
             if (!$product) {

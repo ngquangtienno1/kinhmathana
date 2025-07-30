@@ -254,8 +254,26 @@
                         @foreach ($order->items as $item)
                             <tr>
                                 <td>
-                                    <img src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
-                                        alt=""
+                                    @php
+                                        $product = $item->variation
+                                            ? $item->variation->product
+                                            : $item->product ?? null;
+                                        if ($item->variation && $item->variation->images->count()) {
+                                            $featuredImage =
+                                                $item->variation->images->where('is_featured', true)->first() ??
+                                                $item->variation->images->first();
+                                        } else {
+                                            $featuredImage =
+                                                $product && isset($product->images)
+                                                    ? $product->images->where('is_featured', true)->first() ??
+                                                        $product->images->first()
+                                                    : null;
+                                        }
+                                        $imagePath = $featuredImage
+                                            ? asset('storage/' . $featuredImage->image_path)
+                                            : asset('/assets/img/products/1.png');
+                                    @endphp
+                                    <img src="{{ $imagePath }}" alt=""
                                         style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
                                 </td>
                                 <td>
@@ -529,35 +547,37 @@
         #star-rating .star {
             font-size: 2rem;
         }
-        .status-label {
-        font-weight: 700;
-        font-size: 15px;
-        border-radius: 4px;
-        padding: 4px 16px;
-        display: inline-block;
-        border: 1px solid transparent;
-        margin-bottom: 2px;
-    }
-        .status-label.status-completed,
-    .status-label.status-confirmed,
-    .status-label.status-pending,
-    .status-label.status-awaiting_pickup,
-    .status-label.status-shipping,
-    .status-label.status-delivered {
-        background: #e6f9ed;
-        color: #219150;
-        border: 1px solid #219150;
-        box-shadow: 0 1px 4px rgba(33, 145, 80, 0.08);
-    }
 
-    .status-label.status-cancelled_by_customer,
-    .status-label.status-cancelled_by_admin,
-    .status-label.status-delivery_failed {
-        background: #ffeaea;
-        color: #e53935;
-        border: 1px solid #e53935;
-        box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08);
-    }
+        .status-label {
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 4px;
+            padding: 4px 16px;
+            display: inline-block;
+            border: 1px solid transparent;
+            margin-bottom: 2px;
+        }
+
+        .status-label.status-completed,
+        .status-label.status-confirmed,
+        .status-label.status-pending,
+        .status-label.status-awaiting_pickup,
+        .status-label.status-shipping,
+        .status-label.status-delivered {
+            background: #e6f9ed;
+            color: #219150;
+            border: 1px solid #219150;
+            box-shadow: 0 1px 4px rgba(33, 145, 80, 0.08);
+        }
+
+        .status-label.status-cancelled_by_customer,
+        .status-label.status-cancelled_by_admin,
+        .status-label.status-delivery_failed {
+            background: #ffeaea;
+            color: #e53935;
+            border: 1px solid #e53935;
+            box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08);
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

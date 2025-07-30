@@ -71,11 +71,30 @@
                                     </div>
                                     <div class="order-card-products">
                                         @foreach ($order->items as $item)
+                                            @php
+                                                $product = $item->variation
+                                                    ? $item->variation->product
+                                                    : $item->product ?? null;
+                                                if ($item->variation && $item->variation->images->count()) {
+                                                    $featuredImage =
+                                                        $item->variation->images->where('is_featured', true)->first() ??
+                                                        $item->variation->images->first();
+                                                } else {
+                                                    $featuredImage =
+                                                        $product && isset($product->images)
+                                                            ? $product->images->where('is_featured', true)->first() ??
+                                                                $product->images->first()
+                                                            : null;
+                                                }
+                                                $imagePath = $featuredImage
+                                                    ? asset('storage/' . $featuredImage->image_path)
+                                                    : asset('/assets/img/products/1.png');
+                                            @endphp
                                             <div class="order-product-row">
                                                 <a href="{{ route('client.orders.show', $order->id) }}"
                                                     style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1;">
-                                                    <img
-                                                        src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}">
+                                                    <img src="{{ $imagePath }}"
+                                                        alt="{{ $product->name ?? 'Sản phẩm đã xóa' }}">
                                                     <div class="product-info">
                                                         <div class="product-name">{{ $item->product_name }}</div>
                                                         @php

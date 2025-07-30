@@ -301,11 +301,11 @@ class CartClientController extends Controller
         $selectedIds = $request->input('selected_ids');
         if ($selectedIds) {
             $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
                 ->whereIn('id', $ids)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+                ->orderBy('updated_at', 'desc')
+                ->get();
         } else {
             $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
                 ->where('user_id', $user->id)
@@ -443,7 +443,12 @@ class CartClientController extends Controller
             ]);
             $promotion->increment('used_count');
         }
-        Cart::where('user_id', $user->id)->delete();
+
+        if ($selectedIds) {
+            Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
+        } else {
+            Cart::where('user_id', $user->id)->delete();
+        }
 
         // Cập nhật lại loại khách hàng
         $this->updateCustomerAfterOrder($user->id);

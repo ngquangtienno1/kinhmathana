@@ -89,7 +89,7 @@
                                     style="margin-bottom: 16px; color: #555; font-size: 1.1em;">
                                     {{ $product->description_short ?? ($product->description ?? $product->description_long) }}
                                 </div>
-                                <p class="price">
+                                <p class="price" id="product-price">
                                     <span class="woocommerce-Price-amount amount">
                                         <bdi>
                                             <span class="woocommerce-Price-currencySymbol"></span>
@@ -1143,16 +1143,19 @@
                                         msgContainer.appendChild(msg);
                                     }
                                 } else {
-                                    var msg = document.createElement('div');
-                                    msg.className = 'alert alert-danger';
-                                    msg.style =
-                                        'background: #ffeaea; border: 1.5px solid #e74c3c; color: #c0392b; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;';
-                                    msg.innerHTML =
-                                        '<span style="font-size: 22px;">&#9888;</span><span>' + (
-                                            data.message || 'Có lỗi xảy ra!') + '</span>' +
-                                        '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
-                                    if (msgContainer) {
-                                        msgContainer.appendChild(msg);
+                                    if (data.message) {
+                                        var alertDiv = document.createElement('div');
+                                        alertDiv.className = 'alert alert-danger';
+                                        alertDiv.style =
+                                            'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
+                                        alertDiv.innerHTML =
+                                            '<span style="font-size: 22px;">&#9888;</span> ' + data
+                                            .message +
+                                            '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
+                                        document.body.appendChild(alertDiv);
+                                        setTimeout(function() {
+                                            alertDiv.style.display = 'none';
+                                        }, 3000);
                                     }
                                 }
                             })
@@ -1252,10 +1255,10 @@
                     const variations = window.variationsJson || [];
                     // Tìm variation phù hợp
                     let found = variations.find(v =>
-                        (!colorId || v.color_id === colorId) &&
-                        (!sizeId || v.size_id === sizeId) &&
-                        (!sphericalId || v.spherical_id === sphericalId) &&
-                        (!cylindricalId || v.cylindrical_id === cylindricalId)
+                        (!colorId || v.color_id == colorId) &&
+                        (!sizeId || v.size_id == sizeId) &&
+                        (!sphericalId || v.spherical_id == sphericalId) &&
+                        (!cylindricalId || v.cylindrical_id == cylindricalId)
                     );
                     // Nếu đã chọn đủ (tức là các thuộc tính nào có thì phải chọn)
                     let enough = true;
@@ -1309,6 +1312,24 @@
                         }
                     } else if (stockElem) {
                         stockElem.textContent = window.defaultTotalStockQuantity ?? '';
+                    }
+                    // Cập nhật giá
+                    var priceElem = document.getElementById('product-price');
+                    if (found && enough && priceElem) {
+                        let html = '';
+                        const price = Number(found.price);
+                        const salePrice = Number(found.sale_price);
+                        if (salePrice && salePrice < price) {
+                            html =
+                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del>${price.toLocaleString('vi-VN')} VNĐ</del> <ins>${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
+                        } else {
+                            html =
+                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>${price.toLocaleString('vi-VN')} VNĐ</bdi></span>`;
+                        }
+                        priceElem.innerHTML = html;
+                    } else if (priceElem) {
+                        priceElem.innerHTML =
+                            `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>{{ number_format($product->minimum_price, 0, ',', '.') }} VNĐ</bdi></span>`;
                     }
                 }
 

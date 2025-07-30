@@ -165,8 +165,17 @@
                         @foreach ($checkoutItems as $item)
                             @php
                                 $product = $item->variation ? $item->variation->product : $item->product ?? null;
-                                $images = $product && isset($product->images) ? $product->images : collect();
-                                $featuredImage = $images->where('is_featured', true)->first() ?? $images->first();
+                                if ($item->variation && $item->variation->images->count()) {
+                                    $featuredImage =
+                                        $item->variation->images->where('is_featured', true)->first() ??
+                                        $item->variation->images->first();
+                                } else {
+                                    $featuredImage =
+                                        $product && isset($product->images)
+                                            ? $product->images->where('is_featured', true)->first() ??
+                                                $product->images->first()
+                                            : null;
+                                }
                                 $imagePath = $featuredImage
                                     ? asset('storage/' . $featuredImage->image_path)
                                     : asset('/path/to/default.jpg');
@@ -461,8 +470,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                                                                                font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                            } */
+                                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                    } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {

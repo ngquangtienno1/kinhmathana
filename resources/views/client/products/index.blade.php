@@ -115,24 +115,56 @@
                                                     @endif
                                                 </div>
                                                 <span class="price">
-                                                    @if ($product->sale_price && $product->sale_price < $product->price)
+                                                    @php
+                                                        // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                        if ($product->variations && $product->variations->count() > 0) {
+                                                            $minPrice = $product->variations->min('price');
+                                                            $minSalePrice = $product->variations
+                                                                ->where('sale_price', '>', 0)
+                                                                ->min('sale_price');
+
+                                                            // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                            if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                $displayPrice = $minSalePrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = true;
+                                                            } else {
+                                                                $displayPrice = $minPrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = false;
+                                                            }
+                                                        } else {
+                                                            // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                            $displayPrice =
+                                                                $product->sale_price &&
+                                                                $product->sale_price < $product->price
+                                                                    ? $product->sale_price
+                                                                    : $product->price;
+                                                            $originalPrice = $product->price;
+                                                            $hasSale =
+                                                                $product->sale_price &&
+                                                                $product->sale_price < $product->price;
+                                                        }
+                                                    @endphp
+
+                                                    @if ($hasSale)
                                                         <del aria-hidden="true">
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </del>
                                                         <span class="screen-reader-text">Giá gốc:
-                                                            {{ number_format($product->price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
                                                         <ins aria-hidden="true">
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </ins>
                                                         <span class="screen-reader-text">Giá khuyến mãi:
-                                                            {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                     @else
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                         </span>
                                                     @endif
                                                 </span>
