@@ -208,11 +208,9 @@
                                                                     <div
                                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--left ">
                                                                         <h3 class="qodef-m-title">
-                                                                            Blue light optical lens </h3>
+                                                                             Tròng Kính Đa Năng </h3>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 11px">Lorem
-                                                                            ipsum
-                                                                            dolore amet, vivid vel risus sit</p>
+                                                                            style="margin-top: 11px"> Bảo vệ mắt khỏi ánh sáng xanh từ màn hình – giảm mỏi, tăng tập trung</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -232,14 +230,11 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Cras
-                                                                                    sodales odio non libero
-                                                                                    tincidunt amet</span>
+                                                                                <span class="qodef-m-title-text">Thiết kế tinh xảo, vừa vặn đến từng chi tiết</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                Lorem ipsum
-                                                                                dolor sit amet, consectetur sit do
+                                                                                Đảm bảo sự thoải mái tối đa cho người đeo trong mọi hoạt động hằng ngày
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -272,14 +267,11 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Amet
-                                                                                    lorem ipsum sodales odio vivid
-                                                                                    sit mor</span>
+                                                                                <span class="qodef-m-title-text">Chất lượng vượt trội, thiết kế đầy cuốn hút</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                Lorem ipsum
-                                                                                dolor sit amet, consectetur del sint
+                                                                                 Kết hợp công nghệ hiện đại và tính thẩm mỹ – nâng tầm trải nghiệm thị giác của bạn
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -338,11 +330,9 @@
                                                                     <div
                                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--left ">
                                                                         <h3 class="qodef-m-title">
-                                                                            Blue light optical lens </h3>
+                                                                             Tròng Kính Chống Ánh Sáng Xanh </h3>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 11px">Lorem
-                                                                            ipsum
-                                                                            dolore amet, vivid vel risus sit</p>
+                                                                            style="margin-top: 11px">Bảo vệ đôi mắt bạn khỏi ánh sáng xanh, thoải mái suốt cả ngày</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -362,14 +352,11 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Cras
-                                                                                    sodales odio non libero
-                                                                                    tincidunt amet</span>
+                                                                                <span class="qodef-m-title-text">Thoải mái tuyệt đối, phù hợp mọi khuôn mặt</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                Lorem ipsum
-                                                                                dolor sit amet, consectetur sit do
+                                                                                Thiết kế nhẹ, ôm vừa vặn và thời trang cho cả ngày dài năng động
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -401,14 +388,11 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Amet
-                                                                                    lorem ipsum sodales odio vivid
-                                                                                    sit mor</span>
+                                                                                <span class="qodef-m-title-text">Chống mỏi mắt, nâng cao hiệu suất làm việc</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                Lorem ipsum
-                                                                                dolor sit amet, consectetur del sint
+                                                                               Giảm thiểu tác hại từ ánh sáng xanh – tập trung tốt hơn, làm việc hiệu quả hơn mỗi ngày
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -420,7 +404,7 @@
                                                                 <div class="elementor-widget-container">
                                                                     <a class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--large qodef-html--link "
                                                                         href="shop/index.html" target="_self">
-                                                                        <span class="qodef-m-text">View more</span>
+                                                                        <span class="qodef-m-text">Xem thêm</span>
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -602,10 +586,9 @@
                                                                     <div
                                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--center ">
                                                                         <h2 class="qodef-m-title">
-                                                                            Book appointment </h2>
+                                                                             Đặt lịch hẹn ngay </h2>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 12px">Get
-                                                                            professional assistance the simplest way
+                                                                            style="margin-top: 12px"> Nhận tư vấn chuyên nghiệp một cách nhanh chóng và tiện lợi
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -657,14 +640,14 @@
                                                                                                 class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
                                                                                                 aria-required="true"
                                                                                                 aria-invalid="false"
-                                                                                                placeholder="Type question"
+                                                                                                placeholder="Nhập câu hỏi"
                                                                                                 value=""
                                                                                                 type="text"
                                                                                                 name="your-text" /></span><button
                                                                                             class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
                                                                                             type="submit"><span
-                                                                                                class="qodef-m-text">send
-                                                                                                now</span></button>
+                                                                                                class="qodef-m-text">Gửi ngay
+                                                                                                </span></button>
                                                                                     </p>
                                                                                 </div>
                                                                                 <div class="wpcf7-response-output"
@@ -700,9 +683,8 @@
                                                     <div
                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--left ">
                                                         <h3 class="qodef-m-title">
-                                                            Autumn / winter shop 2021 </h3>
-                                                        <p class="qodef-m-subtitle" style="margin-top: 12px">Lorem
-                                                            ipsum dolore amet, vel consectetur risus</p>
+                                                            Bộ Sưu Tập Thu / Đông 2025 </h3>
+                                                        <p class="qodef-m-subtitle" style="margin-top: 12px"> Phong cách thời thượng – Đậm chất riêng trong từng thiết kế</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -717,13 +699,11 @@
                                                                 <span class="qodef-icon--plus">+</span>
                                                                 <span class="qodef-icon--minus">-</span>
                                                             </span>
-                                                            <span class="qodef-tab-title">Explore new collection of
-                                                                glasses in our online shop</span>
+                                                            <span class="qodef-tab-title">Khám phá bộ sưu tập kính mới tại cửa hàng trực tuyến</span>
                                                         </h6>
                                                         <div class="qodef-accordion-content">
                                                             <div class="qodef-accordion-content-inner">
-                                                                <p>Nullam vitae eros nisi. Vestibulum non purus
-                                                                    vitae massa mollis sagittis vesti bulum.</p>
+                                                                <p>Trải nghiệm các mẫu kính hiện đại, hợp xu hướng – dễ dàng chọn mua chỉ với vài cú nhấp chuột.</p>
                                                             </div>
                                                         </div>
                                                         <h6 class="qodef-accordion-title">
@@ -731,13 +711,11 @@
                                                                 <span class="qodef-icon--plus">+</span>
                                                                 <span class="qodef-icon--minus">-</span>
                                                             </span>
-                                                            <span class="qodef-tab-title">Unique items with
-                                                                ergonomic design style</span>
+                                                            <span class="qodef-tab-title">Thiết kế tinh tế, tiện dụng và đầy phong cách</span>
                                                         </h6>
                                                         <div class="qodef-accordion-content">
                                                             <div class="qodef-accordion-content-inner">
-                                                                <p>Nullam vitae eros nisi. Vestibulum non purus
-                                                                    vitae massa mollis sagittis vesti bulum.</p>
+                                                                <p>Kết hợp hoàn hảo giữa thẩm mỹ và công năng – mang lại cảm giác thoải mái suốt cả ngày dài.</p>
                                                             </div>
                                                         </div>
                                                     </div>

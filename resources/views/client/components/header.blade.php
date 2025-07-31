@@ -137,45 +137,9 @@
                                                 Us</span></a>
                                     </li>
                                     <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3709">
-                                        <a href="who-we-are/index.html"><span class="qodef-menu-item-text">Who
-                                                We Are</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4465">
-                                        <a href="our-staff/index.html"><span class="qodef-menu-item-text">Our
-                                                Staff</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4642">
-                                        <a href="meet-the-doctor/index.html"><span class="qodef-menu-item-text">Meet
-                                                The Doctor</span></a>
-                                    </li>
-                                    <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
                                         <a href="{{ route('client.voucher.index') }}"><span
                                                 class="qodef-menu-item-text">Mã giảm giá</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3536">
-                                        <a href="pricing-plans/index.html"><span class="qodef-menu-item-text">Pricing
-                                                Plans</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3439">
-                                        <a href="book-an-appointment/index.html"><span
-                                                class="qodef-menu-item-text">Book An Appointment</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4463">
-                                        <a href="get-in-touch/index.html"><span class="qodef-menu-item-text">Get
-                                                In Touch</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="{{ route('client.contact.index') }}"><span
-                                                class="qodef-menu-item-text">Contact
-                                                Us</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4643">
@@ -202,72 +166,22 @@
                         <div class="qodef-drop-down-second">
                             <div class="qodef-drop-down-second-inner qodef-content-grid">
                                 <ul class="sub-menu">
-                                    <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-370 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
-                                                Types<svg class="qodef-menu-item-arrow"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
-                                                    height="32" viewBox="0 0 32 32">
-                                                    <g>
-                                                        <path
-                                                            d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z">
-                                                        </path>
-                                                    </g>
-                                                </svg></span></a>
-                                        <ul class="sub-menu">
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-346">
-                                                <a href="shop/index.html"><span class="qodef-menu-item-text">Shop
-                                                        Grid</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2696">
-                                                <a href="shop-left-sidebar/index.html"><span
-                                                        class="qodef-menu-item-text">Left Sidebar
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2695">
-                                                <a href="shop-right-sidebar/index.html"><span
-                                                        class="qodef-menu-item-text">Right Sidebar
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3040">
-                                                <a href="shop-no-sidebar/index.html"><span
-                                                        class="qodef-menu-item-text">No Sidebar</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5608">
-                                                <a href="product-category/cat-eye/index.html"><span
-                                                        class="qodef-menu-item-text">One Category
-                                                        List</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10495">
-                                                <a href="variable-product-list/index.html"><span
-                                                        class="qodef-menu-item-text">Variable Product
-                                                        List</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10493">
-                                                <a href="product-carousel/index.html"><span
-                                                        class="qodef-menu-item-text">Product Carousel</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10496">
-                                                <a href="mixed-product-list/index.html"><span
-                                                        class="qodef-menu-item-text">Mixed Product
-                                                        List</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10494">
-                                                <a href="category-list/index.html"><span
-                                                        class="qodef-menu-item-text">Category List</span></a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                   <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-370 qodef--hide-link">
+    <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Danh mục<svg class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32">
+                <g>
+                    <path d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z"></path>
+                </g>
+            </svg></span></a>
+    <ul class="sub-menu">
+        @foreach (\App\Models\Category::whereNull('parent_id')->where('is_active', true)->get() as $category)
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-{{ $category->id }}">
+                <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}">
+                    <span class="qodef-menu-item-text">{{ $category->name }}</span>
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-347 qodef--hide-link">
                                         <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
@@ -331,57 +245,6 @@
                                         </ul>
                                     </li>
                                     <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-117 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
-                                                Layouts<svg class="qodef-menu-item-arrow"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
-                                                    height="32" viewBox="0 0 32 32">
-                                                    <g>
-                                                        <path
-                                                            d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z">
-                                                        </path>
-                                                    </g>
-                                                </svg></span></a>
-                                        <ul class="sub-menu">
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3041">
-                                                <a href="shop/three-columns-grid/index.html"><span
-                                                        class="qodef-menu-item-text">Three Columns
-                                                        Grid</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3042">
-                                                <a href="shop/three-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Three Columns
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3068">
-                                                <a href="shop/four-columns-grid/index.html"><span
-                                                        class="qodef-menu-item-text">Four Columns
-                                                        Grid</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3069">
-                                                <a href="shop/four-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Four Columns
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3081">
-                                                <a href="shop/five-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Five Columns
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3080">
-                                                <a href="shop/six-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Six Columns Wide</span></a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7770 qodef--hide-link">
                                         <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
                                                 Pages<svg class="qodef-menu-item-arrow"
@@ -402,12 +265,12 @@
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
-                                                <a href="checkout/index.html"><span
+                                                <a href="{{ route('client.orders.index') }}"><span
                                                         class="qodef-menu-item-text">Checkout</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2684">
-                                                <a href="my-account/index.html"><span class="qodef-menu-item-text">My
+                                                <a href="{{ route('client.users.index') }}"><span class="qodef-menu-item-text">My
                                                         Account</span></a>
                                             </li>
                                         </ul>
@@ -789,45 +652,9 @@
                                                 Us</span></a>
                                     </li>
                                     <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3709">
-                                        <a href="who-we-are/index.html"><span class="qodef-menu-item-text">Who
-                                                We Are</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4465">
-                                        <a href="our-staff/index.html"><span class="qodef-menu-item-text">Our
-                                                Staff</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4642">
-                                        <a href="meet-the-doctor/index.html"><span class="qodef-menu-item-text">Meet
-                                                The Doctor</span></a>
-                                    </li>
-                                    <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
                                         <a href="{{ route('client.voucher.index') }}"><span
                                                 class="qodef-menu-item-text">Mã giảm giá</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3536">
-                                        <a href="pricing-plans/index.html"><span class="qodef-menu-item-text">Pricing
-                                                Plans</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3439">
-                                        <a href="book-an-appointment/index.html"><span
-                                                class="qodef-menu-item-text">Book An Appointment</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4463">
-                                        <a href="get-in-touch/index.html"><span class="qodef-menu-item-text">Get
-                                                In Touch</span></a>
-                                    </li>
-                                    <li
-                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3708">
-                                        <a href="{{ route('client.contact.index') }}"><span
-                                                class="qodef-menu-item-text">Contact
-                                                Us</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4643">
@@ -854,72 +681,22 @@
                         <div class="qodef-drop-down-second">
                             <div class="qodef-drop-down-second-inner qodef-content-grid">
                                 <ul class="sub-menu">
-                                    <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-370 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
-                                                Types<svg class="qodef-menu-item-arrow"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
-                                                    height="32" viewBox="0 0 32 32">
-                                                    <g>
-                                                        <path
-                                                            d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z">
-                                                        </path>
-                                                    </g>
-                                                </svg></span></a>
-                                        <ul class="sub-menu">
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-346">
-                                                <a href="shop/index.html"><span class="qodef-menu-item-text">Shop
-                                                        Grid</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2696">
-                                                <a href="shop-left-sidebar/index.html"><span
-                                                        class="qodef-menu-item-text">Left Sidebar
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2695">
-                                                <a href="shop-right-sidebar/index.html"><span
-                                                        class="qodef-menu-item-text">Right Sidebar
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3040">
-                                                <a href="shop-no-sidebar/index.html"><span
-                                                        class="qodef-menu-item-text">No Sidebar</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5608">
-                                                <a href="product-category/cat-eye/index.html"><span
-                                                        class="qodef-menu-item-text">One Category
-                                                        List</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10495">
-                                                <a href="variable-product-list/index.html"><span
-                                                        class="qodef-menu-item-text">Variable Product
-                                                        List</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10493">
-                                                <a href="product-carousel/index.html"><span
-                                                        class="qodef-menu-item-text">Product Carousel</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10496">
-                                                <a href="mixed-product-list/index.html"><span
-                                                        class="qodef-menu-item-text">Mixed Product
-                                                        List</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10494">
-                                                <a href="category-list/index.html"><span
-                                                        class="qodef-menu-item-text">Category List</span></a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                   <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-370 qodef--hide-link">
+    <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Danh mục<svg class="qodef-menu-item-arrow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32">
+                <g>
+                    <path d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z"></path>
+                </g>
+            </svg></span></a>
+    <ul class="sub-menu">
+        @foreach (\App\Models\Category::whereNull('parent_id')->where('is_active', true)->get() as $category)
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-{{ $category->id }}">
+                <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}">
+                    <span class="qodef-menu-item-text">{{ $category->name }}</span>
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-347 qodef--hide-link">
                                         <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
@@ -982,57 +759,7 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    <li
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-117 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
-                                                Layouts<svg class="qodef-menu-item-arrow"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
-                                                    height="32" viewBox="0 0 32 32">
-                                                    <g>
-                                                        <path
-                                                            d="M 13.8,24.196c 0.39,0.39, 1.024,0.39, 1.414,0l 6.486-6.486c 0.196-0.196, 0.294-0.454, 0.292-0.71 c0-0.258-0.096-0.514-0.292-0.71L 15.214,9.804c-0.39-0.39-1.024-0.39-1.414,0c-0.39,0.39-0.39,1.024,0,1.414L 19.582,17 L 13.8,22.782C 13.41,23.172, 13.41,23.806, 13.8,24.196z">
-                                                        </path>
-                                                    </g>
-                                                </svg></span></a>
-                                        <ul class="sub-menu">
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3041">
-                                                <a href="shop/three-columns-grid/index.html"><span
-                                                        class="qodef-menu-item-text">Three Columns
-                                                        Grid</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3042">
-                                                <a href="shop/three-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Three Columns
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3068">
-                                                <a href="shop/four-columns-grid/index.html"><span
-                                                        class="qodef-menu-item-text">Four Columns
-                                                        Grid</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3069">
-                                                <a href="shop/four-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Four Columns
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3081">
-                                                <a href="shop/five-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Five Columns
-                                                        Wide</span></a>
-                                            </li>
-                                            <li
-                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3080">
-                                                <a href="shop/six-columns-wide/index.html"><span
-                                                        class="qodef-menu-item-text">Six Columns Wide</span></a>
-                                            </li>
-                                        </ul>
-                                    </li>
+
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7770 qodef--hide-link">
                                         <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
@@ -1054,12 +781,12 @@
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
-                                                <a href="checkout/index.html"><span
+                                                <a href="{{ route('client.orders.index') }}"><span
                                                         class="qodef-menu-item-text">Checkout</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2684">
-                                                <a href="my-account/index.html"><span class="qodef-menu-item-text">My
+                                                <a href="{{ route('client.users.index') }}"><span class="qodef-menu-item-text">My
                                                         Account</span></a>
                                             </li>
                                         </ul>
