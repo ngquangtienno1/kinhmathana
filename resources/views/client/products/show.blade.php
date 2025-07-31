@@ -434,10 +434,10 @@
                                 aria-controls="tab-description">
                                 <a href="#tab-description">Mô tả</a>
                             </li>
-                            <li class="additional_information_tab" id="tab-title-additional_information" role="tab"
+                            {{-- <li class="additional_information_tab" id="tab-title-additional_information" role="tab"
                                 aria-controls="tab-additional_information">
                                 <a href="#tab-additional_information">Thông tin thêm</a>
-                            </li>
+                            </li> --}}
                             <li class="reviews_tab" id="tab-title-reviews" role="tab" aria-controls="tab-reviews">
                                 <a href="#tab-reviews">Đánh giá ({{ $product->reviews->count() }})</a>
                             </li>
@@ -452,7 +452,7 @@
                             <p>{{ $product->description ?: 'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.' }}
                             </p>
                         </div>
-                        <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
+                        {{-- <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
                             id="tab-additional_information" role="tabpanel"
                             aria-labelledby="tab-title-additional_information">
 
@@ -471,8 +471,8 @@
                                         &times; 3 cm</td>
                                 </tr>
                             </table>
-                        </div>
-                        <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
+                        </div> --}}
+                        {{-- <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
                             id="tab-additional_information" role="tabpanel"
                             aria-labelledby="tab-title-additional_information">
                             <h2>Thông tin thêm</h2>
@@ -490,7 +490,7 @@
                                     @endforeach
                                 @endif
                             </table>
-                        </div>
+                        </div> --}}
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--reviews panel entry-content wc-tab"
                             id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
                             <h2>Đánh giá</h2>
