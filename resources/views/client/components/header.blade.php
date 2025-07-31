@@ -629,9 +629,15 @@
                                             $cartProduct = $item->variation
                                                 ? $item->variation->product
                                                 : $item->product;
-                                            $featuredImage =
-                                                $cartProduct->images->where('is_featured', true)->first() ??
-                                                $cartProduct->images->first();
+                                            if ($item->variation && $item->variation->images->count()) {
+                                                $featuredImage =
+                                                    $item->variation->images->where('is_featured', true)->first() ??
+                                                    $item->variation->images->first();
+                                            } else {
+                                                $featuredImage =
+                                                    $cartProduct->images->where('is_featured', true)->first() ??
+                                                    $cartProduct->images->first();
+                                            }
                                             $imagePath = $featuredImage
                                                 ? asset('storage/' . $featuredImage->image_path)
                                                 : asset('/path/to/default.jpg');
@@ -668,8 +674,22 @@
                                                 <h6 itemprop="name" class="qodef-e-title entry-title">
                                                     <a href="{{ $productUrl }}">{{ $productName }}</a>
                                                 </h6>
-                                                @if ($variationName)
-                                                    <div><small>Phân loại: {{ $variationName }}</small></div>
+                                                @if ($item->variation)
+                                                    <div><small>
+                                                        Phân loại:
+                                                        @if ($item->variation->color)
+                                                            {{ $item->variation->color->name }}
+                                                        @endif
+                                                        @if ($item->variation->size)
+                                                            - {{ $item->variation->size->name }}
+                                                        @endif
+                                                        @if ($item->variation->spherical_power)
+                                                            - {{ $item->variation->spherical_power }}
+                                                        @endif
+                                                        @if ($item->variation->cylinder_power)
+                                                            - {{ $item->variation->cylinder_power }}
+                                                        @endif
+                                                    </small></div>
                                                 @endif
                                                 <p class="qodef-e-quantity">Số lượng: {{ $item->quantity }}</p>
                                                 <p class="qodef-e-price">
@@ -1261,9 +1281,15 @@
                                             $cartProduct = $item->variation
                                                 ? $item->variation->product
                                                 : $item->product;
-                                            $featuredImage =
-                                                $cartProduct->images->where('is_featured', true)->first() ??
-                                                $cartProduct->images->first();
+                                            if ($item->variation && $item->variation->images->count()) {
+                                                $featuredImage =
+                                                    $item->variation->images->where('is_featured', true)->first() ??
+                                                    $item->variation->images->first();
+                                            } else {
+                                                $featuredImage =
+                                                    $cartProduct->images->where('is_featured', true)->first() ??
+                                                    $cartProduct->images->first();
+                                            }
                                             $imagePath = $featuredImage
                                                 ? asset('storage/' . $featuredImage->image_path)
                                                 : asset('/path/to/default.jpg');
@@ -1302,6 +1328,23 @@
                                                 </h6>
                                                 @if ($variationName)
                                                     <div><small>Phân loại: {{ $variationName }}</small></div>
+                                                @endif
+                                                @if ($item->variation)
+                                                    <div><small>
+                                                        Phân loại:
+                                                        @if ($item->variation->color)
+                                                            {{ $item->variation->color->name }}
+                                                        @endif
+                                                        @if ($item->variation->size)
+                                                            - {{ $item->variation->size->name }}
+                                                        @endif
+                                                        @if ($item->variation->spherical_power)
+                                                            - {{ $item->variation->spherical_power }}
+                                                        @endif
+                                                        @if ($item->variation->cylinder_power)
+                                                            - {{ $item->variation->cylinder_power }}
+                                                        @endif
+                                                    </small></div>
                                                 @endif
                                                 <p class="qodef-e-quantity">Số lượng: {{ $item->quantity }}</p>
                                                 <p class="qodef-e-price">
