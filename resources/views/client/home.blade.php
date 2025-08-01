@@ -79,10 +79,26 @@
                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                             @endif
                                                             @php
-                                                                $featuredImage =
-                                                                    $product->images
-                                                                        ->where('is_featured', true)
-                                                                        ->first() ?? $product->images->first();
+                                                                $featuredImage = null;
+                                                                if ($product->variations->count() > 0) {
+                                                                    $firstVariation = $product->variations->first();
+                                                                    if ($firstVariation->images->count() > 0) {
+                                                                        $featuredImage =
+                                                                            $firstVariation->images
+                                                                                ->where('is_featured', true)
+                                                                                ->first() ??
+                                                                            $firstVariation->images->first();
+                                                                    }
+                                                                }
+
+                                                                // Nếu không có ảnh biến thể, lấy ảnh sản phẩm chính
+                                                                if (!$featuredImage) {
+                                                                    $featuredImage =
+                                                                        $product->images
+                                                                            ->where('is_featured', true)
+                                                                            ->first() ?? $product->images->first();
+                                                                }
+
                                                                 $imagePath = $featuredImage
                                                                     ? asset('storage/' . $featuredImage->image_path)
                                                                     : asset('default-product.jpg');
@@ -115,24 +131,37 @@
                                                                 <div class="qodef-info-separator-end"></div>
                                                             </div>
                                                             <div class="qodef-woo-product-price price">
-                                                                @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                @php
+                                                                    $price = $product->price;
+                                                                    $salePrice = $product->sale_price;
+
+                                                                    if ($product->variations->count() > 0) {
+                                                                        $firstVariation = $product->variations->first();
+                                                                        $price =
+                                                                            $firstVariation->price ?? $product->price;
+                                                                        $salePrice =
+                                                                            $firstVariation->sale_price ??
+                                                                            $product->sale_price;
+                                                                    }
+                                                                @endphp
+                                                                @if ($salePrice && $salePrice < $price)
                                                                     <del aria-hidden="true">
                                                                         <span class="woocommerce-Price-amount amount">
-                                                                            <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                                            <bdi>{{ number_format($price, 0, ',', '.') }}đ</bdi>
                                                                         </span>
                                                                     </del>
                                                                     <span class="screen-reader-text">Giá gốc:
-                                                                        {{ number_format($product->price, 0, ',', '.') }}đ.</span>
+                                                                        {{ number_format($price, 0, ',', '.') }}đ.</span>
                                                                     <ins aria-hidden="true">
                                                                         <span class="woocommerce-Price-amount amount">
-                                                                            <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                            <bdi>{{ number_format($salePrice, 0, ',', '.') }}đ</bdi>
                                                                         </span>
                                                                     </ins>
                                                                     <span class="screen-reader-text">Giá khuyến mãi:
-                                                                        {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
+                                                                        {{ number_format($salePrice, 0, ',', '.') }}đ.</span>
                                                                 @else
                                                                     <span class="woocommerce-Price-amount amount">
-                                                                        <bdi>{{ number_format($product->price ?? 0, 0, ',', '.') }}đ</bdi>
+                                                                        <bdi>{{ number_format($price ?? 0, 0, ',', '.') }}đ</bdi>
                                                                     </span>
                                                                 @endif
                                                             </div>
@@ -208,9 +237,11 @@
                                                                     <div
                                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--left ">
                                                                         <h3 class="qodef-m-title">
-                                                                             Tròng Kính Đa Năng </h3>
+                                                                            Tròng Kính Đa Năng </h3>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 11px"> Bảo vệ mắt khỏi ánh sáng xanh từ màn hình – giảm mỏi, tăng tập trung</p>
+                                                                            style="margin-top: 11px"> Bảo vệ mắt khỏi ánh
+                                                                            sáng xanh từ màn hình – giảm mỏi, tăng tập trung
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -230,11 +261,14 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Thiết kế tinh xảo, vừa vặn đến từng chi tiết</span>
+                                                                                <span class="qodef-m-title-text">Thiết kế
+                                                                                    tinh xảo, vừa vặn đến từng chi
+                                                                                    tiết</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                Đảm bảo sự thoải mái tối đa cho người đeo trong mọi hoạt động hằng ngày
+                                                                                Đảm bảo sự thoải mái tối đa cho người đeo
+                                                                                trong mọi hoạt động hằng ngày
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -267,11 +301,13 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Chất lượng vượt trội, thiết kế đầy cuốn hút</span>
+                                                                                <span class="qodef-m-title-text">Chất lượng
+                                                                                    vượt trội, thiết kế đầy cuốn hút</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                 Kết hợp công nghệ hiện đại và tính thẩm mỹ – nâng tầm trải nghiệm thị giác của bạn
+                                                                                Kết hợp công nghệ hiện đại và tính thẩm mỹ –
+                                                                                nâng tầm trải nghiệm thị giác của bạn
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -330,9 +366,10 @@
                                                                     <div
                                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--left ">
                                                                         <h3 class="qodef-m-title">
-                                                                             Tròng Kính Chống Ánh Sáng Xanh </h3>
+                                                                            Tròng Kính Chống Ánh Sáng Xanh </h3>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 11px">Bảo vệ đôi mắt bạn khỏi ánh sáng xanh, thoải mái suốt cả ngày</p>
+                                                                            style="margin-top: 11px">Bảo vệ đôi mắt bạn
+                                                                            khỏi ánh sáng xanh, thoải mái suốt cả ngày</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -352,11 +389,13 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Thoải mái tuyệt đối, phù hợp mọi khuôn mặt</span>
+                                                                                <span class="qodef-m-title-text">Thoải mái
+                                                                                    tuyệt đối, phù hợp mọi khuôn mặt</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                                Thiết kế nhẹ, ôm vừa vặn và thời trang cho cả ngày dài năng động
+                                                                                Thiết kế nhẹ, ôm vừa vặn và thời trang cho
+                                                                                cả ngày dài năng động
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -388,11 +427,14 @@
                                                                         </div>
                                                                         <div class="qodef-m-content">
                                                                             <h6 class="qodef-m-title">
-                                                                                <span class="qodef-m-title-text">Chống mỏi mắt, nâng cao hiệu suất làm việc</span>
+                                                                                <span class="qodef-m-title-text">Chống mỏi
+                                                                                    mắt, nâng cao hiệu suất làm việc</span>
                                                                             </h6>
                                                                             <p class="qodef-m-text"
                                                                                 style="margin-top: 5px">
-                                                                               Giảm thiểu tác hại từ ánh sáng xanh – tập trung tốt hơn, làm việc hiệu quả hơn mỗi ngày
+                                                                                Giảm thiểu tác hại từ ánh sáng xanh – tập
+                                                                                trung tốt hơn, làm việc hiệu quả hơn mỗi
+                                                                                ngày
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -465,11 +507,34 @@
                                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                                             @endif
                                                                             @php
-                                                                                $featuredImage =
-                                                                                    $product->images
-                                                                                        ->where('is_featured', true)
-                                                                                        ->first() ??
-                                                                                    $product->images->first();
+                                                                                // Ưu tiên ảnh biến thể nếu có
+                                                                                $featuredImage = null;
+                                                                                if ($product->variations->count() > 0) {
+                                                                                    $firstVariation = $product->variations->first();
+                                                                                    if (
+                                                                                        $firstVariation->images->count() >
+                                                                                        0
+                                                                                    ) {
+                                                                                        $featuredImage =
+                                                                                            $firstVariation->images
+                                                                                                ->where(
+                                                                                                    'is_featured',
+                                                                                                    true,
+                                                                                                )
+                                                                                                ->first() ??
+                                                                                            $firstVariation->images->first();
+                                                                                    }
+                                                                                }
+
+                                                                                // Nếu không có ảnh biến thể, lấy ảnh sản phẩm chính
+                                                                                if (!$featuredImage) {
+                                                                                    $featuredImage =
+                                                                                        $product->images
+                                                                                            ->where('is_featured', true)
+                                                                                            ->first() ??
+                                                                                        $product->images->first();
+                                                                                }
+
                                                                                 $imagePath = $featuredImage
                                                                                     ? asset(
                                                                                         'storage/' .
@@ -512,29 +577,47 @@
                                                                                 </div>
                                                                             </div>
                                                                             <div class="qodef-woo-product-price price">
-                                                                                @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                                @php
+                                                                                    // Lấy giá từ biến thể đầu tiên nếu có
+                                                                                    $price = $product->price;
+                                                                                    $salePrice = $product->sale_price;
+
+                                                                                    if (
+                                                                                        $product->variations->count() >
+                                                                                        0
+                                                                                    ) {
+                                                                                        $firstVariation = $product->variations->first();
+                                                                                        $price =
+                                                                                            $firstVariation->price ??
+                                                                                            $product->price;
+                                                                                        $salePrice =
+                                                                                            $firstVariation->sale_price ??
+                                                                                            $product->sale_price;
+                                                                                    }
+                                                                                @endphp
+                                                                                @if ($salePrice && $salePrice < $price)
                                                                                     <del aria-hidden="true">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                                            <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                                                            <bdi>{{ number_format($price, 0, ',', '.') }}đ</bdi>
                                                                                         </span>
                                                                                     </del>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         gốc:
-                                                                                        {{ number_format($product->price, 0, ',', '.') }}đ.</span>
+                                                                                        {{ number_format($price, 0, ',', '.') }}đ.</span>
                                                                                     <ins aria-hidden="true">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                                            <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                                            <bdi>{{ number_format($salePrice, 0, ',', '.') }}đ</bdi>
                                                                                         </span>
                                                                                     </ins>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         khuyến mãi:
-                                                                                        {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
+                                                                                        {{ number_format($salePrice, 0, ',', '.') }}đ.</span>
                                                                                 @else
                                                                                     <span
                                                                                         class="woocommerce-Price-amount amount">
-                                                                                        <bdi>{{ number_format($product->price ?? 0, 0, ',', '.') }}đ</bdi>
+                                                                                        <bdi>{{ number_format($price ?? 0, 0, ',', '.') }}đ</bdi>
                                                                                     </span>
                                                                                 @endif
                                                                             </div>
@@ -586,9 +669,10 @@
                                                                     <div
                                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--center ">
                                                                         <h2 class="qodef-m-title">
-                                                                             Đặt lịch hẹn ngay </h2>
+                                                                            Đặt lịch hẹn ngay </h2>
                                                                         <p class="qodef-m-subtitle"
-                                                                            style="margin-top: 12px"> Nhận tư vấn chuyên nghiệp một cách nhanh chóng và tiện lợi
+                                                                            style="margin-top: 12px"> Nhận tư vấn chuyên
+                                                                            nghiệp một cách nhanh chóng và tiện lợi
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -646,8 +730,9 @@
                                                                                                 name="your-text" /></span><button
                                                                                             class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
                                                                                             type="submit"><span
-                                                                                                class="qodef-m-text">Gửi ngay
-                                                                                                </span></button>
+                                                                                                class="qodef-m-text">Gửi
+                                                                                                ngay
+                                                                                            </span></button>
                                                                                     </p>
                                                                                 </div>
                                                                                 <div class="wpcf7-response-output"
@@ -684,7 +769,8 @@
                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--left ">
                                                         <h3 class="qodef-m-title">
                                                             Bộ Sưu Tập Thu / Đông 2025 </h3>
-                                                        <p class="qodef-m-subtitle" style="margin-top: 12px"> Phong cách thời thượng – Đậm chất riêng trong từng thiết kế</p>
+                                                        <p class="qodef-m-subtitle" style="margin-top: 12px"> Phong cách
+                                                            thời thượng – Đậm chất riêng trong từng thiết kế</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -699,11 +785,13 @@
                                                                 <span class="qodef-icon--plus">+</span>
                                                                 <span class="qodef-icon--minus">-</span>
                                                             </span>
-                                                            <span class="qodef-tab-title">Khám phá bộ sưu tập kính mới tại cửa hàng trực tuyến</span>
+                                                            <span class="qodef-tab-title">Khám phá bộ sưu tập kính mới tại
+                                                                cửa hàng trực tuyến</span>
                                                         </h6>
                                                         <div class="qodef-accordion-content">
                                                             <div class="qodef-accordion-content-inner">
-                                                                <p>Trải nghiệm các mẫu kính hiện đại, hợp xu hướng – dễ dàng chọn mua chỉ với vài cú nhấp chuột.</p>
+                                                                <p>Trải nghiệm các mẫu kính hiện đại, hợp xu hướng – dễ dàng
+                                                                    chọn mua chỉ với vài cú nhấp chuột.</p>
                                                             </div>
                                                         </div>
                                                         <h6 class="qodef-accordion-title">
@@ -711,11 +799,13 @@
                                                                 <span class="qodef-icon--plus">+</span>
                                                                 <span class="qodef-icon--minus">-</span>
                                                             </span>
-                                                            <span class="qodef-tab-title">Thiết kế tinh tế, tiện dụng và đầy phong cách</span>
+                                                            <span class="qodef-tab-title">Thiết kế tinh tế, tiện dụng và
+                                                                đầy phong cách</span>
                                                         </h6>
                                                         <div class="qodef-accordion-content">
                                                             <div class="qodef-accordion-content-inner">
-                                                                <p>Kết hợp hoàn hảo giữa thẩm mỹ và công năng – mang lại cảm giác thoải mái suốt cả ngày dài.</p>
+                                                                <p>Kết hợp hoàn hảo giữa thẩm mỹ và công năng – mang lại cảm
+                                                                    giác thoải mái suốt cả ngày dài.</p>
                                                             </div>
                                                         </div>
                                                     </div>

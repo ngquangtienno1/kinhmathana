@@ -449,48 +449,30 @@
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab"
                             id="tab-description" role="tabpanel" aria-labelledby="tab-title-description">
                             <h2>Mô tả</h2>
-                            <p>{{ $product->description ?: 'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.' }}
-                            </p>
+                            @php
+                                $desc =
+                                    $product->description_long ??
+                                    ($product->description ??
+                                        'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.');
+                            @endphp
+                            <div class="product-description" style="text-align: left; text-indent: 0; padding-left: 0;">
+                                {!! $desc !!}
+                            </div>
+                            <style>
+                                .product-description {
+                                    text-align: left !important;
+                                    text-indent: 0 !important;
+                                    padding-left: 0 !important;
+                                }
+
+                                .product-description p {
+                                    text-align: left !important;
+                                    text-indent: 0 !important;
+                                    padding-left: 0 !important;
+                                    margin-left: 0 !important;
+                                }
+                            </style>
                         </div>
-                        {{-- <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
-                            id="tab-additional_information" role="tabpanel"
-                            aria-labelledby="tab-title-additional_information">
-
-                            <h2>Thông tin thêm</h2>
-
-                            <table class="woocommerce-product-attributes shop_attributes">
-                                <tr
-                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--weight">
-                                    <th class="woocommerce-product-attributes-item__label">Weight</th>
-                                    <td class="woocommerce-product-attributes-item__value">0.5 kg</td>
-                                </tr>
-                                <tr
-                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
-                                    <th class="woocommerce-product-attributes-item__label">Dimensions</th>
-                                    <td class="woocommerce-product-attributes-item__value">1 &times; 2
-                                        &times; 3 cm</td>
-                                </tr>
-                            </table>
-                        </div> --}}
-                        {{-- <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
-                            id="tab-additional_information" role="tabpanel"
-                            aria-labelledby="tab-title-additional_information">
-                            <h2>Thông tin thêm</h2>
-                            <table class="woocommerce-product-attributes shop_attributes">
-                                @if ($product->variations->isNotEmpty())
-                                    @foreach ($product->variations->groupBy('attribute_name')->map->unique() as $attribute => $variations)
-                                        <tr
-                                            class="woocommerce-product-attributes-item woocommerce-product-attributes-item--{{ strtolower(str_replace(' ', '-', $attribute)) }}">
-                                            <th class="woocommerce-product-attributes-item__label">{{ $attribute }}
-                                            </th>
-                                            <td class="woocommerce-product-attributes-item__value">
-                                                <p>{{ $variations->pluck('attribute_value')->unique()->implode(', ') }}</p>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </table>
-                        </div> --}}
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--reviews panel entry-content wc-tab"
                             id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
                             <h2>Đánh giá</h2>
@@ -846,7 +828,9 @@
                                             <textarea name="content" id="comment-content" class="form-control" rows="3" required
                                                 style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;"></textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Gửi bình
+                                        <button type="submit" class="btn btn-primary"
+                                            style="margin-top:8px; background-color: #111; color: #fff; border: 1px solid #000;">Gửi
+                                            bình
                                             luận</button>
                                     </form>
                                 @endif
