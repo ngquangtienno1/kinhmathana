@@ -20,8 +20,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        \Log::info('Search request', $request->all());
-        $query = Product::with(['categories', 'brand', 'images', 'variations.color'])
+        $query = Product::with(['categories', 'brand', 'images', 'variations.color', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
             ->active();
 
         // Bộ lọc: Availability
@@ -49,6 +48,20 @@ class ProductController extends Controller
         if ($request->has('sizes') && is_array($sizes = $request->input('sizes', []))) {
             $query->whereHas('variations.size', function ($q) use ($sizes) {
                 $q->whereIn('sizes.id', $sizes);
+            });
+        }
+
+        // Bộ lọc: Spherical (độ cận)
+        if ($request->has('sphericals') && is_array($sphericals = $request->input('sphericals', []))) {
+            $query->whereHas('variations.spherical', function ($q) use ($sphericals) {
+                $q->whereIn('sphericals.id', $sphericals);
+            });
+        }
+
+        // Bộ lọc: Cylindrical (độ loạn)
+        if ($request->has('cylindricals') && is_array($cylindricals = $request->input('cylindricals', []))) {
+            $query->whereHas('variations.cylindrical', function ($q) use ($cylindricals) {
+                $q->whereIn('cylindricals.id', $cylindricals);
             });
         }
 
@@ -149,9 +162,24 @@ class ProductController extends Controller
             $sizes = $sizes->merge($product->variations->pluck('size')->filter());
         }
         $sizes = $sizes->unique('id')->values();
+
+        // Lấy tất cả spherical từ variations của các sản phẩm trong trang
+        $sphericals = collect();
+        foreach ($products as $product) {
+            $sphericals = $sphericals->merge($product->variations->pluck('spherical')->filter());
+        }
+        $sphericals = $sphericals->unique('id')->values();
+
+        // Lấy tất cả cylindrical từ variations của các sản phẩm trong trang
+        $cylindricals = collect();
+        foreach ($products as $product) {
+            $cylindricals = $cylindricals->merge($product->variations->pluck('cylindrical')->filter());
+        }
+        $cylindricals = $cylindricals->unique('id')->values();
+
         $brands = Brand::where('is_active', true)->get();
 
-        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'brands'));
+        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'sphericals', 'cylindricals', 'brands'));
     }
 
     /**
