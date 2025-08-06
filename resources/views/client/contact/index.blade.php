@@ -57,7 +57,7 @@
                                                 <div class="elementor-widget-container">
                                                     <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn. Vui lòng liên hệ với chúng tôi
                                                         qua các thông tin dưới đây.</p>
-                                            </div>
+                                                </div>
                                             </div>
                                             <div class="elementor-element elementor-element-5527f0a elementor-widget elementor-widget-wp-widget-neoocular_core_contact_form_7"
                                                 data-id="5527f0a" data-element_type="widget"
@@ -70,12 +70,12 @@
                                                             <div class="screen-reader-response">
                                                                 <p role="status" aria-live="polite" aria-atomic="true"></p>
                                                                 <ul></ul>
-                                        </div>
+                                                            </div>
                                                             <form method="POST"
                                                                 action="{{ route('client.contact.store') }}"
                                                                 class="wpcf7-form init demo" aria-label="Contact form"
                                                                 novalidate="novalidate" data-status="init">
-                                            @csrf
+                                                                @csrf
                                                                 @if (session('success'))
                                                                     <div class="alert alert-success"
                                                                         style="background: #e6f9ed; border: 1.5px solid #2ecc71; color: #218c5a; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
@@ -164,8 +164,9 @@
                                                                         <br />
                                                                         <button
                                                                             class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
-                                                                            type="submit">
-                                                                            <span class="qodef-m-text">Gửi tin nhắn</span>
+                                                                            type="submit"
+                                                                            style="background-color: #000; color: #fff; border: 1px solid #000;">
+                                                                            <span class="qodef-m-text">Gửi liên hệ</span>
                                                                         </button>
                                                                     </p>
                                                                 </div>
@@ -174,9 +175,9 @@
                                                             </form>
                                                         </div>
                                                     </div>
+                                                </div>
                                             </div>
-                                            </div>
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>

@@ -702,6 +702,7 @@
                                                     class="menu-item menu-item-type-custom menu-item-object-custom menu-item-{{ $brand->id }}">
                                                     <a
                                                         href="{{ route('client.products.index', ['brand_id' => $brand->id]) }}">
+
                                                         <span class="qodef-menu-item-text">{{ $brand->name }}</span>
                                                     </a>
                                                 </li>
