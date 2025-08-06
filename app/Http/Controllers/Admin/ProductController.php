@@ -71,7 +71,6 @@ class ProductController extends Controller
         $deletedCount = Product::onlyTrashed()->count();
         $categories = Category::all();
 
-
         return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
     }
 
@@ -162,6 +161,7 @@ class ProductController extends Controller
                 'name.required' => 'Tên sản phẩm là bắt buộc.',
                 'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
                 'name.max' => 'Tên sản phẩm không được vượt quá 125 ký tự.',
+                'name.unique' => 'Tên sản phẩm đã tồn tại.',
                 'description_short.required' => 'Mô tả ngắn là bắt buộc.',
                 'description_short.string' => 'Mô tả ngắn phải là chuỗi ký tự.',
                 'description_long.required' => 'Mô tả chi tiết là bắt buộc.',
@@ -220,7 +220,7 @@ class ProductController extends Controller
             ];
 
             $rules = [
-                'name' => 'required|string|max:125',
+                'name' => 'required|string|max:125|unique:products,name',
                 'description_short' => 'required|string',
                 'description_long' => 'required|string',
                 'categories' => 'required|array',
@@ -469,6 +469,7 @@ class ProductController extends Controller
                 'name.required' => 'Tên sản phẩm là bắt buộc.',
                 'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
                 'name.max' => 'Tên sản phẩm không được vượt quá 125 ký tự.',
+                'name.unique' => 'Tên sản phẩm đã tồn tại.',
                 'description_short.string' => 'Mô tả ngắn phải là chuỗi ký tự.',
                 'description_long.string' => 'Mô tả chi tiết phải là chuỗi ký tự.',
                 'categories.array' => 'Danh mục phải là một mảng.',
@@ -516,7 +517,7 @@ class ProductController extends Controller
             ];
 
             $rules = [
-                'name' => 'required|string|max:125',
+                'name' => 'required|string|max:125|unique:products,name,' . $id,
                 'description_short' => 'nullable|string',
                 'description_long' => 'nullable|string',
                 'categories' => 'nullable|array',

@@ -118,7 +118,7 @@
                     <h5 class="mb-0">Nhập kho hàng loạt cho biến thể</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.inventory.store-bulk') }}" method="POST">
+                    <form action="{{ route('admin.inventory.store-bulk') }}" method="POST" id="bulk-inventory-form">
                         @csrf
                         <div class="row gx-2 align-items-end mb-3">
                             <div class="col-auto" style="min-width:260px;">
@@ -152,7 +152,7 @@
                             </div>
                             <div class="col-auto" style="min-width:180px;">
                                 <label class="form-label">Loại giao dịch<span class="text-danger">*</span></label>
-                                <select name="type" class="form-control" required>
+                                <select name="type" class="form-control" id="transaction_type" required>
                                     <option value="import">Nhập kho</option>
                                     <option value="export">Xuất kho</option>
                                     <option value="adjust">Điều chỉnh kho</option>
@@ -168,7 +168,6 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                       
                             <div class="col-auto d-flex align-items-end">
                                 <button type="button" class="btn btn-outline-secondary me-2" id="add-quantity-btn">Thêm số lượng</button>
                             </div>
@@ -185,7 +184,7 @@
                                         <th class="align-middle ps-4" style="min-width:180px;">Biến thể</th>
                                         <th class="align-middle ps-4" style="min-width:120px;">SKU</th>
                                         <th class="align-middle ps-4" style="min-width:120px;">Tồn kho hiện tại</th>
-                                        <th class="align-middle ps-4" style="min-width:120px;">Số lượng<span class="text-danger">*</span></th>
+                                        <th class="align-middle ps-4" style="min-width:120px;">Số lượng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -500,17 +499,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <tr>
                                     <td class="align-middle ps-4">${variation.name}</td>
                                     <td class="align-middle ps-4">${variation.sku}</td>
-                                    <td class="align-middle ps-4">${variation.stock_quantity}</td>
+                                    <td class="align-middle ps-4 stock-quantity" data-variation-id="${variation.id}">${variation.stock_quantity}</td>
                                     <td class="align-middle ps-4">
                                         <input type="hidden" name="variations[${variation.id}][id]" value="${variation.id}">
-                                        <input type="number" name="variations[${variation.id}][quantity]" class="form-control form-control-sm quantity-input" min="1" required>
+                                        <input type="number" name="variations[${variation.id}][quantity]" class="form-control form-control-sm quantity-input" min="1" data-stock="${variation.stock_quantity}">
                                     </td>
                                 </tr>
                             `);
                         });
                         $('#submit-bulk').prop('disabled', false);
-                        // Cập nhật số lượng đồng loạt từ bulk_quantity nếu có
-                        updateBulkQuantities();
                     } else {
                         tableBody.append('<tr><td colspan="4" class="text-center">Không có biến thể nào.</td></tr>');
                     }
@@ -536,9 +533,56 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Cập nhật tất cả các ô số lượng trong bảng biến thể
         const quantityInputs = document.querySelectorAll('#variations-table .quantity-input');
+        const transactionType = document.getElementById('transaction_type').value;
+        let hasError = false;
+        let errorMessage = '';
+
         quantityInputs.forEach(input => {
-            input.value = Math.floor(quantity); // Đảm bảo là số nguyên
+            const stockQuantity = parseInt(input.getAttribute('data-stock'));
+            if (transactionType === 'export' && quantity > stockQuantity) {
+                hasError = true;
+                const variationName = input.closest('tr').querySelector('td').textContent;
+                errorMessage += `Số lượng xuất kho cho biến thể ${variationName} vượt quá tồn kho hiện tại (${stockQuantity}).\n`;
+            } else {
+                input.value = Math.floor(quantity); // Đảm bảo là số nguyên
+            }
         });
+
+        if (hasError) {
+            alert(errorMessage + 'Vui lòng nhập lại số lượng.');
+        }
+    });
+
+    // Kiểm tra trước khi submit để đảm bảo ít nhất một biến thể có số lượng và validate xuất kho
+    $('#bulk-inventory-form').on('submit', function(e) {
+        const quantityInputs = document.querySelectorAll('#variations-table .quantity-input');
+        const transactionType = document.getElementById('transaction_type').value;
+        let hasQuantity = false;
+        let hasError = false;
+        let errorMessage = '';
+
+        quantityInputs.forEach(input => {
+            const quantity = parseFloat(input.value);
+            if (quantity && quantity > 0) {
+                hasQuantity = true;
+                if (transactionType === 'export') {
+                    const stockQuantity = parseInt(input.getAttribute('data-stock'));
+                    const variationName = input.closest('tr').querySelector('td').textContent;
+                    if (quantity > stockQuantity) {
+                        hasError = true;
+                        errorMessage += `Số lượng xuất kho cho biến thể ${variationName} vượt quá tồn kho hiện tại (${stockQuantity}).\n`;
+                    }
+                }
+            }
+        });
+
+        if (!hasQuantity) {
+            e.preventDefault();
+            alert('Vui lòng nhập số lượng cho ít nhất một biến thể.');
+        } else if (hasError) {
+            e.preventDefault();
+            alert(errorMessage + 'Vui lòng nhập lại số lượng.');
+        }
     });
 });
 </script>
