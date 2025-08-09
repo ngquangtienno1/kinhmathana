@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
+use App\Models\Comment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -100,26 +101,71 @@ class HomeController extends Controller
         $customerLabels = [];
         $orderData = [];
         $orderLabels = [];
+        $revenueComparisonData = []; // Dữ liệu so sánh với kỳ trước
+        $pendingOrderData = []; // Đơn hàng chờ xác nhận
+        $shippingOrderData = []; // Đơn hàng đang giao
+        $deliveredOrderData = []; // Đơn hàng đã giao
+        $completedOrderData = []; // Đơn hàng hoàn thành
+        $cancelledOrderData = []; // Đơn hàng đã hủy
         $period = Carbon::parse($dateFrom)->diffInDays(Carbon::parse($dateTo));
+
         if ($period <= 31) {
             // Theo ngày
             $dates = [];
             for ($date = Carbon::parse($dateFrom); $date->lte(Carbon::parse($dateTo)); $date->addDay()) {
                 $dates[] = $date->format('Y-m-d');
             }
+
             foreach ($dates as $date) {
                 $revenueLabels[] = Carbon::parse($date)->format('d/m');
-                $revenueData[] = Order::whereDate('created_at', $date)
-                    ->where('status', 'delivered')
+
+                // Doanh thu theo ngày - tính từ tất cả đơn hàng (trừ đơn đã hủy)
+                $dailyRevenue = Order::whereDate('created_at', $date)
+                    ->whereNotIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])
                     ->sum('total_amount');
+                $revenueData[] = $dailyRevenue;
+
+                // So sánh với ngày tương ứng kỳ trước (7 ngày trước)
+                $previousDate = Carbon::parse($date)->subDays(7)->format('Y-m-d');
+                $previousRevenue = Order::whereDate('created_at', $previousDate)
+                    ->whereNotIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])
+                    ->sum('total_amount');
+                $revenueComparisonData[] = $previousRevenue;
+
                 // Khách hàng mới theo ngày
                 $customerLabels[] = Carbon::parse($date)->format('d/m');
                 $customerData[] = User::where('role_id', 3)
                     ->whereDate('created_at', $date)
                     ->count();
+
                 // Đơn hàng theo ngày
                 $orderLabels[] = Carbon::parse($date)->format('d/m');
                 $orderData[] = Order::whereDate('created_at', $date)->count();
+
+                // Đơn hàng chờ xác nhận
+                $pendingOrderData[] = Order::whereDate('created_at', $date)
+                    ->where('status', 'pending')
+                    ->count();
+
+                // Đơn hàng đang giao
+                $shippingOrderData[] = Order::whereDate('created_at', $date)
+                    ->where('status', 'shipping')
+                    ->count();
+
+                // Đơn hàng đã giao
+                $deliveredOrderData[] = Order::whereDate('created_at', $date)
+                    ->where('status', 'delivered')
+                    ->count();
+
+                // Đơn hàng hoàn thành
+                $completedOrderData[] = Order::whereDate('created_at', $date)
+                    ->where('status', 'delivered')
+                    ->count();
+
+                // Đơn hàng đã hủy
+                $cancelledOrderData[] = Order::whereDate('created_at', $date)
+                    ->whereIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])
+                    ->count();
             }
         } else {
             // Theo tháng
@@ -130,28 +176,93 @@ class HomeController extends Controller
                 $months[] = $start->format('Y-m');
                 $start->addMonth();
             }
+
             foreach ($months as $month) {
                 $revenueLabels[] = Carbon::parse($month)->format('m/Y');
-                $revenueData[] = Order::whereYear('created_at', substr($month, 0, 4))
+
+                // Doanh thu theo tháng - tính từ tất cả đơn hàng (trừ đơn đã hủy)
+                $monthlyRevenue = Order::whereYear('created_at', substr($month, 0, 4))
                     ->whereMonth('created_at', substr($month, 5, 2))
-                    ->where('status', 'delivered')
+                    ->whereNotIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])
                     ->sum('total_amount');
+                $revenueData[] = $monthlyRevenue;
+
+                // So sánh với tháng tương ứng kỳ trước (12 tháng trước)
+                $previousMonth = Carbon::parse($month)->subMonths(12)->format('Y-m');
+                $previousRevenue = Order::whereYear('created_at', substr($previousMonth, 0, 4))
+                    ->whereMonth('created_at', substr($previousMonth, 5, 2))
+                    ->whereNotIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])
+                    ->sum('total_amount');
+                $revenueComparisonData[] = $previousRevenue;
+
                 // Khách hàng mới theo tháng
                 $customerLabels[] = Carbon::parse($month)->format('m/Y');
                 $customerData[] = User::where('role_id', 3)
                     ->whereYear('created_at', substr($month, 0, 4))
                     ->whereMonth('created_at', substr($month, 5, 2))
                     ->count();
+
                 // Đơn hàng theo tháng
                 $orderLabels[] = Carbon::parse($month)->format('m/Y');
                 $orderData[] = Order::whereYear('created_at', substr($month, 0, 4))
                     ->whereMonth('created_at', substr($month, 5, 2))
                     ->count();
+
+                // Đơn hàng chờ xác nhận theo tháng
+                $pendingOrderData[] = Order::whereYear('created_at', substr($month, 0, 4))
+                    ->whereMonth('created_at', substr($month, 5, 2))
+                    ->where('status', 'pending')
+                    ->count();
+
+                // Đơn hàng đang giao theo tháng
+                $shippingOrderData[] = Order::whereYear('created_at', substr($month, 0, 4))
+                    ->whereMonth('created_at', substr($month, 5, 2))
+                    ->where('status', 'shipping')
+                    ->count();
+
+                // Đơn hàng đã giao theo tháng
+                $deliveredOrderData[] = Order::whereYear('created_at', substr($month, 0, 4))
+                    ->whereMonth('created_at', substr($month, 5, 2))
+                    ->where('status', 'delivered')
+                    ->count();
+
+                // Đơn hàng hoàn thành theo tháng
+                $completedOrderData[] = Order::whereYear('created_at', substr($month, 0, 4))
+                    ->whereMonth('created_at', substr($month, 5, 2))
+                    ->where('status', 'delivered')
+                    ->count();
+
+                // Đơn hàng đã hủy theo tháng
+                $cancelledOrderData[] = Order::whereYear('created_at', substr($month, 0, 4))
+                    ->whereMonth('created_at', substr($month, 5, 2))
+                    ->whereIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])
+                    ->count();
             }
         }
 
-        // Tổng doanh thu
-        $totalRevenue = (clone $orderQuery)->where('status', 'delivered')->sum('total_amount');
+        // Tổng doanh thu - tính từ tất cả đơn hàng (trừ đơn đã hủy)
+        $totalRevenue = (clone $orderQuery)->whereNotIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])->sum('total_amount');
+
+        // Tính toán tăng trưởng doanh thu
+        $currentPeriodRevenue = array_sum($revenueData);
+        $previousPeriodRevenue = array_sum($revenueComparisonData);
+        $revenueGrowth = $previousPeriodRevenue > 0 ?
+            round((($currentPeriodRevenue - $previousPeriodRevenue) / $previousPeriodRevenue) * 100, 2) : 0;
+        $revenueGrowthType = $revenueGrowth >= 0 ? 'positive' : 'negative';
+
+        // Dữ liệu cho biểu đồ combo chart
+        $comboChartData = [
+            'labels' => $revenueLabels,
+            'revenue' => $revenueData,
+            'comparison' => $revenueComparisonData,
+            'orders' => $orderData,
+            'customers' => $customerData,
+            'pendingOrders' => $pendingOrderData,
+            'shippingOrders' => $shippingOrderData,
+            'deliveredOrders' => $deliveredOrderData,
+            'completedOrders' => $completedOrderData,
+            'cancelledOrders' => $cancelledOrderData
+        ];
 
         // Tỷ lệ chuyển đổi đơn hàng
         $conversionRate = $totalOrders > 0 ? round($completedOrders / $totalOrders * 100, 2) : 0;
@@ -198,8 +309,20 @@ class HomeController extends Controller
         $lowStockProducts = Product::where('stock_quantity', '>', 0)->where('stock_quantity', '<', 5)->count();
         // Sản phẩm khuyến mãi
         $promotionProducts = Product::whereNotNull('sale_price')->where('sale_price', '>', 0)->count();
-        // Sản phẩm mới trong tháng
-        $newProductsThisMonth = Product::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count();
+        // Sản phẩm mới (theo bộ lọc ngày tháng)
+        $newProductsThisMonth = Product::when($request->filled('quick_range') || $request->filled('date_from'), function ($query) use ($request) {
+            if ($request->quick_range === 'today') {
+                $query->whereDate('created_at', now()->toDateString());
+            } elseif ($request->quick_range === 'this_week') {
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+            } elseif ($request->quick_range === 'this_month') {
+                $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+            } elseif ($request->quick_range === 'this_year') {
+                $query->whereYear('created_at', now()->year);
+            } elseif ($request->filled('date_from') && $request->filled('date_to')) {
+                $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
+            }
+        })->count();
         // Khách hàng mua nhiều nhất (top 1)
         $topCustomer = User::where('role_id', 3)
             ->withCount(['orders as total_orders' => function ($q) {
@@ -213,8 +336,80 @@ class HomeController extends Controller
         $mostReviewedProduct = Product::withCount('reviews')->orderByDesc('reviews_count')->first();
         $mostReviewedProductName = $mostReviewedProduct ? $mostReviewedProduct->name : 'N/A';
         $mostReviewedProductCount = $mostReviewedProduct ? $mostReviewedProduct->reviews_count : 0;
-        // Số lượng bình luận mới trong tuần
-        $newCommentsThisWeek = \App\Models\Comment::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+
+        // === THỐNG KÊ CHO CARD 1: SẢN PHẨM NỔI BẬT ===
+        // Top 5 sản phẩm có nhiều lượt xem nhất (theo bộ lọc ngày tháng)
+        $topViewedProducts = Product::select('products.name', 'products.views')
+            ->when($request->filled('quick_range') || $request->filled('date_from'), function ($query) use ($request) {
+                if ($request->quick_range === 'today') {
+                    $query->whereDate('created_at', now()->toDateString());
+                } elseif ($request->quick_range === 'this_week') {
+                    $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                } elseif ($request->quick_range === 'this_year') {
+                    $query->whereYear('created_at', now()->year);
+                } elseif ($request->filled('date_from') && $request->filled('date_to')) {
+                    $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
+                }
+            })
+            ->orderByDesc('views')
+            ->limit(5)
+            ->get();
+        $topViewedProductName = $topViewedProducts->first() ? $topViewedProducts->first()->name : 'N/A';
+
+
+
+        // === THỐNG KÊ CHO CARD 2: ĐÁNH GIÁ & TƯƠNG TÁC ===
+        // Đánh giá trung bình (theo bộ lọc ngày tháng)
+        $recentReviews = Review::when($request->filled('quick_range') || $request->filled('date_from'), function ($query) use ($request) {
+            if ($request->quick_range === 'today') {
+                $query->whereDate('created_at', now()->toDateString());
+            } elseif ($request->quick_range === 'this_week') {
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+            } elseif ($request->quick_range === 'this_month') {
+                $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+            } elseif ($request->quick_range === 'this_year') {
+                $query->whereYear('created_at', now()->year);
+            } elseif ($request->filled('date_from') && $request->filled('date_to')) {
+                $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
+            }
+        });
+        $averageRating = $recentReviews->count() > 0 ? round($recentReviews->avg('rating'), 1) : 0;
+
+        // Phân bố đánh giá theo sao (theo bộ lọc ngày tháng)
+        $ratingDistribution = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $ratingDistribution[$i] = Review::where('rating', $i)
+                ->when($request->filled('quick_range') || $request->filled('date_from'), function ($query) use ($request) {
+                    if ($request->quick_range === 'today') {
+                        $query->whereDate('created_at', now()->toDateString());
+                    } elseif ($request->quick_range === 'this_week') {
+                        $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    } elseif ($request->quick_range === 'this_month') {
+                        $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+                    } elseif ($request->quick_range === 'this_year') {
+                        $query->whereYear('created_at', now()->year);
+                    } elseif ($request->filled('date_from') && $request->filled('date_to')) {
+                        $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
+                    }
+                })
+                ->count();
+        }
+
+
+        // Số lượng bình luận mới (theo bộ lọc ngày tháng)
+        $newCommentsThisWeek = \App\Models\Comment::when($request->filled('quick_range') || $request->filled('date_from'), function ($query) use ($request) {
+            if ($request->quick_range === 'today') {
+                $query->whereDate('created_at', now()->toDateString());
+            } elseif ($request->quick_range === 'this_week') {
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+            } elseif ($request->quick_range === 'this_month') {
+                $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+            } elseif ($request->quick_range === 'this_year') {
+                $query->whereYear('created_at', now()->year);
+            } elseif ($request->filled('date_from') && $request->filled('date_to')) {
+                $query->whereBetween('created_at', [$request->date_from, $request->date_to]);
+            }
+        })->count();
         // Tổng số biến thể
         $totalVariations = \App\Models\Variation::count();
         // Biến thể sắp hết hàng
@@ -223,6 +418,29 @@ class HomeController extends Controller
         $totalBrands = \App\Models\Brand::count();
         // Số danh mục
         $totalCategories = \App\Models\Category::count();
+
+        // Tạo label cho khoảng thời gian đang được lọc
+        $filterTimeLabel = '';
+        if ($request->filled('quick_range')) {
+            switch ($request->quick_range) {
+                case 'today':
+                    $filterTimeLabel = 'Hôm nay';
+                    break;
+                case 'this_week':
+                    $filterTimeLabel = 'Tuần này';
+                    break;
+                case 'this_month':
+                    $filterTimeLabel = 'Tháng này';
+                    break;
+                case 'this_year':
+                    $filterTimeLabel = 'Năm nay';
+                    break;
+            }
+        } elseif ($request->filled('date_from') && $request->filled('date_to')) {
+            $filterTimeLabel = 'Khoảng tùy chọn';
+        } else {
+            $filterTimeLabel = 'Tất cả thời gian';
+        }
 
         return view('admin.index', compact(
             'totalOrders',
@@ -255,8 +473,6 @@ class HomeController extends Controller
             'newProductsThisMonth',
             'topCustomerName',
             'neverOrderedCustomers',
-            'mostReviewedProductName',
-            'mostReviewedProductCount',
             'newCommentsThisWeek',
             'totalVariations',
             'lowStockVariations',
@@ -265,7 +481,19 @@ class HomeController extends Controller
             'completedPercentage',
             'cancelledPercentage',
             'pendingPercentage',
-            'shippingPercentage'
+            'shippingPercentage',
+            'comboChartData',
+            'revenueGrowth',
+            'revenueGrowthType',
+
+            // === DỮ LIỆU CHO BIỂU ĐỒ ĐƠN HÀNG ===
+            'completedOrderData',
+            'cancelledOrderData',
+            // === DỮ LIỆU CHO BIỂU ĐỒ SẢN PHẨM & ĐÁNH GIÁ ===
+            'topViewedProducts',
+            'ratingDistribution',
+            // === LABEL CHO BỘ LỌC THỜI GIAN ===
+            'filterTimeLabel'
         ));
     }
 }

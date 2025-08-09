@@ -9,22 +9,100 @@
 @endsection
 <div class="pb-5">
     <div class="row g-4">
+        <style>
+            /* Container chung cho biểu đồ */
+            .chart-container {
+                position: relative;
+                width: 100%;
+                height: 500px;
+                /* Chiều cao cố định để chart không dài vô tận */
+                background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                border: 1px solid rgba(56, 116, 255, 0.1);
+                margin: 10px 0;
+            }
+
+            /* Hiệu ứng hover cho chart container */
+            .chart-container:hover {
+                box-shadow: 0 8px 30px rgba(56, 116, 255, 0.15);
+                border-color: rgba(56, 116, 255, 0.2);
+                transform: translateY(-2px);
+                transition: all 0.3s ease;
+            }
+
+            /* Cải thiện giao diện form lọc */
+            #revenue-filter-form {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+            }
+
+            #custom-date-range {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+                margin-top: 10px;
+            }
+
+            /* Thông tin chi tiết */
+            .bg-light {
+                background-color: #f8f9fa !important;
+                border: 1px solid #e9ecef;
+                transition: all 0.3s ease;
+            }
+
+            .bg-light:hover {
+                background-color: #e9ecef !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Responsive cho mobile */
+            @media (max-width: 768px) {
+                .chart-container {
+                    height: 400px;
+                    padding: 15px;
+                }
+
+                #revenue-filter-form {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                #custom-date-range .col-md-6 {
+                    margin-bottom: 10px;
+                }
+            }
+
+            /* Tối ưu cho tablet */
+            @media (min-width: 769px) and (max-width: 1024px) {
+                .chart-container {
+                    height: 450px;
+                    padding: 20px;
+                }
+            }
+        </style>
+
         <div class="col-12 col-xxl-6">
             <div class="mb-8">
                 <h2 class="mb-2">Bảng điều khiển bán hàng</h2>
-                <h5 class="text-body-tertiary fw-semibold">Tình hình kinh doanh của bạn hiện tại
-                </h5>
+                <h5 class="text-body-tertiary fw-semibold">Tình hình kinh doanh của bạn hiện tại</h5>
             </div>
             <div class="row align-items-center g-4">
                 <div class="col-12 col-md-auto">
-                    <div class="d-flex align-items-center"><span class="fa-stack"
-                            style="min-height: 46px;min-width: 46px;"><span
-                                class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
-                                data-fa-transform="down-4 rotate--10 left-4"></span><span
-                                class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success"
-                                data-fa-transform="up-4 right-3 grow-2"></span><span
-                                class="fa-stack-1x fa-solid fa-star text-success "
-                                data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
+                            <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
+                                data-fa-transform="down-4 rotate--10 left-4"></span>
+                            <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success"
+                                data-fa-transform="up-4 right-3 grow-2"></span>
+                            <span class="fa-stack-1x fa-solid fa-star text-success"
+                                data-fa-transform="shrink-2 up-8 right-6"></span>
+                        </span>
                         <div class="ms-3">
                             <h4 class="mb-0">{{ number_format($pendingOrders) }} đơn mới</h4>
                             <p class="text-body-secondary fs-9 mb-0">Chờ xử lý</p>
@@ -32,14 +110,15 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-auto">
-                    <div class="d-flex align-items-center"><span class="fa-stack"
-                            style="min-height: 46px;min-width: 46px;"><span
-                                class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light"
-                                data-fa-transform="down-4 rotate--10 left-4"></span><span
-                                class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-warning"
-                                data-fa-transform="up-4 right-3 grow-2"></span><span
-                                class="fa-stack-1x fa-solid fa-pause text-warning "
-                                data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
+                            <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light"
+                                data-fa-transform="down-4 rotate--10 left-4"></span>
+                            <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-warning"
+                                data-fa-transform="up-4 right-3 grow-2"></span>
+                            <span class="fa-stack-1x fa-solid fa-pause text-warning"
+                                data-fa-transform="shrink-2 up-8 right-6"></span>
+                        </span>
                         <div class="ms-3">
                             <h4 class="mb-0">{{ number_format($cancelledOrders) }} đơn</h4>
                             <p class="text-body-secondary fs-9 mb-0">Đã huỷ</p>
@@ -47,14 +126,15 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-auto">
-                    <div class="d-flex align-items-center"><span class="fa-stack"
-                            style="min-height: 46px;min-width: 46px;"><span
-                                class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light"
-                                data-fa-transform="down-4 rotate--10 left-4"></span><span
-                                class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger"
-                                data-fa-transform="up-4 right-3 grow-2"></span><span
-                                class="fa-stack-1x fa-solid fa-xmark text-danger "
-                                data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;">
+                            <span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light"
+                                data-fa-transform="down-4 rotate--10 left-4"></span>
+                            <span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger"
+                                data-fa-transform="up-4 right-3 grow-2"></span>
+                            <span class="fa-stack-1x fa-solid fa-xmark text-danger"
+                                data-fa-transform="shrink-2 up-8 right-6"></span>
+                        </span>
                         <div class="ms-3">
                             <h4 class="mb-0">{{ number_format($outOfStockProducts) }} sản phẩm</h4>
                             <p class="text-body-secondary fs-9 mb-0">Hết hàng</p>
@@ -62,22 +142,88 @@
                     </div>
                 </div>
             </div>
+
             <hr class="bg-body-secondary mb-6 mt-4" />
+
             <div class="row flex-between-center mb-4 g-3">
                 <div class="col-auto">
                     <h3>Tổng doanh thu</h3>
                     <p class="text-body-tertiary lh-sm mb-0">Tổng tiền đã nhận từ tất cả các kênh</p>
                 </div>
-                <div class="col-8 col-sm-4"><select class="form-select form-select-sm" id="select-gross-revenue-month">
-                        <option>Mar 1 - 31, 2022</option>
-                        <option>April 1 - 30, 2022</option>
-                        <option>May 1 - 31, 2022</option>
-                    </select></div>
+                <div class="col-8 col-sm-4">
+                    <form id="revenue-filter-form" method="GET" class="d-flex gap-2">
+                        <select class="form-select form-select-sm" id="quick-range" name="quick_range">
+                            <option value="today" {{ request('quick_range') == 'today' ? 'selected' : '' }}>Hôm nay
+                            </option>
+                            <option value="this_week" {{ request('quick_range') == 'this_week' ? 'selected' : '' }}>Tuần
+                                này</option>
+                            <option value="this_month" {{ request('quick_range') == 'this_month' ? 'selected' : '' }}>
+                                Tháng này</option>
+                            <option value="this_year" {{ request('quick_range') == 'this_year' ? 'selected' : '' }}>Năm
+                                nay</option>
+                            <option value="custom" {{ request('quick_range') == 'custom' ? 'selected' : '' }}>Tùy chọn
+                            </option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Lọc</button>
+                    </form>
+                </div>
             </div>
-            <div class="echart-total-sales-chart" style="min-height:320px;width:100%">
-                <h2 class="text-primary">{{ number_format($totalRevenue) }} đ</h2>
+
+            <!-- Date range picker cho tùy chọn -->
+            <div id="custom-date-range" class="row mb-3"
+                style="display: {{ request('quick_range') == 'custom' ? 'block' : 'none' }};">
+                <div class="col-md-6">
+                    <label class="form-label">Từ ngày:</label>
+                    <input type="date" class="form-control" name="date_from" value="{{ request('date_from') }}"
+                        id="date-from">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Đến ngày:</label>
+                    <input type="date" class="form-control" name="date_to" value="{{ request('date_to') }}"
+                        id="date-to">
+                </div>
+            </div>
+
+            <div class="echart-total-sales-chart">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div>
+                        <h2 class="text-primary mb-0">{{ number_format($totalRevenue) }} đ</h2>
+                        <small class="text-body-tertiary">
+                            @if (request('quick_range') == 'today')
+                                Hôm nay ({{ \Carbon\Carbon::now()->format('d/m/Y') }})
+                            @elseif(request('quick_range') == 'this_week')
+                                Tuần này ({{ \Carbon\Carbon::now()->startOfWeek()->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::now()->endOfWeek()->format('d/m/Y') }})
+                            @elseif(request('quick_range') == 'this_month')
+                                Tháng này ({{ \Carbon\Carbon::now()->startOfMonth()->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y') }})
+                            @elseif(request('quick_range') == 'this_year')
+                                Năm {{ \Carbon\Carbon::now()->year }}
+                            @elseif(request('quick_range') == 'custom' && request('date_from') && request('date_to'))
+                                {{ \Carbon\Carbon::parse(request('date_from'))->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::parse(request('date_to'))->format('d/m/Y') }}
+                            @else
+                                Tháng này ({{ \Carbon\Carbon::now()->startOfMonth()->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y') }})
+                            @endif
+                        </small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span
+                            class="badge badge-phoenix badge-phoenix-{{ $revenueGrowthType == 'positive' ? 'success' : 'danger' }} rounded-pill fs-9 me-2">
+                            <span class="badge-label">{{ $revenueGrowth >= 0 ? '+' : '' }}{{ $revenueGrowth }}%</span>
+                        </span>
+                        <small class="text-body-tertiary">So với kỳ trước</small>
+                    </div>
+                </div>
+
+                <!-- FIX: Bọc canvas trong container có height cố định -->
+                <div class="chart-container">
+                    <canvas id="revenueComboChart"></canvas>
+                </div>
             </div>
         </div>
+
         <div class="col-12 col-xxl-6">
             <div class="row g-3">
                 <div class="col-12 col-md-6">
@@ -88,7 +234,7 @@
                                     <h5 class="mb-1">Tổng số đơn hàng<span
                                             class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"><span
                                                 class="badge-label">-6.8%</span></span></h5>
-                                    <h6 class="text-body-tertiary">7 ngày gần nhất</h6>
+                                    <h6 class="text-body-tertiary">{{ $filterTimeLabel }}</h6>
                                 </div>
                                 <h4>{{ number_format($totalOrders) }}</h4>
                             </div>
@@ -99,12 +245,12 @@
                                 <div class="d-flex align-items-center mb-2">
                                     <div class="bullet-item bg-primary me-2"></div>
                                     <h6 class="text-body fw-semibold flex-1 mb-0">Đã hoàn thành</h6>
-                                    <h6 class="text-body fw-semibold mb-0">{{ $completedPercentage }}%</h6>
+                                    <h6 class="text-body fw-semibold mb-0">{{ $completedOrders }} đơn</h6>
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="bullet-item bg-primary-subtle me-2"></div>
                                     <h6 class="text-body fw-semibold flex-1 mb-0">Đã huỷ</h6>
-                                    <h6 class="text-body fw-semibold mb-0">{{ $cancelledPercentage }}%</h6>
+                                    <h6 class="text-body fw-semibold mb-0">{{ $cancelledOrders }} đơn</h6>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +264,7 @@
                                     <h5 class="mb-1">Khách hàng mới<span
                                             class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2">
                                             <span class="badge-label">+26.5%</span></span></h5>
-                                    <h6 class="text-body-tertiary">7 ngày gần nhất</h6>
+                                    <h6 class="text-body-tertiary">{{ $filterTimeLabel }}</h6>
                                 </div>
                                 <h4>{{ number_format($newCustomers) }}</h4>
                             </div>
@@ -133,61 +279,34 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h5 class="mb-2">Mã giảm giá nổi bật</h5>
-                                    <h6 class="text-body-tertiary">7 ngày gần nhất</h6>
+                                    <h5 class="mb-1">Thống kê sản phẩm nổi bật<span
+                                            class="badge badge-phoenix badge-phoenix-success rounded-pill fs-9 ms-2">
+                                            <span class="badge-label">+12.3%</span></span></h5>
+                                    <h6 class="text-body-tertiary">{{ $filterTimeLabel }}</h6>
                                 </div>
+                                <h4 class="text-success">📈</h4>
                             </div>
-                            <div class="pb-4 pt-3">
-                                <div class="echart-top-coupons" style="height:200px;width:100%;"></div>
-                            </div>
-                            <div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="bullet-item bg-primary me-2"></div>
-                                    <h6 class="text-body fw-semibold flex-1 mb-0">Percentage discount</h6>
-                                    <h6 class="text-body fw-semibold mb-0">72%</h6>
-                                    <!-- TODO: Đổ dữ liệu động nếu có -->
-                                </div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="bullet-item bg-primary-lighter me-2"></div>
-                                    <h6 class="text-body fw-semibold flex-1 mb-0">Fixed card discount</h6>
-                                    <h6 class="text-body fw-semibold mb-0">18%</h6>
-                                    <!-- TODO: Đổ dữ liệu động nếu có -->
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="bullet-item bg-info-dark me-2"></div>
-                                    <h6 class="text-body fw-semibold flex-1 mb-0">Fixed product discount
-                                    </h6>
-                                    <h6 class="text-body fw-semibold mb-0">10%</h6>
-                                    <!-- TODO: Đổ dữ liệu động nếu có -->
-                                </div>
+                            <div class="d-flex justify-content-center px-4 py-6">
+                                <div class="echart-top-products" style="height:200px;width:100%"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="card h-100">
-                        <div class="card-body d-flex flex-column">
+                        <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h5 class="mb-2">Tỉ lệ khách thanh toán</h5>
-                                    <h6 class="text-body-tertiary">7 ngày gần nhất</h6>
+                                    <h5 class="mb-1">Thống kê đánh giá & tương tác<span
+                                            class="badge badge-phoenix badge-phoenix-info rounded-pill fs-9 ms-2">
+                                            <span class="badge-label">+8.7%</span></span></h5>
+                                    <h6 class="text-body-tertiary">{{ $filterTimeLabel }}</h6>
                                 </div>
+                                <h4 class="text-info">
+                                    {{ $averageRating ? number_format($averageRating, 1) : '0.0' }}/5.0</h4>
                             </div>
-                            <div class="d-flex justify-content-center pt-3 flex-1">
-                                <div class="echarts-paying-customer-chart" style="height:250px;width:100%;">
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="bullet-item bg-primary me-2"></div>
-                                    <h6 class="text-body fw-semibold flex-1 mb-0">Paying customer</h6>
-                                    <h6 class="text-body fw-semibold mb-0">{{ $conversionRate }}%</h6>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="bullet-item bg-primary-subtle me-2"></div>
-                                    <h6 class="text-body fw-semibold flex-1 mb-0">Non-paying customer</h6>
-                                    <h6 class="text-body fw-semibold mb-0">{{ 100 - $conversionRate }}%</h6>
-                                </div>
+                            <div class="d-flex justify-content-center px-4 py-6">
+                                <div class="echarts-reviews-chart" style="height:200px;width:100%"></div>
                             </div>
                         </div>
                     </div>
@@ -200,8 +319,8 @@
     <div data-list='{"valueNames":["product","customer","rating","review","time"],"page":6}'>
         <div class="row align-items-end justify-content-between pb-5 g-3">
             <div class="col-auto">
-                <h3>Latest reviews</h3>
-                <p class="text-body-tertiary lh-sm mb-0">Payment received across all channels</p>
+                <h3>Đánh giá mới nhất</h3>
+                <p class="text-body-tertiary lh-sm mb-0">Các đánh giá mới nhất từ khách hàng</p>
             </div>
             <div class="col-12 col-md-auto">
                 <div class="row g-2 gy-3">
@@ -255,134 +374,100 @@
                     </tr>
                 </thead>
                 <tbody class="list" id="table-latest-review-body">
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Fitbit Sense Advanced Smartwatch with Tools for Heart Health, Stress Management & Skin Temperature Trends, Carbon/Graphite, One Size (S & L Bands)","productImage":"/products/60x60/1.png","customer":{"name":"Richard Dawkins","avatar":""},"rating":5,"review":"This Fitbit is fantastic! I was trying to be in better shape and needed some motivation, so I decided to treat myself to a new Fitbit.","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Just now"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/1.png" alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Fitbit Sense Advanced
-                                Smartwatch with Tools fo...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l">
-                                    <div class="avatar-name rounded-circle"><span>R</span></div>
+                    @forelse($latestReviews as $review)
+                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                            <td class="fs-9 align-middle ps-0">
+                                <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
+                                        data-bulk-select-row='{"product":"{{ $review->product->name ?? 'N/A' }}","productImage":"{{ $review->product->image ?? '' }}","customer":{"name":"{{ $review->user->name ?? 'N/A' }}","avatar":"{{ $review->user->avatar ?? '' }}"},"rating":"{{ $review->rating }}","review":"{{ $review->comment ?? 'N/A' }}","status":{"title":"Approved","badge":"success","icon":"check"},"time":"{{ $review->created_at->diffForHumans() }}"}' />
                                 </div>
-                                <h6 class="mb-0 ms-3 text-body">Richard Dawkins</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">This Fitbit is fantastic! I
-                                was trying to be in better shape and needed some motivation, so I decided to
-                                treat myself to a new Fitbit.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Just now</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
+                            </td>
+                            <td class="align-middle product white-space-nowrap py-0">
+                                <a class="d-block rounded-2 border border-translucent" href="#!">
+                                    <img src="{{ $review->product->image ?? '' }}"
+                                        alt="{{ $review->product->name ?? 'N/A' }}" width="53" />
+                                </a>
+                            </td>
+                            <td class="align-middle product white-space-nowrap">
+                                <a class="fw-semibold" href="#!">{{ $review->product->name ?? 'N/A' }}</a>
+                            </td>
+                            <td class="align-middle customer white-space-nowrap">
+                                <a class="d-flex align-items-center text-body" href="#!">
+                                    @if ($review->user->avatar)
+                                        <div class="avatar avatar-l">
+                                            <img class="rounded-circle" src="{{ $review->user->avatar }}"
+                                                alt="{{ $review->user->name }}" />
+                                        </div>
+                                    @else
+                                        <div class="avatar avatar-l">
+                                            <div class="avatar-name rounded-circle">
+                                                <span>{{ substr($review->user->name ?? 'N', 0, 1) }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <h6 class="mb-0 ms-3 text-body">{{ $review->user->name ?? 'N/A' }}</h6>
+                                </a>
+                            </td>
+                            <td class="align-middle rating white-space-nowrap fs-10">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $review->rating)
+                                        <span class="fa fa-star text-warning"></span>
+                                    @else
+                                        <span class="fa-regular fa-star text-warning-light"
+                                            data-bs-theme="light"></span>
+                                    @endif
+                                @endfor
+                            </td>
+                            <td class="align-middle review" style="min-width:350px;">
+                                <p class="fs-9 fw-semibold text-body-highlight mb-0">{{ $review->comment ?? 'N/A' }}
+                                </p>
+                            </td>
+                            <td class="align-middle text-start ps-5 status">
+                                <span class="badge badge-phoenix fs-10 badge-phoenix-success">
+                                    <span class="badge-label">Approved</span>
+                                    <span class="ms-1" data-feather="check"
+                                        style="height:12.8px;width:12.8px;"></span>
+                                </span>
+                            </td>
+                            <td class="align-middle text-end time white-space-nowrap">
+                                <div class="hover-hide">
+                                    <h6 class="text-body-highlight mb-0">{{ $review->created_at->diffForHumans() }}
+                                    </h6>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"iPhone 13 pro max-Pacific Blue-128GB storage","productImage":"/products/60x60/2.png","customer":{"name":"Ashley Garrett","avatar":"/team/40x40/59.webp"},"rating":3,"review":"The order was delivered ahead of schedule. To give us additional time, you should leave the packaging sealed with plastic.","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Just now"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/2.png" alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">iPhone 13 pro
-                                max-Pacific Blue-128GB storage</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/59.webp" alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Ashley Garrett</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">The order was delivered
-                                ahead of schedule. To give us additional time, you should leave the
-                                packaging sealed with plastic.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Just now</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
+                            </td>
+                            <td class="align-middle white-space-nowrap text-end pe-0">
+                                <div class="position-relative">
+                                    <div class="hover-actions">
+                                        <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10">
+                                            <span class="fas fa-check"></span>
+                                        </button>
+                                        <button class="btn btn-sm btn-phoenix-secondary fs-10">
+                                            <span class="fas fa-trash"></span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                                <div class="btn-reveal-trigger position-static">
+                                    <button
+                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                        aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                        <span class="fas fa-ellipsis-h fs-10"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end py-2">
+                                        <a class="dropdown-item" href="#!">View</a>
+                                        <a class="dropdown-item" href="#!">Export</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-danger" href="#!">Remove</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center py-4">
+                                <p class="text-muted mb-0">Không có đánh giá nào</p>
+                            </td>
+                        </tr>
+                    @endforelse
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                         <td class="fs-9 align-middle ps-0">
                             <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
@@ -391,8 +476,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/3.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Apple MacBook Pro 13
@@ -400,8 +485,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/58.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Woodrow Burton</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -454,8 +539,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/4.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Apple iMac 24&quot; 4K
@@ -464,7 +549,7 @@
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
                                 <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="assets/img/team/40x40/avatar.webp" alt="" /></div>
+                                        src="" alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Eric McGee</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -518,8 +603,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/5.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Razer Kraken v3 x Wired
@@ -528,7 +613,7 @@
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
                                 <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="assets/img/team/40x40/avatar.webp" alt="" /></div>
+                                        src="" alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Kim Carroll</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -581,8 +666,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/6.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">PlayStation 5 DualSense
@@ -590,8 +675,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/57.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Barbara Lucas</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -645,8 +730,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/7.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">2021 Apple 12.9-inch
@@ -654,8 +739,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/3.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Ansolo Lazinatov</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -707,8 +792,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/8.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Amazon Basics Matte
@@ -716,8 +801,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/26.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Emma watson</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -771,8 +856,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/9.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Amazon Basics Mesh,
@@ -780,8 +865,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/29.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Rowen Atkinson</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -834,8 +919,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/10.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Apple Magic Mouse
@@ -899,8 +984,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/11.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Echo Dot (4th Gen) _
@@ -908,8 +993,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/8.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Jennifer Schramm</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -962,8 +1047,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/12.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">HORI Racing Wheel Apex
@@ -972,7 +1057,7 @@
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
                                 <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="assets/img/team/40x40/avatar.webp" alt="" /></div>
+                                        src="" alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Raymond Mims</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -1026,8 +1111,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/13.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Nintendo Switch with
@@ -1035,8 +1120,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/9.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Michael Jenkins</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -1089,8 +1174,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/14.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Oculus Rift S PC-Powered
@@ -1099,7 +1184,7 @@
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
                                 <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="assets/img/team/40x40/avatar.webp" alt="" /></div>
+                                        src="" alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Kristine Cadena</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -1151,8 +1236,8 @@
                         </td>
                         <td class="align-middle product white-space-nowrap py-0"><a
                                 class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img
-                                    src="assets/img/products/60x60/15.png" alt="" width="53" /></a>
+                                href="apps/e-commerce/landing/product-details.html"><img src=""
+                                    alt="" width="53" /></a>
                         </td>
                         <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                 href="apps/e-commerce/landing/product-details.html">Sony X85J 75 Inch Sony
@@ -1160,8 +1245,8 @@
                         <td class="align-middle customer white-space-nowrap"><a
                                 class="d-flex align-items-center text-body"
                                 href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle"
-                                        src="assets/img/team/40x40/24.webp" alt="" /></div>
+                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
+                                        alt="" /></div>
                                 <h6 class="mb-0 ms-3 text-body">Suzanne Martinez</h6>
                             </a></td>
                         <td class="align-middle rating white-space-nowrap fs-10"><span
@@ -1599,18 +1684,8 @@
 <script>
     // Chạy ngay lập tức và đợi DOM ready
     function initCharts() {
-        console.log('=== DEBUG BIỂU ĐỒ CHART.JS ===');
-        console.log('Chart.js loaded:', typeof Chart !== 'undefined');
-
-        // Debug: Kiểm tra dữ liệu từ controller
-        console.log('Order Labels:', {!! json_encode($orderLabels) !!});
-        console.log('Order Data:', {!! json_encode($orderData) !!});
-        console.log('Customer Labels:', {!! json_encode($customerLabels) !!});
-        console.log('Customer Data:', {!! json_encode($customerData) !!});
-
         // Biểu đồ Tổng số đơn hàng (bar chart)
         var orderChartContainer = document.querySelector('.echart-total-orders');
-        console.log('Order chart container found:', !!orderChartContainer);
 
         if (orderChartContainer && typeof Chart !== 'undefined') {
             // Xóa nội dung cũ
@@ -1621,15 +1696,12 @@
             canvas.style.width = '100%';
             canvas.style.height = '100%';
             orderChartContainer.appendChild(canvas);
-            console.log('Created canvas for order chart');
 
             var orderCanvas = orderChartContainer.querySelector('canvas');
-            console.log('Order canvas found:', !!orderCanvas);
 
             // Destroy chart cũ nếu có
             if (window.orderChart) {
                 window.orderChart.destroy();
-                console.log('Destroyed existing order chart');
             }
 
             window.orderChart = new Chart(orderCanvas, {
@@ -1638,9 +1710,17 @@
                     labels: {!! json_encode($orderLabels) !!},
                     datasets: [{
                         label: 'Đã hoàn thành',
-                        data: {!! json_encode($orderData) !!},
-                        backgroundColor: '#3874ff',
-                        borderColor: '#3874ff',
+                        data: {!! json_encode($completedOrderData) !!},
+                        backgroundColor: '#3874FF',
+                        borderColor: '#3874FF',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        maxBarThickness: 20
+                    }, {
+                        label: 'Đã hủy',
+                        data: {!! json_encode($cancelledOrderData) !!},
+                        backgroundColor: '#E0E8FF',
+                        borderColor: '#E0E8FF',
                         borderWidth: 1,
                         borderRadius: 4,
                         maxBarThickness: 20
@@ -1651,7 +1731,15 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
                         },
                         tooltip: {
                             backgroundColor: '#fff',
@@ -1692,14 +1780,12 @@
                 }
             });
 
-            console.log('Order chart initialized successfully');
         } else {
             console.error('Cannot initialize order chart - Container or Chart.js not available');
         }
 
         // Biểu đồ Khách hàng mới (line chart)
         var customerChartContainer = document.querySelector('.echarts-new-customers');
-        console.log('Customer chart container found:', !!customerChartContainer);
 
         if (customerChartContainer && typeof Chart !== 'undefined') {
             // Xóa nội dung cũ
@@ -1710,15 +1796,12 @@
             canvas.style.width = '100%';
             canvas.style.height = '100%';
             customerChartContainer.appendChild(canvas);
-            console.log('Created canvas for customer chart');
 
             var customerCanvas = customerChartContainer.querySelector('canvas');
-            console.log('Customer canvas found:', !!customerCanvas);
 
             // Destroy chart cũ nếu có
             if (window.customerChart) {
                 window.customerChart.destroy();
-                console.log('Destroyed existing customer chart');
             }
 
             window.customerChart = new Chart(customerCanvas, {
@@ -1785,7 +1868,553 @@
                 }
             });
 
-            console.log('Customer chart initialized successfully');
+        }
+    }
+
+    // Xử lý form lọc doanh thu
+    function initRevenueFilter() {
+        const quickRange = document.getElementById('quick-range');
+        const customDateRange = document.getElementById('custom-date-range');
+        const dateFrom = document.getElementById('date-from');
+        const dateTo = document.getElementById('date-to');
+
+        // Hiển thị/ẩn date range picker
+        quickRange.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDateRange.style.display = 'block';
+            } else {
+                customDateRange.style.display = 'none';
+            }
+        });
+
+        // Tự động điền ngày hiện tại cho custom range
+        if (quickRange.value === 'custom' && !dateFrom.value) {
+            dateFrom.value = new Date().toISOString().split('T')[0];
+            dateTo.value = new Date().toISOString().split('T')[0];
+        }
+    }
+
+    // Khởi tạo biểu đồ combo chart doanh thu
+    function initRevenueComboChart() {
+        const revenueChartContainer = document.getElementById('revenueComboChart');
+        if (!revenueChartContainer) {
+            return;
+        }
+
+        // Destroy chart cũ nếu có
+        if (window.revenueComboChart && typeof window.revenueComboChart.destroy === 'function') {
+            window.revenueComboChart.destroy();
+        }
+
+        // Dữ liệu từ controller
+        const comboChartData = {!! json_encode($comboChartData) !!};
+
+        // Xử lý dữ liệu doanh thu - chuyển về triệu VNĐ
+        const revenueData = (comboChartData.revenue || []).map(value => {
+            return Math.round(value / 1000000 * 100) / 100; // Chuyển về triệu VNĐ, làm tròn 2 chữ số thập phân
+        });
+        const revenueLabels = comboChartData.labels || [];
+        const orderCounts = comboChartData.orders || [];
+        const pendingOrders = comboChartData.pendingOrders || [];
+        const shippingOrders = comboChartData.shippingOrders || [];
+        const deliveredOrders = comboChartData.deliveredOrders || [];
+
+        // Kiểm tra dữ liệu trước khi tạo chart
+        if (!revenueData.length || !revenueLabels.length) {
+            return;
+        }
+
+        // Tìm giá trị lớn nhất để giới hạn trục Y
+        const maxRevenue = Math.max(...revenueData);
+        const maxOrders = Math.max(...orderCounts);
+        const maxPending = Math.max(...pendingOrders);
+        const maxShipping = Math.max(...shippingOrders);
+        const maxDelivered = Math.max(...deliveredOrders);
+
+        // Giới hạn trục Y doanh thu (tối đa 120% giá trị lớn nhất)
+        const yAxisMax = Math.ceil(maxRevenue * 1.2);
+        // Giới hạn trục Y số đơn hàng (tối đa 120% giá trị lớn nhất)
+        const y1AxisMax = Math.ceil(Math.max(maxOrders, maxPending, maxShipping, maxDelivered) * 1.2);
+
+        window.revenueComboChart = new Chart(revenueChartContainer, {
+            type: 'bar',
+            data: {
+                labels: revenueLabels,
+                datasets: [{
+                        label: 'Đơn chờ xác nhận',
+                        data: pendingOrders,
+                        backgroundColor: 'rgba(255, 193, 7, 0.9)',
+                        borderColor: '#ffc107',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 18,
+                        maxBarThickness: 22,
+                        order: 4,
+                        yAxisID: 'y1',
+                        hoverBackgroundColor: 'rgba(255, 193, 7, 1)',
+                        hoverBorderColor: '#e0a800'
+                    },
+                    {
+                        label: 'Đơn đang giao',
+                        data: shippingOrders,
+                        backgroundColor: 'rgba(23, 162, 184, 0.9)',
+                        borderColor: '#17a2b8',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 18,
+                        maxBarThickness: 22,
+                        order: 3,
+                        yAxisID: 'y1',
+                        hoverBackgroundColor: 'rgba(23, 162, 184, 1)',
+                        hoverBorderColor: '#138496'
+                    },
+                    {
+                        label: 'Đơn đã giao',
+                        data: deliveredOrders,
+                        backgroundColor: 'rgba(40, 167, 69, 0.9)',
+                        borderColor: '#28a745',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 18,
+                        maxBarThickness: 22,
+                        order: 2,
+                        yAxisID: 'y1',
+                        hoverBackgroundColor: 'rgba(40, 167, 69, 1)',
+                        hoverBorderColor: '#1e7e34'
+                    },
+                    {
+                        label: 'Doanh thu (triệu VNĐ)',
+                        data: revenueData,
+                        backgroundColor: 'rgba(56, 116, 255, 0.9)',
+                        borderColor: '#3874ff',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 18,
+                        maxBarThickness: 22,
+                        order: 5,
+                        yAxisID: 'y',
+                        hoverBackgroundColor: 'rgba(56, 116, 255, 1)',
+                        hoverBorderColor: '#2d5bb8'
+                    },
+                    {
+                        label: 'Tổng đơn hàng',
+                        data: orderCounts,
+                        type: 'line',
+                        borderColor: '#ff6b6b',
+                        backgroundColor: 'rgba(255, 107, 107, 0.15)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#ff6b6b',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: '#ff5252',
+                        pointHoverBorderColor: '#fff',
+                        order: 1,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                categoryPercentage: 0.8,
+                barPercentage: 0.9,
+                animation: {
+                    duration: 1200,
+                    easing: 'easeOutQuart',
+                    onProgress: function(animation) {
+                        if (animation.currentStep === animation.numSteps) {
+                            // Thêm hiệu ứng glow sau khi animation hoàn thành
+                            const canvas = revenueChartContainer;
+                            const ctx = canvas.getContext('2d');
+                            ctx.shadowColor = 'rgba(56, 116, 255, 0.3)';
+                            ctx.shadowBlur = 10;
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                elements: {
+                    point: {
+                        hoverRadius: 8,
+                        hitRadius: 10
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 25,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            color: '#12263f',
+                            boxWidth: 20,
+                            boxHeight: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(18, 38, 63, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#3874ff',
+                        borderWidth: 2,
+                        padding: 18,
+                        cornerRadius: 10,
+                        bodySpacing: 8,
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return '📅 ' + tooltipItems[0].label;
+                            },
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                let value = context.parsed.y;
+
+                                if (context.dataset.label === 'Doanh thu (triệu VNĐ)') {
+                                    return '💰 ' + label + ': ' + value.toLocaleString('vi-VN') +
+                                        ' triệu VNĐ';
+                                } else if (context.dataset.label === 'Tổng đơn hàng') {
+                                    return '📦 ' + label + ': ' + value + ' đơn';
+                                } else {
+                                    return '📋 ' + label + ': ' + value + ' đơn';
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.02)',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            color: '#666',
+                            fontSize: 11,
+                            maxTicksLimit: 12,
+                            maxRotation: 45,
+                            font: {
+                                weight: '500'
+                            }
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        max: yAxisMax,
+                        title: {
+                            display: true,
+                            text: 'Doanh thu (triệu VNĐ)',
+                            color: '#555',
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.04)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#666',
+                            fontSize: 11,
+                            stepSize: Math.ceil(yAxisMax / 5),
+                            font: {
+                                weight: '500'
+                            },
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + 'M';
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        max: y1AxisMax,
+                        title: {
+                            display: true,
+                            text: 'Số đơn hàng',
+                            color: '#555',
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#666',
+                            fontSize: 11,
+                            stepSize: Math.ceil(y1AxisMax / 5),
+                            font: {
+                                weight: '500'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    // === BIỂU ĐỒ CHO CARD 1: THỐNG KÊ SẢN PHẨM NỔI BẬT ===
+    function initTopProductsChart() {
+        var topProductsContainer = document.querySelector('.echart-top-products');
+
+        if (topProductsContainer && typeof Chart !== 'undefined') {
+            // Xóa nội dung cũ
+            topProductsContainer.innerHTML = '';
+
+            // Tạo canvas element
+            var canvas = document.createElement('canvas');
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            topProductsContainer.appendChild(canvas);
+
+            var topProductsCanvas = topProductsContainer.querySelector('canvas');
+            // Destroy chart cũ nếu có
+            if (window.topProductsChart) {
+                window.topProductsChart.destroy();
+            }
+
+            // Dữ liệu thực từ controller
+            var topProductsData = {
+                labels: {!! json_encode($topViewedProducts->pluck('name')->toArray()) !!},
+                datasets: [{
+                    label: 'Lượt xem',
+                    data: {!! json_encode($topViewedProducts->pluck('views')->toArray()) !!},
+                    backgroundColor: [
+                        'rgba(56, 116, 255, 0.9)', // Màu xanh chính của dashboard
+                        'rgba(23, 162, 184, 0.9)', // Màu xanh nhạt
+                        'rgba(255, 193, 7, 0.9)', // Màu vàng
+                        'rgba(220, 53, 69, 0.9)', // Màu đỏ
+                        'rgba(108, 117, 125, 0.9)' // Màu xám
+                    ],
+                    borderColor: [
+                        '#3874ff', // Màu xanh chính của dashboard
+                        '#17a2b8', // Màu xanh nhạt
+                        '#ffc107', // Màu vàng
+                        '#dc3545', // Màu đỏ
+                        '#6c757d' // Màu xám
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    maxBarThickness: 18,
+                    borderSkipped: false
+                }]
+            };
+
+            // Xử lý trường hợp không có dữ liệu
+            if (topProductsData.labels.length === 0) {
+                topProductsData.labels = ['Không có dữ liệu'];
+                topProductsData.datasets[0].data = [0];
+            }
+
+            window.topProductsChart = new Chart(topProductsCanvas, {
+                type: 'bar',
+                data: topProductsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(18, 38, 63, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#3874ff',
+                            borderWidth: 2,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    return 'Lượt xem: ' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.03)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#666',
+                                fontSize: 10,
+                                font: {
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#666',
+                                fontSize: 9,
+                                maxTicksLimit: 5,
+                                maxRotation: 45,
+                                font: {
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
+    }
+
+    // === BIỂU ĐỒ CHO CARD 2: THỐNG KÊ ĐÁNH GIÁ & TƯƠNG TÁC ===
+    function initReviewsChart() {
+        var reviewsContainer = document.querySelector('.echarts-reviews-chart');
+
+        if (reviewsContainer && typeof Chart !== 'undefined') {
+            // Xóa nội dung cũ
+            reviewsContainer.innerHTML = '';
+
+            // Tạo canvas element
+            var canvas = document.createElement('canvas');
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            reviewsContainer.appendChild(canvas);
+
+            var reviewsCanvas = reviewsContainer.querySelector('canvas');
+
+            // Destroy chart cũ nếu có
+            if (window.reviewsChart) {
+                window.reviewsChart.destroy();
+            }
+
+            // Dữ liệu mẫu cho biểu đồ (có thể thay thế bằng dữ liệu thực từ controller)
+            var reviewsData = {
+                labels: ['1★', '2★', '3★', '4★', '5★'],
+                datasets: [{
+                    label: 'Số lượng đánh giá',
+                    data: [
+                        {{ $ratingDistribution[1] ?? 0 }},
+                        {{ $ratingDistribution[2] ?? 0 }},
+                        {{ $ratingDistribution[3] ?? 0 }},
+                        {{ $ratingDistribution[4] ?? 0 }},
+                        {{ $ratingDistribution[5] ?? 0 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.8)', // Màu đỏ
+                        'rgba(255, 193, 7, 0.8)', // Màu vàng
+                        'rgba(23, 162, 184, 0.8)', // Màu xanh nhạt
+                        'rgba(40, 167, 69, 0.8)', // Màu xanh lá
+                        'rgba(56, 116, 255, 0.8)' // Màu xanh chính của dashboard
+                    ],
+                    borderColor: [
+                        '#dc3545', // Màu đỏ
+                        '#ffc107', // Màu vàng
+                        '#17a2b8', // Màu xanh nhạt
+                        '#28a745', // Màu xanh lá
+                        '#3874ff' // Màu xanh chính của dashboard
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    maxBarThickness: 20
+                }]
+            };
+
+            // Xử lý trường hợp không có dữ liệu
+            var totalReviews = reviewsData.datasets[0].data.reduce((a, b) => a + b, 0);
+            if (totalReviews === 0) {
+                reviewsData.datasets[0].data = [0, 0, 0, 0, 0];
+            }
+
+            window.reviewsChart = new Chart(reviewsCanvas, {
+                type: 'bar',
+                data: reviewsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(18, 38, 63, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#3874ff',
+                            borderWidth: 2,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    return 'Số lượng: ' + context.parsed.y + ' đánh giá';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.03)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#666',
+                                fontSize: 10,
+                                font: {
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#666',
+                                fontSize: 10,
+                                font: {
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
         }
     }
 
@@ -1793,13 +2422,25 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(initCharts, 500);
+            setTimeout(initRevenueComboChart, 600);
+            setTimeout(initTopProductsChart, 700);
+            setTimeout(initReviewsChart, 800);
+            initRevenueFilter();
         });
     } else {
         setTimeout(initCharts, 500);
+        setTimeout(initRevenueComboChart, 600);
+        setTimeout(initTopProductsChart, 700);
+        setTimeout(initReviewsChart, 800);
+        initRevenueFilter();
     }
 
     // Backup: Chạy sau khi load hoàn toàn
     window.addEventListener('load', function() {
         setTimeout(initCharts, 1000);
+        setTimeout(initRevenueComboChart, 1100);
+        setTimeout(initTopProductsChart, 1200);
+        setTimeout(initReviewsChart, 1300);
+        initRevenueFilter();
     });
 </script>
