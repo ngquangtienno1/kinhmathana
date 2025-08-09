@@ -56,6 +56,7 @@
 
         @include('client.components.support-chat')
         @include('client.components.chat')
+        @include('client.components.ai-chat')
     </div>
     @include('client.components.script')
     @stack('scripts')

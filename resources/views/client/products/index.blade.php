@@ -480,75 +480,80 @@
                                     @endforeach
                                     <!-- Bỏ nút lọc cỡ -->
                                 </form>
-                            </div>
-                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
-                                data-area="shop-sidebar">
-                                <h5 class="qodef-widget-title">Lọc theo độ cận</h5>
-                                <form method="get" action="{{ route('client.products.index') }}"
-                                    class="auto-submit-on-change">
-                                    <ul class="woocommerce-widget-layered-nav-list">
-                                        @foreach ($sphericals as $spherical)
-                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
-                                                <label style="cursor:pointer;">
-                                                    <input type="checkbox" name="sphericals[]"
-                                                        value="{{ $spherical->id }}"
-                                                        {{ in_array($spherical->id, (array) request('sphericals', [])) ? 'checked' : '' }}>
-                                                    {{ $spherical->name }}
-                                                </label>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                    @foreach (request()->except(['sphericals']) as $key => $value)
-                                        @if (is_array($value))
-                                            @foreach ($value as $v)
-                                                <input type="hidden" name="{{ $key }}[]"
-                                                    value="{{ $v }}" />
+                                <<<<<<< HEAD </div>
+                                    <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
+                                        data-area="shop-sidebar">
+                                        <h5 class="qodef-widget-title">Lọc theo độ cận</h5>
+                                        <form method="get" action="{{ route('client.products.index') }}"
+                                            class="auto-submit-on-change">
+                                            <ul class="woocommerce-widget-layered-nav-list">
+                                                @foreach ($sphericals as $spherical)
+                                                    <li
+                                                        class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                        <label style="cursor:pointer;">
+                                                            <input type="checkbox" name="sphericals[]"
+                                                                value="{{ $spherical->id }}"
+                                                                {{ in_array($spherical->id, (array) request('sphericals', [])) ? 'checked' : '' }}>
+                                                            {{ $spherical->name }}
+                                                        </label>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                            @foreach (request()->except(['sphericals']) as $key => $value)
+                                                @if (is_array($value))
+                                                    @foreach ($value as $v)
+                                                        <input type="hidden" name="{{ $key }}[]"
+                                                            value="{{ $v }}" />
+                                                    @endforeach
+                                                @else
+                                                    <input type="hidden" name="{{ $key }}"
+                                                        value="{{ $value }}" />
+                                                @endif
                                             @endforeach
-                                        @else
-                                            <input type="hidden" name="{{ $key }}"
-                                                value="{{ $value }}" />
-                                        @endif
-                                    @endforeach
-                                </form>
-                            </div>
-                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
-                                data-area="shop-sidebar">
-                                <h5 class="qodef-widget-title">Lọc theo độ loạn</h5>
-                                <form method="get" action="{{ route('client.products.index') }}"
-                                    class="auto-submit-on-change">
-                                    <ul class="woocommerce-widget-layered-nav-list">
-                                        @foreach ($cylindricals as $cylindrical)
-                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
-                                                <label style="cursor:pointer;">
-                                                    <input type="checkbox" name="cylindricals[]"
-                                                        value="{{ $cylindrical->id }}"
-                                                        {{ in_array($cylindrical->id, (array) request('cylindricals', [])) ? 'checked' : '' }}>
-                                                    {{ $cylindrical->name }}
-                                                </label>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                    @foreach (request()->except(['cylindricals']) as $key => $value)
-                                        @if (is_array($value))
-                                            @foreach ($value as $v)
-                                                <input type="hidden" name="{{ $key }}[]"
-                                                    value="{{ $v }}" />
+                                        </form>
+                                    </div>
+                                    <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
+                                        data-area="shop-sidebar">
+                                        <h5 class="qodef-widget-title">Lọc theo độ loạn</h5>
+                                        <form method="get" action="{{ route('client.products.index') }}"
+                                            class="auto-submit-on-change">
+                                            <ul class="woocommerce-widget-layered-nav-list">
+                                                @foreach ($cylindricals as $cylindrical)
+                                                    <li
+                                                        class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                        <label style="cursor:pointer;">
+                                                            <input type="checkbox" name="cylindricals[]"
+                                                                value="{{ $cylindrical->id }}"
+                                                                {{ in_array($cylindrical->id, (array) request('cylindricals', [])) ? 'checked' : '' }}>
+                                                            {{ $cylindrical->name }}
+                                                        </label>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                            @foreach (request()->except(['cylindricals']) as $key => $value)
+                                                @if (is_array($value))
+                                                    @foreach ($value as $v)
+                                                        <input type="hidden" name="{{ $key }}[]"
+                                                            value="{{ $v }}" />
+                                                    @endforeach
+                                                @else
+                                                    <input type="hidden" name="{{ $key }}"
+                                                        value="{{ $value }}" />
+                                                @endif
                                             @endforeach
-                                        @else
-                                            <input type="hidden" name="{{ $key }}"
-                                                value="{{ $value }}" />
-                                        @endif
-                                    @endforeach
-                                </form>
-                            </div>
-                            <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
-                                <figure class="wp-block-image size-large"><a href="../vouchers/index.html"><img
-                                            fetchpriority="high" fetchpriority="high" decoding="async" width="1024"
-                                            height="690" src="../wp-content/uploads/2021/08/shop-banner-1024x690.jpg"
-                                            alt="" class="wp-image-7903"
-                                            srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-1024x690.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-600x404.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-800x539.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-300x202.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-768x517.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner.jpg 1100w"
-                                            sizes="(max-width: 1024px) 100vw, 1024px" /></a></figure>
-                            </div>
+                                        </form>
+                                        =======
+                                        >>>>>>> 23722d331aac71bc099121d59a8d1aa1740a1a8e
+                                    </div>
+                                    <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
+                                        <figure class="wp-block-image size-large"><a href="../vouchers/index.html"><img
+                                                    fetchpriority="high" fetchpriority="high" decoding="async"
+                                                    width="1024" height="690"
+                                                    src="../wp-content/uploads/2021/08/shop-banner-1024x690.jpg"
+                                                    alt="" class="wp-image-7903"
+                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-1024x690.jpg 1024w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-600x404.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-800x539.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-300x202.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner-768x517.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2021/08/shop-banner.jpg 1100w"
+                                                    sizes="(max-width: 1024px) 100vw, 1024px" /></a></figure>
+                                    </div>
                         </aside>
                     </div>
                 </div>

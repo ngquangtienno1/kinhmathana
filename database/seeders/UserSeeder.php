@@ -38,6 +38,7 @@ class UserSeeder extends Seeder
             'phone' => '0987654321',
             'date_birth' => '1995-01-01',
             'gender' => 'female',
+<<<<<<< HEAD
             'status_user' => 'active',
             'role_id' => 2, // Staff role
             'email_verified_at' => now(),
@@ -53,6 +54,8 @@ class UserSeeder extends Seeder
             'phone' => '0987654321',
             'date_birth' => '1995-01-01',
             'gender' => 'female',
+=======
+>>>>>>> 23722d331aac71bc099121d59a8d1aa1740a1a8e
             'status_user' => 'active',
             'role_id' => 3, // Staff role
             'email_verified_at' => now(),

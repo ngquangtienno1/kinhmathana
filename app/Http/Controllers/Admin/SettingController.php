@@ -73,6 +73,9 @@ class SettingController extends Controller
             'mail_from_name' => 'nullable|string|max:255',
             'ai_api_key' => 'nullable|string|max:255',
             'ai_api_endpoint' => 'nullable|url|max:255',
+            'ai_chat_enabled' => 'nullable|boolean',
+            'ai_guest_limit' => 'nullable|integer|min:1|max:50',
+            'ai_user_limit' => 'nullable|integer|min:1|max:100',
             'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 

@@ -148,19 +148,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="col-md-3">
                     <select name="attributes[${index}][type]" class="form-select attribute-type" data-index="${index}">
                         ${availableTypes
-                            .map(
-                                (t) =>
-                                    `<option value="${t}">${
-                                        t === "color"
-                                            ? "Màu sắc"
-                                            : t === "size"
-                                            ? "Kích thước"
-                                            : t === "spherical"
-                                            ? "Độ cận"
-                                            : "Độ loạn"
-                                    }</option>`
-                            )
-                            .join("")}
+                    .map(
+                        (t) =>
+                            `<option value="${t}">${t === "color"
+                                ? "Màu sắc"
+                                : t === "size"
+                                    ? "Kích thước"
+                                    : t === "spherical"
+                                        ? "Độ cận"
+                                        : "Độ loạn"
+                            }</option>`
+                    )
+                    .join("")}
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -185,10 +184,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     selectedType === "color"
                         ? colors
                         : selectedType === "size"
-                        ? sizes
-                        : selectedType === "spherical"
-                        ? spherical_values
-                        : cylindrical_values;
+                            ? sizes
+                            : selectedType === "spherical"
+                                ? spherical_values
+                                : cylindrical_values;
 
                 if (options.length === 0) {
                     valuesContainer.innerHTML =
@@ -304,16 +303,14 @@ document.addEventListener("DOMContentLoaded", function () {
             typeSelect.innerHTML = availableTypes
                 .map(
                     (t) =>
-                        `<option value="${t}" ${
-                            t === currentType ? "selected" : ""
-                        }>${
-                            t === "color"
-                                ? "Màu sắc"
-                                : t === "size"
+                        `<option value="${t}" ${t === currentType ? "selected" : ""
+                        }>${t === "color"
+                            ? "Màu sắc"
+                            : t === "size"
                                 ? "Kích thước"
                                 : t === "spherical"
-                                ? "Độ cận"
-                                : "Độ loạn"
+                                    ? "Độ cận"
+                                    : "Độ loạn"
                         }</option>`
                 )
                 .join("");
@@ -564,9 +561,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             row.innerHTML = `
                 <div class="col-md-2">
-                    <input type="text" name="variations[${globalIndex}][name]" value="${
-                combo.name
-            }" class="form-control" placeholder="Tên biến thể" readonly>
+                    <input type="text" name="variations[${globalIndex}][name]" value="${combo.name
+                }" class="form-control" placeholder="Tên biến thể" readonly>
                     ${hiddenInputs.join("")}
                 </div>
                 <div class="col-md-2">
@@ -728,7 +724,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
             });
-
             const priceInput = form.querySelector('input[name="price"]');
             const salePriceInput = form.querySelector(
                 'input[name="sale_price"]'
@@ -784,6 +779,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Vui lòng nhập giá hợp lệ (số dương).");
                 e.preventDefault();
             }
+            // Log variations gửi lên
+            const variations = [];
+            const variationRows = variationsContainer?.getElementsByClassName("variation-row") || [];
+            Array.from(variationRows).forEach((row, idx) => {
+                const name = row.querySelector('input[name$="[name]"]')?.value;
+                const color_id = row.querySelector('input[name$="[color_id]"]')?.value;
+                const size_id = row.querySelector('input[name$="[size_id]"]')?.value;
+                const spherical_id = row.querySelector('input[name$="[spherical_id]"]')?.value;
+                const cylindrical_id = row.querySelector('input[name$="[cylindrical_id]"]')?.value;
+                variations.push({ name, color_id, size_id, spherical_id, cylindrical_id });
+            });
         });
     });
 
@@ -861,8 +867,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         : 0;
                     if (parseFloat(parsedSalePrice) > priceValue) {
                         alert(
-                            `Giá khuyến mãi (${parsedSalePrice}) không được lớn hơn giá gốc (${priceValue}) cho biến thể "${
-                                row.querySelector('input[name$="[name]"]').value
+                            `Giá khuyến mãi (${parsedSalePrice}) không được lớn hơn giá gốc (${priceValue}) cho biến thể "${row.querySelector('input[name$="[name]"]').value
                             }".`
                         );
                         hasError = true;
