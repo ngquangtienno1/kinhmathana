@@ -48,6 +48,24 @@
                 margin-top: 10px;
             }
 
+            /* CSS cho date picker inline */
+            #custom-date-range-inline {
+                transition: all 0.3s ease;
+            }
+
+            #custom-date-range-inline input[type="date"] {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.75rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                background-color: #fff;
+            }
+
+            #custom-date-range-inline input[type="date"]:focus {
+                border-color: #3874ff;
+                box-shadow: 0 0 0 0.2rem rgba(56, 116, 255, 0.25);
+            }
+
             /* Thông tin chi tiết */
             .bg-light {
                 background-color: #f8f9fa !important;
@@ -73,8 +91,13 @@
                     gap: 10px;
                 }
 
-                #custom-date-range .col-md-6 {
-                    margin-bottom: 10px;
+                #custom-date-range-inline {
+                    flex-direction: column;
+                    gap: 8px;
+                }
+
+                #custom-date-range-inline input[type="date"] {
+                    width: 100% !important;
                 }
             }
 
@@ -150,9 +173,10 @@
                     <h3>Tổng doanh thu</h3>
                     <p class="text-body-tertiary lh-sm mb-0">Tổng tiền đã nhận từ tất cả các kênh</p>
                 </div>
-                <div class="col-8 col-sm-4">
-                    <form id="revenue-filter-form" method="GET" class="d-flex gap-2">
-                        <select class="form-select form-select-sm" id="quick-range" name="quick_range">
+                <div class="col-auto">
+                    <form id="revenue-filter-form" method="GET" class="d-flex gap-2 align-items-center">
+                        <select class="form-select form-select-sm" id="quick-range" name="quick_range"
+                            style="min-width: 120px;">
                             <option value="today" {{ request('quick_range') == 'today' ? 'selected' : '' }}>Hôm nay
                             </option>
                             <option value="this_week" {{ request('quick_range') == 'this_week' ? 'selected' : '' }}>Tuần
@@ -164,61 +188,59 @@
                             <option value="custom" {{ request('quick_range') == 'custom' ? 'selected' : '' }}>Tùy chọn
                             </option>
                         </select>
+
+                        <!-- Date range picker - chỉ hiển thị khi chọn "Tùy chọn" -->
+                        <div id="custom-date-range-inline" class="d-flex gap-2 align-items-center"
+                            style="display: none !important;">
+                            <input type="date" class="form-control form-control-sm" name="date_from"
+                                value="{{ request('date_from') }}" id="date-from" style="width: 120px;">
+                            <span class="text-body-tertiary">-</span>
+                            <input type="date" class="form-control form-control-sm" name="date_to"
+                                value="{{ request('date_to') }}" id="date-to" style="width: 120px;">
+                        </div>
+
                         <button type="submit" class="btn btn-primary btn-sm">Lọc</button>
                     </form>
                 </div>
             </div>
 
-            <!-- Date range picker cho tùy chọn -->
-            <div id="custom-date-range" class="row mb-3"
-                style="display: {{ request('quick_range') == 'custom' ? 'block' : 'none' }};">
-                <div class="col-md-6">
-                    <label class="form-label">Từ ngày:</label>
-                    <input type="date" class="form-control" name="date_from" value="{{ request('date_from') }}"
-                        id="date-from">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Đến ngày:</label>
-                    <input type="date" class="form-control" name="date_to" value="{{ request('date_to') }}"
-                        id="date-to">
-                </div>
-            </div>
-
             <div class="echart-total-sales-chart">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div>
-                        <h2 class="text-primary mb-0">{{ number_format($totalRevenue) }} đ</h2>
-                        <small class="text-body-tertiary">
-                            @if (request('quick_range') == 'today')
-                                Hôm nay ({{ \Carbon\Carbon::now()->format('d/m/Y') }})
-                            @elseif(request('quick_range') == 'this_week')
-                                Tuần này ({{ \Carbon\Carbon::now()->startOfWeek()->format('d/m/Y') }} -
-                                {{ \Carbon\Carbon::now()->endOfWeek()->format('d/m/Y') }})
-                            @elseif(request('quick_range') == 'this_month')
-                                Tháng này ({{ \Carbon\Carbon::now()->startOfMonth()->format('d/m/Y') }} -
-                                {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y') }})
-                            @elseif(request('quick_range') == 'this_year')
-                                Năm {{ \Carbon\Carbon::now()->year }}
-                            @elseif(request('quick_range') == 'custom' && request('date_from') && request('date_to'))
-                                {{ \Carbon\Carbon::parse(request('date_from'))->format('d/m/Y') }} -
-                                {{ \Carbon\Carbon::parse(request('date_to'))->format('d/m/Y') }}
-                            @else
-                                Tháng này ({{ \Carbon\Carbon::now()->startOfMonth()->format('d/m/Y') }} -
-                                {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y') }})
-                            @endif
-                        </small>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <span
-                            class="badge badge-phoenix badge-phoenix-{{ $revenueGrowthType == 'positive' ? 'success' : 'danger' }} rounded-pill fs-9 me-2">
-                            <span class="badge-label">{{ $revenueGrowth >= 0 ? '+' : '' }}{{ $revenueGrowth }}%</span>
-                        </span>
-                        <small class="text-body-tertiary">So với kỳ trước</small>
-                    </div>
-                </div>
-
                 <!-- FIX: Bọc canvas trong container có height cố định -->
                 <div class="chart-container">
+                    <!-- Thông tin tổng doanh thu được di chuyển vào trong card -->
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <h2 class="text-primary mb-0">{{ number_format($totalRevenue) }} đ</h2>
+                            <small class="text-body-tertiary">
+                                @if (request('quick_range') == 'today')
+                                    Hôm nay ({{ \Carbon\Carbon::now()->format('d/m/Y') }})
+                                @elseif(request('quick_range') == 'this_week')
+                                    Tuần này ({{ \Carbon\Carbon::now()->startOfWeek()->format('d/m/Y') }} -
+                                    {{ \Carbon\Carbon::now()->endOfWeek()->format('d/m/Y') }})
+                                @elseif(request('quick_range') == 'this_month')
+                                    Tháng này ({{ \Carbon\Carbon::now()->startOfMonth()->format('d/m/Y') }} -
+                                    {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y') }})
+                                @elseif(request('quick_range') == 'this_year')
+                                    Năm {{ \Carbon\Carbon::now()->year }}
+                                @elseif(request('quick_range') == 'custom' && request('date_from') && request('date_to'))
+                                    {{ \Carbon\Carbon::parse(request('date_from'))->format('d/m/Y') }} -
+                                    {{ \Carbon\Carbon::parse(request('date_to'))->format('d/m/Y') }}
+                                @else
+                                    Tháng này ({{ \Carbon\Carbon::now()->startOfMonth()->format('d/m/Y') }} -
+                                    {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y') }})
+                                @endif
+                            </small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span
+                                class="badge badge-phoenix badge-phoenix-{{ $revenueGrowthType == 'positive' ? 'success' : 'danger' }} rounded-pill fs-9 me-2">
+                                <span
+                                    class="badge-label">{{ $revenueGrowth >= 0 ? '+' : '' }}{{ $revenueGrowth }}%</span>
+                            </span>
+                            <small class="text-body-tertiary">So với kỳ trước</small>
+                        </div>
+                    </div>
+
                     <canvas id="revenueComboChart"></canvas>
                 </div>
             </div>
@@ -322,32 +344,6 @@
                 <h3>Đánh giá mới nhất</h3>
                 <p class="text-body-tertiary lh-sm mb-0">Các đánh giá mới nhất từ khách hàng</p>
             </div>
-            <div class="col-12 col-md-auto">
-                <div class="row g-2 gy-3">
-                    <div class="col-auto flex-1">
-                        <div class="search-box">
-                            <form class="position-relative"><input
-                                    class="form-control search-input search form-control-sm" type="search"
-                                    placeholder="Search" aria-label="Search" />
-                                <span class="fas fa-search search-box-icon"></span>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-auto"><button
-                            class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover me-2"
-                            type="button">All products</button><button
-                            class="btn btn-sm btn-phoenix-secondary bg-body-emphasis bg-body-hover action-btn"
-                            type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                            aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h"
-                                data-fa-transform="shrink-2"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="table-responsive mx-n1 px-1 scrollbar">
             <table class="table fs-9 mb-0 border-top border-translucent">
@@ -367,10 +363,6 @@
                             ĐÁNH GIÁ</th>
                         <th class="sort align-middle" scope="col" style="max-width:350px;" data-sort="review">
                             NHẬN XÉT</th>
-                        <th class="sort text-start ps-5 align-middle" scope="col" data-sort="status">TRẠNG THÁI
-                        </th>
-                        <th class="sort text-end align-middle" scope="col" data-sort="time">THỜI GIAN</th>
-                        <th class="sort text-end pe-0 align-middle" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="list" id="table-latest-review-body">
@@ -382,29 +374,79 @@
                                 </div>
                             </td>
                             <td class="align-middle product white-space-nowrap py-0">
-                                <a class="d-block rounded-2 border border-translucent" href="#!">
-                                    <img src="{{ $review->product->image ?? '' }}"
-                                        alt="{{ $review->product->name ?? 'N/A' }}" width="53" />
+                                @php
+                                    // Lấy thông tin variation từ order item
+                                    $variation = null;
+                                    $variationImage = null;
+                                    if ($review->order && $review->order->items) {
+                                        foreach ($review->order->items as $item) {
+                                            if ($item->product_id == $review->product_id && $item->variation) {
+                                                $variation = $item->variation;
+                                                $variationImage = $variation->images->first();
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    // Lấy ảnh sản phẩm hoặc variation
+                                    $productImage = '';
+                                    if ($variationImage) {
+                                        $productImage = asset('storage/' . $variationImage->image_path);
+                                    } elseif (
+                                        $review->product &&
+                                        $review->product->images &&
+                                        $review->product->images->count() > 0
+                                    ) {
+                                        $productImage = asset(
+                                            'storage/' . $review->product->images->first()->image_path,
+                                        );
+                                    }
+                                @endphp
+                                <a class="d-block rounded-2 border border-translucent"
+                                    href="{{ $review->product ? route('admin.products.show', $review->product->id) : '#' }}">
+                                    <img src="{{ $productImage }}" alt="{{ $review->product->name ?? 'N/A' }}"
+                                        width="53" style="object-fit: cover; height: 53px;" />
                                 </a>
                             </td>
                             <td class="align-middle product white-space-nowrap">
-                                <a class="fw-semibold" href="#!">{{ $review->product->name ?? 'N/A' }}</a>
+                                <a class="fw-semibold"
+                                    href="{{ $review->product ? route('admin.products.show', $review->product->id) : '#' }}">{{ $review->product->name ?? 'N/A' }}</a>
+                                @if ($variation)
+                                    <div class="fs-10 text-body-tertiary mt-1">
+                                        @php
+                                            $variantDetails = [];
+                                            if ($variation->color) {
+                                                $variantDetails[] = 'Màu sắc: ' . $variation->color->name;
+                                            }
+                                            if ($variation->size) {
+                                                $variantDetails[] = 'Kích thước: ' . $variation->size->name;
+                                            }
+                                            if ($variation->spherical) {
+                                                $variantDetails[] = 'Độ cận: ' . $variation->spherical->name;
+                                            }
+                                            if ($variation->cylindrical) {
+                                                $variantDetails[] = 'Độ loạn: ' . $variation->cylindrical->name;
+                                            }
+                                        @endphp
+                                        @if (!empty($variantDetails))
+                                            <div class="text-muted">
+                                                {{ implode(' | ', $variantDetails) }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
                             </td>
                             <td class="align-middle customer white-space-nowrap">
                                 <a class="d-flex align-items-center text-body" href="#!">
-                                    @if ($review->user->avatar)
+                                    @if ($review->user && $review->user->avatar)
                                         <div class="avatar avatar-l">
                                             <img class="rounded-circle" src="{{ $review->user->avatar }}"
                                                 alt="{{ $review->user->name }}" />
                                         </div>
-                                    @else
-                                        <div class="avatar avatar-l">
-                                            <div class="avatar-name rounded-circle">
-                                                <span>{{ substr($review->user->name ?? 'N', 0, 1) }}</span>
-                                            </div>
-                                        </div>
                                     @endif
-                                    <h6 class="mb-0 ms-3 text-body">{{ $review->user->name ?? 'N/A' }}</h6>
+                                    <h6
+                                        class="mb-0 {{ $review->user && $review->user->avatar ? 'ms-3' : '' }} text-body">
+                                        {{ $review->user->name ?? 'N/A' }}</h6>
                                 </a>
                             </td>
                             <td class="align-middle rating white-space-nowrap fs-10">
@@ -418,880 +460,31 @@
                                 @endfor
                             </td>
                             <td class="align-middle review" style="min-width:350px;">
-                                <p class="fs-9 fw-semibold text-body-highlight mb-0">{{ $review->comment ?? 'N/A' }}
+                                <p class="fs-9 fw-semibold text-body-highlight mb-0">{{ $review->content ?? 'N/A' }}
                                 </p>
-                            </td>
-                            <td class="align-middle text-start ps-5 status">
-                                <span class="badge badge-phoenix fs-10 badge-phoenix-success">
-                                    <span class="badge-label">Approved</span>
-                                    <span class="ms-1" data-feather="check"
-                                        style="height:12.8px;width:12.8px;"></span>
-                                </span>
-                            </td>
-                            <td class="align-middle text-end time white-space-nowrap">
-                                <div class="hover-hide">
-                                    <h6 class="text-body-highlight mb-0">{{ $review->created_at->diffForHumans() }}
-                                    </h6>
-                                </div>
-                            </td>
-                            <td class="align-middle white-space-nowrap text-end pe-0">
-                                <div class="position-relative">
-                                    <div class="hover-actions">
-                                        <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10">
-                                            <span class="fas fa-check"></span>
-                                        </button>
-                                        <button class="btn btn-sm btn-phoenix-secondary fs-10">
-                                            <span class="fas fa-trash"></span>
-                                        </button>
+                                @if ($review->images && $review->images->count() > 0)
+                                    <div class="mt-2">
+                                        @foreach ($review->images->take(3) as $image)
+                                            <img src="{{ asset('storage/' . $image->image_path) }}"
+                                                alt="Review image" class="rounded me-1"
+                                                style="width: 40px; height: 40px; object-fit: cover;">
+                                        @endforeach
+                                        @if ($review->images->count() > 3)
+                                            <span class="badge badge-phoenix badge-phoenix-secondary fs-10">
+                                                +{{ $review->images->count() - 3 }}
+                                            </span>
+                                        @endif
                                     </div>
-                                </div>
-                                <div class="btn-reveal-trigger position-static">
-                                    <button
-                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                        type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                        aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                                        <span class="fas fa-ellipsis-h fs-10"></span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-end py-2">
-                                        <a class="dropdown-item" href="#!">View</a>
-                                        <a class="dropdown-item" href="#!">Export</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item text-danger" href="#!">Remove</a>
-                                    </div>
-                                </div>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center py-4">
+                            <td colspan="6" class="text-center py-4">
                                 <p class="text-muted mb-0">Không có đánh giá nào</p>
                             </td>
                         </tr>
                     @endforelse
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Apple MacBook Pro 13 inch-M1-8/256GB-space","productImage":"/products/60x60/3.png","customer":{"name":"Woodrow Burton","avatar":"/team/40x40/58.webp"},"rating":4.5,"review":"It&#39;s a Mac, after all. Once you&#39;ve gone Mac, there&#39;s no going back. My first Mac lasted over nine years, and this is my second.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Just now"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Apple MacBook Pro 13
-                                inch-M1-8/256GB-space</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Woodrow Burton</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star-half-alt star-icon text-warning"></span></td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">It's a Mac, after all. Once
-                                you've gone Mac, there's no going back. My first Mac lasted over nine years,
-                                and this is my second.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Just now</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Apple iMac 24\" 4K Retina Display M1 8 Core CPU, 7 Core GPU, 256GB SSD, Green (MJV83ZP/A) 2021","productImage":"/products/60x60/4.png","customer":{"name":"Eric McGee","avatar":"/team/40x40/avatar.webp","avatarPlaceholder":true},"rating":3,"review":"Personally, I like the minimalist style, but I wouldn&#39;t choose it if I were searching for a computer that I would use frequently. It&#39;s not horrible in terms of speed and power, but the","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 09, 3:23 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Apple iMac 24&quot; 4K
-                                Retina Display M1 8 Core CPU...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="" alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Eric McGee</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">Personally, I like the
-                                minimalist style, but I wouldn't choose it if I were searching for a
-                                computer that I would use frequently. It's...<a href='#!'>See more</a></p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 09, 3:23 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Razer Kraken v3 x Wired 7.1 Surroung Sound Gaming headset","productImage":"/products/60x60/5.png","customer":{"name":"Kim Carroll","avatar":"/team/40x40/avatar.webp","avatarPlaceholder":true},"rating":4,"review":"It performs exactly as expected. There are three of these in the family.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 09, 2:15 PM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Razer Kraken v3 x Wired
-                                7.1 Surroung Sound Gam...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="" alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Kim Carroll</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">It performs exactly as
-                                expected. There are three of these in the family.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 09, 2:15 PM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"PlayStation 5 DualSense Wireless Controller","productImage":"/products/60x60/6.png","customer":{"name":"Barbara Lucas","avatar":"/team/40x40/57.webp"},"rating":4,"review":"The controller is quite comfy for me. Despite its increased size, the controller still fits well in my hands.","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Nov 08, 8:53 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">PlayStation 5 DualSense
-                                Wireless Controller</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Barbara Lucas</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">The controller is quite
-                                comfy for me. Despite its increased size, the controller still fits well in
-                                my hands.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 08, 8:53 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"2021 Apple 12.9-inch iPad Pro (Wi‑Fi, 128GB) - Space Gray","productImage":"/products/60x60/7.png","customer":{"name":"Ansolo Lazinatov","avatar":"/team/40x40/3.webp"},"rating":4.5,"review":"The response time and service I received when contacted the designers were Phenomenal!","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 07, 9:00 PM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">2021 Apple 12.9-inch
-                                iPad Pro (Wi‑Fi, 128GB) -...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Ansolo Lazinatov</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star-half-alt star-icon text-warning"></span></td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">The response time and
-                                service I received when contacted the designers were Phenomenal!</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 07, 9:00 PM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Amazon Basics Matte Black Wired Keyboard - US Layout (QWERTY)","productImage":"/products/60x60/8.png","customer":{"name":"Emma watson","avatar":"/team/40x40/26.webp"},"rating":3,"review":"I have started using this theme in the last week and it has really impressed me very much, the support is second to none.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 07, 11:20 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Amazon Basics Matte
-                                Black Wired Keyboard - US ...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Emma watson</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">I have started using this
-                                theme in the last week and it has really impressed me very much, the support
-                                is second to none.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 07, 11:20 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Amazon Basics Mesh, Mid-Back, Swivel Office Desk Chair with Armrests, Black","productImage":"/products/60x60/9.png","customer":{"name":"Rowen Atkinson","avatar":"/team/40x40/29.webp"},"rating":5,"review":"The best experience we could hope for. Customer service team is amazing and the quality of their products is unsurpassed. Great theme too!","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Nov 07, 2:00 PM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Amazon Basics Mesh,
-                                Mid-Back, Swivel Office De...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Rowen Atkinson</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">The best experience we
-                                could hope for. Customer service team is amazing and the quality of their
-                                products is unsurpassed. Great theme ...<a href='#!'>See more</a></p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 07, 2:00 PM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Apple Magic Mouse (Wireless, Rechargable) - Silver","productImage":"/products/60x60/10.png","customer":{"name":"Anthony Hopkins","avatar":""},"rating":4,"review":"This template has allowed me to convert my existing web app into a great looking, easy to use UI in less than 2 weeks. Very easy to use and understand and has a wide range of ready to use elements. ","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Nov 06, 8:00 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Apple Magic Mouse
-                                (Wireless, Rechargable) - Si...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l">
-                                    <div class="avatar-name rounded-circle"><span>A</span></div>
-                                </div>
-                                <h6 class="mb-0 ms-3 text-body">Anthony Hopkins</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">This template has allowed
-                                me to convert my existing web app into a great looking, easy to use UI in
-                                less than 2 weeks. Very easy to us...<a href='#!'>See more</a></p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 06, 8:00 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Echo Dot (4th Gen) _ Smart speaker with Alexa _ Glacier White","productImage":"/products/60x60/11.png","customer":{"name":"Jennifer Schramm","avatar":"/team/40x40/8.webp"},"rating":4.5,"review":"The theme is really beautiful and the support answer very quickly and is friendly. Buy it, you will not regret it.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 05, 4:00 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Echo Dot (4th Gen) _
-                                Smart speaker with Alexa ...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Jennifer Schramm</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star-half-alt star-icon text-warning"></span></td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">The theme is really
-                                beautiful and the support answer very quickly and is friendly. Buy it, you
-                                will not regret it.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 05, 4:00 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"HORI Racing Wheel Apex for PlayStation 4_3, and PC","productImage":"/products/60x60/12.png","customer":{"name":"Raymond Mims","avatar":"/team/40x40/avatar.webp","avatarPlaceholder":true},"rating":4,"review":"As others mentioned, the team behind this theme is super responsive. I sent a message during the weekend, fully expecting a response after the weekend, but I got one within minutes, and I was unblocked.","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Nov 04, 6:53 PM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">HORI Racing Wheel Apex
-                                for PlayStation 4_3, an...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="" alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Raymond Mims</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">As others mentioned, the
-                                team behind this theme is super responsive. I sent a message during the
-                                weekend, fully expecting a response a...<a href='#!'>See more</a></p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 04, 6:53 PM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Nintendo Switch with Neon Blue and Neon Red Joy‑Con - HAC-001(-01)","productImage":"/products/60x60/13.png","customer":{"name":"Michael Jenkins","avatar":"/team/40x40/9.webp"},"rating":5,"review":"I had a bit of a hard time at first but after I contacted the team they were able to help me set up the theme. It&#39;s really good and I highly recommend it to everyone.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 04, 12:00 PM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Nintendo Switch with
-                                Neon Blue and Neon Red Jo...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Michael Jenkins</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">I had a bit of a hard time
-                                at first but after I contacted the team they were able to help me set up the
-                                theme. It's really good and I ...<a href='#!'>See more</a></p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 04, 12:00 PM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Oculus Rift S PC-Powered VR Gaming Headset","productImage":"/products/60x60/14.png","customer":{"name":"Kristine Cadena","avatar":"/team/40x40/avatar.webp","avatarPlaceholder":true},"rating":5,"review":"Excellent. All my doubts were answered by the team quickly. I highly recommend it.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Nov 03, 8:53 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Oculus Rift S PC-Powered
-                                VR Gaming Headset</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle avatar-placeholder"
-                                        src="" alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Kristine Cadena</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">Excellent. All my doubts
-                                were answered by the team quickly. I highly recommend it.</p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                    class="badge-label">Pending</span><span class="ms-1" data-feather="clock"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 03, 8:53 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="fs-9 align-middle ps-0">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"product":"Sony X85J 75 Inch Sony 4K Ultra HD LED Smart Google TV","productImage":"/products/60x60/15.png","customer":{"name":"Suzanne Martinez","avatar":"/team/40x40/24.webp"},"rating":3.5,"review":"This theme is great. Clean and easy to understand. Perfect for those who don&#39;t have time to start everything from scratch. The support is simply phenomenal! Highly recommended!","status":{"title":"Approved","badge":"success","icon":"check"},"time":"Nov 03, 10:43 AM"}' />
-                            </div>
-                        </td>
-                        <td class="align-middle product white-space-nowrap py-0"><a
-                                class="d-block rounded-2 border border-translucent"
-                                href="apps/e-commerce/landing/product-details.html"><img src=""
-                                    alt="" width="53" /></a>
-                        </td>
-                        <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
-                                href="apps/e-commerce/landing/product-details.html">Sony X85J 75 Inch Sony
-                                4K Ultra HD LED Smart G...</a></td>
-                        <td class="align-middle customer white-space-nowrap"><a
-                                class="d-flex align-items-center text-body"
-                                href="apps/e-commerce/landing/profile.html">
-                                <div class="avatar avatar-l"><img class="rounded-circle" src=""
-                                        alt="" /></div>
-                                <h6 class="mb-0 ms-3 text-body">Suzanne Martinez</h6>
-                            </a></td>
-                        <td class="align-middle rating white-space-nowrap fs-10"><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star text-warning"></span><span
-                                class="fa fa-star-half-alt star-icon text-warning"></span><span
-                                class="fa-regular fa-star text-warning-light" data-bs-theme="light"></span>
-                        </td>
-                        <td class="align-middle review" style="min-width:350px;">
-                            <p class="fs-9 fw-semibold text-body-highlight mb-0">This theme is great. Clean
-                                and easy to understand. Perfect for those who don't have time to start
-                                everything from scratch. The support...<a href='#!'>See more</a></p>
-                        </td>
-                        <td class="align-middle text-start ps-5 status"><span
-                                class="badge badge-phoenix fs-10 badge-phoenix-success"><span
-                                    class="badge-label">Approved</span><span class="ms-1" data-feather="check"
-                                    style="height:12.8px;width:12.8px;"></span></span>
-                        </td>
-                        <td class="align-middle text-end time white-space-nowrap">
-                            <div class="hover-hide">
-                                <h6 class="text-body-highlight mb-0">Nov 03, 10:43 AM</h6>
-                            </div>
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0">
-                            <div class="position-relative">
-                                <div class="hover-actions"><button
-                                        class="btn btn-sm btn-phoenix-secondary me-1 fs-10"><span
-                                            class="fas fa-check"></span></button><button
-                                        class="btn btn-sm btn-phoenix-secondary fs-10"><span
-                                            class="fas fa-trash"></span></button></div>
-                            </div>
-                            <div class="btn-reveal-trigger position-static"><button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window"
-                                    aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
-                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                        href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
-                                        href="#!">Remove</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -1299,363 +492,198 @@
             <div class="pagination d-none"></div>
             <div class="col d-flex fs-9">
                 <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
-                </p><a class="fw-semibold" href="#!" data-list-view="*">View all<span
+                </p><a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
                         class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a
-                    class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
+                    class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn</a>
             </div>
             <div class="col-auto d-flex">
                 <button class="btn btn-link px-1 me-1" type="button" title="Previous"
-                    data-list-pagination="prev"><span
-                        class="fas fa-chevron-left me-2"></span>Previous</button><button
+                    data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Trước</button><button
                     class="btn btn-link px-1 ms-1" type="button" title="Next"
-                    data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
+                    data-list-pagination="next">Sau<span class="fas fa-chevron-right ms-2"></span></button>
             </div>
         </div>
     </div>
 </div>
 <div class="row gx-6">
     <div class="col-12 col-xl-6">
-        <div data-list='{"valueNames":["country","users","transactions","revenue","conv-rate"],"page":5}'>
+        <div data-list='{"valueNames":["product","sold","revenue","rating"],"page":5}'>
             <div class="mb-5 mt-7">
-                <h3>Khu vực có doanh thu cao nhất</h3>
-                <p class="text-body-tertiary">Nơi bạn tạo ra nhiều doanh thu nhất</p>
+                <h3>Sản phẩm có lượt bán cao nhất</h3>
+                <p class="text-body-tertiary">Các sản phẩm được khách hàng mua nhiều nhất</p>
             </div>
             <div class="table-responsive scrollbar">
                 <table class="table fs-10 mb-0">
                     <thead>
                         <tr>
                             <th class="sort border-top border-translucent ps-0 align-middle" scope="col"
-                                data-sort="country" style="width:32%">COUNTRY</th>
+                                data-sort="product" style="width:40%">SẢN PHẨM</th>
                             <th class="sort border-top border-translucent align-middle" scope="col"
-                                data-sort="users" style="width:17%">USERS</th>
+                                data-sort="sold" style="width:20%">ĐÃ BÁN</th>
                             <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                data-sort="transactions" style="width:16%">TRANSACTIONS</th>
-                            <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                data-sort="revenue" style="width:20%">REVENUE</th>
+                                data-sort="revenue" style="width:25%">DOANH THU</th>
                             <th class="sort border-top border-translucent text-end pe-0 align-middle" scope="col"
-                                data-sort="conv-rate" style="width:17%">CONV. RATE</th>
+                                data-sort="rating" style="width:15%">ĐÁNH GIÁ</th>
                         </tr>
                     </thead>
-                    <tr>
-                        <td></td>
-                        <td class="align-middle py-4">
-                            <h4 class="mb-0 fw-normal">377,620</h4>
-                        </td>
-                        <td class="align-middle text-end py-4">
-                            <h4 class="mb-0 fw-normal">236</h4>
-                        </td>
-                        <td class="align-middle text-end py-4">
-                            <h4 class="mb-0 fw-normal">$15,758</h4>
-                        </td>
-                        <td class="align-middle text-end py-4 pe-0">
-                            <h4 class="mb-0 fw-normal">10.32%</h4>
-                        </td>
-                    </tr>
-                    <tbody class="list" id="table-regions-by-revenue">
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">1. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/india.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">India</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">92896<span
-                                        class="text-body-tertiary fw-semibold ms-2">(41.6%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">67<span
-                                        class="text-body-tertiary fw-semibold ms-2">(34.3%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$7560<span
-                                        class="text-body-tertiary fw-semibold ms-2">(36.9%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>14.01%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">2. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/china.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">China</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">50496<span
-                                        class="text-body-tertiary fw-semibold ms-2">(32.8%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">54<span
-                                        class="text-body-tertiary fw-semibold ms-2">(23.8%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$6532<span
-                                        class="text-body-tertiary fw-semibold ms-2">(26.5%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>23.56%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">3. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img src="assets/img/country/usa.png"
-                                                alt="" width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">USA</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">45679<span
-                                        class="text-body-tertiary fw-semibold ms-2">(24.3%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">35<span
-                                        class="text-body-tertiary fw-semibold ms-2">(19.7%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$5432<span
-                                        class="text-body-tertiary fw-semibold ms-2">(16.9%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>10.23%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">4. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/south-korea.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">South Korea</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">36453<span
-                                        class="text-body-tertiary fw-semibold ms-2">(19.7%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">22<span
-                                        class="text-body-tertiary fw-semibold ms-2">(9.54%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$4673<span
-                                        class="text-body-tertiary fw-semibold ms-2">(11.6%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>8.85%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">5. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/vietnam.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">Vietnam</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">15007<span
-                                        class="text-body-tertiary fw-semibold ms-2">(11.9%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">17<span
-                                        class="text-body-tertiary fw-semibold ms-2">(6.91%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$2456<span
-                                        class="text-body-tertiary fw-semibold ms-2">(10.2%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>6.01%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">6. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/russia.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">Russia</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">54215<span
-                                        class="text-body-tertiary fw-semibold ms-2">(32.9%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">38<span
-                                        class="text-body-tertiary fw-semibold ms-2">(7.91%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$3254<span
-                                        class="text-body-tertiary fw-semibold ms-2">(12.4%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>6.21%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">7. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/australia.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">Australia</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">54789<span
-                                        class="text-body-tertiary fw-semibold ms-2">(12.7%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">32<span
-                                        class="text-body-tertiary fw-semibold ms-2">(14.0%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$3215<span
-                                        class="text-body-tertiary fw-semibold ms-2">(5.72%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>12.02%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">8. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/england.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">England</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">14785<span
-                                        class="text-body-tertiary fw-semibold ms-2">(12.9%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">11<span
-                                        class="text-body-tertiary fw-semibold ms-2">(32.91%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$4745<span
-                                        class="text-body-tertiary fw-semibold ms-2">(10.2%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>8.01%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">9. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/indonesia.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">Indonesia</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">32156<span
-                                        class="text-body-tertiary fw-semibold ms-2">(32.2%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">89<span
-                                        class="text-body-tertiary fw-semibold ms-2">(12.0%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$2456<span
-                                        class="text-body-tertiary fw-semibold ms-2">(23.2%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>9.07%</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="white-space-nowrap ps-0 country" style="width:32%">
-                                <div class="d-flex align-items-center">
-                                    <h6 class="mb-0 me-3">10. </h6><a href="#!">
-                                        <div class="d-flex align-items-center"><img
-                                                src="assets/img/country/japan.png" alt=""
-                                                width="24" />
-                                            <p class="mb-0 ps-3 text-primary fw-bold fs-9">Japan</p>
-                                        </div>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="align-middle users" style="width:17%">
-                                <h6 class="mb-0">12547<span
-                                        class="text-body-tertiary fw-semibold ms-2">(12.7%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end transactions" style="width:17%">
-                                <h6 class="mb-0">21<span
-                                        class="text-body-tertiary fw-semibold ms-2">(14.91%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end revenue" style="width:17%">
-                                <h6 class="mb-0">$2541<span
-                                        class="text-body-tertiary fw-semibold ms-2">(23.2%)</span></h6>
-                            </td>
-                            <td class="align-middle text-end pe-0 conv-rate" style="width:17%">
-                                <h6>20.01%</h6>
-                            </td>
-                        </tr>
+                    <tbody class="list" id="table-top-products">
+                        @forelse($topProducts as $index => $product)
+                            <tr>
+                                <td class="white-space-nowrap ps-0 product" style="width:40%">
+                                    <div class="d-flex align-items-center">
+                                        <a href="{{ route('admin.products.show', $product->id) }}">
+                                            <div class="d-flex align-items-center">
+                                                @php
+                                                    // Lấy ảnh sản phẩm hoặc ảnh đầu tiên từ variations
+                                                    $productImage = '';
+                                                    if ($product->images && $product->images->count() > 0) {
+                                                        $productImage = asset(
+                                                            'storage/' . $product->images->first()->image_path,
+                                                        );
+                                                    } elseif (
+                                                        $product->variations &&
+                                                        $product->variations->count() > 0
+                                                    ) {
+                                                        $firstVariation = $product->variations->first();
+                                                        if (
+                                                            $firstVariation->images &&
+                                                            $firstVariation->images->count() > 0
+                                                        ) {
+                                                            $productImage = asset(
+                                                                'storage/' .
+                                                                    $firstVariation->images->first()->image_path,
+                                                            );
+                                                        }
+                                                    }
+                                                    if (!$productImage) {
+                                                        $productImage = asset('assets/img/products/placeholder.png');
+                                                    }
+                                                @endphp
+                                                <img src="{{ $productImage }}" alt="{{ $product->name }}"
+                                                    width="50" height="50" class="rounded me-3"
+                                                    style="object-fit: cover;" />
+                                                <div>
+                                                    <p class="mb-0 text-primary fw-bold fs-9">{{ $product->name }}</p>
+                                                    @php
+                                                        // Lấy thông tin biến thể đã bán nhiều nhất
+                                                        $topVariations = collect();
+                                                        if ($product->orderItems) {
+                                                            $variationSales = $product->orderItems
+                                                                ->where('variation_id', '!=', null)
+                                                                ->groupBy('variation_id')
+                                                                ->map(function ($items) {
+                                                                    return [
+                                                                        'variation' => $items->first()->variation,
+                                                                        'quantity' => $items->sum('quantity'),
+                                                                    ];
+                                                                })
+                                                                ->sortByDesc('quantity')
+                                                                ->take(2);
+                                                            $topVariations = $variationSales;
+                                                        }
+                                                    @endphp
+                                                    @if ($topVariations->count() > 0)
+                                                        <div class="mt-1">
+                                                            @foreach ($topVariations as $topVar)
+                                                                @if ($topVar['variation'])
+                                                                    <div class="mb-1">
+                                                                        <span
+                                                                            class="badge badge-phoenix badge-phoenix-info fs-10">
+                                                                            @php
+                                                                                $variantDetails = [];
+                                                                                if ($topVar['variation']->color) {
+                                                                                    $variantDetails[] =
+                                                                                        $topVar[
+                                                                                            'variation'
+                                                                                        ]->color->name;
+                                                                                }
+                                                                                if ($topVar['variation']->size) {
+                                                                                    $variantDetails[] =
+                                                                                        $topVar[
+                                                                                            'variation'
+                                                                                        ]->size->name;
+                                                                                }
+                                                                                if ($topVar['variation']->spherical) {
+                                                                                    $variantDetails[] =
+                                                                                        $topVar[
+                                                                                            'variation'
+                                                                                        ]->spherical->name;
+                                                                                }
+                                                                                if ($topVar['variation']->cylindrical) {
+                                                                                    $variantDetails[] =
+                                                                                        $topVar[
+                                                                                            'variation'
+                                                                                        ]->cylindrical->name;
+                                                                                }
+                                                                            @endphp
+                                                                            {{ implode(' | ', $variantDetails) }}
+                                                                            ({{ $topVar['quantity'] }})
+                                                                        </span>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="align-middle sold" style="width:20%">
+                                    @php
+                                        // Tính số lượng đã bán từ order items thực tế
+                                        $totalSold = 0;
+                                        if ($product->orderItems) {
+                                            $totalSold = $product->orderItems->sum('quantity');
+                                        }
+                                    @endphp
+                                    <h6 class="mb-0">{{ number_format($totalSold) }}<span
+                                            class="text-body-tertiary fw-semibold ms-2">sản phẩm</span></h6>
+                                </td>
+                                <td class="align-middle text-end revenue" style="width:25%">
+                                    @php
+                                        $totalRevenue = 0;
+                                        if ($product->orderItems) {
+                                            $totalRevenue = $product->orderItems->sum(function ($item) {
+                                                return $item->quantity * $item->price;
+                                            });
+                                        }
+                                    @endphp
+                                    <h6 class="mb-0">{{ number_format($totalRevenue) }}<span
+                                            class="text-body-tertiary fw-semibold ms-2">VNĐ</span></h6>
+                                </td>
+                                <td class="align-middle text-end pe-0 rating" style="width:15%">
+                                    <div class="d-flex align-items-center justify-content-end">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= ($product->reviews->avg('rating') ?? 0))
+                                                <span class="fa fa-star text-warning fs-10"></span>
+                                            @else
+                                                <span class="fa-regular fa-star text-warning-light fs-10"></span>
+                                            @endif
+                                        @endfor
+                                        <span
+                                            class="ms-1 fs-10">{{ number_format($product->reviews->avg('rating') ?? 0, 1) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <p class="text-muted mb-0">Không có dữ liệu sản phẩm bán chạy</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            </div>
-            <div class="row align-items-center py-1">
-                <div class="pagination d-none"></div>
-                <div class="col d-flex fs-9">
-                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
-                    </p>
-                </div>
-                <div class="col-auto d-flex">
-                    <button class="btn btn-link px-1 me-1" type="button" title="Previous"
-                        data-list-pagination="prev"><span
-                            class="fas fa-chevron-left me-2"></span>Previous</button><button
-                        class="btn btn-link px-1 ms-1" type="button" title="Next"
-                        data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
-                </div>
             </div>
         </div>
     </div>
     <div class="col-12 col-xl-6">
-        <div class="mx-n4 mx-lg-n6 ms-xl-0 h-100">
-            <div class="h-100 w-100">
-                <div class="h-100 bg-body-emphasis" id="map" style="min-height: 300px;"></div>
-            </div>
+        <div class="mb-5 mt-7">
+            <h3>Phân bố doanh thu theo danh mục</h3>
+            <p class="text-body-tertiary">Tỷ lệ doanh thu từ các danh mục sản phẩm</p>
         </div>
+        <div class="echart-category-revenue" style="height: 400px;"></div>
     </div>
 </div>
 <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis pt-6 pb-9 border-top">
@@ -1663,18 +691,65 @@
         <div class="col-12 col-xl-6">
             <div class="me-xl-4">
                 <div>
-                    <h3>Dự báo so với thực tế</h3>
-                    <p class="mb-1 text-body-tertiary">Doanh thu thực tế so với dự báo</p>
+                    <h3>Top khách hàng mua hàng nhiều nhất</h3>
+                    <p class="mb-1 text-body-tertiary">Những khách hàng có tổng giá trị đơn hàng cao nhất</p>
                 </div>
-                <div class="echart-projection-actual" style="height:300px; width:100%"></div>
+                <div class="table-responsive scrollbar" style="height:300px;">
+                    <table class="table fs-10 mb-0">
+                        <thead>
+                            <tr>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col"
+                                    style="width:40%">KHÁCH HÀNG</th>
+                                <th class="sort border-top border-translucent align-middle" scope="col"
+                                    style="width:30%">SỐ ĐƠN HÀNG</th>
+                                <th class="sort border-top border-translucent text-end pe-0 align-middle"
+                                    scope="col" style="width:30%">TỔNG CHI TIÊU</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            @forelse($topCustomers as $customer)
+                                <tr>
+                                    <td class="white-space-nowrap ps-0" style="width:40%">
+                                        <div class="d-flex align-items-center">
+                                            @if ($customer->avatar)
+                                                <div class="avatar avatar-l me-3">
+                                                    <img class="rounded-circle" src="{{ $customer->avatar }}"
+                                                        alt="{{ $customer->name }}" />
+                                                </div>
+                                            @endif
+                                            <div>
+                                                <p class="mb-0 text-primary fw-bold fs-9">{{ $customer->name }}</p>
+                                                <p class="mb-0 text-body-tertiary fs-10">{{ $customer->email }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle" style="width:30%">
+                                        <h6 class="mb-0">{{ number_format($customer->total_orders) }}<span
+                                                class="text-body-tertiary fw-semibold ms-2">đơn</span></h6>
+                                    </td>
+                                    <td class="align-middle text-end pe-0" style="width:30%">
+                                        <h6 class="mb-0">{{ number_format($customer->total_spent) }}<span
+                                                class="text-body-tertiary fw-semibold ms-2">VNĐ</span></h6>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center py-4">
+                                        <p class="text-muted mb-0">Không có dữ liệu khách hàng</p>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="col-12 col-xl-6">
             <div>
-                <h3>Tỉ lệ khách quay lại</h3>
-                <p class="mb-1 text-body-tertiary">Tỉ lệ khách hàng quay lại cửa hàng của bạn theo thời gian</p>
+                <h3>Thống kê đơn hàng theo trạng thái</h3>
+                <p class="mb-1 text-body-tertiary">Phân bố đơn hàng theo các trạng thái khác nhau</p>
             </div>
-            <div class="echart-returning-customer" style="height:300px;"></div>
+            <div class="echart-order-status" style="height:300px;"></div>
         </div>
     </div>
 </div>
@@ -1682,6 +757,99 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Biểu đồ thống kê đơn hàng theo trạng thái
+    function initOrderStatusChart() {
+        var orderStatusContainer = document.querySelector('.echart-order-status');
+
+        if (orderStatusContainer && typeof Chart !== 'undefined') {
+            // Xóa nội dung cũ
+            orderStatusContainer.innerHTML = '';
+
+            // Tạo canvas element
+            var canvas = document.createElement('canvas');
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            orderStatusContainer.appendChild(canvas);
+
+            var orderStatusCanvas = orderStatusContainer.querySelector('canvas');
+
+            // Destroy chart cũ nếu có
+            if (window.orderStatusChart) {
+                window.orderStatusChart.destroy();
+            }
+
+            // Dữ liệu cho biểu đồ
+            var orderStatusData = {
+                labels: {!! json_encode($orderStatusLabelsArray) !!},
+                datasets: [{
+                    label: 'Số lượng đơn hàng',
+                    data: {!! json_encode($orderStatusValues) !!},
+                    backgroundColor: {!! json_encode($orderStatusColors) !!},
+                    borderColor: {!! json_encode($orderStatusColors) !!},
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    maxBarThickness: 30
+                }]
+            };
+
+            window.orderStatusChart = new Chart(orderStatusCanvas, {
+                type: 'bar',
+                data: orderStatusData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(18, 38, 63, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#3874ff',
+                            borderWidth: 2,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.x + ' đơn hàng';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                color: '#666',
+                                fontSize: 10,
+                                font: {
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#666',
+                                fontSize: 10,
+                                font: {
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     // Chạy ngay lập tức và đợi DOM ready
     function initCharts() {
         // Biểu đồ Tổng số đơn hàng (bar chart)
@@ -1874,23 +1042,44 @@
     // Xử lý form lọc doanh thu
     function initRevenueFilter() {
         const quickRange = document.getElementById('quick-range');
-        const customDateRange = document.getElementById('custom-date-range');
+        const customDateRange = document.getElementById('custom-date-range-inline');
         const dateFrom = document.getElementById('date-from');
         const dateTo = document.getElementById('date-to');
 
-        // Hiển thị/ẩn date range picker
+        if (!quickRange || !customDateRange || !dateFrom || !dateTo) {
+            return;
+        }
+
+        // Ẩn date picker mặc định
+        customDateRange.style.setProperty('display', 'none', 'important');
+
+        // Xử lý khi thay đổi dropdown
         quickRange.addEventListener('change', function() {
             if (this.value === 'custom') {
-                customDateRange.style.display = 'block';
+                customDateRange.style.setProperty('display', 'flex', 'important');
+                // Tự động điền ngày hiện tại nếu chưa có
+                if (!dateFrom.value) {
+                    dateFrom.value = new Date().toISOString().split('T')[0];
+                }
+                if (!dateTo.value) {
+                    dateTo.value = new Date().toISOString().split('T')[0];
+                }
+                dateFrom.focus();
             } else {
-                customDateRange.style.display = 'none';
+                customDateRange.style.setProperty('display', 'none', 'important');
             }
         });
 
-        // Tự động điền ngày hiện tại cho custom range
-        if (quickRange.value === 'custom' && !dateFrom.value) {
-            dateFrom.value = new Date().toISOString().split('T')[0];
-            dateTo.value = new Date().toISOString().split('T')[0];
+        // Kiểm tra khi page load - nếu đã chọn custom thì hiển thị date picker
+        if (quickRange.value === 'custom') {
+            customDateRange.style.setProperty('display', 'flex', 'important');
+            // Tự động điền ngày hiện tại nếu chưa có
+            if (!dateFrom.value) {
+                dateFrom.value = new Date().toISOString().split('T')[0];
+            }
+            if (!dateTo.value) {
+                dateTo.value = new Date().toISOString().split('T')[0];
+            }
         }
     }
 
@@ -2418,6 +1607,95 @@
         }
     }
 
+    // Biểu đồ phân bố doanh thu theo danh mục
+    function initCategoryRevenueChart() {
+        var categoryRevenueContainer = document.querySelector('.echart-category-revenue');
+
+        if (categoryRevenueContainer && typeof Chart !== 'undefined') {
+            // Xóa nội dung cũ
+            categoryRevenueContainer.innerHTML = '';
+
+            // Tạo canvas element
+            var canvas = document.createElement('canvas');
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            categoryRevenueContainer.appendChild(canvas);
+
+            var categoryRevenueCanvas = categoryRevenueContainer.querySelector('canvas');
+
+            // Destroy chart cũ nếu có
+            if (window.categoryRevenueChart) {
+                window.categoryRevenueChart.destroy();
+            }
+
+            // Dữ liệu cho biểu đồ
+            var categoryRevenueData = {
+                labels: {!! json_encode($categoryRevenueLabels) !!},
+                datasets: [{
+                    data: {!! json_encode($categoryRevenueValues) !!},
+                    backgroundColor: {!! json_encode($categoryRevenueColors) !!},
+                    borderColor: {!! json_encode($categoryRevenueColors) !!},
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            };
+
+            window.categoryRevenueChart = new Chart(categoryRevenueCanvas, {
+                type: 'doughnut',
+                data: categoryRevenueData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 10,
+                                    weight: '500'
+                                },
+                                color: '#666'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(18, 38, 63, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#3874ff',
+                            borderWidth: 2,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    var label = context.label || '';
+                                    var value = parseFloat(context.parsed) || 0;
+                                    var total = context.dataset.data.reduce((a, b) => parseFloat(a || 0) +
+                                        parseFloat(b || 0), 0);
+
+                                    // Đảm bảo total không phải NaN và > 0
+                                    if (isNaN(total) || total <= 0) {
+                                        total = 1; // Tránh chia cho 0
+                                    }
+
+                                    var percentage = ((value / total) * 100).toFixed(1);
+
+                                    // Format số tiền
+                                    var formattedValue = new Intl.NumberFormat('vi-VN').format(Math.round(
+                                        value));
+
+                                    return label + ': ' + formattedValue + ' VNĐ (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+    }
+
     // Chạy ngay khi DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
@@ -2425,6 +1703,8 @@
             setTimeout(initRevenueComboChart, 600);
             setTimeout(initTopProductsChart, 700);
             setTimeout(initReviewsChart, 800);
+            setTimeout(initCategoryRevenueChart, 900); // Add this line
+            setTimeout(initOrderStatusChart, 1000); // Add this line
             initRevenueFilter();
         });
     } else {
@@ -2432,6 +1712,8 @@
         setTimeout(initRevenueComboChart, 600);
         setTimeout(initTopProductsChart, 700);
         setTimeout(initReviewsChart, 800);
+        setTimeout(initCategoryRevenueChart, 900); // Add this line
+        setTimeout(initOrderStatusChart, 1000); // Add this line
         initRevenueFilter();
     }
 
@@ -2441,6 +1723,8 @@
         setTimeout(initRevenueComboChart, 1100);
         setTimeout(initTopProductsChart, 1200);
         setTimeout(initReviewsChart, 1300);
+        setTimeout(initCategoryRevenueChart, 1400); // Add this line
+        setTimeout(initOrderStatusChart, 1500); // Add this line
         initRevenueFilter();
     });
 </script>
