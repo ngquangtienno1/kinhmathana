@@ -257,7 +257,9 @@ class CartClientController extends Controller
                 'message' => 'Đơn hàng phải có giá trị tối thiểu ' . number_format($promotion->minimum_purchase, 0, ',', '.') . '₫!'
             ]);
         }
-        // Kiểm tra điều kiện giá trị đơn tối đa
+        // Kiểm tra điều kiện giá trị đơn tối đa (nếu có)
+        // maximum_purchase là giới hạn tối đa của đơn hàng để áp dụng mã
+        // Nếu đơn hàng vượt quá giới hạn này thì không được áp dụng mã
         if ($promotion->maximum_purchase && $subtotal > $promotion->maximum_purchase) {
             return response()->json([
                 'success' => false,

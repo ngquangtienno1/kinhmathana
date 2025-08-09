@@ -280,7 +280,7 @@
                                         @if ($promotion->discount_type === 'percentage')
                                             {{ $promotion->discount_value }}%
                                         @else
-                                            {{ number_format($promotion->discount_value, 2) }}
+                                            {{ number_format($promotion->discount_value, 0, ',', '.') }}₫
                                         @endif
                                     </td>
                                     <td class="status align-middle ps-4">
