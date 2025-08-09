@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Khai báo các biến DOM
     const productType = document.getElementById("product_type");
     const simpleProduct = document.getElementById("simple-product");
     const variableProduct = document.getElementById("variable-product");
@@ -20,16 +21,17 @@ document.addEventListener("DOMContentLoaded", function () {
         "set-variations-sale-price"
     );
 
-    // Check if in edit mode (e.g., product ID exists in a hidden input or URL)
+    // Check if in edit mode (e.g., product ID exists in a hidden input or URL) ngăn việc tự động tạo SKU/slug mới
     const isEditMode = !!document.querySelector(
         'input[name="_method"][value="PUT"]'
     );
 
-    // Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
+    // Khai báo danh sách thuộc tính Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
     const colors = window.colors || [];
     const sizes = window.sizes || [];
     let spherical_values = window.spherical_values || [];
     let cylindrical_values = window.cylindrical_values || [];
+    // Chuẩn hóa dữ liệu từ chuỗi thành đối tượng { id, name }
     if (typeof spherical_values[0] === "string") {
         spherical_values = spherical_values.map((name, idx) => ({
             id: window.spherical_ids ? window.spherical_ids[idx] : name,
@@ -176,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const valuesContainer = row.querySelector(
                 ".attribute-values-container"
             );
-
+            // Cập nhật danh sách checkbox giá trị dựa trên loại thuộc tính được chọn
             function updateValuesContainer(selectedType, rowIndex) {
                 valuesContainer.innerHTML = "";
                 const options =
@@ -212,14 +214,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     valuesContainer.appendChild(div);
                 });
             }
-
+            // Xử lý sự kiện thay đổi loại thuộc tính
             typeSelect.addEventListener("change", function () {
                 const rowIndex =
                     this.closest(".attribute-row").getAttribute("data-index");
                 updateValuesContainer(this.value, rowIndex);
                 checkGenerateButton();
             });
-
+            // Xử lý sự kiện thay đổi trạng thái checkbox giá trị thuộc tính.
             valuesContainer.addEventListener("change", function (e) {
                 if (e.target.classList.contains("attribute-value-checkbox")) {
                     const rowIndex = e.target.getAttribute("data-index");
@@ -256,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     updateAddAttributeBtn();
                 }
             });
-
+            // Xử lý sự kiện xóa tag giá trị thuộc tính.
             tagsContainer.addEventListener("click", function (e) {
                 if (e.target.classList.contains("remove-tag")) {
                     const value = e.target.getAttribute("data-value");
@@ -269,7 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     updateAddAttributeBtn();
                 }
             });
-
+            // Xử lý sự kiện xóa hàng thuộc tính.
             row.querySelector(".remove-attribute").addEventListener(
                 "click",
                 function () {
@@ -284,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function () {
             updateAddAttributeBtn();
         });
     }
-
+    // Cập nhật danh sách tùy chọn trong select box loại thuộc tính.
     function updateAttributeTypeOptions() {
         const attributeRows =
             attributesContainer.getElementsByClassName("attribute-row");
@@ -319,7 +321,7 @@ document.addEventListener("DOMContentLoaded", function () {
             updateValuesContainer(typeSelect.value, rowIndex);
         });
     }
-
+    // Hiển thị/ẩn nút "Thêm thuộc tính" dựa trên số lượng và loại thuộc tính.
     function updateAddAttributeBtn() {
         if (!attributesContainer) return;
         const attributeRows =
@@ -339,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
             addAttributeBtn.style.display = "block";
         }
     }
-
+    // Hiển thị/ẩn các nút và khu vực liên quan đến biến thể.
     function checkGenerateButton() {
         if (!attributesContainer || !generateVariationsBtn) {
             return;
@@ -368,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 variationsContainer.children.length > 0 ? "block" : "none";
         }
     }
-
+    // Tạo tất cả tổ hợp giá trị thuộc tính bằng đệ quy.
     function generateCombinations(attributes) {
         if (attributes.length === 0) return [[]];
         const first = attributes[0];
@@ -385,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return result;
     }
-
+    // Lấy danh sách thuộc tính và giá trị đã chọn để tạo biến thể.
     function updateVariations(
         attributesContainer,
         variationsContainer,
@@ -476,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 cylindrical_id,
             };
         });
-
+        // Lấy danh sách biến thể hiện có.
         const existingVariations = existingVariationRows.map((row) => {
             const nameInput = row.querySelector('input[name$="[name]"]');
             const colorInput = row.querySelector('input[name$="[color_id]"]');
