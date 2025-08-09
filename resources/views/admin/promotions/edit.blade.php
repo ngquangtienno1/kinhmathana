@@ -101,7 +101,7 @@
                                     <div class="input-group">
                                         <input type="number" name="discount_value" id="discount_value"
                                             class="form-control @error('discount_value') is-invalid @enderror"
-                                            value="{{ old('discount_value', $promotion->discount_value) }}" step="0.01"
+                                            value="{{ old('discount_value', $promotion->discount_value ? number_format($promotion->discount_value, 0, '.', '') : '') }}" step="1"
                                             min="0" required>
                                         <span class="input-group-text"
                                             id="discount-symbol">{{ $promotion->discount_type === 'percentage' ? '%' : 'đ' }}</span>
@@ -117,7 +117,7 @@
                                     <label class="form-label" for="minimum_purchase">Giá trị đơn tối thiểu</label>
                                     <input type="number" name="minimum_purchase" id="minimum_purchase"
                                         class="form-control @error('minimum_purchase') is-invalid @enderror"
-                                        value="{{ old('minimum_purchase', $promotion->minimum_purchase) }}" step="0.01"
+                                        value="{{ old('minimum_purchase', $promotion->minimum_purchase ? number_format($promotion->minimum_purchase, 0, '.', '') : '') }}" step="1"
                                         min="0" placeholder="0">
                                     @error('minimum_purchase')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -127,7 +127,7 @@
                                     <label class="form-label" for="maximum_purchase">Giá trị đơn tối đa</label>
                                     <input type="number" name="maximum_purchase" id="maximum_purchase"
                                         class="form-control @error('maximum_purchase') is-invalid @enderror"
-                                        value="{{ old('maximum_purchase', $promotion->maximum_purchase) }}" step="0.01"
+                                        value="{{ old('maximum_purchase', $promotion->maximum_purchase ? number_format($promotion->maximum_purchase, 0, '.', '') : '') }}" step="1"
                                         min="0" placeholder="Không giới hạn">
                                     @error('maximum_purchase')
                                         <div class="invalid-feedback">{{ $message }}</div>
