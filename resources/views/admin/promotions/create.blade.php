@@ -98,7 +98,7 @@
                                     <div class="input-group">
                                         <input type="number" name="discount_value" id="discount_value"
                                             class="form-control @error('discount_value') is-invalid @enderror"
-                                            value="{{ old('discount_value') }}" step="0.01" min="0" required>
+                                            value="{{ old('discount_value') }}" step="1" min="0" required>
                                         <span class="input-group-text" id="discount-symbol">%</span>
                                     </div>
                                     @error('discount_value')
@@ -189,7 +189,7 @@
                                 <label class="form-label" for="minimum_purchase">Giá trị đơn tối thiểu</label>
                                 <input type="number" name="minimum_purchase" id="minimum_purchase"
                                     class="form-control @error('minimum_purchase') is-invalid @enderror"
-                                    value="{{ old('minimum_purchase', '0') }}" step="0.01" min="0"
+                                    value="{{ old('minimum_purchase', '0') }}" step="1" min="0"
                                     placeholder="0">
                                 @error('minimum_purchase')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -200,7 +200,7 @@
                                 <label class="form-label" for="maximum_purchase">Giá trị đơn tối đa</label>
                                 <input type="number" name="maximum_purchase" id="maximum_purchase"
                                     class="form-control @error('maximum_purchase') is-invalid @enderror"
-                                    value="{{ old('maximum_purchase', '0') }}" step="0.01" min="0"
+                                    value="{{ old('maximum_purchase', '0') }}" step="1" min="0"
                                     placeholder="0">
                                 @error('maximum_purchase')
                                     <div class="invalid-feedback">{{ $message }}</div>

@@ -191,12 +191,12 @@
                                     @if ($voucher->discount_type === 'percentage')
                                         {{ $voucher->discount_value }}%
                                     @else
-                                        {{ number_format($voucher->discount_value, 0) }}đ
+                                        {{ number_format($voucher->discount_value, 0, ',', '.') }}₫
                                     @endif
                                 </span>
                             </div>
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">Đơn tối thiểu:
-                                {{ number_format($voucher->minimum_purchase, 0) }}đ</div>
+                                {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫</div>
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">HSD:
                                 {{ $voucher->end_date->format('d/m/Y H:i') }}</div>
                         </div>
