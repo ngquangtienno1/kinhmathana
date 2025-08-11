@@ -125,7 +125,7 @@
             @csrf
             <label class="form-label" style="color: black; margin-top: 10px;" for="email">Nhập email để nhận link đặt lại mật khẩu:</label>
             <input type="email" id="email" name="email" class="form-control" placeholder="Nhập email" required>
-            <button type="submit" class="btn btn-primary" style="margin-top:16px;width:100%;">Gửi email xác nhận</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:16px;width:100%;background-color:black">Gửi email xác nhận</button>
         </form>
 <div style="text-align: center; margin-top: 20px;">
     <a href="{{ route('client.login') }}"
