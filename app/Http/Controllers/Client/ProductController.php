@@ -217,7 +217,7 @@ class ProductController extends Controller
             ? ($selectedVariation->images->where('is_featured', true)->first() ?? $selectedVariation->images->first())
             : ($product->images->where('is_featured', true)->first() ?? $product->images->first());
 
-        $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size'])
+        $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size', 'variations.images'])
             ->active()
             ->where('id', '!=', $product->id)
             ->whereHas('categories', function ($q) use ($product) {

@@ -96,8 +96,9 @@
                                             @if (isset($selectedVariation) &&
                                                     $selectedVariation->sale_price &&
                                                     $selectedVariation->sale_price < $selectedVariation->price)
-                                                <del>{{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ</del>
-                                                <ins>{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}
+                                                <del class="original-price">{{ number_format($selectedVariation->price, 0, ',', '.') }}
+                                                    VNĐ</del>
+                                                <ins class="sale-price">{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}
                                                     VNĐ</ins>
                                             @elseif(isset($selectedVariation))
                                                 {{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ
@@ -851,9 +852,32 @@
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image" style="position:relative;">
                                                 @php
-                                                    $relatedFeaturedImage =
-                                                        $related_product->images->where('is_featured', true)->first() ??
-                                                        $related_product->images->first();
+                                                    $relatedFeaturedImage = null;
+                                                    $relatedImagePath = '';
+
+                                                    // Kiểm tra sản phẩm có biến thể không
+                                                    if ($related_product->variations->count() > 0) {
+                                                        // Có biến thể: lấy ảnh từ biến thể đầu tiên
+                                                        $firstVariation = $related_product->variations->first();
+                                                        $relatedFeaturedImage =
+                                                            $firstVariation->images
+                                                                ->where('is_featured', true)
+                                                                ->first() ?? $firstVariation->images->first();
+                                                        if (!$relatedFeaturedImage) {
+                                                            // Nếu biến thể không có ảnh, lấy ảnh từ sản phẩm chính
+                                                            $relatedFeaturedImage =
+                                                                $related_product->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $related_product->images->first();
+                                                        }
+                                                    } else {
+                                                        // Không có biến thể: lấy ảnh từ sản phẩm chính
+                                                        $relatedFeaturedImage =
+                                                            $related_product->images
+                                                                ->where('is_featured', true)
+                                                                ->first() ?? $related_product->images->first();
+                                                    }
+
                                                     $relatedImagePath = $relatedFeaturedImage
                                                         ? asset('storage/' . $relatedFeaturedImage->image_path)
                                                         : asset('');
@@ -882,14 +906,14 @@
                                                 </div>
                                                 <span class="price">
                                                     @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
-                                                        <del aria-hidden="true">
+                                                        <del aria-hidden="true" class="original-price">
                                                             <span class="woocommerce-Price-amount amount">
                                                                 <bdi>{{ number_format($related_product->price, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </del>
                                                         <span class="screen-reader-text">Giá gốc:
                                                             {{ number_format($related_product->price, 0, ',', '.') }}đ.</span>
-                                                        <ins aria-hidden="true">
+                                                        <ins aria-hidden="true" class="sale-price">
                                                             <span class="woocommerce-Price-amount amount">
                                                                 <bdi>{{ number_format($related_product->sale_price, 0, ',', '.') }}đ</bdi>
                                                             </span>
@@ -974,7 +998,12 @@
                                     return $id != $product->id;
                                 });
                                 if (count($ids)) {
-                                    $recentlyViewed = \App\Models\Product::with(['images', 'categories', 'brand'])
+                                    $recentlyViewed = \App\Models\Product::with([
+                                        'images',
+                                        'categories',
+                                        'brand',
+                                        'variations.images',
+                                    ])
                                         ->whereIn('id', $ids)
                                         ->get()
                                         ->sortBy(function ($item) use ($ids) {
@@ -995,9 +1024,32 @@
                                             <div class="qodef-e-inner">
                                                 <div class="qodef-woo-product-image" style="position:relative;">
                                                     @php
-                                                        $rvFeaturedImage =
-                                                            $rvProduct->images->where('is_featured', true)->first() ??
-                                                            $rvProduct->images->first();
+                                                        $rvFeaturedImage = null;
+                                                        $rvImagePath = '';
+
+                                                        // Kiểm tra sản phẩm có biến thể không
+                                                        if ($rvProduct->variations->count() > 0) {
+                                                            // Có biến thể: lấy ảnh từ biến thể đầu tiên
+                                                            $firstVariation = $rvProduct->variations->first();
+                                                            $rvFeaturedImage =
+                                                                $firstVariation->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $firstVariation->images->first();
+                                                            if (!$rvFeaturedImage) {
+                                                                // Nếu biến thể không có ảnh, lấy ảnh từ sản phẩm chính
+                                                                $rvFeaturedImage =
+                                                                    $rvProduct->images
+                                                                        ->where('is_featured', true)
+                                                                        ->first() ?? $rvProduct->images->first();
+                                                            }
+                                                        } else {
+                                                            // Không có biến thể: lấy ảnh từ sản phẩm chính
+                                                            $rvFeaturedImage =
+                                                                $rvProduct->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $rvProduct->images->first();
+                                                        }
+
                                                         $rvImagePath = $rvFeaturedImage
                                                             ? asset('storage/' . $rvFeaturedImage->image_path)
                                                             : asset('');
@@ -1026,14 +1078,14 @@
                                                     </div>
                                                     <span class="price">
                                                         @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
-                                                            <del aria-hidden="true">
+                                                            <del aria-hidden="true" class="original-price">
                                                                 <span class="woocommerce-Price-amount amount">
                                                                     <bdi>{{ number_format($rvProduct->price, 0, ',', '.') }}đ</bdi>
                                                                 </span>
                                                             </del>
                                                             <span class="screen-reader-text">Giá gốc:
                                                                 {{ number_format($rvProduct->price, 0, ',', '.') }}đ.</span>
-                                                            <ins aria-hidden="true">
+                                                            <ins aria-hidden="true" class="sale-price">
                                                                 <span class="woocommerce-Price-amount amount">
                                                                     <bdi>{{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ</bdi>
                                                                 </span>
@@ -1835,6 +1887,31 @@
         .review-filter-btn.active {
             border: 1.5px solid #f44336 !important;
             color: #f44336 !important;
+        }
+
+        /* Giá sản phẩm styling */
+        .price .original-price {
+            color: #999 !important;
+            text-decoration: line-through;
+            font-size: 0.9em;
+            margin-right: 8px;
+        }
+
+        .price .sale-price {
+            color: #e74c3c !important;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-decoration: none;
+        }
+
+        .price .sale-price .woocommerce-Price-amount {
+            color: #e74c3c !important;
+        }
+
+        /* Giá chính của sản phẩm (không có khuyến mãi) */
+        .price .woocommerce-Price-amount {
+            color: #111;
+            font-weight: 600;
         }
     </style>
     <script>
