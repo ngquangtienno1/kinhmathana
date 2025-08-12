@@ -79,8 +79,14 @@
               </svg>
               Mật khẩu mới
             </label>
-            <div class="input-container">
+            <div class="input-container" style="position:relative;">
               <input type="password" name="new_password" id="new_password" required class="form-input" placeholder="Nhập mật khẩu mới">
+              <span class="toggle-password" onclick="togglePassword('new_password', this)" style="position:absolute;right:12px;top:calc(50% - 8px);transform:translateY(-50%);cursor:pointer;">
+                <svg id="icon-new_password" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </span>
             </div>
           </div>
 
@@ -92,9 +98,23 @@
               </svg>
               Xác nhận mật khẩu
             </label>
-            <div class="input-container">
+             <div class="input-container">
               <input type="password" name="new_password_confirmation" id="new_password_confirmation" required class="form-input" placeholder="Nhập lại mật khẩu mới">
             </div>
+</style>
+<script>
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const icon = document.getElementById('icon-' + id);
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.77 21.77 0 0 1 5.06-6.06M1 1l22 22"/><circle cx="12" cy="12" r="3"/>';
+  } else {
+    input.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" /><circle cx="12" cy="12" r="3" />';
+  }
+}
+</script>
           </div>
 
           <div class="modal-actions">

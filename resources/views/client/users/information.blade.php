@@ -261,6 +261,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
+            margin-bottom: 4px;
         }
 
         .form-label {
@@ -287,6 +288,7 @@
             transition: all 0.3s ease;
             background: #fff;
             box-sizing: border-box;
+            margin-bottom: 2px;
         }
 
         .form-input:focus {
@@ -573,6 +575,7 @@
         transition: opacity 0.5s;
         letter-spacing: 0.2px;
         border-bottom: 4px solid;
+        border-radius: 10px;
     }
     .toast-success {
         background: #e8f5e9;
@@ -654,6 +657,17 @@
                                 <i class="fas fa-phone input-icon"></i>
                                 <input type="text" id="phone" name="phone" class="form-input" 
                                        placeholder="Nhập số điện thoại" value="{{ $user->phone ?? '' }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address" class="form-label">
+                                Địa chỉ
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-map-marker-alt input-icon"></i>
+                                <input type="text" id="address" name="address" class="form-input"
+                                       placeholder="Nhập địa chỉ" value="{{ $user->address ?? '' }}">
                             </div>
                         </div>
 

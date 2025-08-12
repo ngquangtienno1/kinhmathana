@@ -1,6 +1,92 @@
 @extends('client.layouts.app')
 
 @section('content')
+    @if(session('message'))
+    <div id="toast-success" class="toast-custom toast-success toast-animate">
+        <span class="toast-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ff0000ff" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e8f5e9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5"/></svg>
+        </span>
+        <span class="toast-content">{{ session('message') }}</span>
+        <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
+    </div>
+    <script>
+        setTimeout(function(){
+            var el = document.getElementById('toast-success');
+            if(el) el.style.opacity = 0;
+        }, 3500);
+        setTimeout(function(){
+            var el = document.getElementById('toast-success');
+            if(el) el.remove();
+        }, 4000);
+    </script>
+    <style>
+    .toast-animate {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.98);
+        animation: toastIn 0.5s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes toastIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.98);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(4px) scale(1.01);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .toast-custom {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        z-index: 9999;
+        width: 400px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 24px;
+        margin-top: 90px;
+        margin-left: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
+        opacity: 1;
+        transition: opacity 0.5s;
+        letter-spacing: 0.2px;
+        border-bottom: 4px solid;
+        border-radius: 10px;
+    }
+    .toast-success {
+        background: #eb2d2d3a;
+        color: #ff0000ff;
+        border-bottom-color: #ff0000ff;
+    }
+    .toast-icon {
+        display: flex;
+        align-items: center;
+        margin-right: 2px;
+    }
+    .toast-content {
+        flex: 1;
+        line-height: 1.5;
+    }
+    .toast-close {
+        cursor: pointer;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #888;
+        margin-left: 8px;
+        transition: color 0.2s;
+    }
+    .toast-close:hover {
+        color: #222;
+    }
+    </style>
+    @endif
     <style>
         .login-wrapper {
             display: flex;
@@ -292,29 +378,6 @@
                 Bạn chưa có tài khoản Anna ?<br>
                 <a class="login-link" href="{{ route('client.register') }}">Đăng ký ngay</a>
             </div>
-            @error('password')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
-            <div class="form-check">
-                <input class="form-check-input" id="basic-checkbox" name="remember" type="checkbox" {{ old('remember') ? 'checked' : '' }} />
-                <label class="form-check-label mb-0" for="basic-checkbox">Lưu tài khoản</label>
-            </div>
-            <button class="btn btn-primary" type="submit"
-    style="width: 100%; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-align: center;">
-    Đăng nhập
-</button>
-
-            <div style="margin-bottom: 12px; margin-top: 10px;"><a class="login-link" href="{{ route('client.password.request') }}">Quên mật khẩu ?</a></div>
-            <button type="button" style="display: flex; justify-content: center; align-items: center; text-align: center; margin-bottom: 0px;" class="google-btn" onclick="location.href='{{ route('login.google') }}'">
-                <span class="google-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g><path fill="#1ccfcf" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.7 20-21 0-1.4-.2-2.7-.4-3.5z"/><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16.1 18.8 13 24 13c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 16.1 3 9.1 7.6 6.3 14.7z"/><path fill="#FBBC05" d="M24 45c6.2 0 11.4-2 15.2-5.4l-7-5.7C29.5 35.7 26.9 37 24 37c-5.5 0-10.1-3.7-11.7-8.7l-6.6 5.1C9.1 40.4 16.1 45 24 45z"/><path fill="#EA4335" d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z"/></g></svg></span>
-                Đăng nhập bằng <b>&nbsp;Google</b>
-
-
-            </button>
-        </form>
-        <div class="login-bottom-text">
-            Bạn chưa có tài khoản Anna ?<br>
-            <a class="login-link" href="{{ route('client.register') }}">Đăng ký ngay</a>
         </div>
     </div>
     <script>

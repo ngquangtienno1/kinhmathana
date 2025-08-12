@@ -39,7 +39,7 @@ class User extends Authenticatable
         'avatar',
         'role_id',
         'email_verified_at',
-        'phone_verified_at'
+        'phone_verified_at',
     ];
     protected $casts = [
         'banned_until' => 'datetime',

@@ -84,6 +84,7 @@
         transition: opacity 0.5s;
         letter-spacing: 0.2px;
         border-bottom: 4px solid;
+        border-radius: 10px;
     }
     .toast-success {
         background: #e8f5e9;

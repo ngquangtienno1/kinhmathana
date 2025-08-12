@@ -47,6 +47,7 @@ class UserController extends Controller
                 'nullable',
                 'regex:/^\d{10}$/',
             ],
+            'address' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ], [
             'phone.regex' => 'Số điện thoại phải có 10 chữ số.',
@@ -55,6 +56,7 @@ class UserController extends Controller
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->phone = $validated['phone'] ?? null;
+        $user->address = $validated['address'] ?? null;
         // Xử lý avatar nếu có upload
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
@@ -113,6 +115,6 @@ class UserController extends Controller
         $user->save();
         $otpModel->used = true;
         $otpModel->save();
-        return back()->with('success', 'Đổi mật khẩu thành công!');
+        return back()->with('success1', 'Đổi mật khẩu thành công!');
     }
 }

@@ -415,7 +415,7 @@
                                     });
                                 });
                             </script>
-                        @elseif ($role == 1 || $role == 2)
+                        @elseif (isset($role) && ($role == 1 || $role == 2))
                             <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
                                 <a href="#" onclick="event.preventDefault(); document.getElementById('force-logout-form').submit();" class="qodef-user-dropdown-toggle">
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
