@@ -1,4 +1,6 @@
 <?php
+// Password OTP routes for client
+require_once base_path('routes/client_password_otp.php');
 
 use App\Events\MyEvent;
 use Illuminate\Http\Request;
