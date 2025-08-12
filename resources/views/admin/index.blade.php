@@ -440,7 +440,7 @@
                                 <a class="d-flex align-items-center text-body" href="#!">
                                     @if ($review->user && $review->user->avatar)
                                         <div class="avatar avatar-l">
-                                            <img class="rounded-circle" src="{{ $review->user->avatar }}"
+                                            <img class="rounded-circle" src="{{ asset($review->user->avatar) }}"
                                                 alt="{{ $review->user->name }}" />
                                         </div>
                                     @endif
@@ -713,7 +713,7 @@
                                         <div class="d-flex align-items-center">
                                             @if ($customer->avatar)
                                                 <div class="avatar avatar-l me-3">
-                                                    <img class="rounded-circle" src="{{ $customer->avatar }}"
+                                                    <img class="rounded-circle" src="{{ asset($customer->avatar) }}"
                                                         alt="{{ $customer->name }}" />
                                                 </div>
                                             @endif
