@@ -52,18 +52,13 @@ class CartClientController extends Controller
         $variationId = $request->variation_id;
         $quantity = $request->quantity;
         $variation = Variation::findOrFail($variationId);
-        $maxStock = $variation->stock_quantity ?? $variation->stock ?? 0;
-        if ($maxStock <= 0) {
-            return redirect()->route('client.cart.index')->with('error', 'Sản phẩm đã hết hàng!');
-        }
+
         $cartItem = Cart::where('user_id', $user->id)
             ->where('variation_id', $variationId)
             ->first();
         $currentQty = $cartItem ? $cartItem->quantity : 0;
         $totalQty = $currentQty + $quantity;
-        if ($totalQty > $maxStock) {
-            return redirect()->route('client.cart.index')->with('error', 'Thất bại! Số lượng tồn kho không đủ');
-        }
+
         if ($cartItem) {
             $cartItem->quantity = $totalQty;
             $cartItem->save();
@@ -85,44 +80,37 @@ class CartClientController extends Controller
         ]);
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
 
-        // Lấy số lượng tồn kho thực tế
-        if ($cartItem->variation) {
-            $maxQty = $cartItem->variation->stock_quantity;
-        } else {
-            $maxQty = $cartItem->product->total_stock_quantity;
-        }
-
-        $newQty = min($request->quantity, $maxQty);
-
-        $cartItem->quantity = $newQty;
+        // Cập nhật số lượng mà không kiểm tra tồn kho
+        $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
         // Tính lại tổng tiền dòng
-        if ($cartItem->variation) {
-            $price = $cartItem->variation->sale_price ?? $cartItem->variation->price;
-        } else {
-            $price = $cartItem->product->sale_price ?? $cartItem->product->price;
-        }
-        $item_total = number_format($price * $cartItem->quantity, 0, ',', '.');
+        $price = $cartItem->variation
+            ? ($cartItem->variation->sale_price ?? $cartItem->variation->price)
+            : ($cartItem->product->sale_price ?? $cartItem->product->price);
+        $itemTotal = $price * $cartItem->quantity;
+
         // Tính lại tổng tiền giỏ hàng
-        $cart_total = Cart::where('user_id', $user->id)
+        $cartItems = Cart::with(['variation.product', 'product'])
+            ->where('user_id', $user->id)
             ->orderBy('updated_at', 'desc')
-            ->get()
-            ->sum(function ($item) {
-                if ($item->variation) {
-                    $price = $item->variation->sale_price ?? $item->variation->price;
-                } else {
-                    $price = $item->product->sale_price ?? $item->product->price;
-                }
-                return $price * $item->quantity;
-            });
-        $cart_total = number_format($cart_total, 0, ',', '.');
+            ->get();
+        $cartTotal = $cartItems->sum(function ($item) {
+            $price = $item->variation
+                ? ($item->variation->sale_price ?? $item->variation->price)
+                : ($item->product->sale_price ?? $item->product->price);
+            return $price * $item->quantity;
+        });
+
+        // Định dạng số tiền
+        $itemTotalFormatted = number_format($itemTotal, 0, ',', '.') . '₫';
+        $cartTotalFormatted = number_format($cartTotal, 0, ',', '.') . '₫';
 
         return response()->json([
             'success' => true,
-            'message' => $newQty < $request->quantity ? 'Số lượng đã được giới hạn theo tồn kho!' : 'Cập nhật số lượng thành công!',
-            'item_total' => $item_total,
-            'cart_total' => $cart_total,
+            'message' => 'Cập nhật số lượng thành công!',
+            'item_total' => $itemTotalFormatted,
+            'cart_total' => $cartTotalFormatted,
         ]);
     }
 
@@ -134,13 +122,11 @@ class CartClientController extends Controller
         return redirect()->route('client.cart.index')->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng!');
     }
 
-    //xoá nhiều sản phẩm (Tuấn Anh)
     public function bulkRemove(Request $request)
     {
         $user = Auth::user();
         $ids = $request->input('selected_ids', []);
         if (!is_array($ids) || empty($ids)) {
-
             return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để xoá!');
         }
         Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
@@ -159,7 +145,6 @@ class CartClientController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         } else {
-            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
             $checkoutItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
                 ->where('user_id', $user->id)
                 ->orderBy('updated_at', 'desc')
@@ -169,7 +154,6 @@ class CartClientController extends Controller
             return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để thanh toán!');
         }
 
-        // Lấy danh sách phương thức vận chuyển đang hoạt động cùng với phí vận chuyển
         $shippingProviders = ShippingProvider::with([
             'shippingFees' => function ($query) {
                 $query->orderBy('province_code');
@@ -179,12 +163,10 @@ class CartClientController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        // Lấy danh sách phương thức thanh toán đang hoạt động
         $paymentMethods = PaymentMethod::where('is_active', true)
             ->orderBy('sort_order')
             ->get();
 
-        // Lấy danh sách voucher đang hoạt động
         $promotions = Promotion::where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
@@ -219,7 +201,6 @@ class CartClientController extends Controller
             ]);
         }
 
-        // Kiểm tra giới hạn sử dụng
         if ($promotion->usage_limit && $promotion->used_count >= $promotion->usage_limit) {
             return response()->json([
                 'success' => false,
@@ -227,7 +208,6 @@ class CartClientController extends Controller
             ]);
         }
 
-        // Kiểm tra xem user đã sử dụng voucher này chưa
         $userUsage = $promotion->usages()->where('user_id', $user->id)->first();
         if ($userUsage) {
             return response()->json([
@@ -236,28 +216,23 @@ class CartClientController extends Controller
             ]);
         }
 
-        // Tính tổng tiền giỏ hàng
         $cartItems = Cart::with(['variation.product'])
             ->where('user_id', $user->id)
             ->orderBy('updated_at', 'desc')
             ->get();
         $subtotal = $cartItems->sum(function ($item) {
-            if ($item->variation) {
-                $price = $item->variation->sale_price ?? $item->variation->price;
-            } else {
-                $price = $item->product->sale_price ?? $item->product->price;
-            }
+            $price = $item->variation
+                ? ($item->variation->sale_price ?? $item->variation->price)
+                : ($item->product->sale_price ?? $item->product->price);
             return $price * $item->quantity;
         });
 
-        // Kiểm tra điều kiện giá trị đơn tối thiểu
         if ($subtotal < $promotion->minimum_purchase) {
             return response()->json([
                 'success' => false,
                 'message' => 'Đơn hàng phải có giá trị tối thiểu ' . number_format($promotion->minimum_purchase, 0, ',', '.') . '₫!'
             ]);
         }
-        // Kiểm tra điều kiện giá trị đơn tối đa
         if ($promotion->maximum_purchase && $subtotal > $promotion->maximum_purchase) {
             return response()->json([
                 'success' => false,
@@ -265,14 +240,12 @@ class CartClientController extends Controller
             ]);
         }
 
-        // Tính số tiền giảm
         $discountAmount = 0;
         if ($promotion->discount_type === 'percentage') {
             $discountAmount = $subtotal * ($promotion->discount_value / 100);
         } else {
             $discountAmount = $promotion->discount_value;
         }
-        // Không để giảm vượt quá tổng đơn(Tuấn Anh)
         $maxDiscount = $subtotal;
         if (isset($shippingFee)) {
             $maxDiscount += $shippingFee;
@@ -332,13 +305,11 @@ class CartClientController extends Controller
             'shipping_method.required' => 'Vui lòng chọn phương thức vận chuyển.',
         ]);
 
-        // Tính tổng tiền hàng
         $subtotal = $cartItems->sum(function ($item) {
             $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
             return $price * $item->quantity;
         });
 
-        // Tính phí vận chuyển động
         $shippingProvider = ShippingProvider::where('code', $request->shipping_method)->first();
         $shippingFee = 0;
         if ($shippingProvider && $shippingProvider->shippingFees->count() > 0) {
@@ -347,7 +318,6 @@ class CartClientController extends Controller
             $shippingFee = 30000;
         }
 
-        // Xử lý voucher
         $discountAmount = 0;
         $promotion = null;
         if ($request->filled('applied_voucher')) {
@@ -373,7 +343,6 @@ class CartClientController extends Controller
             $grandTotal = 0;
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
 
-        // Lưu đơn hàng
         $order = Order::create([
             'user_id' => $user->id,
             'order_number' => 'DH' . time(),
@@ -396,19 +365,17 @@ class CartClientController extends Controller
             'status' => 'pending',
             'note' => $validated['note'] ?? '',
         ]);
-        // Nếu shipping_provider_id vẫn NULL nhưng $shippingProvider có id, cập nhật lại
         if ($order->shipping_provider_id === null && $shippingProvider && $shippingProvider->id) {
             $order->shipping_provider_id = $shippingProvider->id;
             $order->save();
         }
 
-        // Lưu từng sản phẩm trong đơn hàng
         foreach ($cartItems as $item) {
             $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
-                'variation_id' => $item->variation ? $item->variation->id : null, // Lưu variation_id
+                'variation_id' => $item->variation ? $item->variation->id : null,
                 'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
                 'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
                 'price' => $price,
@@ -423,18 +390,20 @@ class CartClientController extends Controller
                 ]) : null,
                 'note' => null,
             ]);
-            // Trừ tồn kho
             if ($item->variation) {
                 $variation = $item->variation;
-                $variation->stock_quantity = max(0, $variation->stock_quantity - $item->quantity);
+                $variation->
+                quantity = max(0, $variation->
+                quantity - $item->quantity);
                 $variation->save();
             } elseif ($item->product) {
                 $product = $item->product;
-                $product->stock_quantity = max(0, $product->stock_quantity - $item->quantity);
+                $product->
+                quantity = max(0, $product->
+                quantity - $item->quantity);
                 $product->save();
             }
         }
-        // Ghi lại việc sử dụng voucher
         if ($promotion && $discountAmount > 0) {
             PromotionUsage::create([
                 'promotion_id' => $promotion->id,
@@ -451,10 +420,8 @@ class CartClientController extends Controller
             Cart::where('user_id', $user->id)->delete();
         }
 
-        // Cập nhật lại loại khách hàng
         $this->updateCustomerAfterOrder($user->id);
 
-        // Gửi email xác nhận đơn hàng cho khách hàng
         try {
             if ($order->receiver_email) {
                 Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
@@ -468,7 +435,6 @@ class CartClientController extends Controller
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
     }
 
-    //Tuấn Anh
     public function addToCartDirect($data, $userId)
     {
         $query = [
@@ -491,6 +457,7 @@ class CartClientController extends Controller
             ]);
         }
     }
+
     public function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
@@ -507,12 +474,11 @@ class CartClientController extends Controller
         );
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        //execute post
         $result = curl_exec($ch);
-        //close connection
         curl_close($ch);
         return $result;
     }
+
     public function momo_payment(Request $request)
     {
         $user = Auth::user();
@@ -525,7 +491,6 @@ class CartClientController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         } else {
-            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
             $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
                 ->where('user_id', $user->id)
                 ->orderBy('updated_at', 'desc')
@@ -551,13 +516,11 @@ class CartClientController extends Controller
             'shipping_method.required' => 'Vui lòng chọn phương thức vận chuyển.',
         ]);
 
-        // Tính tổng tiền hàng
         $subtotal = $cartItems->sum(function ($item) {
             $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
             return $price * $item->quantity;
         });
 
-        // Tính phí vận chuyển động
         $shippingProvider = ShippingProvider::where('code', $request->shipping_method)->first();
         $shippingFee = 0;
         if ($shippingProvider && $shippingProvider->shippingFees->count() > 0) {
@@ -566,7 +529,6 @@ class CartClientController extends Controller
             $shippingFee = 30000;
         }
 
-        // Xử lý voucher
         $discountAmount = 0;
         $promotion = null;
         if ($request->filled('applied_voucher')) {
@@ -592,10 +554,8 @@ class CartClientController extends Controller
             $grandTotal = 0;
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
 
-        // Tạo mã giao dịch MoMo
         $momoOrderId = 'MOMO' . time();
 
-        // Tạo đơn hàng trạng thái unpaid, lưu thông tin cổng thanh toán
         $order = Order::create([
             'user_id' => $user->id,
             'order_number' => 'DH' . time(),
@@ -624,7 +584,6 @@ class CartClientController extends Controller
             $order->shipping_provider_id = $shippingProvider->id;
             $order->save();
         }
-        // Lưu từng sản phẩm trong đơn hàng
         foreach ($cartItems as $item) {
             $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
             OrderItem::create([
@@ -646,7 +605,6 @@ class CartClientController extends Controller
                 'note' => null,
             ]);
         }
-        // Ghi lại việc sử dụng voucher
         if ($promotion && $discountAmount > 0) {
             PromotionUsage::create([
                 'promotion_id' => $promotion->id,
@@ -657,7 +615,6 @@ class CartClientController extends Controller
             $promotion->increment('used_count');
         }
 
-        // Lấy cấu hình MoMo từ bảng payment_methods
         $paymentMethod = PaymentMethod::where('code', 'momo')->first();
         $apiSettings = $paymentMethod && $paymentMethod->api_settings ? json_decode($paymentMethod->api_settings, true) : [];
         $partnerCode = $paymentMethod->api_key ?? '';
@@ -698,6 +655,7 @@ class CartClientController extends Controller
             return redirect()->route('client.cart.checkout.form')->with('error', 'Không thể kết nối MoMo. Vui lòng thử lại!');
         }
     }
+
     public function vnpay_payment(Request $request)
     {
         $user = Auth::user();
@@ -710,7 +668,6 @@ class CartClientController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get();
         } else {
-            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
             $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
                 ->where('user_id', $user->id)
                 ->orderBy('updated_at', 'desc')
@@ -736,13 +693,11 @@ class CartClientController extends Controller
             'shipping_method.required' => 'Vui lòng chọn phương thức vận chuyển.',
         ]);
 
-        // Tính tổng tiền hàng
         $subtotal = $cartItems->sum(function ($item) {
             $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
             return $price * $item->quantity;
         });
 
-        // Tính phí vận chuyển động
         $shippingProvider = ShippingProvider::where('code', $request->shipping_method)->first();
         $shippingFee = 0;
         if ($shippingProvider && $shippingProvider->shippingFees->count() > 0) {
@@ -751,7 +706,6 @@ class CartClientController extends Controller
             $shippingFee = 30000;
         }
 
-        // Xử lý voucher
         $discountAmount = 0;
         $promotion = null;
         if ($request->filled('applied_voucher')) {
@@ -777,10 +731,8 @@ class CartClientController extends Controller
             $grandTotal = 0;
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
 
-        // Tạo mã giao dịch VNPAY
         $vnpOrderId = 'VNPAY' . time();
 
-        // Tạo đơn hàng trạng thái unpaid, lưu thông tin cổng thanh toán
         $order = Order::create([
             'user_id' => $user->id,
             'order_number' => 'DH' . time(),
@@ -809,7 +761,6 @@ class CartClientController extends Controller
             $order->shipping_provider_id = $shippingProvider->id;
             $order->save();
         }
-        // Lưu từng sản phẩm trong đơn hàng
         foreach ($cartItems as $item) {
             $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
             OrderItem::create([
@@ -831,7 +782,6 @@ class CartClientController extends Controller
                 'note' => null,
             ]);
         }
-        // Ghi lại việc sử dụng voucher
         if ($promotion && $discountAmount > 0) {
             PromotionUsage::create([
                 'promotion_id' => $promotion->id,
@@ -842,7 +792,6 @@ class CartClientController extends Controller
             $promotion->increment('used_count');
         }
 
-        // Lấy cấu hình VNPAY từ bảng payment_methods
         $paymentMethod = PaymentMethod::where('code', 'vnpay')->first();
         $apiSettings = $paymentMethod && $paymentMethod->api_settings ? json_decode($paymentMethod->api_settings, true) : [];
         $vnp_Url = $paymentMethod->api_endpoint ?? 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
@@ -891,23 +840,19 @@ class CartClientController extends Controller
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
 
-        // Xoá giỏ hàng sau khi tạo đơn (nếu muốn)
         if ($selectedIds) {
             Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
         } else {
             Cart::where('user_id', $user->id)->delete();
         }
 
-        // Cập nhật lại loại khách hàng (VNPAY)
         $this->updateCustomerAfterOrder($user->id);
 
-        // Redirect sang VNPAY
         return redirect()->to($vnp_Url);
     }
 
     public function momoThankYou(Request $request)
     {
-        // Xử lý callback cho VNPAY
         if ($request->has('vnp_TransactionNo')) {
             $vnp_TxnRef = $request->input('vnp_TxnRef');
             $vnp_ResponseCode = $request->input('vnp_ResponseCode');
@@ -933,7 +878,6 @@ class CartClientController extends Controller
                         ]);
                     }
 
-                    // Gửi email xác nhận đơn hàng khi thanh toán VNPAY thành công
                     try {
                         if ($order->receiver_email) {
                             Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
@@ -953,7 +897,6 @@ class CartClientController extends Controller
             }
         }
 
-        // Xử lý callback cho MoMo
         $orderId = $request->input('orderId');
         $resultCode = $request->input('resultCode');
         $message = $request->input('message');
@@ -979,7 +922,6 @@ class CartClientController extends Controller
                     ]);
                 }
 
-                // Gửi email xác nhận đơn hàng khi thanh toán MoMo thành công
                 try {
                     if ($order->receiver_email) {
                         Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));

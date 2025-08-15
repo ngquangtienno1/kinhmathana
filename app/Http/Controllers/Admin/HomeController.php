@@ -57,8 +57,8 @@ class HomeController extends Controller
 
         // Thống kê sản phẩm
         $totalProducts = Product::count();
-        $totalStock = Product::sum('stock_quantity');
-        $outOfStockProducts = Product::where('stock_quantity', '<=', 0)->count();
+        $totalStock = Product::sum('quantity');
+        $outOfStockProducts = Product::where('quantity', '<=', 0)->count();
 
         // Thống kê khách hàng
         $userQuery = User::where('role_id', 3);
@@ -188,7 +188,7 @@ class HomeController extends Controller
         // Đơn hàng đang giao
         $shippingOrders = (clone $orderQuery)->where('status', 'shipping')->count();
         // Sản phẩm sắp hết hàng (tồn kho < 5, nhưng > 0)
-        $lowStockProducts = Product::where('stock_quantity', '>', 0)->where('stock_quantity', '<', 5)->count();
+        $lowStockProducts = Product::where('quantity', '>', 0)->where('quantity', '<', 5)->count();
         // Sản phẩm khuyến mãi
         $promotionProducts = Product::whereNotNull('sale_price')->where('sale_price', '>', 0)->count();
         // Sản phẩm mới trong tháng
@@ -209,7 +209,7 @@ class HomeController extends Controller
         // Tổng số biến thể
         $totalVariations = \App\Models\Variation::count();
         // Biến thể sắp hết hàng
-        $lowStockVariations = \App\Models\Variation::where('stock_quantity', '>', 0)->where('stock_quantity', '<', 5)->count();
+        $lowStockVariations = \App\Models\Variation::where('quantity', '>', 0)->where('quantity', '<', 5)->count();
         // Số thương hiệu
         $totalBrands = \App\Models\Brand::count();
         // Số danh mục

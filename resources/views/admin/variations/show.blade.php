@@ -9,7 +9,7 @@
                         <div class="card-body">
                             <p>Tên: {{ $variation->name }}</p>
                             <p>Giá: {{ number_format($variation->price, 2) }}</p>
-                            <p>Tồn kho: {{ $variation->stock_quantity }}</p>
+                            <p>Tồn kho: {{ $variation->quantity }}</p>
                             <a href="{{ route('admin.variations.edit', $variation->id) }}" class="btn btn-primary btn-sm">Sửa</a>
                         </div>
                     </div>

@@ -27,8 +27,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="product-data-tab" data-bs-toggle="tab" data-bs-target="#product-data"
-                        type="button" role="tab" aria-controls="product-data" aria-selected="false">Dữ liệu sản
-                        phẩm</button>
+                        type="button" role="tab" aria-controls="product-data" aria-selected="false">Dữ liệu sản phẩm</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="product-excerpt-tab" data-bs-toggle="tab"
@@ -76,8 +75,7 @@
                                 <label class="form-label">Loại sản phẩm</label>
                                 <select class="form-select" name="product_type" id="product_type">
                                     <option value="simple"
-                                        {{ old('product_type', 'simple') == 'simple' ? 'selected' : '' }}>Sản phẩm đơn
-                                        giản</option>
+                                        {{ old('product_type', 'simple') == 'simple' ? 'selected' : '' }}>Sản phẩm đơn giản</option>
                                     <option value="variable" {{ old('product_type') == 'variable' ? 'selected' : '' }}>
                                         Sản phẩm có biến thể</option>
                                 </select>
@@ -111,6 +109,14 @@
                                         value="{{ old('sale_price') }}"
                                         placeholder="Nhập giá (VD: 900 hoặc 1.234,56)">
                                     @error('sale_price')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="quantity" value="{{ old('quantity', 0) }}"
+                                        min="0" placeholder="Nhập số lượng">
+                                    @error('quantity')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -195,9 +201,9 @@
                                                                         <input type="checkbox"
                                                                             class="form-check-input attribute-value-checkbox"
                                                                             name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $color->name }}"
+                                                                            value="{{ $color->id }}"
                                                                             data-index="{{ $index }}"
-                                                                            {{ in_array($color->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                            {{ in_array($color->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
                                                                         <label
                                                                             class="form-check-label">{{ $color->name }}</label>
                                                                     </div>
@@ -208,9 +214,9 @@
                                                                         <input type="checkbox"
                                                                             class="form-check-input attribute-value-checkbox"
                                                                             name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $size->name }}"
+                                                                            value="{{ $size->id }}"
                                                                             data-index="{{ $index }}"
-                                                                            {{ in_array($size->name, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                            {{ in_array($size->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
                                                                         <label
                                                                             class="form-check-label">{{ $size->name }}</label>
                                                                     </div>
@@ -222,9 +228,9 @@
                                                                         <input type="checkbox"
                                                                             class="form-check-input attribute-value-checkbox"
                                                                             name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $val }}"
+                                                                            value="{{ $spherical->id }}"
                                                                             data-index="{{ $index }}"
-                                                                            {{ in_array($val,collect($attribute['values'] ?? [])->map(fn($v) => number_format((float) $v, 2, '.', ''))->all())? 'checked': '' }}>
+                                                                            {{ in_array($spherical->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
                                                                         <label
                                                                             class="form-check-label">{{ $val }}</label>
                                                                     </div>
@@ -236,9 +242,9 @@
                                                                         <input type="checkbox"
                                                                             class="form-check-input attribute-value-checkbox"
                                                                             name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $val }}"
+                                                                            value="{{ $cylindrical->id }}"
                                                                             data-index="{{ $index }}"
-                                                                            {{ in_array($val,collect($attribute['values'] ?? [])->map(fn($v) => number_format((float) $v, 2, '.', ''))->all())? 'checked': '' }}>
+                                                                            {{ in_array($cylindrical->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
                                                                         <label
                                                                             class="form-check-label">{{ $val }}</label>
                                                                     </div>
@@ -260,6 +266,8 @@
                                     <div class="d-flex gap-2 align-items-center mb-2">
                                         <button type="button" id="generate-variations"
                                             class="btn btn-primary btn-sm">Tạo biến thể</button>
+                                        <button type="button" id="set-variations-quantity"
+                                            class="btn btn-primary btn-sm" style="display: none">Đặt số lượng cho tất cả biến thể</button>
                                     </div>
                                 </div>
                                 <div id="variations-container" class="mt-3"
@@ -270,6 +278,22 @@
                                                 <input type="text" name="variations[{{ $index }}][name]"
                                                     value="{{ $variation['name'] ?? '' }}" class="form-control"
                                                     placeholder="Tên biến thể" readonly>
+                                                @if (isset($variation['color_id']))
+                                                    <input type="hidden" name="variations[{{ $index }}][color_id]"
+                                                        value="{{ $variation['color_id'] }}">
+                                                @endif
+                                                @if (isset($variation['size_id']))
+                                                    <input type="hidden" name="variations[{{ $index }}][size_id]"
+                                                        value="{{ $variation['size_id'] }}">
+                                                @endif
+                                                @if (isset($variation['spherical_id']))
+                                                    <input type="hidden" name="variations[{{ $index }}][spherical_id]"
+                                                        value="{{ $variation['spherical_id'] }}">
+                                                @endif
+                                                @if (isset($variation['cylindrical_id']))
+                                                    <input type="hidden" name="variations[{{ $index }}][cylindrical_id]"
+                                                        value="{{ $variation['cylindrical_id'] }}">
+                                                @endif
                                                 @error("variations.$index.name")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -282,7 +306,7 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-2">
                                                 <input type="text" class="form-control price-input"
                                                     name="variations[{{ $index }}][price]"
                                                     value="{{ $variation['price'] ?? '' }}"
@@ -291,7 +315,7 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-2">
                                                 <input type="text" class="form-control price-input"
                                                     name="variations[{{ $index }}][sale_price]"
                                                     value="{{ $variation['sale_price'] ?? '' }}"
@@ -300,19 +324,69 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
+                                            <div class="col-md-1">
+                                                <input type="number" class="form-control"
+                                                    name="variations[{{ $index }}][quantity]"
+                                                    value="{{ $variation['quantity'] ?? 0 }}" min="0"
+                                                    placeholder="Nhập số lượng">
+                                                @error("variations.$index.quantity")
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                             <div class="col-md-2">
                                                 <input type="file" name="variations[{{ $index }}][image]"
                                                     class="form-control variation-image-input">
+                                                <!-- Hiển thị tên file đã chọn trước đó (nếu có) -->
+                                                @if (session('temp_variation_images') && isset(session('temp_variation_images')[$index]))
+                                                    <small class="text-muted">Đã chọn: {{ session('temp_variation_images')[$index] }}</small>
+                                                @endif
                                                 @error("variations.$index.image")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-2">
                                                 <button type="button"
                                                     class="btn btn-danger btn-sm remove-variation">Xóa</button>
                                             </div>
                                         </div>
                                     @endforeach
+                                </div>
+                                <!-- Bảng hiển thị danh sách biến thể -->
+                                <div id="variations-table-container" class="mt-3"
+                                    style="{{ old('variations') && count(old('variations', [])) > 0 ? '' : 'display: none' }}">
+                                    <h5>Danh sách biến thể</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên biến thể</th>
+                                                    <th>Mã sản phẩm</th>
+                                                    <th>Giá gốc</th>
+                                                    <th>Giá khuyến mãi</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Ảnh</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="variations-table-body">
+                                                @foreach (old('variations', []) as $index => $variation)
+                                                    <tr>
+                                                        <td>{{ $variation['name'] ?? '' }}</td>
+                                                        <td>{{ $variation['sku'] ?? '' }}</td>
+                                                        <td>{{ $variation['price'] ? number_format($variation['price'], 0, ',', '.') : '0' }} VNĐ</td>
+                                                        <td>{{ $variation['sale_price'] ? number_format($variation['sale_price'], 0, ',', '.') : '0' }} VNĐ</td>
+                                                        <td>{{ $variation['quantity'] ?? 0 }}</td>
+                                                        <td>
+                                                            @if (session('temp_variation_images') && isset(session('temp_variation_images')[$index]))
+                                                                <small>{{ session('temp_variation_images')[$index] }}</small>
+                                                            @else
+                                                                Không có ảnh
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -339,14 +413,29 @@
                             <div class="col-md-6">
                                 <label class="form-label">Ảnh đại diện <span class="text-danger">*</span></label>
                                 <input type="file" class="form-control" name="featured_image" accept="image/*">
+                                <!-- Hiển thị tên file đã chọn trước đó (nếu có) -->
+                                @if (session('temp_featured_image'))
+                                    <small class="text-muted">Đã chọn: {{ session('temp_featured_image') }}</small>
+                                @endif
                                 @error('featured_image')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Album ảnh <span class="text-danger">*</span></label>
+                                <label class="form-label">Album ảnh <span class="text-danger"></span></label>
                                 <input type="file" class="form-control" name="gallery_images[]" multiple
                                     accept="image/*">
+                                <!-- Hiển thị danh sách tên file đã chọn trước đó (nếu có) -->
+                                @if (session('temp_gallery_images'))
+                                    <div class="mt-2">
+                                        <small class="text-muted">Đã chọn:</small>
+                                        <ul>
+                                            @foreach (session('temp_gallery_images') as $fileName)
+                                                <li>{{ $fileName }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                                 @error('gallery_images')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -358,8 +447,10 @@
                                 <label class="form-label">Video sản phẩm</label>
                                 <input type="file" class="form-control" name="video_path"
                                     accept="video/mp4,video/webm,video/ogg">
-                                <small class="text-muted">Hỗ trợ định dạng: MP4, WebM, Ogg. Kích thước tối đa:
-                                    50MB</small>
+                                @if (session('temp_video_path'))
+                                    <small class="text-muted">Đã chọn: {{ session('temp_video_path') }}</small>
+                                @endif
+                                <small class="text-muted">Hỗ trợ định dạng: MP4, WebM, Ogg. Kích thước tối đa: 50MB</small>
                                 @error('video_path')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -431,11 +522,39 @@
         margin-top: 5px;
     }
 
-    /* Thêm style cho CKEditor */
     .ck-editor__editable {
         min-height: 300px;
     }
+
+    #variations-table-container table {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    #variations-table-container th,
+    #variations-table-container td {
+        padding: 8px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .variation-image {
+        max-width: 50px;
+        max-height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
 </style>
+
+@push('styles')
+    <style>
+        input[name="quantity"] {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    </style>
+@endpush
 
 @push('scripts')
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
@@ -452,6 +571,5 @@
     </script>
 @endpush
 
-
-@vite(['resources/js/admin/products.js'])
+@vite(['resources/js/admin/products-create.js'])
 @endsection

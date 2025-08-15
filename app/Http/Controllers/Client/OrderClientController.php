@@ -108,13 +108,13 @@ class OrderClientController extends Controller
             if ($item->variation_id) {
                 $variation = \App\Models\Variation::find($item->variation_id);
                 if ($variation) {
-                    $variation->stock_quantity += $item->quantity;
+                    $variation->quantity += $item->quantity;
                     $variation->save();
                 }
             } else {
                 $product = \App\Models\Product::find($item->product_id);
                 if ($product) {
-                    $product->stock_quantity += $item->quantity;
+                    $product->quantity += $item->quantity;
                     $product->save();
                 }
             }

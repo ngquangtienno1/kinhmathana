@@ -89,167 +89,179 @@
                                     style="margin-bottom: 16px; color: #555; font-size: 1.1em;">
                                     {{ $product->description_short ?? ($product->description ?? $product->description_long) }}
                                 </div>
-                                <p class="price" id="product-price">
-                                    <span class="woocommerce-Price-amount amount">
-                                        <bdi>
-                                            <span class="woocommerce-Price-currencySymbol"></span>
-                                            @if (isset($selectedVariation) &&
-                                                    $selectedVariation->sale_price &&
-                                                    $selectedVariation->sale_price < $selectedVariation->price)
-                                                <del>{{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ</del>
-                                                <ins>{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}
-                                                    VNĐ</ins>
-                                            @elseif(isset($selectedVariation))
-                                                {{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ
-                                            @else
-                                                {{ number_format($product->minimum_price, 0, ',', '.') }} VNĐ
-                                            @endif
-                                        </bdi>
-                                    </span>
-                                </p>
-                                @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
-                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
-                                        <strong id="variant-stock-quantity">Hết hàng</strong>
-                                    </div>
-                                @else
-                                    <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
-                                        Số lượng: <strong
-                                            id="variant-stock-quantity">{{ $selectedVariation->stock_quantity ?? $product->total_stock_quantity }}</strong>
-                                    </div>
-                                @endif
-                                <div class="woocommerce-product-details__short-description">
-                                    <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
-                                </div>
-                                @if ($product->total_stock_quantity <= 0)
-                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng
-                                    </div>
-                                @endif
-                                @if ($product->variations->count() > 0)
-                                    <div id="qvsfw-variations-form-wrapper">
-                                        <form class="variations_form cart js-add-to-cart-form" method="post"
-                                            action="{{ route('client.products.add-to-cart') }}"
-                                            enctype="multipart/form-data" data-product-name="{{ $product->name }}">
-                                            @csrf
-                                            @if ($product->total_stock_quantity <= 0)
-                                                <fieldset disabled style="opacity:0.7;pointer-events:none;">
-                                            @endif
-                                            @if ($colors->count())
-                                                <div class="variation-group">
-                                                    <div class="variation-label">Màu sắc:</div>
-                                                    <div class="variation-options" data-type="color">
-                                                        @foreach ($colors as $color)
-                                                            <button type="button" class="variation-btn color-btn"
-                                                                data-value="{{ $color->id }}">
-                                                                {{ $color->name }}
-                                                            </button>
-                                                        @endforeach
-                                                    </div>
-                                                    <input type="hidden" name="color_id" class="variation-input"
-                                                        value="">
-                                                </div>
-                                            @endif
-                                            @if ($sizes->count())
-                                                <div class="variation-group">
-                                                    <div class="variation-label">Kích thước:</div>
-                                                    <div class="variation-options" data-type="size">
-                                                        @foreach ($sizes as $size)
-                                                            <button type="button" class="variation-btn size-btn"
-                                                                data-value="{{ $size->id }}">
-                                                                {{ $size->name }}
-                                                            </button>
-                                                        @endforeach
-                                                    </div>
-                                                    <input type="hidden" name="size_id" class="variation-input"
-                                                        value="">
-                                                </div>
-                                            @endif
-                                            @if ($sphericals->count())
-                                                <div class="variation-group">
-                                                    <div class="variation-label">Độ cận:</div>
-                                                    <div class="variation-options" data-type="spherical">
-                                                        @foreach ($sphericals as $spherical)
-                                                            <button type="button" class="variation-btn spherical-btn"
-                                                                data-value="{{ $spherical->id }}">
-                                                                {{ $spherical->name }}
-                                                            </button>
-                                                        @endforeach
-                                                    </div>
-                                                    <input type="hidden" name="spherical_id" class="variation-input"
-                                                        value="">
-                                                </div>
-                                            @endif
-                                            @if ($cylindricals->count())
-                                                <div class="variation-group">
-                                                    <div class="variation-label">Độ loạn:</div>
-                                                    <div class="variation-options" data-type="cylindrical">
-                                                        @foreach ($cylindricals as $cylindrical)
-                                                            <button type="button" class="variation-btn cylindrical-btn"
-                                                                data-value="{{ $cylindrical->id }}">
-                                                                {{ $cylindrical->name }}
-                                                            </button>
-                                                        @endforeach
-                                                    </div>
-                                                    <input type="hidden" name="cylindrical_id" class="variation-input"
-                                                        value="">
-                                                </div>
-                                            @endif
-                                            <div class="single_variation_wrap">
-                                                <div class="woocommerce-variation single_variation"></div>
-                                                <div class="woocommerce-variation-add-to-cart variations_button">
-                                                    <div class="qodef-quantity-buttons quantity">
-                                                        <label class="screen-reader-text"
-                                                            for="quantity_{{ $product->id }}">{{ $product->name }}
-                                                            quantity</label>
-                                                        <span class="qodef-quantity-minus"></span>
-                                                        <input type="text" id="quantity_{{ $product->id }}"
-                                                            class="input-text qty text qodef-quantity-input"
-                                                            data-step="1" data-min="1" data-max="" name="quantity"
-                                                            value="1" title="Qty" size="4" placeholder=""
-                                                            inputmode="numeric" />
-                                                        <span class="qodef-quantity-plus"></span>
-                                                    </div>
-                                                    <button type="submit" class="single_add_to_cart_button button alt"
-                                                        @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
-                                                        giỏ hàng</button>
-                                                    <input type="hidden" name="variation_id" class="variation_id"
-                                                        value="{{ $selectedVariation->id ?? '' }}" />
-                                                </div>
-                                            </div>
-                                            @if ($product->total_stock_quantity <= 0)
-                                                </fieldset>
-                                            @endif
-                                        </form>
-                                    </div>
-                                @else
-                                    <form class="cart js-add-to-cart-form" method="post"
-                                        action="{{ route('client.products.add-to-cart') }}"
-                                        data-product-name="{{ $product->name }}">
-                                        @csrf
-                                        <div class="woocommerce-variation-add-to-cart variations_button">
-                                            <div class="qodef-quantity-buttons quantity">
-                                                <label class="screen-reader-text" for="quantity_{{ $product->id }}">Số
-                                                    lượng</label>
-                                                <span class="qodef-quantity-minus"></span>
-                                                <input type="text" id="quantity_{{ $product->id }}"
-                                                    class="input-text qty text qodef-quantity-input" data-step="1"
-                                                    data-min="1" data-max="{{ $product->total_stock_quantity ?? '' }}"
-                                                    name="quantity" value="1" title="Qty" size="4"
-                                                    placeholder="" inputmode="numeric"
-                                                    @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif />
-                                                <span class="qodef-quantity-plus"></span>
-                                            </div>
-                                            <button type="submit" class="single_add_to_cart_button button alt"
-                                                @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
-                                                giỏ hàng</button>
-                                            @if ($product->product_type === 'simple')
-                                                <input type="hidden" name="product_id" value="{{ $product->id }}" />
-                                            @else
-                                                <input type="hidden" name="variation_id"
-                                                    value="{{ $product->variations->first()->id ?? '' }}" />
-                                            @endif
-                                        </div>
-                                    </form>
-                                @endif
+                               <p class="price" id="product-price">
+    <span class="woocommerce-Price-amount amount">
+        <bdi>
+            @php
+                $displayPrice = $selectedVariation
+                    ? ($selectedVariation->sale_price && $selectedVariation->sale_price < $selectedVariation->price
+                        ? $selectedVariation->sale_price
+                        : $selectedVariation->price)
+                    : ($product->sale_price && $product->sale_price < $product->price
+                        ? $product->sale_price
+                        : $product->price);
+                $originalPrice = $selectedVariation ? $selectedVariation->price : $product->price;
+                $hasSale = $selectedVariation
+                    ? ($selectedVariation->sale_price && $selectedVariation->sale_price < $selectedVariation->price)
+                    : ($product->sale_price && $product->sale_price < $product->price);
+            @endphp
+            @if ($hasSale)
+                <del>{{ number_format($originalPrice, 0, ',', '.') }} VNĐ</del>
+                <ins>{{ number_format($displayPrice, 0, ',', '.') }} VNĐ</ins>
+            @else
+                {{ number_format($displayPrice, 0, ',', '.') }} VNĐ
+            @endif
+        </bdi>
+    </span>
+</p>
+                                <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
+    <span id="variant-stock-status">
+        @if ($product->variations->count() > 0 && $selectedVariation)
+            @if ($selectedVariation->quantity > 0)
+                Còn hàng
+            @else
+                Hết hàng
+            @endif
+        @else
+            @if ($product->quantity > 0)
+                Còn hàng
+            @else
+                Hết hàng
+            @endif
+        @endif
+    </span>
+    <span id="variant-stock-quantity">
+        - Số lượng:
+        @if ($product->variations->count() > 0 && $selectedVariation)
+            {{ $selectedVariation->quantity }}
+        @else
+            {{ $product->quantity }}
+        @endif
+    </span>
+</div>
+<div class="woocommerce-product-details__short-description">
+    <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
+</div>
+@if ($product->variations->count() > 0)
+    <div id="qvsfw-variations-form-wrapper">
+        <form class="variations_form cart js-add-to-cart-form" method="post"
+            action="{{ route('client.products.add-to-cart') }}"
+            enctype="multipart/form-data" data-product-name="{{ $product->name }}">
+            @csrf
+            @if ($colors->count())
+                <div class="variation-group">
+                    <div class="variation-label">Màu sắc:</div>
+                    <div class="variation-options" data-type="color">
+                        @foreach ($colors as $color)
+                            <button type="button" class="variation-btn color-btn"
+                                data-value="{{ $color->id }}"
+                                {{ $selectedVariation && $selectedVariation->color_id == $color->id ? 'class=active' : '' }}>
+                                {{ $color->name }}
+                            </button>
+                        @endforeach
+                    </div>
+                    <input type="hidden" name="color_id" class="variation-input"
+                        value="{{ $selectedVariation ? $selectedVariation->color_id : '' }}">
+                </div>
+            @endif
+            @if ($sizes->count())
+                <div class="variation-group">
+                    <div class="variation-label">Kích thước:</div>
+                    <div class="variation-options" data-type="size">
+                        @foreach ($sizes as $size)
+                            <button type="button" class="variation-btn size-btn"
+                                data-value="{{ $size->id }}"
+                                {{ $selectedVariation && $selectedVariation->size_id == $size->id ? 'class=active' : '' }}>
+                                {{ $size->name }}
+                            </button>
+                        @endforeach
+                    </div>
+                    <input type="hidden" name="size_id" class="variation-input"
+                        value="{{ $selectedVariation ? $selectedVariation->size_id : '' }}">
+                </div>
+            @endif
+            @if ($sphericals->count())
+                <div class="variation-group">
+                    <div class="variation-label">Độ cận:</div>
+                    <div class="variation-options" data-type="spherical">
+                        @foreach ($sphericals as $spherical)
+                            <button type="button" class="variation-btn spherical-btn"
+                                data-value="{{ $spherical->id }}"
+                                {{ $selectedVariation && $selectedVariation->spherical_id == $spherical->id ? 'class=active' : '' }}>
+                                {{ $spherical->name }}
+                            </button>
+                        @endforeach
+                    </div>
+                    <input type="hidden" name="spherical_id" class="variation-input"
+                        value="{{ $selectedVariation ? $selectedVariation->spherical_id : '' }}">
+                </div>
+            @endif
+            @if ($cylindricals->count())
+                <div class="variation-group">
+                    <div class="variation-label">Độ loạn:</div>
+                    <div class="variation-options" data-type="cylindrical">
+                        @foreach ($cylindricals as $cylindrical)
+                            <button type="button" class="variation-btn cylindrical-btn"
+                                data-value="{{ $cylindrical->id }}"
+                                {{ $selectedVariation && $selectedVariation->cylindrical_id == $cylindrical->id ? 'class=active' : '' }}>
+                                {{ $cylindrical->name }}
+                            </button>
+                        @endforeach
+                    </div>
+                    <input type="hidden" name="cylindrical_id" class="variation-input"
+                        value="{{ $selectedVariation ? $selectedVariation->cylindrical_id : '' }}">
+                </div>
+            @endif
+            <div class="single_variation_wrap">
+                <div class="woocommerce-variation single_variation"></div>
+                <div class="woocommerce-variation-add-to-cart variations_button">
+                    <div class="qodef-quantity-buttons quantity">
+                        <label class="screen-reader-text" for="quantity_{{ $product->id }}">{{ $product->name }} quantity</label>
+                        <span class="qodef-quantity-minus"></span>
+                        <input type="text" id="quantity_{{ $product->id }}"
+                            class="input-text qty text qodef-quantity-input"
+                            data-step="1" data-min="1"
+                            data-max="{{ $selectedVariation ? $selectedVariation->quantity : $product->quantity }}"
+                            name="quantity" value="1" title="Qty" size="4"
+                            placeholder="" inputmode="numeric"
+                            @if (($selectedVariation && $selectedVariation->quantity <= 0) || (!$selectedVariation && $product->quantity <= 0)) disabled @endif />
+                        <span class="qodef-quantity-plus"></span>
+                    </div>
+                    <button type="submit" class="single_add_to_cart_button button alt"
+                        @if (($selectedVariation && $selectedVariation->quantity <= 0) || (!$selectedVariation && $product->quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
+                        Thêm giỏ hàng
+                    </button>
+                    <input type="hidden" name="variation_id" class="variation_id"
+                        value="{{ $selectedVariation ? $selectedVariation->id : '' }}" />
+                </div>
+            </div>
+        </form>
+    </div>
+@else
+    <form class="cart js-add-to-cart-form" method="post"
+        action="{{ route('client.products.add-to-cart') }}"
+        data-product-name="{{ $product->name }}">
+        @csrf
+        <div class="woocommerce-variation-add-to-cart variations_button">
+            <div class="qodef-quantity-buttons quantity">
+                <label class="screen-reader-text" for="quantity_{{ $product->id }}">Số lượng</label>
+                <span class="qodef-quantity-minus"></span>
+                <input type="text" id="quantity_{{ $product->id }}"
+                    class="input-text qty text qodef-quantity-input" data-step="1"
+                    data-min="1" data-max="{{ $product->quantity }}"
+                    name="quantity" value="1" title="Qty" size="4"
+                    placeholder="" inputmode="numeric"
+                    @if ($product->quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif />
+                <span class="qodef-quantity-plus"></span>
+            </div>
+            <button type="submit" class="single_add_to_cart_button button alt"
+                @if ($product->quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>
+                Thêm giỏ hàng
+            </button>
+            <input type="hidden" name="product_id" value="{{ $product->id }}" />
+        </div>
+    </form>
+@endif
                                 <div
                                     class="qwfw-add-to-wishlist-wrapper qwfw--single qwfw-position--after-add-to-cart qwfw-item-type--icon-with-text qodef-neoocular-theme">
                                     @php
@@ -863,7 +875,7 @@
                             <ul class="products columns-4">
                                 @foreach ($related_products as $related_product)
                                     <li
-                                        class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
+                                        class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->total_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image" style="position:relative;">
                                                 @php
@@ -1007,7 +1019,7 @@
                                 <ul class="products columns-4">
                                     @foreach ($recentlyViewed->take(4) as $rvProduct)
                                         <li
-                                            class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
+                                            class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->total_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                             <div class="qodef-e-inner">
                                                 <div class="qodef-woo-product-image" style="position:relative;">
                                                     @php
@@ -1110,235 +1122,157 @@
             </div>
         </main>
     </div>
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Add to cart functionality
-                document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        var formData = new FormData(form);
-                        fetch(form.action, {
-                                method: 'POST',
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': form.querySelector('[name=_token]').value
-                                },
-                                body: formData
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                                var msgContainer = document.getElementById('add-to-cart-message');
-                                if (msgContainer) {
-                                    msgContainer.innerHTML = '';
-                                }
-                                if (data.success) {
-                                    var msg = document.createElement('div');
-                                    msg.className = 'woocommerce-message';
-                                    msg.setAttribute('role', 'alert');
-                                    var productName = form.getAttribute('data-product-name');
-                                    msg.innerHTML =
-                                        `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> &ldquo;${productName}&rdquo; đã được thêm vào giỏ hàng.`;
-                                    if (msgContainer) {
-                                        msgContainer.appendChild(msg);
-                                    }
-                                } else {
-                                    if (data.message) {
-                                        var alertDiv = document.createElement('div');
-                                        alertDiv.className = 'alert alert-danger';
-                                        alertDiv.style =
-                                            'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
-                                        alertDiv.innerHTML =
-                                            '<span style="font-size: 22px;">&#9888;</span> ' + data
-                                            .message +
-                                            '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
-                                        document.body.appendChild(alertDiv);
-                                        setTimeout(function() {
-                                            alertDiv.style.display = 'none';
-                                        }, 3000);
-                                    }
-                                }
-                            })
-                            .catch(() => alert('Có lỗi xảy ra!'));
-                    });
+ @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variation handling
+            const variations = @json($product->variations);
+            const variationButtons = document.querySelectorAll('.variation-btn');
+            const variationInputs = document.querySelectorAll('.variation-input');
+            const priceElement = document.getElementById('product-price');
+            const stockStatusElement = document.getElementById('variant-stock-status');
+            const stockQuantityElement = document.getElementById('variant-stock-quantity');
+            const quantityInput = document.querySelector('.qodef-quantity-input');
+            const addToCartButton = document.querySelector('.single_add_to_cart_button');
+            const variationIdInput = document.querySelector('input[name="variation_id"]');
+            const mainImage = document.getElementById('main-product-image');
+
+            function updateVariation() {
+                const selectedValues = {};
+                variationInputs.forEach(input => {
+                    selectedValues[input.name] = input.value;
                 });
 
-                // Quantity buttons
-                document.querySelectorAll('.qodef-quantity-buttons').forEach(function(group) {
-                    const minus = group.querySelector('.qodef-quantity-minus');
-                    const plus = group.querySelector('.qodef-quantity-plus');
-                    const input = group.querySelector('input.qodef-quantity-input');
-                    let min = input.getAttribute('data-min');
-                    let max = input.getAttribute('data-max');
-                    min = min ? parseInt(min) : 1;
-                    max = max ? parseInt(max) : null;
-                    if (minus) {
-                        minus.addEventListener('click', function() {
-                            let val = parseInt(input.value) || min;
-                            if (val > min) {
-                                input.value = val - 1;
-                            }
-                        });
-                    }
-                    if (plus) {
-                        plus.addEventListener('click', function() {
-                            let val = parseInt(input.value) || min;
-                            if (!max || val < max) {
-                                input.value = val + 1;
-                            }
-                        });
-                    }
-                    input.addEventListener('change', function() {
-                        let val = parseInt(input.value) || min;
-                        if (val < min) val = min;
-                        if (max && val > max) val = max;
-                        input.value = val;
-                    });
-                });
+                const selectedVariation = variations.find(variation =>
+                    (!selectedValues.color_id || variation.color_id == selectedValues.color_id) &&
+                    (!selectedValues.size_id || variation.size_id == selectedValues.size_id) &&
+                    (!selectedValues.spherical_id || variation.spherical_id == selectedValues.spherical_id) &&
+                    (!selectedValues.cylindrical_id || variation.cylindrical_id == selectedValues.cylindrical_id)
+                );
 
-                // Color selection functionality
-                document.querySelectorAll('.color-option').forEach(function(option) {
-                    option.addEventListener('click', function() {
-                        // Remove active class from all options in the same group
-                        const colorOptions = this.closest('.color-options').querySelectorAll(
-                            '.color-option');
-                        colorOptions.forEach(opt => opt.classList.remove('active'));
+                if (selectedVariation) {
+                    // Update price
+                    const price = selectedVariation.sale_price && selectedVariation.sale_price < selectedVariation.price
+                        ? selectedVariation.sale_price
+                        : selectedVariation.price;
+                    const originalPrice = selectedVariation.price;
+                    const hasSale = selectedVariation.sale_price && selectedVariation.sale_price < selectedVariation.price;
+                    priceElement.innerHTML = `<span class="woocommerce-Price-amount amount"><bdi>${
+                        hasSale
+                            ? `<del>${originalPrice.toLocaleString('vi-VN')} VNĐ</del> <ins>${price.toLocaleString('vi-VN')} VNĐ</ins>`
+                            : `${price.toLocaleString('vi-VN')} VNĐ`
+                    }</bdi></span>`;
 
-                        // Add active class to clicked option
-                        this.classList.add('active');
+                    // Update stock status and quantity
+                    stockStatusElement.textContent = selectedVariation.quantity > 0 ? 'Còn hàng' : 'Hết hàng';
+                    stockQuantityElement.textContent = ` - Số lượng: ${selectedVariation.quantity}`;
+                    quantityInput.dataset.max = selectedVariation.quantity;
+                    quantityInput.disabled = selectedVariation.quantity <= 0;
+                    addToCartButton.disabled = selectedVariation.quantity <= 0;
+                    addToCartButton.style.opacity = selectedVariation.quantity <= 0 ? '0.7' : '1';
+                    addToCartButton.style.pointerEvents = selectedVariation.quantity <= 0 ? 'none' : 'auto';
+                    variationIdInput.value = selectedVariation.id;
 
-                        // Update main product image if image URL is available
-                        const imageUrl = this.getAttribute('data-image-url');
-                        if (imageUrl && imageUrl !== '') {
-                            const mainImage = document.getElementById('main-product-image');
-                            if (mainImage) {
-                                mainImage.src = imageUrl;
-                            }
-                        }
-                    });
-                });
-
-                // Xử lý chọn biến thể dạng button group
-                document.querySelectorAll('.variation-options').forEach(function(group) {
-                    group.addEventListener('click', function(e) {
-                        if (e.target.classList.contains('variation-btn')) {
-                            // Bỏ active các nút khác
-                            group.querySelectorAll('.variation-btn').forEach(btn => btn.classList
-                                .remove('active'));
-                            // Active nút vừa chọn
-                            e.target.classList.add('active');
-                            // Gán value vào input hidden
-                            const input = group.parentElement.querySelector('.variation-input');
-                            input.value = e.target.getAttribute('data-value');
-
-                            // Sau khi chọn, kiểm tra nếu đã chọn đủ các biến thể thì đổi ảnh
-                            showVariationImageIfSelected();
-                        }
-                    });
-                });
-
-                // Hàm kiểm tra và hiển thị ảnh biến thể nếu đã chọn đủ
-                function showVariationImageIfSelected() {
-                    // Debug log
-                    console.log('variationsJson:', window.variationsJson);
-                    const colorId = document.querySelector('input[name="color_id"]')?.value || '';
-                    const sizeId = document.querySelector('input[name="size_id"]')?.value || '';
-                    const sphericalId = document.querySelector('input[name="spherical_id"]')?.value || '';
-                    const cylindricalId = document.querySelector('input[name="cylindrical_id"]')?.value || '';
-                    console.log('Selected:', {
-                        colorId,
-                        sizeId,
-                        sphericalId,
-                        cylindricalId
-                    });
-                    // Lấy variations từ biến blade
-                    const variations = window.variationsJson || [];
-                    // Tìm variation phù hợp
-                    let found = variations.find(v =>
-                        (!colorId || v.color_id == colorId) &&
-                        (!sizeId || v.size_id == sizeId) &&
-                        (!sphericalId || v.spherical_id == sphericalId) &&
-                        (!cylindricalId || v.cylindrical_id == cylindricalId)
-                    );
-                    // Nếu đã chọn đủ (tức là các thuộc tính nào có thì phải chọn)
-                    let enough = true;
-                    if (variations.length > 0) {
-                        if (variations[0].color_id && !colorId) enough = false;
-                        if (variations[0].size_id && !sizeId) enough = false;
-                        if (variations[0].spherical_id && !sphericalId) enough = false;
-                        if (variations[0].cylindrical_id && !cylindricalId) enough = false;
+                    // Update image
+                    const variationImages = selectedVariation.images || [];
+                    if (variationImages.length > 0 && mainImage) {
+                        mainImage.src = '{{ asset('storage') }}/' + variationImages[0].image_path;
                     }
-                    // Cập nhật input[name=variation_id] nếu tìm thấy
-                    var variationInput = document.querySelector('input[name="variation_id"]');
-                    if (variationInput) {
-                        if (found && enough) {
-                            variationInput.value = found.id;
-                        } else {
-                            variationInput.value = '';
-                        }
-                    }
-                    // Đổi ảnh nếu có
-                    if (found && enough && found.image) {
-                        const mainImage = document.getElementById('main-product-image');
-                        if (mainImage) {
-                            mainImage.src = found.image;
-                        }
-                    }
-                    // Disable nút nếu không có variation phù hợp
-                    var addBtn = document.querySelector('.single_add_to_cart_button');
-                    if (addBtn) {
-                        if (enough && (!found || !variationInput.value)) {
-                            addBtn.disabled = true;
-                            addBtn.style.opacity = 0.7;
-                            addBtn.style.pointerEvents = 'none';
-                        } else {
-                            addBtn.disabled = false;
-                            addBtn.style.opacity = '';
-                            addBtn.style.pointerEvents = '';
-                        }
-                    }
-                    // Cập nhật số lượng tồn kho
-                    var stockElem = document.getElementById('variant-stock-quantity');
-                    if (found && enough && stockElem) {
-                        if (found.stock_quantity === 0 || found.stock_quantity === '0') {
-                            stockElem.textContent = 'Hết hàng';
-                            if (addBtn) {
-                                addBtn.disabled = true;
-                                addBtn.style.opacity = 0.7;
-                                addBtn.style.pointerEvents = 'none';
-                            }
-                        } else {
-                            stockElem.textContent = found.stock_quantity;
-                        }
-                    } else if (stockElem) {
-                        stockElem.textContent = window.defaultTotalStockQuantity ?? '';
-                    }
-                    // Cập nhật giá
-                    var priceElem = document.getElementById('product-price');
-                    if (found && enough && priceElem) {
-                        let html = '';
-                        const price = Number(found.price);
-                        const salePrice = Number(found.sale_price);
-                        if (salePrice && salePrice < price) {
-                            html =
-                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del>${price.toLocaleString('vi-VN')} VNĐ</del> <ins>${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
-                        } else {
-                            html =
-                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>${price.toLocaleString('vi-VN')} VNĐ</bdi></span>`;
-                        }
-                        priceElem.innerHTML = html;
-                    } else if (priceElem) {
-                        priceElem.innerHTML =
-                            `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>{{ number_format($product->minimum_price, 0, ',', '.') }} VNĐ</bdi></span>`;
-                    }
+                } else {
+                    // Reset to default for no valid variation
+                    stockStatusElement.textContent = 'Hết hàng';
+                    stockQuantityElement.textContent = ' - Số lượng: 0';
+                    quantityInput.disabled = true;
+                    addToCartButton.disabled = true;
+                    addToCartButton.style.opacity = '0.7';
+                    addToCartButton.style.pointerEvents = 'none';
+                    variationIdInput.value = '';
                 }
+            }
 
-                // Gán biến variationsJson từ blade
-                window.variationsJson = @json($variationsJson ?? []);
-                window.defaultTotalStockQuantity = {{ $product->total_stock_quantity }};
+            variationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const group = this.parentElement;
+                    group.querySelectorAll('.variation-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    const input = group.nextElementSibling;
+                    if (input && input.classList.contains('variation-input')) {
+                        input.value = this.dataset.value;
+                    }
+                    updateVariation();
+                });
             });
-        </script>
-    @endpush
+
+            // Initialize variation on page load
+            updateVariation();
+
+            // Quantity buttons
+            document.querySelectorAll('.qodef-quantity-minus, .qodef-quantity-plus').forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.qodef-quantity-input');
+                    let value = parseInt(input.value) || 1;
+                    const max = parseInt(input.dataset.max) || Infinity;
+                    if (this.classList.contains('qodef-quantity-plus') && value < max) {
+                        input.value = value + 1;
+                    } else if (this.classList.contains('qodef-quantity-minus') && value > 1) {
+                        input.value = value - 1;
+                    }
+                });
+            });
+
+            // Add to cart functionality
+            document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var formData = new FormData(form);
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': form.querySelector('[name=_token]').value
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        var msgContainer = document.getElementById('add-to-cart-message');
+                        if (msgContainer) {
+                            msgContainer.innerHTML = '';
+                        }
+                        if (data.success) {
+                            var msg = document.createElement('div');
+                            msg.className = 'woocommerce-message';
+                            msg.setAttribute('role', 'alert');
+                            var productName = form.getAttribute('data-product-name');
+                            msg.innerHTML =
+                                `<a href="/client/cart" tabindex="1" class="button wc-forward">Xem giỏ hàng</a> &ldquo;${productName}&rdquo; đã được thêm vào giỏ hàng.`;
+                            if (msgContainer) {
+                                msgContainer.appendChild(msg);
+                            }
+                        } else {
+                            var alertDiv = document.createElement('div');
+                            alertDiv.className = 'alert alert-danger';
+                            alertDiv.style =
+                                'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
+                            alertDiv.innerHTML = data.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng.';
+                            if (msgContainer) {
+                                msgContainer.appendChild(alertDiv);
+                            }
+                            setTimeout(() => alertDiv.remove(), 3000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        var msgContainer = document.getElementById('add-to-cart-message');
+                        if (msgContainer) {
+                            msgContainer.innerHTML = '<div class="alert alert-danger">Có lỗi xảy ra. Vui lòng thử lại.</div>';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@endpush
     <style>
         /* Product Variations Styling */
         .product-variations {
