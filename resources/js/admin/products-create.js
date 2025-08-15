@@ -937,7 +937,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
             });
-
             const priceInput = form.querySelector('input[name="price"]');
             const salePriceInput = form.querySelector(
                 'input[name="sale_price"]'
@@ -1022,6 +1021,33 @@ document.addEventListener("DOMContentLoaded", function () {
                     JSON.stringify(tempFiles)
                 );
             }
+            // Log variations gửi lên
+            const variations = [];
+            const variationRows =
+                variationsContainer?.getElementsByClassName("variation-row") ||
+                [];
+            Array.from(variationRows).forEach((row, idx) => {
+                const name = row.querySelector('input[name$="[name]"]')?.value;
+                const color_id = row.querySelector(
+                    'input[name$="[color_id]"]'
+                )?.value;
+                const size_id = row.querySelector(
+                    'input[name$="[size_id]"]'
+                )?.value;
+                const spherical_id = row.querySelector(
+                    'input[name$="[spherical_id]"]'
+                )?.value;
+                const cylindrical_id = row.querySelector(
+                    'input[name$="[cylindrical_id]"]'
+                )?.value;
+                variations.push({
+                    name,
+                    color_id,
+                    size_id,
+                    spherical_id,
+                    cylindrical_id,
+                });
+            });
         });
     });
 

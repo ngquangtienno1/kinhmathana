@@ -75,7 +75,7 @@
         @php
             $statusNote = match ($order->status) {
                 'completed' => 'Đơn hàng đã hoàn thành. Cảm ơn bạn đã mua sắm tại cửa hàng!',
-                'delivered' => 'Đơn hàng đã giao thành công. Cảm ơn bạn đã mua sắm tại cửa hàng!',
+                'delivered' => 'Đơn hàng đã giao thành công. Khách hàng cần xác nhận đã nhận hàng để hoàn thành đơn hàng.',
                 'shipping' => 'Đơn hàng đang được vận chuyển đến bạn. Vui lòng chờ shipper liên hệ.',
                 'awaiting_pickup' => 'Đơn hàng đang chuẩn bị và sẽ sớm được gửi đi.',
                 'confirmed' => 'Đơn hàng đã được xác nhận và đang chờ xử lý.',
@@ -535,7 +535,7 @@
                                     'confirmed' => ['awaiting_pickup', 'cancelled_by_admin'],
                                     'awaiting_pickup' => ['shipping', 'cancelled_by_admin'],
                                     'shipping' => ['delivered', 'delivery_failed'],
-                                    'delivered' => ['completed'],
+                                    'delivered' => [], // Admin không thể cập nhật từ delivered sang completed
                                     'completed' => [],
                                     'cancelled_by_admin' => [],
                                     'delivery_failed' => ['cancelled_by_admin'],
@@ -554,6 +554,12 @@
                                 ];
                                 $current = $order->status;
                                 $canUpdate = count($statusTransitions[$current]) > 0;
+                                
+                                // Thêm thông báo đặc biệt cho trạng thái delivered
+                                $specialMessage = '';
+                                if ($current === 'delivered') {
+                                    $specialMessage = 'Trạng thái này chỉ có thể được cập nhật bởi khách hàng khi xác nhận đã nhận hàng.';
+                                }
                             @endphp
                             <select name="status" class="form-select" id="order-status-select"
                                 {{ !$canUpdate ? 'disabled' : '' }}>
@@ -563,8 +569,12 @@
                                 @endforeach
                             </select>
                             @if (!$canUpdate)
-                                <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật
-                                        nữa.</small></div>
+                                @if ($specialMessage)
+                                    <div class="text-info mt-2"><small>{{ $specialMessage }}</small></div>
+                                @else
+                                    <div class="text-danger mt-2"><small>Đây là trạng thái cuối, không thể cập nhật
+                                            nữa.</small></div>
+                                @endif
                             @endif
                         </div>
                         <input type="hidden" name="cancellation_reason_id" id="cancellation_reason_id"

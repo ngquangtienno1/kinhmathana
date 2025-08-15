@@ -459,16 +459,15 @@
                                                         class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--center ">
                                                         <h3 class="qodef-m-title">
                                                             <a itemprop="url" href="" target="_self">
-                                                                If you cannot find the answer to your question, please
-                                                                contact us </a>
+                                                                "Không tìm thấy câu trả lời? Liên hệ với chúng tôi
+                                                                ngay."</a>
                                                         </h3>
-                                                        <p class="qodef-m-text" style="margin-top: 12px">Diam volutpat
-                                                            commodo sed egestas egestas fringilla phasellus. Augue eget arcu
-                                                            dictum varius duis at consectetur lorem. Mauris nunc congue nisi
-                                                            vitae purus in</p>
+                                                        <p class="qodef-m-text" style="margin-top: 12px">Nếu bạn không tìm
+                                                            thấy thông tin mình cần, hãy liên hệ với chúng tôi để được hỗ
+                                                            trợ chi tiết và nhanh chóng.</p>
                                                         <div class="qodef-m-button">
                                                             <a class="qodef-shortcode qodef-m  qodef-button qodef-layout--outlined qodef-size--small qodef-html--link "
-                                                                href="#" target="_self"
+                                                                href="{{ route('client.contact.index') }}" target="_self"
                                                                 style="margin: 21px 0px;padding: 13px 70px"> <span
                                                                     class="qodef-m-text">Liên hệ chúng tôi</span></a>
                                                         </div>

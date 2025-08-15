@@ -156,14 +156,50 @@
                             </select>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="ai_api_key">AI API Key</label>
+                            <label for="ai_api_key">AI API Key (Google Gemini)</label>
                             <input type="text" class="form-control" id="ai_api_key" name="ai_api_key"
-                                value="{{ old('ai_api_key', $settings->ai_api_key ?? '') }}">
+                                value="{{ old('ai_api_key', $settings->ai_api_key ?? '') }}" placeholder="AIzaSy...">
+                            <small class="form-text text-muted">API Key từ Google AI Studio (Gemini)</small>
                         </div>
                         <div class="form-group mb-3">
                             <label for="ai_api_endpoint">AI API Endpoint</label>
                             <input type="text" class="form-control" id="ai_api_endpoint" name="ai_api_endpoint"
-                                value="{{ old('ai_api_endpoint', $settings->ai_api_endpoint ?? '') }}">
+                                value="{{ old('ai_api_endpoint', $settings->ai_api_endpoint ?? 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent') }}" placeholder="https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent">
+                            <small class="form-text text-muted">Endpoint mặc định cho Google Gemini</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="ai_chat_enabled">Bật AI Chat Bot</label>
+                            <select class="form-control" id="ai_chat_enabled" name="ai_chat_enabled">
+                                <option value="0" {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 0 ? 'selected' : '' }}>Tắt</option>
+                                <option value="1" {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 1 ? 'selected' : '' }}>Bật</option>
+                            </select>
+                            <small class="form-text text-muted">Hiển thị AI chat bot cho khách hàng</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="ai_guest_limit">Giới hạn chat cho khách (tin nhắn/giờ)</label>
+                            <input type="number" class="form-control" id="ai_guest_limit" name="ai_guest_limit"
+                                value="{{ old('ai_guest_limit', $settings->ai_guest_limit ?? 5) }}" min="1" max="50">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="ai_user_limit">Giới hạn chat cho user (tin nhắn/giờ)</label>
+                            <input type="number" class="form-control" id="ai_user_limit" name="ai_user_limit"
+                                value="{{ old('ai_user_limit', $settings->ai_user_limit ?? 20) }}" min="1" max="100">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Hướng dẫn cấu hình AI</h6>
+                            </div>
+                            <div class="card-body">
+                                <ol class="mb-0">
+                                    <li>Truy cập <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></li>
+                                    <li>Tạo API Key mới</li>
+                                    <li>Copy API Key và paste vào trường "AI API Key"</li>
+                                    <li>Bật "AI Chat Bot" để hiển thị cho khách hàng</li>
+                                    <li>Điều chỉnh giới hạn chat theo nhu cầu</li>
+                                </ol>
+                            </div>
                         </div>
                     </div>
                 </div>

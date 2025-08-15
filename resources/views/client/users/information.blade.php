@@ -1,295 +1,782 @@
 @extends('client.layouts.app')
 
 @section('content')
-<style>
-.info-wrapper {
-    display: flex;
-    gap: 32px;
-    max-width: 1200px;
-    margin: 40px auto 60px auto;
-}
-.info-sidebar {
-    flex: 0 0 320px;
-    background: #fff;
-    border-radius: 20px;
-    padding: 36px 24px 32px 24px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.info-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: #f2f2f2;
-    margin-bottom: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.info-avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.info-divider {
-    width: 100%;
-    height: 1px;
-    background: #eee;
-    margin: 18px 0 18px 0;
-}
-.info-menu {
-    width: 100%;
-    margin-top: 18px;
-}
-.info-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.info-menu li {
-    margin-bottom: 16px;
-    font-size: 1.08rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.info-menu li.active a, .info-menu li a:hover {
-    color: #1ccfcf;
-    font-weight: 700;
-}
-.info-menu li a {
-    color: #222;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-.info-menu li .icon {
-    font-size: 1.2rem;
-}
-.info-content {
-    flex: 1 1 0%;
-    background: #fff;
-    border-radius: 20px;
-    padding: 36px 32px 32px 32px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
-}
-.info-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    color: #222;
-}
-.info-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px 48px;
-    align-items: start;
-    position: relative;
-}
-/* Đưa avatar ra giữa form, nằm trên 2 cột */
-.info-form-avatar-center {
-    grid-column: 1 / span 2;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 18px;
-}
-.info-avatar-upload .avatar-img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #f2f2f2;
-    object-fit: cover;
-    margin-bottom: 8px;
-    border: 2px solid #ececec;
-    position: relative;
-    display: block;
-}
-/* Căn input thẳng hàng */
-.info-form-left > div,
-.info-form-right > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-.info-form input[type="text"],
-.info-form input[type="email"],
-.info-form input[type="password"] {
-    width: 100%;
-    padding: 16px 24px;
-    
-    background:rgb(0, 0, 0); /* ✅ CHỈNH Ở ĐÂY */
-    border-radius: 18px;
-    font-size: 1.08rem;
-    color: #222;
-    margin-bottom: 0;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-    transition: background 0.2s, box-shadow 0.2s;
-    min-height: 48px;
-    box-sizing: border-box;
-    display: block;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.info-form input:focus {
-    outline: 2px solid rgb(0, 0, 0);
-    background: #fff;
-}
-.info-form-actions {
-    grid-column: 1 / span 2;
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    margin-top: 24px;
-}
-.info-form-actions .btn-cancel {
-    background: #f7fafd;
-    color: #1ccfcf;
-    border: none;
-    border-radius: 16px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 13px 36px;
-    transition: background 0.2s;
-    min-width: 120px;
-}
-.info-form-actions .btn-save {
-    background: #7de3e7;
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 13px 36px;
-    transition: background 0.2s;
-    min-width: 160px;
-}
-.info-form-actions .btn-save:hover {
-    background: #1ccfcf;
-}
-@media (max-width: 900px) {
-    .info-wrapper {
-        flex-direction: column;
-        gap: 18px;
-    }
-    .info-sidebar, .info-content {
-        max-width: 100%;
-        border-radius: 12px;
-        padding: 18px 8px 18px 8px;
-    }
-    .info-content {
-        padding: 18px 8px 18px 8px;
-    }
-    .info-form {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
-    .info-form-avatar-center {
-        grid-column: 1;
-        margin-bottom: 12px;
-    }
-    .info-form-left, .info-form-right {
-        gap: 18px;
-    }
-    .info-form-actions {
-        grid-column: 1;
-    }
-}
-</style>
-<div class="info-wrapper">
-    <div class="info-sidebar">
-        <div class="info-avatar">
-            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=90" alt="Avatar">
-        </div>
-        <div class="info-divider"></div>
-        <nav class="info-menu">
-            <ul>
-               <li >@include('client.components.icons.cart')<a href="{{ route('client.users.index') }}">Danh sách sản phẩm</a></li>
-                <li class="active">@include('client.components.icons.user')<a href="#">Thông tin tài khoản</a></li>
-                <li>@include('client.components.icons.map') <a href="#">Thông tin địa chỉ</a></li>
-                 <li>@include('client.components.icons.logout')<a href="{{ route('client.logout') }}">Đăng xuất</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="info-content">
-        <div class="info-title">Thông tin tài khoản</div>
-        <form class="info-form" method="POST" action="{{ route('client.users.information.update') }}" enctype="multipart/form-data">
-            @csrf
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul style="margin:0; padding-left:18px;">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <div class="info-form-avatar-center">
-                <div class="info-avatar-upload">
-                    <div style="position:relative;">
-                        <img class="avatar-img" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=120" alt="Avatar">
-                        <label class="avatar-upload-btn" title="Đổi ảnh đại diện">
-                            <input type="file" name="avatar" accept="image/*" style="display:none;">
-                            <span style="font-size:1.2rem;">&#128247;</span>
-                        </label>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffffff 0%, #ffffffff 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .account-wrapper {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 4rem);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .user-profile {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 4px solid #f8f9fa;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .avatar-container:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-status {
+            background: #f8f9fa;
+            color: #6c757d;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e9ecef;
+            margin: 2rem 0;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            color: #6c757d;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #495057;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: #000;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Avatar Upload Section */
+        .avatar-upload-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .upload-avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .upload-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+            border: 6px solid #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: #000;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+
+        .profile-avatar-wrapper:hover .avatar-upload-btn {
+            opacity: 1;
+        }
+
+        .avatar-upload-btn input[type="file"] {
+            display: none;
+        }
+
+        .upload-btn {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 4px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e9ecef !important;
+            border-radius: 12px !important;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+            box-sizing: border-box;
+            margin-bottom: 2px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            background: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+        .password-btn:hover {
+            border-color: #000;
+            background: #f8f9fa;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-cancel:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-save {
+            background: #000;
+            color: #fff;
+            min-width: 150px;
+        }
+
+        .btn-save:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .account-wrapper {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+
+        .account-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 4px solid #f8f9fa;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+            margin: 0 auto 1rem;
+        }
+
+        .account-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .account-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+    <div class="container">
+        <div class="account-wrapper">
+
+            <div class="sidebar">
+                <div class="user-profile">
+                    <div class="account-avatar">
+                        @if ($user->avatar)
+                            <img src="{{ asset($user->avatar) }}" alt="Avatar">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=90"
+                                alt="Avatar">
+                        @endif
                     </div>
+                    <div class="user-name">{{ $user->name }}</div>
+                    @if (isset($customerType))
+                        <div class="user-status">
+                            @if ($customerType === 'vip')
+                                Khách hàng VIP
+                            @elseif($customerType === 'potential')
+                                Khách hàng tiềm năng
+                            @else
+                                Khách hàng thường
+                            @endif
+                        </div>
+                    @endif
                 </div>
+
+                <div class="divider"></div>
+
+                <nav>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="{{ route('client.users.index') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                Danh sách đơn hàng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="fas fa-user"></i>
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('client.orders.index') }}" class="nav-link">
+                                <i class="fas fa-box"></i>
+                                Đơn hàng của tôi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('client.logout') }}" class="nav-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <div class="info-form-left">
-                <div>
-                    <label for="name">Tên hiển thị <span style="color:#e74c3c">*</span></label>
-                    <input type="text" id="name" name="name" placeholder="Tên hiển thị" value="{{ $user->name ?? $user->name }}">
+
+
+            <div class="main-content">
+                <div class="page-header">
+                    <h1 class="page-title">Thông tin tài khoản</h1>
+                    <p class="page-subtitle">Cập nhật thông tin cá nhân và cài đặt tài khoản của bạn</p>
                 </div>
-                <div>
-                    <label for="email">Địa chỉ email <span style="color:#e74c3c">*</span></label>
-                    <input type="email" id="email" name="email" placeholder="Địa chỉ email" value="{{ $user->email }}">
-                </div>
-                <div>
-                    <label for="phone">Số điện thoại <span style="color:#e74c3c">*</span></label>
-                    <input type="text" id="phone" name="phone" placeholder="Số điện thoại" value="{{ $user->phone ?? '' }}">
-                </div>
-            </div>
-            <div class="info-form-right">
-                <div>
-                    <label for="current_password">Mật khẩu hiện tại</label>
-                    <div style="position:relative;">
-                        <input type="password" id="current_password" name="current_password" placeholder="Mật khẩu hiện tại" style="padding-right:40px;">
-                        <button type="button" onclick="togglePassword('current_password', this)" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);background:transparent;border:none;outline:none;cursor:pointer;padding:0;">
-                            <svg id="icon-current_password" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+
+                <form method="POST" action="{{ route('client.users.information.update') }}" enctype="multipart/form-data">
+                    @csrf
+
+
+                    @if (session('success1'))
+                        <div id="toast-success" class="toast-custom toast-success toast-animate">
+                            <span class="toast-icon">
+                                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#388e3c"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" fill="#e8f5e9" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5" />
+                                </svg>
+                            </span>
+                            <span class="toast-content">{{ session('success1') }}</span>
+                            <span class="toast-close"
+                                onclick="document.getElementById('toast-success').remove()">&times;</span>
+                        </div>
+                        <script>
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-success');
+                                if (el) el.style.opacity = 0;
+                            }, 3500);
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-success');
+                                if (el) el.remove();
+                            }, 4000);
+                        </script>
+                    @endif
+
+                    @if ($errors->any())
+                        <div id="toast-error" class="toast-custom toast-error toast-animate">
+                            <span class="toast-icon">
+                                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#d32f2f"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" fill="#ffebee" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9l-6 6m0-6l6 6" />
+                                </svg>
+                            </span>
+                            <span class="toast-content">
+                                @foreach ($errors->all() as $error)
+                                    {{ $error }}<br>
+                                @endforeach
+                            </span>
+                            <span class="toast-close"
+                                onclick="document.getElementById('toast-error').remove()">&times;</span>
+                        </div>
+                        <script>
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-error');
+                                if (el) el.style.opacity = 0;
+                            }, 3500);
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-error');
+                                if (el) el.remove();
+                            }, 4000);
+                        </script>
+                    @endif
+                    <style>
+                        .toast-animate {
+                            opacity: 0;
+                            transform: translateY(-30px) scale(0.98);
+                            animation: toastIn 0.5s cubic-bezier(.4, 0, .2, 1) forwards;
+                        }
+
+                        @keyframes toastIn {
+                            0% {
+                                opacity: 0;
+                                transform: translateY(-30px) scale(0.98);
+                            }
+
+                            60% {
+                                opacity: 1;
+                                transform: translateY(4px) scale(1.01);
+                            }
+
+                            100% {
+                                opacity: 1;
+                                transform: translateY(0) scale(1);
+                            }
+                        }
+
+                        .toast-custom {
+                            position: fixed;
+                            top: 32px;
+                            right: 32px;
+                            z-index: 9999;
+                            width: 400px;
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 16px 24px;
+                            margin-top: 90px;
+                            margin-left: 15px;
+                            font-size: 0.9rem;
+                            font-weight: 500;
+                            box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
+                            opacity: 1;
+                            transition: opacity 0.5s;
+                            letter-spacing: 0.2px;
+                            border-bottom: 4px solid;
+                            border-radius: 10px;
+                        }
+
+                        .toast-success {
+                            background: #e8f5e9;
+                            color: #388e3c;
+                            border-bottom-color: #388e3c;
+                        }
+
+                        .toast-error {
+                            background: #ffebee;
+                            color: #d32f2f;
+                            border-bottom-color: #d32f2f;
+                        }
+
+                        .toast-icon {
+                            display: flex;
+                            align-items: center;
+                            margin-right: 2px;
+                        }
+
+                        .toast-content {
+                            flex: 1;
+                            line-height: 1.5;
+                        }
+
+                        .toast-close {
+                            cursor: pointer;
+                            font-size: 1.3rem;
+                            font-weight: 700;
+                            color: #888;
+                            margin-left: 8px;
+                            transition: color 0.2s;
+                        }
+
+                        .toast-close:hover {
+                            color: #222;
+                        }
+                    </style>
+                    <div class="avatar-upload-section">
+                        <div class="upload-avatar-container"
+                            style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
+                            <div class="profile-avatar-wrapper" style="position:relative;display:inline-block;">
+                                @if ($user->avatar)
+                                    <img class="upload-avatar" src="{{ asset($user->avatar) }}" alt="Avatar"
+                                        style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 8px 25px rgba(0,0,0,0.10);border:6px solid #fff;">
+                                @else
+                                    <img class="upload-avatar"
+                                        src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=120"
+                                        alt="Avatar"
+                                        style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 8px 25px rgba(0,0,0,0.10);border:6px solid #fff;">
+                                @endif
+                                <label for="avatarInput" class="avatar-upload-btn"
+                                    style="position:absolute;bottom:8px;right:8px;background:#000;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.12);opacity:0.85;transition:opacity 0.2s;">
+                                    <input id="avatarInput" type="file" name="avatar" accept="image/*"
+                                        style="display:none;">
+                                    <i class="fas fa-camera" style="color:#fff;font-size:1.2rem;"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <p style="color: #6c757d; margin-bottom: 1rem;">Ảnh đại diện</p>
+                        <button type="button" class="upload-btn" onclick="document.getElementById('avatarInput').click();"
+                            style="margin-top:0.5rem;">
+                            <i class="fas fa-camera"></i>
+                            Thay đổi ảnh
                         </button>
                     </div>
-                </div>
-                <div>
-                    <label for="new_password">Mật khẩu mới</label>
-                    <input type="password" id="new_password" name="new_password" placeholder="Mật khẩu mới">
-                </div>
-                <div>
-                    <label for="new_password_confirmation">Nhập lại mật khẩu</label>
-                    <input type="password" id="new_password_confirmation" name="new_password_confirmation" placeholder="Nhập lại mật khẩu">
-                </div>
+
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                Tên hiển thị <span class="required">*</span>
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="name" name="name" class="form-input"
+                                    placeholder="Nhập tên hiển thị" value="{{ $user->name ?? $user->name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                Địa chỉ email <span class="required">*</span>
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="email" name="email" class="form-input"
+                                    placeholder="Nhập địa chỉ email" value="{{ $user->email }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">
+                                Số điện thoại <span class="required">*</span>
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-phone input-icon"></i>
+                                <input type="text" id="phone" name="phone" class="form-input"
+                                    placeholder="Nhập số điện thoại" value="{{ $user->phone ?? '' }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address" class="form-label">
+                                Địa chỉ
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-map-marker-alt input-icon"></i>
+                                <input type="text" id="address" name="address" class="form-input"
+                                    placeholder="Nhập địa chỉ" value="{{ $user->address ?? '' }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu</label>
+                            <div class="input-container">
+                                <i class="fas fa-lock input-icon"></i>
+                                <button type="button" class="password-btn" onclick="openChangePasswordModal()">
+                                    Đổi mật khẩu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" id="btnCancelInfo">
+                            <i class="fas fa-times"></i>
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save"></i>
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="info-form-actions">
-                <button type="button" class="btn-cancel">Hủy</button>
-                <button type="submit" class="btn-save">Lưu thay đổi</button>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-<script>
-function togglePassword(id, btn) {
-    const input = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.77 21.77 0 0 1 5.06-6.06M1 1l22 22"/><circle cx="12" cy="12" r="3"/></svg>';
-    } else {
-        input.type = 'password';
-        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
-    }
-}
-</script>
+
+    <script>
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth hover effects for nav items
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateX(5px)';
+                    }
+                });
+                link.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateX(0)';
+                    }
+                });
+            });
+
+            // Form input focus effects
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Nút Hủy: reset form về giá trị ban đầu (hoặc reload lại trang)
+            document.getElementById('btnCancelInfo').addEventListener('click', function(e) {
+                e.preventDefault();
+                // Nếu modal đổi mật khẩu đang mở thì đóng modal, ngược lại reset form
+                var modal = document.getElementById('changePasswordModal');
+                if (modal && modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                } else {
+                    // Reset form về giá trị ban đầu bằng reload lại trang
+                    window.location.reload();
+                }
+            });
+        });
+    </script>
+    @include('client.users.change_password_popup')
 @endsection

@@ -461,48 +461,30 @@
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab"
                             id="tab-description" role="tabpanel" aria-labelledby="tab-title-description">
                             <h2>Mô tả</h2>
-                            <p>{{ $product->description ?: 'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.' }}
-                            </p>
+                            @php
+                                $desc =
+                                    $product->description_long ??
+                                    ($product->description ??
+                                        'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.');
+                            @endphp
+                            <div class="product-description" style="text-align: left; text-indent: 0; padding-left: 0;">
+                                {!! $desc !!}
+                            </div>
+                            <style>
+                                .product-description {
+                                    text-align: left !important;
+                                    text-indent: 0 !important;
+                                    padding-left: 0 !important;
+                                }
+
+                                .product-description p {
+                                    text-align: left !important;
+                                    text-indent: 0 !important;
+                                    padding-left: 0 !important;
+                                    margin-left: 0 !important;
+                                }
+                            </style>
                         </div>
-                        {{-- <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
-                            id="tab-additional_information" role="tabpanel"
-                            aria-labelledby="tab-title-additional_information">
-
-                            <h2>Thông tin thêm</h2>
-
-                            <table class="woocommerce-product-attributes shop_attributes">
-                                <tr
-                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--weight">
-                                    <th class="woocommerce-product-attributes-item__label">Weight</th>
-                                    <td class="woocommerce-product-attributes-item__value">0.5 kg</td>
-                                </tr>
-                                <tr
-                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
-                                    <th class="woocommerce-product-attributes-item__label">Dimensions</th>
-                                    <td class="woocommerce-product-attributes-item__value">1 &times; 2
-                                        &times; 3 cm</td>
-                                </tr>
-                            </table>
-                        </div> --}}
-                        {{-- <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
-                            id="tab-additional_information" role="tabpanel"
-                            aria-labelledby="tab-title-additional_information">
-                            <h2>Thông tin thêm</h2>
-                            <table class="woocommerce-product-attributes shop_attributes">
-                                @if ($product->variations->isNotEmpty())
-                                    @foreach ($product->variations->groupBy('attribute_name')->map->unique() as $attribute => $variations)
-                                        <tr
-                                            class="woocommerce-product-attributes-item woocommerce-product-attributes-item--{{ strtolower(str_replace(' ', '-', $attribute)) }}">
-                                            <th class="woocommerce-product-attributes-item__label">{{ $attribute }}
-                                            </th>
-                                            <td class="woocommerce-product-attributes-item__value">
-                                                <p>{{ $variations->pluck('attribute_value')->unique()->implode(', ') }}</p>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </table>
-                        </div> --}}
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--reviews panel entry-content wc-tab"
                             id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
                             <h2>Đánh giá</h2>
@@ -858,7 +840,9 @@
                                             <textarea name="content" id="comment-content" class="form-control" rows="3" required
                                                 style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;"></textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Gửi bình
+                                        <button type="submit" class="btn btn-primary"
+                                            style="margin-top:8px; background-color: #111; color: #fff; border: 1px solid #000;">Gửi
+                                            bình
                                             luận</button>
                                     </form>
                                 @endif
@@ -879,9 +863,32 @@
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image" style="position:relative;">
                                                 @php
-                                                    $relatedFeaturedImage =
-                                                        $related_product->images->where('is_featured', true)->first() ??
-                                                        $related_product->images->first();
+                                                    $relatedFeaturedImage = null;
+                                                    $relatedImagePath = '';
+
+                                                    // Kiểm tra sản phẩm có biến thể không
+                                                    if ($related_product->variations->count() > 0) {
+                                                        // Có biến thể: lấy ảnh từ biến thể đầu tiên
+                                                        $firstVariation = $related_product->variations->first();
+                                                        $relatedFeaturedImage =
+                                                            $firstVariation->images
+                                                                ->where('is_featured', true)
+                                                                ->first() ?? $firstVariation->images->first();
+                                                        if (!$relatedFeaturedImage) {
+                                                            // Nếu biến thể không có ảnh, lấy ảnh từ sản phẩm chính
+                                                            $relatedFeaturedImage =
+                                                                $related_product->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $related_product->images->first();
+                                                        }
+                                                    } else {
+                                                        // Không có biến thể: lấy ảnh từ sản phẩm chính
+                                                        $relatedFeaturedImage =
+                                                            $related_product->images
+                                                                ->where('is_featured', true)
+                                                                ->first() ?? $related_product->images->first();
+                                                    }
+
                                                     $relatedImagePath = $relatedFeaturedImage
                                                         ? asset('storage/' . $relatedFeaturedImage->image_path)
                                                         : asset('');
@@ -910,14 +917,14 @@
                                                 </div>
                                                 <span class="price">
                                                     @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
-                                                        <del aria-hidden="true">
+                                                        <del aria-hidden="true" class="original-price">
                                                             <span class="woocommerce-Price-amount amount">
                                                                 <bdi>{{ number_format($related_product->price, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </del>
                                                         <span class="screen-reader-text">Giá gốc:
                                                             {{ number_format($related_product->price, 0, ',', '.') }}đ.</span>
-                                                        <ins aria-hidden="true">
+                                                        <ins aria-hidden="true" class="sale-price">
                                                             <span class="woocommerce-Price-amount amount">
                                                                 <bdi>{{ number_format($related_product->sale_price, 0, ',', '.') }}đ</bdi>
                                                             </span>
@@ -1002,7 +1009,12 @@
                                     return $id != $product->id;
                                 });
                                 if (count($ids)) {
-                                    $recentlyViewed = \App\Models\Product::with(['images', 'categories', 'brand'])
+                                    $recentlyViewed = \App\Models\Product::with([
+                                        'images',
+                                        'categories',
+                                        'brand',
+                                        'variations.images',
+                                    ])
                                         ->whereIn('id', $ids)
                                         ->get()
                                         ->sortBy(function ($item) use ($ids) {
@@ -1023,9 +1035,32 @@
                                             <div class="qodef-e-inner">
                                                 <div class="qodef-woo-product-image" style="position:relative;">
                                                     @php
-                                                        $rvFeaturedImage =
-                                                            $rvProduct->images->where('is_featured', true)->first() ??
-                                                            $rvProduct->images->first();
+                                                        $rvFeaturedImage = null;
+                                                        $rvImagePath = '';
+
+                                                        // Kiểm tra sản phẩm có biến thể không
+                                                        if ($rvProduct->variations->count() > 0) {
+                                                            // Có biến thể: lấy ảnh từ biến thể đầu tiên
+                                                            $firstVariation = $rvProduct->variations->first();
+                                                            $rvFeaturedImage =
+                                                                $firstVariation->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $firstVariation->images->first();
+                                                            if (!$rvFeaturedImage) {
+                                                                // Nếu biến thể không có ảnh, lấy ảnh từ sản phẩm chính
+                                                                $rvFeaturedImage =
+                                                                    $rvProduct->images
+                                                                        ->where('is_featured', true)
+                                                                        ->first() ?? $rvProduct->images->first();
+                                                            }
+                                                        } else {
+                                                            // Không có biến thể: lấy ảnh từ sản phẩm chính
+                                                            $rvFeaturedImage =
+                                                                $rvProduct->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $rvProduct->images->first();
+                                                        }
+
                                                         $rvImagePath = $rvFeaturedImage
                                                             ? asset('storage/' . $rvFeaturedImage->image_path)
                                                             : asset('');
@@ -1054,14 +1089,14 @@
                                                     </div>
                                                     <span class="price">
                                                         @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
-                                                            <del aria-hidden="true">
+                                                            <del aria-hidden="true" class="original-price">
                                                                 <span class="woocommerce-Price-amount amount">
                                                                     <bdi>{{ number_format($rvProduct->price, 0, ',', '.') }}đ</bdi>
                                                                 </span>
                                                             </del>
                                                             <span class="screen-reader-text">Giá gốc:
                                                                 {{ number_format($rvProduct->price, 0, ',', '.') }}đ.</span>
-                                                            <ins aria-hidden="true">
+                                                            <ins aria-hidden="true" class="sale-price">
                                                                 <span class="woocommerce-Price-amount amount">
                                                                     <bdi>{{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ</bdi>
                                                                 </span>
@@ -1785,6 +1820,31 @@
         .review-filter-btn.active {
             border: 1.5px solid #f44336 !important;
             color: #f44336 !important;
+        }
+
+        /* Giá sản phẩm styling */
+        .price .original-price {
+            color: #999 !important;
+            text-decoration: line-through;
+            font-size: 0.9em;
+            margin-right: 8px;
+        }
+
+        .price .sale-price {
+            color: #e74c3c !important;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-decoration: none;
+        }
+
+        .price .sale-price .woocommerce-Price-amount {
+            color: #e74c3c !important;
+        }
+
+        /* Giá chính của sản phẩm (không có khuyến mãi) */
+        .price .woocommerce-Price-amount {
+            color: #111;
+            font-weight: 600;
         }
     </style>
     <script>

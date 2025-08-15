@@ -1,11 +1,13 @@
 <?php
+// Password OTP routes for client
+require_once base_path('routes/client_password_otp.php');
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use App\Events\MyEvent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 // ================== Client Controllers ==================
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\Admin\FaqController;
@@ -27,6 +29,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Client\AIChatController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\AuthenticationController;
@@ -45,16 +48,15 @@ use App\Http\Controllers\Client\OrderDetailController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 use App\Http\Controllers\Admin\CustomerSupportController;
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\ShippingProviderController;
-use App\Http\Controllers\Admin\ChatAdminController;
-
-
-// Authentication
-
 use App\Http\Controllers\Admin\CancellationReasonController;
-use App\Http\Controllers\Admin\OrderStatusHistoryController;
 
 // Authentication
+use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Client\HomeController as ClientHomeController;
@@ -181,8 +183,24 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::post('/add', [WishlistController::class, 'addToWishlist'])->name('add');
         Route::post('/remove', [WishlistController::class, 'removeFromWishlist'])->name('remove');
     });
-    Route::post('/chat/send', [ChatAdminController::class, 'send'])->name('chat.send');
-    Route::get('/chat/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('chat.conversation');
+
+    // Client Chat routes
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::post('/send', [ChatAdminController::class, 'send'])->name('send');
+        Route::get('/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('conversation');
+        Route::post('/send-image', [ChatAdminController::class, 'sendImage'])->name('send-image');
+        Route::post('/send-voice', [ChatAdminController::class, 'sendVoice'])->name('send-voice');
+        Route::post('/send-file', [ChatAdminController::class, 'sendFile'])->name('send-file');
+    });
+
+    // AI Chat routes
+    Route::prefix('ai-chat')->name('ai-chat.')->group(function () {
+        Route::post('/send', [AIChatController::class, 'chat'])->name('send');
+        Route::get('/history', [AIChatController::class, 'getChatHistory'])->name('history');
+        Route::delete('/clear', [AIChatController::class, 'clearChatHistory'])->name('clear');
+        Route::get('/stats', [AIChatController::class, 'getChatStats'])->name('stats')->middleware('auth');
+        Route::get('/test-enhanced', [AIChatController::class, 'testEnhanced'])->name('test-enhanced');
+    });
 });
 
 // Admin routes group
@@ -737,5 +755,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [ChatAdminController::class, 'index'])->name('index');
         Route::get('/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('conversation');
         Route::post('/send', [ChatAdminController::class, 'send'])->name('send');
+        Route::post('/send-image', [ChatAdminController::class, 'sendImage'])->name('send-image');
+        Route::post('/send-voice', [ChatAdminController::class, 'sendVoice'])->name('send-voice');
+        Route::post('/send-file', [ChatAdminController::class, 'sendFile'])->name('send-file');
+        Route::post('/edit-message', [ChatAdminController::class, 'editMessage'])->name('edit-message');
+        Route::post('/delete-message', [ChatAdminController::class, 'deleteMessage'])->name('delete-message');
     });
 });

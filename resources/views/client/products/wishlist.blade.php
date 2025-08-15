@@ -78,8 +78,38 @@
                                                 <td class="qwfw-e-item product-thumbnail">
                                                     <div class="qwfw-e-item-inner">
                                                         <a href="{{ route('client.products.show', $item->product->slug) }}">
-                                                            <img src="{{ $variation && $variation->images->first() ? $variation->images->first()->url : $item->product->images->first()->url ?? '/images/no-image.jpg' }}"
-                                                                alt="{{ $item->product->name }}" width="80">
+                                                            @php
+                                                                $featuredImage = null;
+                                                                $imagePath = '/images/no-image.jpg';
+
+                                                                // Kiểm tra sản phẩm có biến thể không
+                                                                if ($variation && $variation->images->count() > 0) {
+                                                                    // Có biến thể: lấy ảnh từ biến thể
+                                                                    $featuredImage =
+                                                                        $variation->images
+                                                                            ->where('is_featured', true)
+                                                                            ->first() ?? $variation->images->first();
+                                                                    if ($featuredImage) {
+                                                                        $imagePath = asset(
+                                                                            'storage/' . $featuredImage->image_path,
+                                                                        );
+                                                                    }
+                                                                } elseif ($item->product->images->count() > 0) {
+                                                                    // Không có biến thể hoặc biến thể không có ảnh: lấy ảnh từ sản phẩm chính
+                                                                    $featuredImage =
+                                                                        $item->product->images
+                                                                            ->where('is_featured', true)
+                                                                            ->first() ??
+                                                                        $item->product->images->first();
+                                                                    if ($featuredImage) {
+                                                                        $imagePath = asset(
+                                                                            'storage/' . $featuredImage->image_path,
+                                                                        );
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <img src="{{ $imagePath }}" alt="{{ $item->product->name }}"
+                                                                width="80" style="object-fit: cover;">
                                                         </a>
                                                     </div>
                                                 </td>
@@ -109,11 +139,41 @@
                                                 </td>
                                                 <td class="qwfw-e-item product-price">
                                                     <div class="qwfw-e-item-inner">
-                                                        <span class="woocommerce-Price-amount amount">
+                                                        <span class="price">
                                                             @if ($variation)
-                                                                {{ number_format($variation->sale_price ?? $variation->price, 0, ',', '.') }}₫
+                                                                @if ($variation->sale_price && $variation->sale_price < $variation->price)
+                                                                    <del class="original-price">
+                                                                        <span class="woocommerce-Price-amount amount">
+                                                                            {{ number_format($variation->price, 0, ',', '.') }}₫
+                                                                        </span>
+                                                                    </del>
+                                                                    <ins class="sale-price">
+                                                                        <span class="woocommerce-Price-amount amount">
+                                                                            {{ number_format($variation->sale_price, 0, ',', '.') }}₫
+                                                                        </span>
+                                                                    </ins>
+                                                                @else
+                                                                    <span class="woocommerce-Price-amount amount">
+                                                                        {{ number_format($variation->price, 0, ',', '.') }}₫
+                                                                    </span>
+                                                                @endif
                                                             @else
-                                                                {{ number_format($item->product->price, 0, ',', '.') }}₫
+                                                                @if ($item->product->sale_price && $item->product->sale_price < $item->product->price)
+                                                                    <del class="original-price">
+                                                                        <span class="woocommerce-Price-amount amount">
+                                                                            {{ number_format($item->product->price, 0, ',', '.') }}₫
+                                                                        </span>
+                                                                    </del>
+                                                                    <ins class="sale-price">
+                                                                        <span class="woocommerce-Price-amount amount">
+                                                                            {{ number_format($item->product->sale_price, 0, ',', '.') }}₫
+                                                                        </span>
+                                                                    </ins>
+                                                                @else
+                                                                    <span class="woocommerce-Price-amount amount">
+                                                                        {{ number_format($item->product->price, 0, ',', '.') }}₫
+                                                                    </span>
+                                                                @endif
                                                             @endif
                                                         </span>
                                                     </div>
@@ -164,4 +224,68 @@
             </main>
         </div>
     </div>
+
+    <style>
+        /* Giá sản phẩm styling cho wishlist */
+        .price .original-price {
+            color: #999 !important;
+            text-decoration: line-through;
+            font-size: 1.1em;
+            margin-right: 8px;
+        }
+
+        .price .sale-price {
+            color: #e74c3c !important;
+            font-weight: bold;
+            font-size: 1.3em;
+            text-decoration: none;
+        }
+
+        .price .sale-price .woocommerce-Price-amount {
+            color: #e74c3c !important;
+            font-size: 1.3em;
+        }
+
+        /* Giá chính của sản phẩm (không có khuyến mãi) */
+        .price .woocommerce-Price-amount {
+            color: #111;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+
+        /* Styling cho bảng wishlist */
+        .qwfw-m-items {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .qwfw-m-items th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .qwfw-m-items td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .qwfw-m-items img {
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        .qwfw-e-item-stock.qwfw--in-stock {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .qwfw-e-item-stock.qwfw--out-of-stock {
+            color: #dc3545;
+            font-weight: 500;
+        }
+    </style>
 @endsection

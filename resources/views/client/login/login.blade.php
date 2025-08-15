@@ -1,6 +1,92 @@
 @extends('client.layouts.app')
 
 @section('content')
+    @if(session('message'))
+    <div id="toast-success" class="toast-custom toast-success toast-animate">
+        <span class="toast-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ff0000ff" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e8f5e9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5"/></svg>
+        </span>
+        <span class="toast-content">{{ session('message') }}</span>
+        <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
+    </div>
+    <script>
+        setTimeout(function(){
+            var el = document.getElementById('toast-success');
+            if(el) el.style.opacity = 0;
+        }, 3500);
+        setTimeout(function(){
+            var el = document.getElementById('toast-success');
+            if(el) el.remove();
+        }, 4000);
+    </script>
+    <style>
+    .toast-animate {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.98);
+        animation: toastIn 0.5s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes toastIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.98);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(4px) scale(1.01);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .toast-custom {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        z-index: 9999;
+        width: 400px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 24px;
+        margin-top: 90px;
+        margin-left: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
+        opacity: 1;
+        transition: opacity 0.5s;
+        letter-spacing: 0.2px;
+        border-bottom: 4px solid;
+        border-radius: 10px;
+    }
+    .toast-success {
+        background: #eb2d2d3a;
+        color: #ff0000ff;
+        border-bottom-color: #ff0000ff;
+    }
+    .toast-icon {
+        display: flex;
+        align-items: center;
+        margin-right: 2px;
+    }
+    .toast-content {
+        flex: 1;
+        line-height: 1.5;
+    }
+    .toast-close {
+        cursor: pointer;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #888;
+        margin-left: 8px;
+        transition: color 0.2s;
+    }
+    .toast-close:hover {
+        color: #222;
+    }
+    </style>
+    @endif
     <style>
         .login-wrapper {
             display: flex;

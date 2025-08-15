@@ -43,7 +43,10 @@ class WebsiteSetting extends Model
         'enable_ai_recommendation',
         'ai_api_key',
         'ai_api_endpoint',
-        'ai_settings'
+        'ai_settings',
+        'ai_chat_enabled',
+        'ai_guest_limit',
+        'ai_user_limit'
     ];
 
     protected $casts = [
@@ -51,7 +54,8 @@ class WebsiteSetting extends Model
         'shipping_fee_by_province' => 'array',
         'ai_settings' => 'array',
         'default_shipping_fee' => 'decimal:2',
-        'enable_ai_recommendation' => 'boolean'
+        'enable_ai_recommendation' => 'boolean',
+        'ai_chat_enabled' => 'boolean'
     ];
 
     public $timestamps = false;

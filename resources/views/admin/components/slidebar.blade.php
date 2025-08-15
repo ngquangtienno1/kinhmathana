@@ -662,7 +662,7 @@
                                         <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                     </div>
                                     <span class="nav-link-icon"><span data-feather="mail"></span></span>
-                                    <span class="nav-link-text">Hộp thư khách hàng</span>
+                                    <span class="nav-link-text">Chat với khách hàng</span>
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
@@ -672,7 +672,7 @@
                                         <a class="nav-link {{ request()->routeIs('admin.chat.index') ? 'active' : '' }}"
                                             href="{{ route('admin.chat.index') }}">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách hộp thư</span>
+                                                <span class="nav-link-text">Danh sách chat</span>
                                             </div>
                                         </a>
                                     </li>
