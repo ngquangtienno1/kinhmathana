@@ -511,8 +511,20 @@
             <div class="account-sidebar">
                 <div class="user-profile">
                     <div class="account-avatar">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=90"
-                            alt="Avatar">
+                        @php
+                            $avatarSrc = null;
+                            if(!empty($user->avatar)){
+                                $a = $user->avatar;
+                                if(stripos($a, 'http://') === 0 || stripos($a, 'https://') === 0){
+                                    $avatarSrc = $a;
+                                } elseif(strpos($a, 'uploads/avatars') !== false || strpos($a, 'uploads\\avatars') !== false){
+                                    $avatarSrc = asset($a);
+                                } else {
+                                    $avatarSrc = asset('uploads/avatars/' . $a);
+                                }
+                            }
+                        @endphp
+                        <img src="{{ $avatarSrc ?? ('https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=ececec&color=7de3e7&size=90') }}" alt="Avatar">
                     </div>
                     <div class="user-name">{{$user->name}}</div>
                     @if (isset($customerType))

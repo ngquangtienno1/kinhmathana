@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
             'checkAdmin' => \App\Http\Middleware\CheckAdminMiddleware::class,
+            'notAdmin' => \App\Http\Middleware\EnsureNotAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
