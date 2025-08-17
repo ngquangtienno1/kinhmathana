@@ -211,7 +211,7 @@ class AIChatController extends Controller
             'instagram' => $this->settings->instagram_url ?? ''
         ];
 
-                        // Lấy danh sách sản phẩm kính mắt từ database
+        // Lấy danh sách sản phẩm kính mắt từ database
         try {
             $products = Product::where('status', 'Hoạt động')
                 ->select('id', 'name', 'price', 'sale_price', 'description_short', 'product_type', 'slug')
@@ -252,8 +252,8 @@ THÔNG TIN CỬA HÀNG:
 - Địa chỉ: {$storeInfo['address']}
 - Hotline: {$storeInfo['hotline']}
 - Email: {$storeInfo['email']}" .
-($storeInfo['facebook'] ? "\n- Facebook: {$storeInfo['facebook']}" : "") .
-($storeInfo['instagram'] ? "\n- Instagram: {$storeInfo['instagram']}" : "") . "
+            ($storeInfo['facebook'] ? "\n- Facebook: {$storeInfo['facebook']}" : "") .
+            ($storeInfo['instagram'] ? "\n- Instagram: {$storeInfo['instagram']}" : "") . "
 
 CHUYÊN MÔN:
 - Tư vấn chọn kính phù hợp với khuôn mặt và phong cách
@@ -290,7 +290,7 @@ HƯỚNG DẪN TRẢ LỜI:
             return [];
         }
 
-                // Lấy sản phẩm phù hợp
+        // Lấy sản phẩm phù hợp
         try {
             $products = Product::where('status', 'Hoạt động')
                 ->select('id', 'name', 'price', 'sale_price', 'slug', 'description_short')
@@ -426,7 +426,7 @@ HƯỚNG DẪN TRẢ LỜI:
         return response()->json(['success' => true, 'stats' => $stats]);
     }
 
-        public function testEnhanced()
+    public function testEnhanced()
     {
         try {
             // Test settings

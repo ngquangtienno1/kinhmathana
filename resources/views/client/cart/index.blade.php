@@ -78,10 +78,10 @@
                                                         <a href="{{ route('client.products.show', $cartProduct->slug) }}">
                                                             {{ $cartProduct->name }}
                                                         </a>
-                                                        <div>
+                                                        <div class="product-variants">
                                                             @if ($item->variation)
-                                                                <small>
-                                                                    @php $v = $item->variation; @endphp
+                                                                @php $v = $item->variation; @endphp
+                                                                <span class="variant-info">
                                                                     Phân loại:
                                                                     @if ($v->color)
                                                                         Màu: {{ $v->color->name }}
@@ -95,7 +95,7 @@
                                                                     @if ($v->cylindrical)
                                                                         | Độ loạn: {{ $v->cylindrical->name }}
                                                                     @endif
-                                                                </small>
+                                                                </span>
                                                             @endif
                                                         </div>
                                                     </td>
@@ -215,6 +215,78 @@
 
 @push('scripts')
     <style>
+        /* Tăng kích thước chữ cho giỏ hàng */
+        .shop_table th {
+            font-size: 1em;
+            font-weight: 600;
+            padding: 12px 10px;
+        }
+
+        .shop_table td {
+            font-size: 0.95em;
+            padding: 12px 10px;
+            vertical-align: middle;
+        }
+
+        .product-name a {
+            font-size: 1em;
+            font-weight: 600;
+            color: #111;
+            text-decoration: none;
+        }
+
+        .product-name a:hover {
+            color: #666;
+        }
+
+        .product-variants {
+            margin-top: 6px;
+        }
+
+        .variant-info {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .product-price .woocommerce-Price-amount {
+            font-size: 1em;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .product-subtotal .woocommerce-Price-amount {
+            font-size: 1em;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .qodef-quantity-input {
+            font-size: 0.95em !important;
+            font-weight: 500;
+        }
+
+        .cart_totals h2 {
+            font-size: 1.2em;
+            margin-bottom: 18px;
+        }
+
+        .cart_totals th {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .cart_totals td {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .order-total th,
+        .order-total td {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
         .custom-quantity-group {
             display: flex;
             align-items: center;

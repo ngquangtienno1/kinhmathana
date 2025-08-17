@@ -185,8 +185,15 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::post('/add', [WishlistController::class, 'addToWishlist'])->name('add');
         Route::post('/remove', [WishlistController::class, 'removeFromWishlist'])->name('remove');
     });
-    Route::post('/chat/send', [ChatAdminController::class, 'send'])->name('chat.send');
-    Route::get('/chat/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('chat.conversation');
+
+    // Client Chat routes
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::post('/send', [ChatAdminController::class, 'send'])->name('send');
+        Route::get('/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('conversation');
+        Route::post('/send-image', [ChatAdminController::class, 'sendImage'])->name('send-image');
+        Route::post('/send-voice', [ChatAdminController::class, 'sendVoice'])->name('send-voice');
+        Route::post('/send-file', [ChatAdminController::class, 'sendFile'])->name('send-file');
+    });
 
     // AI Chat routes
     Route::prefix('ai-chat')->name('ai-chat.')->group(function () {
@@ -762,5 +769,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [ChatAdminController::class, 'index'])->name('index');
         Route::get('/conversation/{user}', [ChatAdminController::class, 'conversation'])->name('conversation');
         Route::post('/send', [ChatAdminController::class, 'send'])->name('send');
+        Route::post('/send-image', [ChatAdminController::class, 'sendImage'])->name('send-image');
+        Route::post('/send-voice', [ChatAdminController::class, 'sendVoice'])->name('send-voice');
+        Route::post('/send-file', [ChatAdminController::class, 'sendFile'])->name('send-file');
+        Route::post('/edit-message', [ChatAdminController::class, 'editMessage'])->name('edit-message');
+        Route::post('/delete-message', [ChatAdminController::class, 'deleteMessage'])->name('delete-message');
     });
 });

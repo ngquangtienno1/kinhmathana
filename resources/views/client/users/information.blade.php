@@ -1,7 +1,7 @@
 @extends('client.layouts.app')
 
 @section('content')
- <style>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -33,7 +33,7 @@
             background: #fff;
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             height: fit-content;
             position: sticky;
             top: 2rem;
@@ -62,7 +62,7 @@
             font-size: 2rem;
             font-weight: bold;
             border: 4px solid #f8f9fa;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease;
         }
 
@@ -76,7 +76,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -140,7 +140,7 @@
         .nav-link.active {
             background: #000;
             color: #fff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .nav-link i {
@@ -154,7 +154,7 @@
             background: #fff;
             border-radius: 20px;
             padding: 2.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
 
         .page-header {
@@ -199,7 +199,7 @@
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
             border: 6px solid #fff;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
@@ -216,7 +216,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
             opacity: 0.85;
             transition: opacity 0.2s;
         }
@@ -247,7 +247,7 @@
         .upload-btn:hover {
             background: #333;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Form Styles */
@@ -294,7 +294,7 @@
         .form-input:focus {
             outline: none;
             border-color: #000;
-            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
         }
 
         .input-icon {
@@ -366,7 +366,7 @@
         .btn-save:hover {
             background: #333;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Responsive Design */
@@ -375,7 +375,7 @@
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
-            
+
             .sidebar {
                 position: static;
             }
@@ -385,21 +385,22 @@
             .container {
                 padding: 1rem;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
-            
+
             .form-actions {
                 flex-direction: column;
             }
-            
+
             .page-title {
                 font-size: 2rem;
             }
         }
-          .account-avatar {
+
+        .account-avatar {
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -427,7 +428,7 @@
             object-fit: cover;
         }
     </style>
-  <div class="container">
+    <div class="container">
         <div class="account-wrapper">
 
             <div class="sidebar">
@@ -451,8 +452,8 @@
                         @endphp
                         <img src="{{ $avatarSrc ?? ('https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=ececec&color=7de3e7&size=90') }}" alt="Avatar">
                     </div>
-                    <div class="user-name">{{$user->name}}</div>
-@if (isset($customerType))
+                    <div class="user-name">{{ $user->name }}</div>
+                    @if (isset($customerType))
                         <div class="user-status">
                             @if ($customerType === 'vip')
                                 Khách hàng VIP
@@ -464,9 +465,9 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <div class="divider"></div>
-                
+
                 <nav>
                     <ul class="nav-menu">
                         <li class="nav-item">
@@ -497,7 +498,7 @@
                 </nav>
             </div>
 
-          
+
             <div class="main-content">
                 <div class="page-header">
                     <h1 class="page-title">Thông tin tài khoản</h1>
@@ -506,123 +507,143 @@
 
                 <form method="POST" action="{{ route('client.users.information.update') }}" enctype="multipart/form-data">
                     @csrf
-                       
-                
-                @if(session('success1'))
-                <div id="toast-success" class="toast-custom toast-success toast-animate">
-                    <span class="toast-icon">
-                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#388e3c" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e8f5e9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5"/></svg>
-                    </span>
-                    <span class="toast-content">{{ session('success1') }}</span>
-                    <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
-                </div>
-                <script>
-                    setTimeout(function(){
-                        var el = document.getElementById('toast-success');
-                        if(el) el.style.opacity = 0;
-                    }, 3500);
-                    setTimeout(function(){
-                        var el = document.getElementById('toast-success');
-                        if(el) el.remove();
-                    }, 4000);
-                </script>
-                @endif
 
-                @if($errors->any())
-                <div id="toast-error" class="toast-custom toast-error toast-animate">
-                    <span class="toast-icon">
-                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#d32f2f" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#ffebee"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 9l-6 6m0-6l6 6"/></svg>
-                    </span>
-                    <span class="toast-content">
-                        @foreach($errors->all() as $error)
-                            {{ $error }}<br>
-                        @endforeach
-                    </span>
-                    <span class="toast-close" onclick="document.getElementById('toast-error').remove()">&times;</span>
-                </div>
-                <script>
-                    setTimeout(function(){
-                        var el = document.getElementById('toast-error');
-                        if(el) el.style.opacity = 0;
-                    }, 3500);
-                    setTimeout(function(){
-                        var el = document.getElementById('toast-error');
-                        if(el) el.remove();
-                    }, 4000);
-                </script>
-                @endif
-    <style>
-    .toast-animate {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.98);
-        animation: toastIn 0.5s cubic-bezier(.4,0,.2,1) forwards;
-    }
-    @keyframes toastIn {
-        0% {
-            opacity: 0;
-            transform: translateY(-30px) scale(0.98);
-        }
-        60% {
-            opacity: 1;
-            transform: translateY(4px) scale(1.01);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-    .toast-custom {
-        position: fixed;
-        top: 32px;
-        right: 32px;
-        z-index: 9999;
-        width: 400px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 16px 24px;
-        margin-top: 90px;
-        margin-left: 15px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
-        opacity: 1;
-        transition: opacity 0.5s;
-        letter-spacing: 0.2px;
-        border-bottom: 4px solid;
-        border-radius: 10px;
-    }
-    .toast-success {
-        background: #e8f5e9;
-        color: #388e3c;
-        border-bottom-color: #388e3c;
-    }
-    .toast-error {
-        background: #ffebee;
-        color: #d32f2f;
-        border-bottom-color: #d32f2f;
-    }
-    .toast-icon {
-        display: flex;
-        align-items: center;
-        margin-right: 2px;
-    }
-    .toast-content {
-        flex: 1;
-        line-height: 1.5;
-    }
-    .toast-close {
-        cursor: pointer;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #888;
-        margin-left: 8px;
-        transition: color 0.2s;
-    }
-    .toast-close:hover {
-        color: #222;
-    }
-    </style>
+
+                    @if (session('success1'))
+                        <div id="toast-success" class="toast-custom toast-success toast-animate">
+                            <span class="toast-icon">
+                                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#388e3c"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" fill="#e8f5e9" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5" />
+                                </svg>
+                            </span>
+                            <span class="toast-content">{{ session('success1') }}</span>
+                            <span class="toast-close"
+                                onclick="document.getElementById('toast-success').remove()">&times;</span>
+                        </div>
+                        <script>
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-success');
+                                if (el) el.style.opacity = 0;
+                            }, 3500);
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-success');
+                                if (el) el.remove();
+                            }, 4000);
+                        </script>
+                    @endif
+
+                    @if ($errors->any())
+                        <div id="toast-error" class="toast-custom toast-error toast-animate">
+                            <span class="toast-icon">
+                                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#d32f2f"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" fill="#ffebee" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9l-6 6m0-6l6 6" />
+                                </svg>
+                            </span>
+                            <span class="toast-content">
+                                @foreach ($errors->all() as $error)
+                                    {{ $error }}<br>
+                                @endforeach
+                            </span>
+                            <span class="toast-close"
+                                onclick="document.getElementById('toast-error').remove()">&times;</span>
+                        </div>
+                        <script>
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-error');
+                                if (el) el.style.opacity = 0;
+                            }, 3500);
+                            setTimeout(function() {
+                                var el = document.getElementById('toast-error');
+                                if (el) el.remove();
+                            }, 4000);
+                        </script>
+                    @endif
+                    <style>
+                        .toast-animate {
+                            opacity: 0;
+                            transform: translateY(-30px) scale(0.98);
+                            animation: toastIn 0.5s cubic-bezier(.4, 0, .2, 1) forwards;
+                        }
+
+                        @keyframes toastIn {
+                            0% {
+                                opacity: 0;
+                                transform: translateY(-30px) scale(0.98);
+                            }
+
+                            60% {
+                                opacity: 1;
+                                transform: translateY(4px) scale(1.01);
+                            }
+
+                            100% {
+                                opacity: 1;
+                                transform: translateY(0) scale(1);
+                            }
+                        }
+
+                        .toast-custom {
+                            position: fixed;
+                            top: 32px;
+                            right: 32px;
+                            z-index: 9999;
+                            width: 400px;
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 16px 24px;
+                            margin-top: 90px;
+                            margin-left: 15px;
+                            font-size: 0.9rem;
+                            font-weight: 500;
+                            box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
+                            opacity: 1;
+                            transition: opacity 0.5s;
+                            letter-spacing: 0.2px;
+                            border-bottom: 4px solid;
+                            border-radius: 10px;
+                        }
+
+                        .toast-success {
+                            background: #e8f5e9;
+                            color: #388e3c;
+                            border-bottom-color: #388e3c;
+                        }
+
+                        .toast-error {
+                            background: #ffebee;
+                            color: #d32f2f;
+                            border-bottom-color: #d32f2f;
+                        }
+
+                        .toast-icon {
+                            display: flex;
+                            align-items: center;
+                            margin-right: 2px;
+                        }
+
+                        .toast-content {
+                            flex: 1;
+                            line-height: 1.5;
+                        }
+
+                        .toast-close {
+                            cursor: pointer;
+                            font-size: 1.3rem;
+                            font-weight: 700;
+                            color: #888;
+                            margin-left: 8px;
+                            transition: color 0.2s;
+                        }
+
+                        .toast-close:hover {
+                            color: #222;
+                        }
+                    </style>
                     <div class="avatar-upload-section">
                         <div class="upload-avatar-container" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
                             <div class="profile-avatar-wrapper" style="position:relative;display:inline-block;">
@@ -649,13 +670,14 @@
                             <div id="avatarFileName" style="font-size:0.9rem;color:#6c757d;display:none;">Chưa chọn file</div>
                         </div>
                         <p style="color: #6c757d; margin-bottom: 1rem;">Ảnh đại diện</p>
-                        <button type="button" class="upload-btn" onclick="document.getElementById('avatarInput').click();" style="margin-top:0.5rem;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('avatarInput').click();"
+                            style="margin-top:0.5rem;">
                             <i class="fas fa-camera"></i>
                             Thay đổi ảnh
                         </button>
                     </div>
 
-               
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="name" class="form-label">
@@ -663,8 +685,8 @@
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-user input-icon"></i>
-                                <input type="text" id="name" name="name" class="form-input" 
-                                       placeholder="Nhập tên hiển thị" value="{{ $user->name ?? $user->name }}">
+                                <input type="text" id="name" name="name" class="form-input"
+                                    placeholder="Nhập tên hiển thị" value="{{ $user->name ?? $user->name }}">
                             </div>
                         </div>
 
@@ -674,8 +696,8 @@
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-envelope input-icon"></i>
-                                <input type="email" id="email" name="email" class="form-input" 
-                                       placeholder="Nhập địa chỉ email" value="{{ $user->email }}">
+                                <input type="email" id="email" name="email" class="form-input"
+                                    placeholder="Nhập địa chỉ email" value="{{ $user->email }}">
                             </div>
                         </div>
 
@@ -685,8 +707,8 @@
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-phone input-icon"></i>
-                                <input type="text" id="phone" name="phone" class="form-input" 
-                                       placeholder="Nhập số điện thoại" value="{{ $user->phone ?? '' }}">
+                                <input type="text" id="phone" name="phone" class="form-input"
+                                    placeholder="Nhập số điện thoại" value="{{ $user->phone ?? '' }}">
                             </div>
                         </div>
 
@@ -697,7 +719,7 @@
                             <div class="input-container">
                                 <i class="fas fa-map-marker-alt input-icon"></i>
                                 <input type="text" id="address" name="address" class="form-input"
-                                       placeholder="Nhập địa chỉ" value="{{ $user->address ?? '' }}">
+                                    placeholder="Nhập địa chỉ" value="{{ $user->address ?? '' }}">
                             </div>
                         </div>
 
@@ -705,14 +727,14 @@
                             <label class="form-label">Mật khẩu</label>
                             <div class="input-container">
                                 <i class="fas fa-lock input-icon"></i>
-                                 <button type="button" class="password-btn" onclick="openChangePasswordModal()">
-                                Đổi mật khẩu
-                            </button>
+                                <button type="button" class="password-btn" onclick="openChangePasswordModal()">
+                                    Đổi mật khẩu
+                                </button>
                             </div>
                         </div>
                     </div>
 
-       
+
                     <div class="form-actions">
                         <button type="button" class="btn btn-cancel" id="btnCancelInfo">
                             <i class="fas fa-times"></i>

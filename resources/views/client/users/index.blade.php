@@ -146,7 +146,7 @@
         .page-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #000;
             margin-bottom: 0.5rem;
         }
 
@@ -198,7 +198,7 @@
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #000;
             margin-bottom: 1.5rem;
         }
 
@@ -526,7 +526,7 @@
                         @endphp
                         <img src="{{ $avatarSrc ?? ('https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=ececec&color=7de3e7&size=90') }}" alt="Avatar">
                     </div>
-                    <div class="user-name">{{$user->name}}</div>
+                    <div class="user-name">{{ $user->name }}</div>
                     @if (isset($customerType))
                         <div class="user-status">
                             @if ($customerType === 'vip')
@@ -614,16 +614,17 @@
                                             </span>
                                         </td>
                                         <td>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '' }}</td>
-                                        <td style="text-align:right;">{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
+                                        <td style="text-align:right;">
+                                            {{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
                                         <td>
                                             <div class="action-group">
-                                                <a href="#" class="view-order-detail btn-action" data-order='@json($order)'
-                                                    title="Xem chi tiết">
+                                                <a href="#" class="view-order-detail btn-action"
+                                                    data-order='@json($order)' title="Xem chi tiết">
                                                     <i class="fas fa-eye"></i> Xem
                                                 </a>
                                                 @if ($order->status === 'pending')
-                                                    <button class="cancel-order-btn btn-action btn-cancel" data-id="{{ $order->id }}"
-                                                        title="Hủy đơn">
+                                                    <button class="cancel-order-btn btn-action btn-cancel"
+                                                        data-id="{{ $order->id }}" title="Hủy đơn">
                                                         <i class="fas fa-times-circle"></i> Hủy
                                                     </button>
                                                 @endif
@@ -684,7 +685,7 @@
 
     <script>
         document.querySelectorAll('.view-order-detail').forEach(btn => {
-            btn.addEventListener('click', function (e) {
+            btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const orderId = JSON.parse(this.getAttribute('data-order')).id;
                 document.getElementById('orderDetailContent').innerHTML = 'Đang tải...';
@@ -692,36 +693,48 @@
                 fetch(`/client/order-detail/${orderId}`)
                     .then(res => res.json())
                     .then(order => {
-                        let html = `<div style='margin-bottom:10px;'><b>Mã đơn:</b> ${order.order_number}</div>`;
-                        html += `<div style='margin-bottom:10px;'><b>Trạng thái:</b> ${order.status_label}</div>`;
-                        html += `<div style='margin-bottom:10px;'><b>Trạng thái thanh toán:</b> ${order.payment_status_label}</div>`;
-                        html += `<div style='margin-bottom:10px;'><b>Ngày đặt:</b> ${order.created_at}</div>`;
-                        html += `<div style='margin-bottom:10px;'><b>Người nhận:</b> ${order.receiver_name} - ${order.receiver_phone} - ${order.receiver_email}</div>`;
-                        html += `<div style='margin-bottom:10px;'><b>Địa chỉ nhận:</b> ${order.shipping_address}</div>`;
-                        html += `<div style='margin-bottom:10px;'><b>Tổng tiền:</b> ${order.total_amount.toLocaleString('vi-VN')}₫</div>`;
+                        let html =
+                            `<div style='margin-bottom:10px;'><b>Mã đơn:</b> ${order.order_number}</div>`;
+                        html +=
+                            `<div style='margin-bottom:10px;'><b>Trạng thái:</b> ${order.status_label}</div>`;
+                        html +=
+                            `<div style='margin-bottom:10px;'><b>Trạng thái thanh toán:</b> ${order.payment_status_label}</div>`;
+                        html +=
+                            `<div style='margin-bottom:10px;'><b>Ngày đặt:</b> ${order.created_at}</div>`;
+                        html +=
+                            `<div style='margin-bottom:10px;'><b>Người nhận:</b> ${order.receiver_name} - ${order.receiver_phone} - ${order.receiver_email}</div>`;
+                        html +=
+                            `<div style='margin-bottom:10px;'><b>Địa chỉ nhận:</b> ${order.shipping_address}</div>`;
+                        html +=
+                            `<div style='margin-bottom:10px;'><b>Tổng tiền:</b> ${order.total_amount.toLocaleString('vi-VN')}₫</div>`;
                         html += `<h5 style='margin:16px 0 8px 0;'>Sản phẩm</h5>`;
                         html += `<table style='width:100%;border-collapse:collapse;'>`;
-                        html += `<thead><tr><th style='text-align:left;'>Tên sản phẩm</th><th>SKU</th><th>SL</th><th>Giá</th><th>Tổng</th><th>Ảnh</th></tr></thead><tbody>`;
+                        html +=
+                            `<thead><tr><th style='text-align:left;'>Tên sản phẩm</th><th>SKU</th><th>SL</th><th>Giá</th><th>Tổng</th><th>Ảnh</th></tr></thead><tbody>`;
                         order.items.forEach(item => {
                             html += `<tr>`;
                             html += `<td>${item.product_name}</td>`;
                             html += `<td>${item.product_sku}</td>`;
                             html += `<td style='text-align:center;'>${item.quantity}</td>`;
-                            html += `<td style='text-align:right;'>${item.price.toLocaleString('vi-VN')}₫</td>`;
-                            html += `<td style='text-align:right;'>${item.subtotal.toLocaleString('vi-VN')}₫</td>`;
-                            html += `<td>${item.thumbnail ? `<img src='${item.thumbnail}' style='width:40px;height:40px;object-fit:cover;border-radius:4px;'/>` : ''}</td>`;
+                            html +=
+                                `<td style='text-align:right;'>${item.price.toLocaleString('vi-VN')}₫</td>`;
+                            html +=
+                                `<td style='text-align:right;'>${item.subtotal.toLocaleString('vi-VN')}₫</td>`;
+                            html +=
+                                `<td>${item.thumbnail ? `<img src='${item.thumbnail}' style='width:40px;height:40px;object-fit:cover;border-radius:4px;'/>` : ''}</td>`;
                             html += `</tr>`;
                         });
                         html += `</tbody></table>`;
                         document.getElementById('orderDetailContent').innerHTML = html;
                     })
                     .catch(() => {
-                        document.getElementById('orderDetailContent').innerHTML = '<span style="color:red;">Không lấy được chi tiết đơn hàng.</span>';
+                        document.getElementById('orderDetailContent').innerHTML =
+                            '<span style="color:red;">Không lấy được chi tiết đơn hàng.</span>';
                     });
             });
         });
 
-        document.getElementById('closeOrderDetail').onclick = function () {
+        document.getElementById('closeOrderDetail').onclick = function() {
             document.getElementById('orderDetailModal').style.display = 'none';
         };
 
@@ -730,9 +743,10 @@
         // Mở popup chọn lý do khi bấm Hủy
         const cancelBtns = document.querySelectorAll('.cancel-order-btn');
         cancelBtns.forEach(btn => {
-            btn.addEventListener('click', function () {
+            btn.addEventListener('click', function() {
                 cancelOrderId = this.getAttribute('data-id');
-                document.getElementById('cancelReasonSelect').innerHTML = '<option value="">-- Chọn lý do --</option>';
+                document.getElementById('cancelReasonSelect').innerHTML =
+                    '<option value="">-- Chọn lý do --</option>';
                 document.getElementById('otherReasonBox').style.display = 'none';
                 document.getElementById('otherReasonInput').value = '';
                 document.getElementById('cancelOrderModal').style.display = 'flex';
@@ -757,7 +771,7 @@
             });
         });
 
-        document.getElementById('cancelReasonSelect').onchange = function () {
+        document.getElementById('cancelReasonSelect').onchange = function() {
             if (this.value === 'other') {
                 document.getElementById('otherReasonBox').style.display = 'block';
             } else {
@@ -765,11 +779,12 @@
             }
         };
 
-        document.getElementById('closeCancelOrder').onclick = document.getElementById('cancelCancelOrder').onclick = function () {
-            document.getElementById('cancelOrderModal').style.display = 'none';
-        };
+        document.getElementById('closeCancelOrder').onclick = document.getElementById('cancelCancelOrder').onclick =
+            function() {
+                document.getElementById('cancelOrderModal').style.display = 'none';
+            };
 
-        document.getElementById('confirmCancelOrder').onclick = function () {
+        document.getElementById('confirmCancelOrder').onclick = function() {
             const select = document.getElementById('cancelReasonSelect');
             let reasonVal = select.value;
             if (!reasonVal) {
@@ -786,7 +801,10 @@
             }
             if (!cancelOrderId) return;
 
-            console.log('Sending cancel request:', { orderId: cancelOrderId, reason: reasonVal });
+            console.log('Sending cancel request:', {
+                orderId: cancelOrderId,
+                reason: reasonVal
+            });
 
             // Lấy CSRF token
             let csrfToken = '';
@@ -802,16 +820,16 @@
             }
 
             fetch(`/client/orders/${cancelOrderId}/cancel`, {
-                method: 'PATCH',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    cancellation_reason_id: reasonVal
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cancellation_reason_id: reasonVal
+                    })
                 })
-            })
                 .then(res => {
                     console.log('Response status:', res.status);
                     return res.json();
@@ -822,7 +840,8 @@
                         alert('Đã gửi yêu cầu hủy đơn hàng!');
                         location.reload();
                     } else {
-                        alert(data.message || 'Không thể hủy đơn hàng. Có thể đơn đã được duyệt hoặc đã thay đổi trạng thái.');
+                        alert(data.message ||
+                            'Không thể hủy đơn hàng. Có thể đơn đã được duyệt hoặc đã thay đổi trạng thái.');
                     }
                 })
                 .catch(error => {
@@ -834,15 +853,15 @@
         };
 
         // Add smooth hover effects for nav items
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('.account-menu a');
             navLinks.forEach(link => {
-                link.addEventListener('mouseenter', function () {
+                link.addEventListener('mouseenter', function() {
                     if (!this.parentElement.classList.contains('active')) {
                         this.style.transform = 'translateX(5px)';
                     }
                 });
-                link.addEventListener('mouseleave', function () {
+                link.addEventListener('mouseleave', function() {
                     if (!this.parentElement.classList.contains('active')) {
                         this.style.transform = 'translateX(0)';
                     }

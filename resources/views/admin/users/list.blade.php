@@ -120,7 +120,8 @@
                                     style="width:20%; min-width:200px;">SỐ ĐIỆN THOẠI</th>
                                 <th class="sort align-middle" scope="col" data-sort="city" style="width:150%;">NƠI Ở
                                 </th>
-                                <th class="sort align-middle" scope="col" data-sort="role" style="width:15%;">VAI TRÒ</th>
+                                <th class="sort align-middle" scope="col" data-sort="role" style="width:15%;">VAI TRÒ
+                                </th>
                                 <th class="sort align-middle text-end" scope="col" data-sort="last_active"
                                     style="width:21%; min-width:200px;">HOẠT ĐỘNG</th>
                                 <th class="sort align-middle text-end pe-0" scope="col" data-sort="joined"
@@ -161,9 +162,7 @@
                                         {{ $user->created_at->format('d/m/Y H:i') }}
                                     </td>
                                     <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
-                                        @if (
-                                            ($user->role_id == 1 || $user->role_id == 2) &&
-                                                (auth()->user()->role_id == 1 || (auth()->user()->role_id == 2 && $user->id == auth()->id())))
+                                        @if (auth()->user()->role_id == 1 || (auth()->user()->role_id == 2 && $user->role_id == 2))
                                             <div class="btn-reveal-trigger position-static">
                                                 <button
                                                     class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
@@ -175,14 +174,19 @@
                                                 <div class="dropdown-menu dropdown-menu-end py-2">
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.users.edit', $user->id) }}">Sửa</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <form action="{{ route('admin.users.destroy', $user->id) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">Xóa</button>
-                                                    </form>
+                                                    {{-- Chỉ Admin mới có quyền xóa, Staff không được xóa ai cả --}}
+                                                    @if (auth()->user()->role_id == 1 &&
+                                                            !(auth()->user()->role_id == 1 && $user->role_id == 1 && auth()->user()->id != $user->id) &&
+                                                            $user->role_id != 3)
+                                                        <div class="dropdown-divider"></div>
+                                                        <form action="{{ route('admin.users.destroy', $user->id) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item text-danger"
+                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">Xóa</button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endif
