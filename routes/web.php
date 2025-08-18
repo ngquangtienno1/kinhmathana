@@ -1,6 +1,8 @@
 <?php
 // Password OTP routes for client
 require_once base_path('routes/client_password_otp.php');
+// API user status polling for client auto-logout
+require_once base_path('routes/api_client_status.php');
 
 use App\Events\MyEvent;
 use Illuminate\Http\Request;
