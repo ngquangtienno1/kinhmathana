@@ -129,7 +129,7 @@
                                         : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
                                 <td class="align-middle ps-4 text-center">
-                                    {{ $product->total_stock }}
+                                    {{ number_format($product->total_stock_quantity ?? 0, 0, ',', '.') }}
                                 </td>
                                 <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}
                                 </td>

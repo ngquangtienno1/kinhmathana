@@ -58,14 +58,14 @@
                                                     $imagePath = $featuredImage
                                                         ? asset('storage/' . $featuredImage->image_path)
                                                         : asset('/path/to/default.jpg');
-                                                    $maxQty = $item->variation
-                                                        ? $item->variation->stock_quantity
-                                                        : $cartProduct->total_stock_quantity;
+                                                    $price = $item->variation
+                                                        ? ($item->variation->sale_price ?? $item->variation->price)
+                                                        : ($cartProduct->sale_price ?? $cartProduct->price);
                                                 @endphp
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
                                                     <td><input type="checkbox" class="select-cart-item"
                                                             name="selected_ids[]" value="{{ $item->id }}"
-                                                            data-price="{{ $item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price }}"
+                                                            data-price="{{ $price }}"
                                                             data-qty="{{ $item->quantity }}"></td>
 
                                                     <td class="product-thumbnail">
@@ -101,7 +101,7 @@
                                                     </td>
                                                     <td class="product-price" data-title="Đơn giá">
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price, 0, ',', '.') }}₫</bdi>
+                                                            <bdi>{{ number_format($price, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                     <td class="product-quantity" data-title="Số lượng">
@@ -115,7 +115,7 @@
                                                             <input type="text" id="quantity_{{ $item->id }}"
                                                                 class="input-text qty text qodef-quantity-input"
                                                                 data-step="1" data-min="1"
-                                                                data-max="{{ $maxQty }}" name="quantity"
+                                                                name="quantity"
                                                                 value="{{ $item->quantity }}" title="Số lượng"
                                                                 size="4" placeholder="" inputmode="numeric">
                                                             <span class="qodef-quantity-plus"></span>
@@ -123,7 +123,7 @@
                                                     </td>
                                                     <td class="product-subtotal" data-title="Thành tiền">
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format(($item->variation ? $item->variation->sale_price ?? $item->variation->price : $cartProduct->sale_price ?? $cartProduct->price) * $item->quantity, 0, ',', '.') }}₫</bdi>
+                                                            <bdi class="item-subtotal">{{ number_format($price * $item->quantity, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -143,7 +143,6 @@
                                     </table>
                                 </form>
 
-                                <!-- Render các form xóa ẩn ngoài form lớn -->
                                 @foreach ($cartItems as $item)
                                     <form id="remove-cart-item-{{ $item->id }}"
                                         action="{{ route('client.cart.remove', $item->id) }}" method="POST"
@@ -155,10 +154,7 @@
 
                                 <div class="cart-collaterals">
                                     <div class="cart_totals ">
-
-
                                         <h2>Tổng giỏ hàng</h2>
-
                                         <table cellspacing="0" class="shop_table shop_table_responsive">
                                             @php
                                                 $subtotal = $cartItems->sum(function ($item) {
@@ -166,8 +162,8 @@
                                                         ? $item->variation->product
                                                         : $item->product;
                                                     return ($item->variation
-                                                        ? $item->variation->sale_price ?? $item->variation->price
-                                                        : $cartProduct->sale_price ?? $cartProduct->price) *
+                                                        ? ($item->variation->sale_price ?? $item->variation->price)
+                                                        : ($cartProduct->sale_price ?? $cartProduct->price)) *
                                                         $item->quantity;
                                                 });
                                             @endphp
@@ -193,7 +189,6 @@
                                         </table>
 
                                         <div class="wc-proceed-to-checkout">
-
                                             <form id="bulk-checkout-form"
                                                 action="{{ route('client.cart.checkout.form') }}" method="GET"
                                                 style="display:inline;">
@@ -209,7 +204,7 @@
                     </div>
                 </div>
             </main>
-        </div><!-- close #qodef-page-inner div from header.php -->
+        </div>
     </div>
 @endsection
 
@@ -342,10 +337,8 @@
             document.querySelectorAll('.qodef-quantity-buttons').forEach(function(group) {
                 const minus = group.querySelector('.qodef-quantity-minus');
                 const plus = group.querySelector('.qodef-quantity-plus');
-                const input = group.querySelector('input');
+                const input = group.querySelector('.qodef-quantity-input');
                 const id = group.getAttribute('data-id');
-                let max = input.getAttribute('data-max');
-                max = max ? parseInt(max) : null;
 
                 if (minus) {
                     minus.addEventListener('click', function() {
@@ -359,11 +352,6 @@
                 if (plus) {
                     plus.addEventListener('click', function() {
                         let val = parseInt(input.value) || 1;
-                        if (max && val >= max) {
-                            showCartAlert('Số lượng đã đạt tối đa tồn kho!', 'danger');
-                            input.value = max;
-                            return;
-                        }
                         input.value = val + 1;
                         updateCart(id, input.value, group);
                     });
@@ -371,24 +359,18 @@
                 input.addEventListener('change', function() {
                     let val = parseInt(input.value) || 1;
                     if (val < 1) val = 1;
-                    if (max && val > max) {
-                        showCartAlert('Số lượng đã đạt tối đa tồn kho!', 'danger');
-                        val = max;
-                    }
                     input.value = val;
                     updateCart(id, val, group);
                 });
             });
 
-            // Hàm hiển thị alert-danger trên trang giỏ hàng
             function showCartAlert(message, type) {
-                // Xóa alert cũ nếu có
                 let old = document.querySelector('.cart-alert');
                 if (old) old.remove();
                 let alert = document.createElement('div');
-                alert.className = 'alert alert-' + type + ' cart-alert';
+                alert.className = `alert alert-${type} cart-alert`;
                 alert.style =
-                    'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
+                    'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color:green; padding: 15px; border-radius: 5px; border: 1px solid green;';
                 alert.innerHTML = message +
                     '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
                 document.body.appendChild(alert);
@@ -399,65 +381,62 @@
 
             function updateCart(id, qty, group) {
                 fetch("{{ url('client/cart/update') }}/" + id, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            quantity: qty
-                        })
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        quantity: qty
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            group.closest('tr').querySelector('.product-subtotal bdi').innerText = data
-                                .item_total + '₫';
-                            document.querySelectorAll('.cart-subtotal bdi, .order-total bdi').forEach(function(
-                                el) {
-                                el.innerText = data.cart_total + '₫';
-                            });
-                        } else {
-                            alert(data.message || 'Có lỗi xảy ra!');
-                        }
-                    })
-                    .catch(() => alert('Có lỗi xảy ra!'));
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        group.closest('tr').querySelector('.item-subtotal').innerText = data.item_total;
+                        document.querySelectorAll('.cart-subtotal-value, .order-total-value').forEach(el => {
+                            el.innerText = data.cart_total;
+                        });
+                        const checkbox = group.closest('tr').querySelector('.select-cart-item');
+                        checkbox.setAttribute('data-qty', qty);
+                        updateCartTotalsBySelection();
+                        showCartAlert(data.message, 'success');
+                    } else {
+                        showCartAlert(data.message || 'Có lỗi xảy ra khi cập nhật giỏ hàng!', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showCartAlert('Có lỗi xảy ra khi cập nhật giỏ hàng!', 'danger');
+                });
             }
 
-            document.querySelectorAll('.btn-remove-cart-item').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var formId = btn.getAttribute('data-form-id');
-                    var form = document.getElementById(formId);
-                    if (form) form.submit();
-                });
-            });
-
-            // Chọn tất cả
             function toggleBulkRemoveBtn() {
-                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb
-                    .checked);
+                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb.checked);
                 document.getElementById('bulk-remove-btn').disabled = !anyChecked;
             }
             document.getElementById('select-all-cart-items').addEventListener('change', function() {
                 const checked = this.checked;
                 document.querySelectorAll('.select-cart-item').forEach(cb => cb.checked = checked);
                 toggleBulkRemoveBtn();
+                updateCartTotalsBySelection();
             });
             document.querySelectorAll('.select-cart-item').forEach(function(cb) {
-                cb.addEventListener('change', toggleBulkRemoveBtn);
+                cb.addEventListener('change', function() {
+                    toggleBulkRemoveBtn();
+                    updateCartTotalsBySelection();
+                });
             });
 
-            // Khi submit form xoá nhiều, chỉ gửi các id đã chọn
             document.getElementById('bulk-remove-form').addEventListener('submit', function(e) {
                 const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
                 if (checked.length === 0) {
                     e.preventDefault();
+                    showCartAlert('Vui lòng chọn sản phẩm để xóa!', 'danger');
                     return;
                 }
-                // Xoá các input cũ nếu có
                 this.querySelectorAll('input[name="selected_ids[]"]').forEach(i => i.remove());
-                // Thêm input cho từng id đã chọn
                 checked.forEach(cb => {
                     const input = document.createElement('input');
                     input.type = 'hidden';
@@ -467,27 +446,23 @@
                 });
             });
 
-            // Xử lý nút "Xoá các sản phẩm đã chọn"
             document.getElementById('bulk-remove-btn').addEventListener('click', function(e) {
                 e.preventDefault();
                 const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
                 if (checked.length === 0) {
-                    alert('Vui lòng chọn sản phẩm để xoá!');
+                    showCartAlert('Vui lòng chọn sản phẩm để xóa!', 'danger');
                     return;
                 }
-                if (confirm('Bạn có chắc muốn xoá các sản phẩm đã chọn?')) {
+                if (confirm('Bạn có chắc muốn xóa các sản phẩm đã chọn?')) {
                     document.getElementById('bulk-remove-form').submit();
                 }
             });
 
-            // Xử lý nút "Thanh toán" chỉ cho sản phẩm đã chọn
             document.getElementById('bulk-checkout-btn').addEventListener('click', function(e) {
                 const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
                 let selectedIds = checked.map(cb => cb.value);
                 if (selectedIds.length === 0) {
-                    // Nếu không tick gì, lấy toàn bộ id trong giỏ hàng
-                    selectedIds = Array.from(document.querySelectorAll('.select-cart-item')).map(cb => cb
-                        .value);
+                    selectedIds = Array.from(document.querySelectorAll('.select-cart-item')).map(cb => cb.value);
                 }
                 document.getElementById('selected_checkout_ids').value = selectedIds.join(',');
                 document.getElementById('bulk-checkout-form').submit();
@@ -501,18 +476,17 @@
                     subtotal += price * qty;
                 });
                 document.querySelectorAll('.cart-subtotal-value').forEach(function(el) {
-                    el.innerText = subtotal.toLocaleString('vi-VN') + '₫';
+                    el.innerText = numberFormat(subtotal) + '₫';
                 });
                 document.querySelectorAll('.order-total-value').forEach(function(el) {
-                    el.innerHTML = '<strong>' + subtotal.toLocaleString('vi-VN') + '₫</strong>';
+                    el.innerHTML = '<strong>' + numberFormat(subtotal) + '₫</strong>';
                 });
             }
-            document.querySelectorAll('.select-cart-item').forEach(function(cb) {
-                cb.addEventListener('change', updateCartTotalsBySelection);
-            });
-            document.getElementById('select-all-cart-items').addEventListener('change',
-                updateCartTotalsBySelection);
-            // Gọi lần đầu để đồng bộ khi load trang
+
+            function numberFormat(number) {
+                return number.toLocaleString('vi-VN');
+            }
+
             updateCartTotalsBySelection();
         });
     </script>

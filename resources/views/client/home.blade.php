@@ -157,7 +157,7 @@
                                         <ul class="qodef-grid-inner clear">
                                             @forelse($bestSellerProducts as $product)
                                                 <li
-                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
+                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                     <div class="qodef-e-inner">
                                                         <div class="qodef-woo-product-image">
                                                             @if ($product->sale_price && $product->sale_price < $product->price)
@@ -585,7 +585,7 @@
                                                         <ul class="qodef-grid-inner clear">
                                                             @forelse($featuredProducts as $product)
                                                                 <li
-                                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
+                                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                                     <div class="qodef-e-inner">
                                                                         <div class="qodef-woo-product-image">
                                                                             @if ($product->sale_price && $product->sale_price < $product->price)
