@@ -585,11 +585,7 @@
                                                                         style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                 </a>
                                                             @endif
-                                                            @if ($media->video_path)
-                                                                <video src="{{ asset('storage/' . $media->video_path) }}"
-                                                                    controls
-                                                                    style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
-                                                            @endif
+
                                                         @endforeach
                                                     </div>
                                                 @endif
@@ -669,12 +665,7 @@
                                                                             style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                     </a>
                                                                 @endif
-                                                                @if ($media->video_path)
-                                                                    <video
-                                                                        src="{{ asset('storage/' . $media->video_path) }}"
-                                                                        controls
-                                                                        style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
-                                                                @endif
+
                                                             @endforeach
                                                         </div>
                                                     @endif

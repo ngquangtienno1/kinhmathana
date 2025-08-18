@@ -138,7 +138,8 @@ class OrderClientController extends Controller
         if ($reviewed) {
             return redirect()->route('client.orders.show', $order->id)->with('error', 'Bạn đã đánh giá sản phẩm này!');
         }
-        return view('client.orders.review', compact('order', 'item'));
+        // Redirect về trang show để sử dụng modal
+        return redirect()->route('client.orders.show', $order->id);
     }
 
     public function submitReview(Request $request, $orderId, $itemId)
@@ -152,7 +153,6 @@ class OrderClientController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'content' => 'required|string|max:1000',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
-            'video' => 'nullable|file|mimes:mp4,webm,ogg|max:51200',
         ]);
         $reviewed = Review::where('user_id', $user->id)
             ->where('product_id', $item->product_id)
@@ -184,20 +184,7 @@ class OrderClientController extends Controller
                 }
             }
         }
-        // Lưu video (nếu muốn lưu vào bảng review_images, dùng cột video_path, nếu có bảng riêng thì tạo mới)
-        if ($request->hasFile('video')) {
-            $video = $request->file('video');
-            if ($video->isValid()) {
-                $path = $video->store('review_videos', 'public');
-                // Nếu bảng review_images có cột video_path:
-                ReviewImage::create([
-                    'review_id' => $review->id,
-                    'image_path' => null,
-                    'video_path' => $path,
-                ]);
-                // Nếu dùng bảng riêng, hãy tạo bản ghi ở bảng review_videos
-            }
-        }
+
         return redirect()->route('client.orders.show', $order->id)->with('success', 'Đánh giá thành công!');
     }
 
