@@ -16,7 +16,7 @@ class CreateProductsTable extends Migration
             $table->text('description_short')->nullable();
             $table->text('description_long')->nullable();
             $table->string('product_type', 20)->notNull()->default('simple');
-            $table->integer('stock_quantity')->notNull()->default(0); // Sửa đổi: không cho phép NULL, mặc định là 0
+            $table->integer('quantity')->notNull()->default(0); // Thêm quantity, không cho phép NULL, mặc định 0
             $table->decimal('price', 10, 2)->nullable(); // Giá gốc cho sản phẩm đơn giản
             $table->decimal('sale_price', 10, 2)->nullable(); // Giá khuyến mãi cho sản phẩm đơn giản
             $table->string('slug', 255)->notNull()->unique();

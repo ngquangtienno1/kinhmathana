@@ -17,7 +17,7 @@ class Product extends Model
         'description_long',
         'product_type',
         'sku',
-        'stock_quantity',
+        'quantity',
         'price',
         'sale_price',
         'slug',
@@ -28,7 +28,7 @@ class Product extends Model
         'video_path',
     ];
 
-    protected $appends = ['total_stock_quantity'];
+    protected $appends = ['total_quantity'];
 
     public function categories()
     {
@@ -86,15 +86,15 @@ class Product extends Model
     }
 
 
-    public function getTotalStockQuantityAttribute()
-    {
-        // Nếu là sản phẩm đơn giản, trả về stock_quantity
-        if ($this->product_type === 'simple') {
-            return $this->stock_quantity ?? 0;
-        }
-        // Nếu là sản phẩm biến thể, tính tổng tồn kho các biến thể
-        return $this->variations->sum('stock_quantity');
+public function getTotalStockQuantityAttribute()
+{
+    // Nếu là sản phẩm đơn giản, trả về quantity
+    if ($this->product_type === 'simple') {
+        return $this->quantity ?? 0;
     }
+    // Nếu là sản phẩm biến thể, tính tổng số lượng các biến thể
+    return $this->variations->sum('quantity');
+}
 
     public function getFeaturedMedia()
     {
@@ -117,6 +117,18 @@ class Product extends Model
             'is_video' => false,
         ];
     }
+public static function getTotalStock()
+{
+    $simpleProductsStock = self::where('product_type', 'simple')->sum('quantity');
+    $variableProductsStock = self::where('product_type', 'variable')
+        ->with('variations')
+        ->get()
+        ->sum(function ($product) {
+            return $product->variations->sum('quantity');
+        });
+
+    return $simpleProductsStock + $variableProductsStock;
+}
 
     protected static function booted()
     {
