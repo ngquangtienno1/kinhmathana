@@ -21,8 +21,25 @@
             <div class="order-card mb-4 shadow-sm border rounded-0" style="max-width: 700px; width: 100%;">
                 <div class="order-products bg-white p-4 rounded-0">
                     <div class="mb-4 d-flex align-items-start gap-3">
-                        <img src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
-                            alt="" style="width: 80px; height: 80px; object-fit: cover; border: 1px solid #ddd;">
+                        @php
+                            $product = $item->variation ? $item->variation->product : $item->product ?? null;
+                            if ($item->variation && $item->variation->images->count()) {
+                                $featuredImage =
+                                    $item->variation->images->where('is_featured', true)->first() ??
+                                    $item->variation->images->first();
+                            } else {
+                                $featuredImage =
+                                    $product && isset($product->images)
+                                        ? $product->images->where('is_featured', true)->first() ??
+                                            $product->images->first()
+                                        : null;
+                            }
+                            $imagePath = $featuredImage
+                                ? asset('storage/' . $featuredImage->image_path)
+                                : asset('/assets/img/products/1.png');
+                        @endphp
+                        <img src="{{ $imagePath }}" alt="{{ $product->name ?? 'Sản phẩm đã xóa' }}"
+                            style="width: 80px; height: 80px; object-fit: cover; border: 1px solid #ddd;">
                         <div class="flex-grow-1">
                             <div class="fw-bold">{{ $item->product_name }}</div>
                             <div class="text-muted small mt-1">

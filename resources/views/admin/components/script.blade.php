@@ -11,6 +11,7 @@
 <script src="{{ asset('v1/vendors/leaflet.markercluster/leaflet.markercluster.js') }}"></script>
 <script src="{{ asset('v1/vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js') }}"></script>
 <script src="{{ asset('v1/assets/js/phoenix.js') }}"></script>
-<script src="{{ asset('v1/vendors/echarts/echarts.min.js') }}"></script>
-<script src="{{ asset('v1/assets/js/dashboards/ecommerce-dashboard.js') }}"></script>
-
+{{-- <script src="{{ asset('v1/vendors/echarts/echarts.min.js') }}"></script>
+<script src="{{ asset('v1/assets/js/dashboards/ecommerce-dashboard.js') }}"></script> --}}
+<!-- <script src="{{ asset('v1/vendors/echarts/echarts.min.js') }}"></script> -->
+<!-- <script src="{{ asset('v1/assets/js/dashboards/ecommerce-dashboard.js') }}"></script> -->

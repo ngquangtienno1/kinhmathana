@@ -284,6 +284,12 @@
                                         @endfor
                                     </div>
                                     <p class="mt-2">{{ $review->content }}</p>
+                                    @if($review->reply)
+                                        <div class="admin-reply mt-3 p-3 bg-light border-start border-primary border-3">
+                                            <strong class="text-primary">💬 Trả lời của Admin:</strong><br>
+                                            {{ $review->reply }}
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>

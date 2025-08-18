@@ -20,8 +20,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        \Log::info('Search request', $request->all());
-        $query = Product::with(['categories', 'brand', 'images', 'variations.color'])
+        $query = Product::with(['categories', 'brand', 'images', 'variations.color', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
             ->active();
 
         // Bộ lọc: Availability
@@ -49,6 +48,20 @@ class ProductController extends Controller
         if ($request->has('sizes') && is_array($sizes = $request->input('sizes', []))) {
             $query->whereHas('variations.size', function ($q) use ($sizes) {
                 $q->whereIn('sizes.id', $sizes);
+            });
+        }
+
+        // Bộ lọc: Spherical (độ cận)
+        if ($request->has('sphericals') && is_array($sphericals = $request->input('sphericals', []))) {
+            $query->whereHas('variations.spherical', function ($q) use ($sphericals) {
+                $q->whereIn('sphericals.id', $sphericals);
+            });
+        }
+
+        // Bộ lọc: Cylindrical (độ loạn)
+        if ($request->has('cylindricals') && is_array($cylindricals = $request->input('cylindricals', []))) {
+            $query->whereHas('variations.cylindrical', function ($q) use ($cylindricals) {
+                $q->whereIn('cylindricals.id', $cylindricals);
             });
         }
 
@@ -149,9 +162,24 @@ class ProductController extends Controller
             $sizes = $sizes->merge($product->variations->pluck('size')->filter());
         }
         $sizes = $sizes->unique('id')->values();
+
+        // Lấy tất cả spherical từ variations của các sản phẩm trong trang
+        $sphericals = collect();
+        foreach ($products as $product) {
+            $sphericals = $sphericals->merge($product->variations->pluck('spherical')->filter());
+        }
+        $sphericals = $sphericals->unique('id')->values();
+
+        // Lấy tất cả cylindrical từ variations của các sản phẩm trong trang
+        $cylindricals = collect();
+        foreach ($products as $product) {
+            $cylindricals = $cylindricals->merge($product->variations->pluck('cylindrical')->filter());
+        }
+        $cylindricals = $cylindricals->unique('id')->values();
+
         $brands = Brand::where('is_active', true)->get();
 
-        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'brands'));
+        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'sphericals', 'cylindricals', 'brands'));
     }
 
     /**
@@ -207,8 +235,8 @@ class ProductController extends Controller
                 'spherical_id' => $v->spherical_id ? (string)$v->spherical_id : '',
                 'cylindrical_id' => $v->cylindrical_id ? (string)$v->cylindrical_id : '',
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
-                'price' => $v->price,
-                'sale_price' => $v->sale_price,
+                'price' => (float) $v->price,
+                'sale_price' => (float) $v->sale_price,
                 'stock_quantity' => $v->stock_quantity, // Đảm bảo có trường này
             ];
         })->values()->toArray();
@@ -226,10 +254,13 @@ class ProductController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập!'], 401);
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!'
+                ], 401);
             }
-            return redirect()->route('client.login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+            return redirect()->back()->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
         }
 
         $quantity = $request->input('quantity', 1);
@@ -272,7 +303,6 @@ class ProductController extends Controller
             if ($request->ajax()) {
                 return response()->json(['success' => true]);
             }
-            // return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
         } elseif ($productId) {
             $product = Product::find($productId);
             if (!$product) {

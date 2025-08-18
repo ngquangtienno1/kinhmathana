@@ -89,11 +89,22 @@
                                     style="margin-bottom: 16px; color: #555; font-size: 1.1em;">
                                     {{ $product->description_short ?? ($product->description ?? $product->description_long) }}
                                 </div>
-                                <p class="price">
+                                <p class="price" id="product-price">
                                     <span class="woocommerce-Price-amount amount">
-                                        <bdi><span
-                                                class="woocommerce-Price-currencySymbol"></span>{{ number_format($product->minimum_price, 0, ',', '.') }}
-                                            <span style="font-size:0.9em;">VNĐ</span></bdi>
+                                        <bdi>
+                                            <span class="woocommerce-Price-currencySymbol"></span>
+                                            @if (isset($selectedVariation) &&
+                                                    $selectedVariation->sale_price &&
+                                                    $selectedVariation->sale_price < $selectedVariation->price)
+                                                <del>{{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ</del>
+                                                <ins>{{ number_format($selectedVariation->sale_price, 0, ',', '.') }}
+                                                    VNĐ</ins>
+                                            @elseif(isset($selectedVariation))
+                                                {{ number_format($selectedVariation->price, 0, ',', '.') }} VNĐ
+                                            @else
+                                                {{ number_format($product->minimum_price, 0, ',', '.') }} VNĐ
+                                            @endif
+                                        </bdi>
                                     </span>
                                 </p>
                                 @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
@@ -423,10 +434,10 @@
                                 aria-controls="tab-description">
                                 <a href="#tab-description">Mô tả</a>
                             </li>
-                            <li class="additional_information_tab" id="tab-title-additional_information" role="tab"
+                            {{-- <li class="additional_information_tab" id="tab-title-additional_information" role="tab"
                                 aria-controls="tab-additional_information">
                                 <a href="#tab-additional_information">Thông tin thêm</a>
-                            </li>
+                            </li> --}}
                             <li class="reviews_tab" id="tab-title-reviews" role="tab" aria-controls="tab-reviews">
                                 <a href="#tab-reviews">Đánh giá ({{ $product->reviews->count() }})</a>
                             </li>
@@ -438,47 +449,29 @@
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content wc-tab"
                             id="tab-description" role="tabpanel" aria-labelledby="tab-title-description">
                             <h2>Mô tả</h2>
-                            <p>{{ $product->description ?: 'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.' }}
-                            </p>
-                        </div>
-                        <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
-                            id="tab-additional_information" role="tabpanel"
-                            aria-labelledby="tab-title-additional_information">
+                            @php
+                                $desc =
+                                    $product->description_long ??
+                                    ($product->description ??
+                                        'Aliquet nec ullamcorper sit amet. Viverra tellus in hac habitasse. Eros in cursus turpis massa tincidunt dui ut ornare. Amet consectetur adipiscing elit ut aliquam. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Sed cras ornare arcu dui vivamus arcu felis bibendum. Nunc sed velit dignissim sodales ut eu sem integer. Dictumst quisque sagittis purus sit amet. Suspendisse in est ante in nibh mauris cursus mattis. Quis varius quam quisque id diam vel. A lacus vestibulum sed arcu non. Laoreet non curabitur gravida arcu ac tortor dignissim convallis. Et netus et malesuada fames ac turpis egestas maecenas.');
+                            @endphp
+                            <div class="product-description" style="text-align: left; text-indent: 0; padding-left: 0;">
+                                {!! $desc !!}
+                            </div>
+                            <style>
+                                .product-description {
+                                    text-align: left !important;
+                                    text-indent: 0 !important;
+                                    padding-left: 0 !important;
+                                }
 
-                            <h2>Thông tin thêm</h2>
-
-                            <table class="woocommerce-product-attributes shop_attributes">
-                                <tr
-                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--weight">
-                                    <th class="woocommerce-product-attributes-item__label">Weight</th>
-                                    <td class="woocommerce-product-attributes-item__value">0.5 kg</td>
-                                </tr>
-                                <tr
-                                    class="woocommerce-product-attributes-item woocommerce-product-attributes-item--dimensions">
-                                    <th class="woocommerce-product-attributes-item__label">Dimensions</th>
-                                    <td class="woocommerce-product-attributes-item__value">1 &times; 2
-                                        &times; 3 cm</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--additional_information panel entry-content wc-tab"
-                            id="tab-additional_information" role="tabpanel"
-                            aria-labelledby="tab-title-additional_information">
-                            <h2>Thông tin thêm</h2>
-                            <table class="woocommerce-product-attributes shop_attributes">
-                                @if ($product->variations->isNotEmpty())
-                                    @foreach ($product->variations->groupBy('attribute_name')->map->unique() as $attribute => $variations)
-                                        <tr
-                                            class="woocommerce-product-attributes-item woocommerce-product-attributes-item--{{ strtolower(str_replace(' ', '-', $attribute)) }}">
-                                            <th class="woocommerce-product-attributes-item__label">{{ $attribute }}
-                                            </th>
-                                            <td class="woocommerce-product-attributes-item__value">
-                                                <p>{{ $variations->pluck('attribute_value')->unique()->implode(', ') }}</p>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </table>
+                                .product-description p {
+                                    text-align: left !important;
+                                    text-indent: 0 !important;
+                                    padding-left: 0 !important;
+                                    margin-left: 0 !important;
+                                }
+                            </style>
                         </div>
                         <div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--reviews panel entry-content wc-tab"
                             id="tab-reviews" role="tabpanel" aria-labelledby="tab-title-reviews" style="display:none;">
@@ -601,7 +594,7 @@
                                                 @endif
                                                 @if ($review->reply)
                                                     <div class="review-reply">
-                                                        <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                        <span class="reply-label">💬 Phản hồi từ cửa hàng:</span>
                                                         <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
                                                     </div>
                                                 @endif
@@ -686,7 +679,7 @@
                                                     @endif
                                                     @if ($review->reply)
                                                         <div class="review-reply">
-                                                            <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                            <span class="reply-label">💬 Phản hồi từ cửa hàng:</span>
                                                             <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
                                                         </div>
                                                     @endif
@@ -835,7 +828,9 @@
                                             <textarea name="content" id="comment-content" class="form-control" rows="3" required
                                                 style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;"></textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Gửi bình
+                                        <button type="submit" class="btn btn-primary"
+                                            style="margin-top:8px; background-color: #111; color: #fff; border: 1px solid #000;">Gửi
+                                            bình
                                             luận</button>
                                     </form>
                                 @endif
@@ -1132,16 +1127,19 @@
                                         msgContainer.appendChild(msg);
                                     }
                                 } else {
-                                    var msg = document.createElement('div');
-                                    msg.className = 'alert alert-danger';
-                                    msg.style =
-                                        'background: #ffeaea; border: 1.5px solid #e74c3c; color: #c0392b; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 16px; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;';
-                                    msg.innerHTML =
-                                        '<span style="font-size: 22px;">&#9888;</span><span>' + (
-                                            data.message || 'Có lỗi xảy ra!') + '</span>' +
-                                        '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
-                                    if (msgContainer) {
-                                        msgContainer.appendChild(msg);
+                                    if (data.message) {
+                                        var alertDiv = document.createElement('div');
+                                        alertDiv.className = 'alert alert-danger';
+                                        alertDiv.style =
+                                            'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
+                                        alertDiv.innerHTML =
+                                            '<span style="font-size: 22px;">&#9888;</span> ' + data
+                                            .message +
+                                            '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
+                                        document.body.appendChild(alertDiv);
+                                        setTimeout(function() {
+                                            alertDiv.style.display = 'none';
+                                        }, 3000);
                                     }
                                 }
                             })
@@ -1241,10 +1239,10 @@
                     const variations = window.variationsJson || [];
                     // Tìm variation phù hợp
                     let found = variations.find(v =>
-                        (!colorId || v.color_id === colorId) &&
-                        (!sizeId || v.size_id === sizeId) &&
-                        (!sphericalId || v.spherical_id === sphericalId) &&
-                        (!cylindricalId || v.cylindrical_id === cylindricalId)
+                        (!colorId || v.color_id == colorId) &&
+                        (!sizeId || v.size_id == sizeId) &&
+                        (!sphericalId || v.spherical_id == sphericalId) &&
+                        (!cylindricalId || v.cylindrical_id == cylindricalId)
                     );
                     // Nếu đã chọn đủ (tức là các thuộc tính nào có thì phải chọn)
                     let enough = true;
@@ -1298,6 +1296,24 @@
                         }
                     } else if (stockElem) {
                         stockElem.textContent = window.defaultTotalStockQuantity ?? '';
+                    }
+                    // Cập nhật giá
+                    var priceElem = document.getElementById('product-price');
+                    if (found && enough && priceElem) {
+                        let html = '';
+                        const price = Number(found.price);
+                        const salePrice = Number(found.sale_price);
+                        if (salePrice && salePrice < price) {
+                            html =
+                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del>${price.toLocaleString('vi-VN')} VNĐ</del> <ins>${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
+                        } else {
+                            html =
+                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>${price.toLocaleString('vi-VN')} VNĐ</bdi></span>`;
+                        }
+                        priceElem.innerHTML = html;
+                    } else if (priceElem) {
+                        priceElem.innerHTML =
+                            `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>{{ number_format($product->minimum_price, 0, ',', '.') }} VNĐ</bdi></span>`;
                     }
                 }
 
@@ -1723,22 +1739,26 @@
         }
 
         .review-reply {
-            background: #f5f5f5;
-            border-left: 3px solid #111;
-            padding: 10px 14px;
-            border-radius: 6px;
-            margin-top: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
         }
 
         .reply-label {
-            color: #111;
-            font-weight: bold;
-            font-size: 1em;
+            color: #007bff;
+            font-weight: 600;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 6px;
         }
 
         .reply-content {
             color: #333;
-            margin-top: 2px;
+            margin-top: 4px;
+            line-height: 1.5;
         }
 
         .dmx-review-actions {

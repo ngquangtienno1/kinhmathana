@@ -187,6 +187,13 @@ class HomeController extends Controller
 
         // Đơn hàng đang giao
         $shippingOrders = (clone $orderQuery)->where('status', 'shipping')->count();
+
+        // Thống kê tỷ lệ đơn hàng theo trạng thái
+        $completedPercentage = $totalOrders > 0 ? round($completedOrders / $totalOrders * 100, 1) : 0;
+        $cancelledPercentage = $totalOrders > 0 ? round($cancelledOrders / $totalOrders * 100, 1) : 0;
+        $pendingPercentage = $totalOrders > 0 ? round($pendingOrders / $totalOrders * 100, 1) : 0;
+        $shippingPercentage = $totalOrders > 0 ? round($shippingOrders / $totalOrders * 100, 1) : 0;
+
         // Sản phẩm sắp hết hàng (tồn kho < 5, nhưng > 0)
         $lowStockProducts = Product::where('stock_quantity', '>', 0)->where('stock_quantity', '<', 5)->count();
         // Sản phẩm khuyến mãi
@@ -195,7 +202,9 @@ class HomeController extends Controller
         $newProductsThisMonth = Product::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count();
         // Khách hàng mua nhiều nhất (top 1)
         $topCustomer = User::where('role_id', 3)
-            ->withCount(['orders as total_orders' => function($q) { $q->where('status', 'delivered'); }])
+            ->withCount(['orders as total_orders' => function ($q) {
+                $q->where('status', 'delivered');
+            }])
             ->orderByDesc('total_orders')->first();
         $topCustomerName = $topCustomer ? $topCustomer->name : 'N/A';
         // Khách hàng chưa từng mua
@@ -252,7 +261,11 @@ class HomeController extends Controller
             'totalVariations',
             'lowStockVariations',
             'totalBrands',
-            'totalCategories'
+            'totalCategories',
+            'completedPercentage',
+            'cancelledPercentage',
+            'pendingPercentage',
+            'shippingPercentage'
         ));
     }
 }

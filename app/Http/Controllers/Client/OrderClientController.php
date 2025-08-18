@@ -19,7 +19,7 @@ class OrderClientController extends Controller
         $user = Auth::user();
         $status = $request->get('status');
         $q = $request->get('q');
-        $query = Order::with(['items.product.images'])
+        $query = Order::with(['items.variation.images', 'items.product.images'])
             ->where('user_id', $user->id)
             ->orderByDesc('created_at');
         if ($status) {
@@ -63,7 +63,9 @@ class OrderClientController extends Controller
     public function show($id)
     {
         $user = Auth::user();
-        $order = Order::with(['items.product.images', 'paymentMethod'])->where('user_id', $user->id)->findOrFail($id);
+        $order = Order::with(['items.variation.images', 'items.product.images', 'paymentMethod'])
+            ->where('user_id', $user->id)
+            ->findOrFail($id);
         return view('client.orders.show', compact('order'));
     }
 
@@ -124,10 +126,11 @@ class OrderClientController extends Controller
     public function reviewForm($orderId, $itemId)
     {
         $user = Auth::user();
-        $order = Order::where('user_id', $user->id)
+        $order = Order::with(['items.variation.images', 'items.product.images'])
+            ->where('user_id', $user->id)
             ->whereIn('status', ['delivered', 'completed'])
             ->findOrFail($orderId);
-        $item = $order->items()->findOrFail($itemId);
+        $item = $order->items->find($itemId);
         $reviewed = Review::where('user_id', $user->id)
             ->where('product_id', $item->product_id)
             ->where('order_id', $order->id)

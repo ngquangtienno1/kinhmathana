@@ -30,7 +30,7 @@ class HomeController extends Controller
             ->get();
 
         // Lấy sản phẩm bán chạy nhất (best sellers)
-        $bestSellerProducts = Product::with(['images', 'categories', 'brand', 'variations.color'])
+        $bestSellerProducts = Product::with(['images', 'categories', 'brand', 'variations.color', 'variations.images'])
             ->active()
             ->withSum('orderItems as total_sold', 'quantity')
             ->orderByDesc('total_sold')
