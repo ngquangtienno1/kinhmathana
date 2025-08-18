@@ -136,39 +136,7 @@
                                 </div>
                             </div>
 
-                            {{-- Hiển thị các mục đã chọn --}}
-                            <div id="selected-items-display" class="mb-3 p-3"
-                                style="background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6; display: none;">
-                                <h6 class="mb-2 text-success">
-                                    <i class="fas fa-check-circle me-2"></i>Đã chọn:
-                                </h6>
-                                <div id="selected-categories" class="mb-2"></div>
-                                <div id="selected-products"></div>
-                            </div>
 
-                            <div class="mb-4">
-                                <label class="form-label" for="categories">Chọn danh mục</label>
-                                <select name="categories[]" id="categories" class="form-select select2" multiple>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label" for="products">Chọn sản phẩm</label>
-                                <select name="products[]" id="products" class="form-select select2" multiple>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}"
-                                            {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>
-                                            {{ $product->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -290,8 +258,7 @@
                 allowClear: true
             });
 
-            // Khôi phục trạng thái ban đầu dựa trên old values
-            restoreFormState();
+            // Không còn khôi phục selections (categories/products) vì đã bỏ chọn theo yêu cầu
 
             // Set initial max value based on current discount type
             updateDiscountField();
@@ -313,10 +280,7 @@
                 updateDiscountField();
             });
 
-            // Update categories and products display when selection changes
-            $('#categories, #products').on('change', function() {
-                updateSelectedItemsDisplay();
-            });
+            // Bỏ theo dõi selections
 
             // Generate promotion code
             $('#generate-code').click(function() {
@@ -357,43 +321,7 @@
                 saveFormState();
             });
 
-            // Khôi phục form state từ localStorage nếu có
-            function restoreFormState() {
-                const savedState = localStorage.getItem('promotion_form_state');
-                if (savedState) {
-                    try {
-                        const state = JSON.parse(savedState);
-
-                        // Khôi phục các trường cơ bản
-                        if (state.name) $('#name').val(state.name);
-                        if (state.description) $('#description').val(state.description);
-                        if (state.code) $('#code').val(state.code);
-                        if (state.discount_type) $('#discount_type').val(state.discount_type);
-                        if (state.discount_value) $('#discount_value').val(state.discount_value);
-                        if (state.start_date) $('#start_date').val(state.start_date);
-                        if (state.end_date) $('#end_date').val(state.end_date);
-                        if (state.minimum_purchase) $('#minimum_purchase').val(state.minimum_purchase);
-                        if (state.maximum_purchase) $('#maximum_purchase').val(state.maximum_purchase);
-                        if (state.usage_limit) $('#usage_limit').val(state.usage_limit);
-                        if (state.is_active) $('#is_active').val(state.is_active);
-
-                        // Khôi phục categories và products
-                        if (state.categories && state.categories.length > 0) {
-                            $('#categories').val(state.categories).trigger('change');
-                        }
-                        if (state.products && state.products.length > 0) {
-                            $('#products').val(state.products).trigger('change');
-                        }
-
-                        // Cập nhật hiển thị
-                        updateDiscountField();
-                        updateSelectedItemsDisplay();
-
-                    } catch (e) {
-                        console.error('Error restoring form state:', e);
-                    }
-                }
-            }
+            // Bỏ restore selections
 
             // Lưu form state vào localStorage
             function saveFormState() {
@@ -408,9 +336,7 @@
                     minimum_purchase: $('#minimum_purchase').val(),
                     maximum_purchase: $('#maximum_purchase').val(),
                     usage_limit: $('#usage_limit').val(),
-                    is_active: $('#is_active').val(),
-                    categories: $('#categories').val() || [],
-                    products: $('#products').val() || []
+                    is_active: $('#is_active').val()
                 };
 
                 localStorage.setItem('promotion_form_state', JSON.stringify(state));
@@ -428,47 +354,7 @@
             }
 
             // Cập nhật hiển thị các mục đã chọn
-            function updateSelectedItemsDisplay() {
-                const categories = $('#categories').val() || [];
-                const products = $('#products').val() || [];
-
-                if (categories.length === 0 && products.length === 0) {
-                    $('#selected-items-display').hide();
-                    return;
-                }
-
-                $('#selected-items-display').show();
-
-                // Hiển thị categories
-                let categoriesHtml = '';
-                if (categories.length > 0) {
-                    categoriesHtml = '<div class="mb-2"><strong class="text-primary">Danh mục:</strong><br>';
-                    categories.forEach(function(catId) {
-                        const catName = $('#categories option[value="' + catId + '"]').text();
-                        categoriesHtml += `<span class="badge bg-primary">
-                            ${catName}
-                            <a href="#" class="text-white remove-selected" data-type="category" data-id="${catId}">×</a>
-                        </span>`;
-                    });
-                    categoriesHtml += '</div>';
-                }
-                $('#selected-categories').html(categoriesHtml);
-
-                // Hiển thị products
-                let productsHtml = '';
-                if (products.length > 0) {
-                    productsHtml = '<div><strong class="text-info">Sản phẩm:</strong><br>';
-                    products.forEach(function(prodId) {
-                        const prodName = $('#products option[value="' + prodId + '"]').text();
-                        productsHtml += `<span class="badge bg-info">
-                            ${prodName}
-                            <a href="#" class="text-white remove-selected" data-type="product" data-id="${prodId}">×</a>
-                        </span>`;
-                    });
-                    productsHtml += '</div>';
-                }
-                $('#selected-products').html(productsHtml);
-            }
+            // Bỏ hiển thị selections
 
             // Xóa form state khi thành công
             function clearFormState() {
