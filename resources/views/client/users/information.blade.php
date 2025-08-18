@@ -433,13 +433,24 @@
 
             <div class="sidebar">
                 <div class="user-profile">
-                    <div class="account-avatar">
-                        @if ($user->avatar)
-                            <img src="{{ asset($user->avatar) }}" alt="Avatar">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=90"
-                                alt="Avatar">
-                        @endif
+                     <div class="account-avatar">
+                        @php
+                            $avatarSrc = null;
+                            if(!empty($user->avatar)){
+                                $a = $user->avatar;
+                                // full URL provided by storage or external
+                                if(stripos($a, 'http://') === 0 || stripos($a, 'https://') === 0){
+                                    $avatarSrc = $a;
+                                } elseif(strpos($a, 'uploads/avatars') !== false || strpos($a, 'uploads\\avatars') !== false){
+                                    // already contains the uploads path
+                                    $avatarSrc = asset($a);
+                                } else {
+                                    // plain filename
+                                    $avatarSrc = asset('uploads/avatars/' . $a);
+                                }
+                            }
+                        @endphp
+                        <img src="{{ $avatarSrc ?? ('https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=ececec&color=7de3e7&size=90') }}" alt="Avatar">
                     </div>
                     <div class="user-name">{{ $user->name }}</div>
                     @if (isset($customerType))
@@ -634,25 +645,29 @@
                         }
                     </style>
                     <div class="avatar-upload-section">
-                        <div class="upload-avatar-container"
-                            style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
+                        <div class="upload-avatar-container" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
                             <div class="profile-avatar-wrapper" style="position:relative;display:inline-block;">
-                                @if ($user->avatar)
-                                    <img class="upload-avatar" src="{{ asset($user->avatar) }}" alt="Avatar"
-                                        style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 8px 25px rgba(0,0,0,0.10);border:6px solid #fff;">
-                                @else
-                                    <img class="upload-avatar"
-                                        src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=ececec&color=7de3e7&size=120"
-                                        alt="Avatar"
-                                        style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 8px 25px rgba(0,0,0,0.10);border:6px solid #fff;">
-                                @endif
-                                <label for="avatarInput" class="avatar-upload-btn"
-                                    style="position:absolute;bottom:8px;right:8px;background:#000;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.12);opacity:0.85;transition:opacity 0.2s;">
-                                    <input id="avatarInput" type="file" name="avatar" accept="image/*"
-                                        style="display:none;">
+                                @php
+                                    // reuse logic for preview image
+                                    $previewSrc = null;
+                                    if(!empty($user->avatar)){
+                                        $a2 = $user->avatar;
+                                        if(stripos($a2, 'http://') === 0 || stripos($a2, 'https://') === 0){
+                                            $previewSrc = $a2;
+                                        } elseif(strpos($a2, 'uploads/avatars') !== false || strpos($a2, 'uploads\\avatars') !== false){
+                                            $previewSrc = asset($a2);
+                                        } else {
+                                            $previewSrc = asset('uploads/avatars/' . $a2);
+                                        }
+                                    }
+                                @endphp
+                                <img class="upload-avatar" src="{{ $previewSrc ?? ('https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=ececec&color=7de3e7&size=120') }}" alt="Avatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 8px 25px rgba(0,0,0,0.10);border:6px solid #fff;">
+                                <label for="avatarInput" class="avatar-upload-btn" style="position:absolute;bottom:8px;right:8px;background:#000;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.12);opacity:0.85;transition:opacity 0.2s;">
+                                    <input id="avatarInput" type="file" name="avatar" accept="image/*" style="display:none;">
                                     <i class="fas fa-camera" style="color:#fff;font-size:1.2rem;"></i>
                                 </label>
                             </div>
+                            <div id="avatarFileName" style="font-size:0.9rem;color:#6c757d;display:none;">Chưa chọn file</div>
                         </div>
                         <p style="color: #6c757d; margin-bottom: 1rem;">Ảnh đại diện</p>
                         <button type="button" class="upload-btn" onclick="document.getElementById('avatarInput').click();"
@@ -778,5 +793,30 @@
             });
         });
     </script>
-    @include('client.users.change_password_popup')
+    <script>
+        // Avatar preview and filename display
+        (function(){
+            var input = document.getElementById('avatarInput');
+            var img = document.querySelector('.upload-avatar');
+            var nameEl = document.getElementById('avatarFileName');
+            if(!input) return;
+            input.addEventListener('change', function(e){
+                var file = this.files && this.files[0];
+                if(!file) {
+                    nameEl.style.display = 'none';
+                    return;
+                }
+                // show filename
+                nameEl.textContent = file.name;
+                nameEl.style.display = 'block';
+                // preview
+                var reader = new FileReader();
+                reader.onload = function(ev){
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        })();
+    </script>
+@include('client.users.change_password_popup')
 @endsection

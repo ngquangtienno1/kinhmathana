@@ -96,7 +96,7 @@ Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook'])->n
 Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
 
 // Client routes group
-Route::prefix('client')->name('client.')->group(function () {
+Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function () {
     Route::get('/', [ClientHomeController::class, 'index'])->name('home');
 
     Route::get('login', [AuthenticationClientController::class, 'login'])->name('login');

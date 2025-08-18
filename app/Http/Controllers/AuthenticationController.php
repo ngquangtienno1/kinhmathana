@@ -143,14 +143,19 @@ class AuthenticationController extends BaseController
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 3,
+            'role_id' => 2,
             'status_user' => 'active',
             'created_at' => Carbon::now(),
         ]);
 
         if ($user) {
-            return redirect()->route('client.login')->with([
-                'message' => 'Đăng ký thành công. Vui lòng đăng nhập'
+            // Log the user in immediately after registration
+            Auth::login($user);
+            session()->put('user_id', Auth::id());
+            Log::info('User registered and logged in', ['user_id' => $user->id, 'email' => $user->email]);
+
+            return redirect()->route('admin.home')->with([
+                'message' => 'Đăng ký thành công'
             ]);
         }
 
