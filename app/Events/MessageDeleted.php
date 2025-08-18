@@ -24,7 +24,10 @@ class MessageDeleted implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return ['chat-user-' . $this->to_id];
+        return [
+            'chat-user-' . $this->to_id,
+            'chat-user-' . $this->from_id
+        ];
     }
 
     public function broadcastAs()

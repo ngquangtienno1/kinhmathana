@@ -299,6 +299,14 @@
     function sendMessage(msg) {
         const message = msg || chatInput.value.trim();
         if (!message) return;
+
+        // Tạo tin nhắn tạm thời trước
+        const tempMessage = {
+            message: message,
+            id: 'temp-' + Date.now()
+        };
+        appendMessage(tempMessage, true);
+
         fetch('/client/chat/send', {
             method: 'POST',
             headers: {
@@ -309,10 +317,12 @@
                 to_id: adminId,
                 message
             })
-        }).then(res => res.json()).then(() => {
-            appendMessage({
-                message
-            }, true);
+        }).then(res => res.json()).then(data => {
+            // Cập nhật id thực cho tin nhắn vừa gửi
+            const tempMessageElement = document.querySelector(`[data-message-id="${tempMessage.id}"]`);
+            if (tempMessageElement && data.message && data.message.id) {
+                tempMessageElement.setAttribute('data-message-id', data.message.id);
+            }
         });
         chatInput.value = '';
     }
@@ -450,6 +460,15 @@
         const file = e.target.files[0];
         if (!file) return;
 
+        // Tạo tin nhắn tạm thời trước
+        const tempMessage = {
+            message: '[IMAGE]',
+            attachment: URL.createObjectURL(file),
+            type: 'image',
+            id: 'temp-' + Date.now()
+        };
+        appendMessage(tempMessage, true);
+
         const formData = new FormData();
         formData.append('image', file);
         formData.append('to_id', adminId);
@@ -459,11 +478,16 @@
             method: 'POST',
             body: formData
         }).then(res => res.json()).then(data => {
-            appendMessage({
-                message: '[IMAGE]',
-                attachment: data.message.attachment,
-                type: 'image'
-            }, true);
+            // Cập nhật id thực và attachment thực cho tin nhắn vừa gửi
+            const tempMessageElement = document.querySelector(`[data-message-id="${tempMessage.id}"]`);
+            if (tempMessageElement && data.message && data.message.id) {
+                tempMessageElement.setAttribute('data-message-id', data.message.id);
+                // Cập nhật src cho hình ảnh
+                const img = tempMessageElement.querySelector('img');
+                if (img && data.message.attachment) {
+                    img.src = '/storage/' + data.message.attachment;
+                }
+            }
         });
 
         e.target.value = '';
@@ -493,6 +517,15 @@
         }
         label.disabled = true;
 
+        // Tạo tin nhắn tạm thời trước
+        const tempMessage = {
+            message: file.name,
+            attachment: null,
+            type: 'file',
+            id: 'temp-' + Date.now()
+        };
+        appendMessage(tempMessage, true);
+
         fetch('/client/chat/send-file', {
                 method: 'POST',
                 body: formData
@@ -504,11 +537,16 @@
                 return res.json();
             })
             .then(data => {
-                appendMessage({
-                    message: data.message.message,
-                    attachment: data.message.attachment,
-                    type: 'file'
-                }, true);
+                // Cập nhật id thực và attachment thực cho tin nhắn vừa gửi
+                const tempMessageElement = document.querySelector(`[data-message-id="${tempMessage.id}"]`);
+                if (tempMessageElement && data.message && data.message.id) {
+                    tempMessageElement.setAttribute('data-message-id', data.message.id);
+                    // Cập nhật href cho link file
+                    const link = tempMessageElement.querySelector('a');
+                    if (link && data.message.attachment) {
+                        link.href = '/storage/' + data.message.attachment;
+                    }
+                }
             })
             .catch(error => {
                 console.error('Error sending file:', error);
@@ -578,6 +616,15 @@
                             type: mimeType || 'audio/webm'
                         });
 
+                        // Tạo tin nhắn tạm thời trước
+                        const tempMessage = {
+                            message: '[VOICE]',
+                            attachment: URL.createObjectURL(audioBlob),
+                            type: 'voice',
+                            id: 'temp-' + Date.now()
+                        };
+                        appendMessage(tempMessage, true);
+
                         const formData = new FormData();
                         formData.append('voice', audioBlob, 'voice.webm');
                         formData.append('to_id', adminId);
@@ -597,11 +644,18 @@
                                 return res.json();
                             })
                             .then(data => {
-                                appendMessage({
-                                    message: '[VOICE]',
-                                    attachment: data.message.attachment,
-                                    type: 'voice'
-                                }, true);
+                                // Cập nhật id thực và attachment thực cho tin nhắn vừa gửi
+                                const tempMessageElement = document.querySelector(
+                                    `[data-message-id="${tempMessage.id}"]`);
+                                if (tempMessageElement && data.message && data.message.id) {
+                                    tempMessageElement.setAttribute('data-message-id', data.message
+                                        .id);
+                                    // Cập nhật src cho audio
+                                    const audio = tempMessageElement.querySelector('audio');
+                                    if (audio && data.message.attachment) {
+                                        audio.src = '/storage/' + data.message.attachment;
+                                    }
+                                }
                             })
                             .catch(error => {
                                 console.error('Error sending voice:', error);

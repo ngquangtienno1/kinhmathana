@@ -349,11 +349,6 @@
             <table class="table fs-9 mb-0 border-top border-translucent">
                 <thead>
                     <tr>
-                        <th class="white-space-nowrap fs-9 ps-0 align-middle">
-                            <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                    id="checkbox-bulk-reviews-select" type="checkbox"
-                                    data-bulk-select='{"body":"table-latest-review-body"}' /></div>
-                        </th>
                         <th class="sort white-space-nowrap align-middle" scope="col"></th>
                         <th class="sort white-space-nowrap align-middle" scope="col" style="min-width:360px;"
                             data-sort="product">SẢN PHẨM</th>
@@ -368,11 +363,6 @@
                 <tbody class="list" id="table-latest-review-body">
                     @forelse($latestReviews as $review)
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                            <td class="fs-9 align-middle ps-0">
-                                <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox"
-                                        data-bulk-select-row='{"product":"{{ $review->product->name ?? 'N/A' }}","productImage":"{{ $review->product->image ?? '' }}","customer":{"name":"{{ $review->user->name ?? 'N/A' }}","avatar":"{{ $review->user->avatar ?? '' }}"},"rating":"{{ $review->rating }}","review":"{{ $review->comment ?? 'N/A' }}","status":{"title":"Approved","badge":"success","icon":"check"},"time":"{{ $review->created_at->diffForHumans() }}"}' />
-                                </div>
-                            </td>
                             <td class="align-middle product white-space-nowrap py-0">
                                 @php
                                     // Lấy thông tin variation từ order item

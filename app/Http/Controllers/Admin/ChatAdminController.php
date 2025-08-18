@@ -66,7 +66,7 @@ class ChatAdminController extends Controller
             'message' => $message,
         ]);
 
-        event(new ChatMessage($from_id, $from_name, $to_id, $message, $from_avatar));
+        event(new ChatMessage($from_id, $from_name, $to_id, $message, $from_avatar, null, 'text', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -94,7 +94,7 @@ class ChatAdminController extends Controller
             'type' => 'image'
         ]);
 
-        event(new ChatMessage($from_id, $from_name, $request->to_id, '[IMAGE]', $from_avatar, $imagePath, 'image'));
+        event(new ChatMessage($from_id, $from_name, $request->to_id, '[IMAGE]', $from_avatar, $imagePath, 'image', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -122,7 +122,7 @@ class ChatAdminController extends Controller
             'type' => 'voice'
         ]);
 
-        event(new ChatMessage($from_id, $from_name, $request->to_id, '[VOICE]', $from_avatar, $voicePath, 'voice'));
+        event(new ChatMessage($from_id, $from_name, $request->to_id, '[VOICE]', $from_avatar, $voicePath, 'voice', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -150,7 +150,7 @@ class ChatAdminController extends Controller
             'type' => 'file'
         ]);
 
-        event(new ChatMessage($from_id, $from_name, $request->to_id, $file->getClientOriginalName(), $from_avatar, $filePath, 'file'));
+        event(new ChatMessage($from_id, $from_name, $request->to_id, $file->getClientOriginalName(), $from_avatar, $filePath, 'file', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 

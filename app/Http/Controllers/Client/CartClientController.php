@@ -428,24 +428,6 @@ class CartClientController extends Controller
                 ]) : null,
                 'note' => null,
             ]);
-            if ($item->variation) {
-                $variation = $item->variation;
-                $variation->quantity = max(0, $variation->quantity - $item->quantity);
-                $variation->save();
-            } elseif ($item->product) {
-                $product = $item->product;
-                $product->quantity = max(0, $product->quantity - $item->quantity);
-                $product->save();
-            }
-        }
-        if ($promotion && $discountAmount > 0) {
-            PromotionUsage::create([
-                'promotion_id' => $promotion->id,
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'discount_amount' => $discountAmount
-            ]);
-            $promotion->increment('used_count');
         }
 
         if ($selectedIds) {
@@ -666,24 +648,6 @@ class CartClientController extends Controller
                 ]) : null,
                 'note' => null,
             ]);
-            if ($item->variation) {
-                $variation = $item->variation;
-                $variation->quantity = max(0, $variation->quantity - $item->quantity);
-                $variation->save();
-            } elseif ($item->product) {
-                $product = $item->product;
-                $product->quantity = max(0, $product->quantity - $item->quantity);
-                $product->save();
-            }
-        }
-        if ($promotion && $discountAmount > 0) {
-            PromotionUsage::create([
-                'promotion_id' => $promotion->id,
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'discount_amount' => $discountAmount
-            ]);
-            $promotion->increment('used_count');
         }
 
         $paymentMethod = PaymentMethod::where('code', 'momo')->first();
@@ -852,24 +816,6 @@ class CartClientController extends Controller
                 ]) : null,
                 'note' => null,
             ]);
-            if ($item->variation) {
-                $variation = $item->variation;
-                $variation->quantity = max(0, $variation->quantity - $item->quantity);
-                $variation->save();
-            } elseif ($item->product) {
-                $product = $item->product;
-                $product->quantity = max(0, $product->quantity - $item->quantity);
-                $product->save();
-            }
-        }
-        if ($promotion && $discountAmount > 0) {
-            PromotionUsage::create([
-                'promotion_id' => $promotion->id,
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'discount_amount' => $discountAmount
-            ]);
-            $promotion->increment('used_count');
         }
 
         $paymentMethod = PaymentMethod::where('code', 'vnpay')->first();
@@ -920,14 +866,6 @@ class CartClientController extends Controller
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
 
-        if ($selectedIds) {
-            Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
-        } else {
-            Cart::where('user_id', $user->id)->delete();
-        }
-
-        $this->updateCustomerAfterOrder($user->id);
-
         return redirect()->to($vnp_Url);
     }
 
@@ -966,6 +904,40 @@ class CartClientController extends Controller
                         }
                     } catch (\Exception $e) {
                         Log::error('Lỗi gửi mail OrderPlaced (VNPAY): ' . $e->getMessage());
+                    }
+
+                    // Deduct inventory and record promotion usage after successful VNPAY payment
+                    try {
+                        foreach ($order->items as $item) {
+                            if ($item->variation_id) {
+                                $variation = Variation::find($item->variation_id);
+                                if ($variation) {
+                                    $variation->quantity = max(0, $variation->quantity - $item->quantity);
+                                    $variation->save();
+                                }
+                            } else {
+                                $product = \App\Models\Product::find($item->product_id);
+                                if ($product) {
+                                    $product->quantity = max(0, $product->quantity - $item->quantity);
+                                    $product->save();
+                                }
+                            }
+                        }
+                        if ($order->promotion_id && $order->promotion_amount > 0) {
+                            if (!PromotionUsage::where('promotion_id', $order->promotion_id)
+                                ->where('order_id', $order->id)
+                                ->exists()) {
+                                PromotionUsage::create([
+                                    'promotion_id' => $order->promotion_id,
+                                    'order_id' => $order->id,
+                                    'user_id' => $order->user_id,
+                                    'discount_amount' => $order->promotion_amount
+                                ]);
+                                \App\Models\Promotion::where('id', $order->promotion_id)->increment('used_count');
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Lỗi xử lý tồn kho/khuyến mãi sau VNPAY: ' . $e->getMessage());
                     }
 
                     return view('client.cart.thankyou');
@@ -1010,6 +982,40 @@ class CartClientController extends Controller
                     }
                 } catch (\Exception $e) {
                     Log::error('Lỗi gửi mail OrderPlaced (MoMo): ' . $e->getMessage());
+                }
+
+                // Deduct inventory and record promotion usage after successful MoMo payment
+                try {
+                    foreach ($order->items as $item) {
+                        if ($item->variation_id) {
+                            $variation = Variation::find($item->variation_id);
+                            if ($variation) {
+                                $variation->quantity = max(0, $variation->quantity - $item->quantity);
+                                $variation->save();
+                            }
+                        } else {
+                            $product = \App\Models\Product::find($item->product_id);
+                            if ($product) {
+                                $product->quantity = max(0, $product->quantity - $item->quantity);
+                                $product->save();
+                            }
+                        }
+                    }
+                    if ($order->promotion_id && $order->promotion_amount > 0) {
+                        if (!PromotionUsage::where('promotion_id', $order->promotion_id)
+                            ->where('order_id', $order->id)
+                            ->exists()) {
+                            PromotionUsage::create([
+                                'promotion_id' => $order->promotion_id,
+                                'order_id' => $order->id,
+                                'user_id' => $order->user_id,
+                                'discount_amount' => $order->promotion_amount
+                            ]);
+                            \App\Models\Promotion::where('id', $order->promotion_id)->increment('used_count');
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Lỗi xử lý tồn kho/khuyến mãi sau MoMo: ' . $e->getMessage());
                 }
 
                 return view('client.cart.thankyou');
