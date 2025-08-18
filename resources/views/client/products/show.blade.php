@@ -595,7 +595,7 @@
                                                 @endif
                                                 @if ($review->reply)
                                                     <div class="review-reply">
-                                                        <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                        <span class="reply-label">💬 Phản hồi từ cửa hàng:</span>
                                                         <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
                                                     </div>
                                                 @endif
@@ -680,7 +680,7 @@
                                                     @endif
                                                     @if ($review->reply)
                                                         <div class="review-reply">
-                                                            <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                            <span class="reply-label">💬 Phản hồi từ cửa hàng:</span>
                                                             <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
                                                         </div>
                                                     @endif
@@ -1791,22 +1791,26 @@
         }
 
         .review-reply {
-            background: #f5f5f5;
-            border-left: 3px solid #111;
-            padding: 10px 14px;
-            border-radius: 6px;
-            margin-top: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
         }
 
         .reply-label {
-            color: #111;
-            font-weight: bold;
-            font-size: 1em;
+            color: #007bff;
+            font-weight: 600;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 6px;
         }
 
         .reply-content {
             color: #333;
-            margin-top: 2px;
+            margin-top: 4px;
+            line-height: 1.5;
         }
 
         .dmx-review-actions {
