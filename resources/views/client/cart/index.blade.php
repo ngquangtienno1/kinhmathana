@@ -370,7 +370,7 @@
                 let alert = document.createElement('div');
                 alert.className = `alert alert-${type} cart-alert`;
                 alert.style =
-                    'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb;';
+                    'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color:green; padding: 15px; border-radius: 5px; border: 1px solid green;';
                 alert.innerHTML = message +
                     '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
                 document.body.appendChild(alert);

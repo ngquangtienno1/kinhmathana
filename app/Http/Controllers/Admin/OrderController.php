@@ -358,6 +358,30 @@ class OrderController extends Controller
 
             $order->update($updateData);
 
+            // Khi admin huỷ đơn, hoàn lại tồn kho (chỉ thực hiện nếu trước đó đơn chưa ở trạng thái huỷ)
+            if (
+                $request->status === 'cancelled_by_admin' &&
+                !in_array($oldStatus, ['cancelled_by_admin', 'cancelled_by_customer'])
+            ) {
+                foreach ($order->items as $item) {
+                    if ($item->variation_id) {
+                        $variation = \App\Models\Variation::find($item->variation_id);
+                        if ($variation) {
+                            $variation->quantity = ($variation->quantity ?? 0) + $item->quantity;
+                            $variation->save();
+                            
+                        }
+                    } else if ($item->product_id) {
+                        $product = \App\Models\Product::find($item->product_id);
+                        if ($product) {
+                            $product->quantity = ($product->quantity ?? 0) + $item->quantity;
+                            $product->save();
+                            
+                        }
+                    }
+                }
+            }
+
             // Cập nhật trạng thái thanh toán dựa trên trạng thái đơn hàng mới
             $this->updatePaymentStatusBasedOnOrderStatus($order, $request->status);
 

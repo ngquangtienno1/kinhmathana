@@ -157,7 +157,8 @@ class OrderClientController extends Controller
         if ($reviewed) {
             return redirect()->route('client.orders.show', $order->id)->with('error', 'Bạn đã đánh giá sản phẩm này!');
         }
-        return view('client.orders.review', compact('order', 'item'));
+        // Redirect về trang show để sử dụng modal
+        return redirect()->route('client.orders.show', $order->id);
     }
 
     public function submitReview(Request $request, $orderId, $itemId)
@@ -171,7 +172,6 @@ class OrderClientController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'content' => 'required|string|max:1000',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
-            'video' => 'nullable|file|mimes:mp4,webm,ogg|max:51200',
         ]);
         $reviewed = Review::where('user_id', $user->id)
             ->where('product_id', $item->product_id)
