@@ -15,7 +15,7 @@ class CategoryFactory extends Factory
         $name = $this->faker->words(2, true); // Tạo tên ngẫu nhiên gồm 2 từ
         return [
             'name' => $name,
-            'slug' => Str::slug($name), // Tạo slug từ name
+            'slug' => Str::slug($name . '-' . $this->faker->unique()->numberBetween(1000, 9999)),
             'description' => $this->faker->sentence(10), // Tạo mô tả ngẫu nhiên
             'parent_id' => null, // Để trống hoặc bạn có thể thêm logic để tạo danh mục con
             'is_active' => $this->faker->boolean(),

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLoginRequest;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -59,9 +60,16 @@ class AuthenticationController extends BaseController
                     ->withInput();
             }
 
+
             // Login successful
             Auth::login($user, $request->has('remember'));
             session()->put('user_id', Auth::id());
+
+            // Force new remember_token if 'remember' is checked
+            if ($request->has('remember')) {
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+            }
 
             Log::info('User logged in successfully', [
                 'user_id' => $user->id,
@@ -73,10 +81,9 @@ class AuthenticationController extends BaseController
             if (in_array($user->role_id, [1, 2])) { // 1 là admin, 2 là staff
                 return redirect()->route('admin.home')
                     ->with('message', 'Đăng nhập thành công');
-            } else if ($user->role_id === 3) {
-                Auth::logout(); // Đăng xuất ngay lập tức
-                return redirect()->route('login')
-                    ->withErrors(['email' => 'Bạn không có quyền truy cập trang quản trị']);
+            } else if ($user->role_id == 3) {
+                return redirect()->route('client.home')
+                    ->with('message', 'Đăng nhập thành công');
             } else {
                 Auth::logout(); // Đăng xuất ngay lập tức
                 return redirect()->route('login')
@@ -96,8 +103,13 @@ class AuthenticationController extends BaseController
 
     public function logout()
     {
+
         if (Auth::check()) {
-            Log::info('User logged out', ['user_id' => Auth::id()]);
+            $user = Auth::user();
+            Log::info('User logged out', ['user_id' => $user->id]);
+            // Clear remember_token for security
+            $user->setRememberToken(null);
+            $user->save();
             Auth::logout();
             session()->forget('user_id');
         }
@@ -131,13 +143,19 @@ class AuthenticationController extends BaseController
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 3,
+            'role_id' => 2,
+            'status_user' => 'active',
             'created_at' => Carbon::now(),
         ]);
 
         if ($user) {
-            return redirect()->route('login')->with([
-                'message' => 'Đăng ký thành công. Vui lòng đăng nhập'
+            // Log the user in immediately after registration
+            Auth::login($user);
+            session()->put('user_id', Auth::id());
+            Log::info('User registered and logged in', ['user_id' => $user->id, 'email' => $user->email]);
+
+            return redirect()->route('admin.home')->with([
+                'message' => 'Đăng ký thành công'
             ]);
         }
 

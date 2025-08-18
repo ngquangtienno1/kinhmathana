@@ -18,10 +18,10 @@ class CheckAdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            Log::warning('Unauthorized access attempt: User not logged in', [
-                'ip' => $request->ip(),
-                'url' => $request->fullUrl()
-            ]);
+            // Log::warning('Unauthorized access attempt: User not logged in', [
+            //     'ip' => $request->ip(),
+            //     'url' => $request->fullUrl()
+            // ]);
 
             return redirect()->route('login')
                 ->with('message', 'Bạn phải đăng nhập trước');
@@ -30,23 +30,22 @@ class CheckAdminMiddleware
         $user = Auth::user();
 
         // Debug thông tin user
-        Log::info('Checking admin access', [
-            'user_id' => $user->id,
-            'role_id' => $user->role_id,
-            'email' => $user->email
-        ]);
+        // Log::info('Checking admin access', [
+        //     'user_id' => $user->id,
+        //     'role_id' => $user->role_id,
+        //     'email' => $user->email
+        // ]);
 
         // Kiểm tra role_id - cho phép cả admin (1), staff (2) và user (3)
         if (!in_array($user->role_id, [1, 2])) {
-            Log::warning('Unauthorized access attempt: User role not allowed', [
-                'user_id' => $user->id,
-                'role_id' => $user->role_id,
-                'ip' => $request->ip()
-            ]);
-
-            return redirect()->route('login')
-                ->withErrors('message', 'Bạn không có quyền truy cập trang quản trị');
-
+            // Log::warning('Unauthorized access attempt: User role not allowed', [
+            //     'user_id' => $user->id,
+            //     'role_id' => $user->role_id,
+            //     'ip' => $request->ip()
+            // ]);
+            Auth::logout();
+            return redirect()->route('client.login')
+                ->withErrors(['message' => 'Bạn không có quyền truy cập trang quản trị']);
         }
 
         return $next($request);

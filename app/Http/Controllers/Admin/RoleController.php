@@ -16,20 +16,21 @@ class RoleController extends Controller
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
         $roles = $query->paginate(10);
+        $totalPermissions = \App\Models\Permission::count();
 
-        return view('admin.roles.index', compact('roles'));
+        return view('admin.roles.index', compact('roles', 'totalPermissions'));
     }
 
     public function create()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::all()->groupBy('group_permissions');
         return view('admin.roles.create', compact('permissions'));
     }
 
@@ -71,7 +72,7 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        $permissions = Permission::all();
+        $permissions = Permission::all()->groupBy('group_permissions');
         $rolePermissions = $role->permissions->pluck('id')->toArray();
         return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }

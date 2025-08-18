@@ -93,8 +93,8 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         // Lấy các đơn hàng hợp lệ (chưa xóa mềm)
-        $orders = $customer->orders()->latest()->take(5)->get();
-
+        $orders = $customer->orders()->latest()->get();
+        $totalOrders = $customer->orders()->count();
         // Lấy sản phẩm hay mua
         $frequentProducts = \DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
@@ -106,7 +106,7 @@ class CustomerController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.customers.show', compact('customer', 'orders', 'frequentProducts'));
+        return view('admin.customers.show', compact('customer', 'orders', 'frequentProducts', 'totalOrders'));
     }
 
     public function update(Request $request, Customer $customer)

@@ -49,14 +49,14 @@
                                 <div class="search-box">
                                     <form class="position-relative" id="target-search-form">
                                         <input type="hidden" name="target_id" id="target_id" required>
-                                        <input class="form-control search-input search" type="search" 
-                                            id="target_search" 
-                                            placeholder="Tìm sản phẩm/biến thể theo tên hoặc SKU" 
+                                        <input class="form-control search-input search" type="search"
+                                            id="target_search"
+                                            placeholder="Tìm sản phẩm/biến thể theo tên hoặc SKU"
                                             autocomplete="off" />
                                         <span class="fas fa-search search-box-icon"></span>
                                     </form>
-                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2" 
-                                        id="targetSearchResults" 
+                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2"
+                                        id="targetSearchResults"
                                         style="width: 100%; max-height: 24rem; overflow-y: auto;">
                                         <div class="list-group list-group-flush" id="targetSearchResultsList">
                                             <!-- Search results will be loaded here -->
@@ -118,20 +118,20 @@
                     <h5 class="mb-0">Nhập kho hàng loạt cho biến thể</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.inventory.store-bulk') }}" method="POST">
+                    <form action="{{ route('admin.inventory.store-bulk') }}" method="POST" id="bulk-inventory-form">
                         @csrf
                         <div class="row gx-2 align-items-end mb-3">
                             <div class="col-auto" style="min-width:260px;">
                                 <label class="form-label">Sản phẩm<span class="text-danger">*</span></label>
                                 <div class="search-box">
                                     <input type="hidden" name="product_id" id="product_id" required>
-                                    <input class="form-control search-input search" type="search" 
-                                        id="product_search" 
-                                        placeholder="Tìm sản phẩm theo tên hoặc SKU" 
+                                    <input class="form-control search-input search" type="search"
+                                        id="product_search"
+                                        placeholder="Tìm sản phẩm theo tên hoặc SKU"
                                         autocomplete="off" />
                                     <span class="fas fa-search search-box-icon"></span>
-                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2" 
-                                        id="productSearchResults" 
+                                    <div class="dropdown-menu dropdown-menu-end search-dropdown-menu py-0 shadow border rounded-2"
+                                        id="productSearchResults"
                                         style="width: 100%; max-height: 24rem; overflow-y: auto;">
                                         <div class="list-group list-group-flush" id="productSearchResultsList">
                                             <!-- Search results will be loaded here -->
@@ -152,7 +152,7 @@
                             </div>
                             <div class="col-auto" style="min-width:180px;">
                                 <label class="form-label">Loại giao dịch<span class="text-danger">*</span></label>
-                                <select name="type" class="form-control" required>
+                                <select name="type" class="form-control" id="transaction_type" required>
                                     <option value="import">Nhập kho</option>
                                     <option value="export">Xuất kho</option>
                                     <option value="adjust">Điều chỉnh kho</option>
@@ -169,6 +169,9 @@
                                 @enderror
                             </div>
                             <div class="col-auto d-flex align-items-end">
+                                <button type="button" class="btn btn-outline-secondary me-2" id="add-quantity-btn">Thêm số lượng</button>
+                            </div>
+                            <div class="col-auto d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary" id="submit-bulk" disabled>
                                     <span class="fas fa-save me-2"></span>Thực hiện
                                 </button>
@@ -181,7 +184,7 @@
                                         <th class="align-middle ps-4" style="min-width:180px;">Biến thể</th>
                                         <th class="align-middle ps-4" style="min-width:120px;">SKU</th>
                                         <th class="align-middle ps-4" style="min-width:120px;">Tồn kho hiện tại</th>
-                                        <th class="align-middle ps-4" style="min-width:120px;">Số lượng<span class="text-danger">*</span></th>
+                                        <th class="align-middle ps-4" style="min-width:120px;">Số lượng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -209,15 +212,15 @@
                                 <input class="form-control search-input search" type="search" name="search"
                                     placeholder="Tìm SKU hoặc tên sản phẩm" value="{{ request('search') }}" />
                                 <span class="fas fa-search search-box-icon"></span>
-                    </div>
+                            </div>
                             <div style="min-width:160px;">
                                 <select name="type" class="form-select" onchange="this.form.submit()">
-                            <option value="">Tất cả loại giao dịch</option>
-                            <option value="import" {{ request('type') === 'import' ? 'selected' : '' }}>Nhập kho</option>
-                            <option value="export" {{ request('type') === 'export' ? 'selected' : '' }}>Xuất kho</option>
-                            <option value="adjust" {{ request('type') === 'adjust' ? 'selected' : '' }}>Điều chỉnh kho</option>
-                        </select>
-                    </div>
+                                    <option value="">Tất cả loại giao dịch</option>
+                                    <option value="import" {{ request('type') === 'import' ? 'selected' : '' }}>Nhập kho</option>
+                                    <option value="export" {{ request('type') === 'export' ? 'selected' : '' }}>Xuất kho</option>
+                                    <option value="adjust" {{ request('type') === 'adjust' ? 'selected' : '' }}>Điều chỉnh kho</option>
+                                </select>
+                            </div>
                             <div class="form-check d-flex align-items-center ms-2 mb-0">
                                 <input type="checkbox" name="low_stock" class="form-check-input me-2" id="lowStockCheckbox"
                                     {{ request('low_stock') ? 'checked' : '' }} onchange="this.form.submit()">
@@ -229,8 +232,8 @@
 
                 <div class="table-responsive scrollbar">
                     <table class="table table-hover table-sm align-middle rounded-3 shadow-sm mb-0 fs-9">
-                <thead>
-                    <tr>
+                        <thead>
+                            <tr>
                                 <th class="align-middle ps-4">Mã giao dịch</th>
                                 <th class="align-middle ps-4">Sản phẩm/Biến thể</th>
                                 <th class="align-middle ps-4">Mã phiếu nhập</th>
@@ -240,68 +243,68 @@
                                 <th class="align-middle ps-4">Người thực hiện</th>
                                 <th class="align-middle ps-4">Ngày</th>
                                 <th class="align-middle text-end pe-0 ps-4">Thao tác</th>
-                    </tr>
-                </thead>
+                            </tr>
+                        </thead>
                         <tbody class="list">
-                @foreach ($inventories as $inventory)
-                    <tr>
+                            @foreach ($inventories as $inventory)
+                                <tr>
                                     <td class="reference align-middle ps-4">{{ $inventory->reference }}</td>
                                     <td class="product align-middle ps-4">
-                            @if ($inventory->variation)
-                                {{ $inventory->variation->product->name ?? 'N/A' }} - {{ $inventory->variation->name }} (SKU: {{ $inventory->variation->sku }})
-                            @elseif ($inventory->product)
-                                {{ $inventory->product->name ?? 'N/A' }} (SKU: {{ $inventory->product->sku }})
-                            @else
-                                N/A
-                            @endif
-                        </td>
+                                        @if ($inventory->variation)
+                                            {{ $inventory->variation->product->name ?? 'N/A' }} - {{ $inventory->variation->name }} (SKU: {{ $inventory->variation->sku }})
+                                        @elseif ($inventory->product)
+                                            {{ $inventory->product->name ?? 'N/A' }} (SKU: {{ $inventory->product->sku }})
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="import_code align-middle ps-4">{{ $inventory->importDocument->code ?? 'N/A' }}</td>
                                     <td class="type align-middle ps-4">
-                            @if ($inventory->type === 'import')
+                                        @if ($inventory->type === 'import')
                                             <span class="badge bg-success">Nhập kho</span>
-                            @elseif ($inventory->type === 'export')
+                                        @elseif ($inventory->type === 'export')
                                             <span class="badge bg-danger">Xuất kho</span>
-                            @else
+                                        @else
                                             <span class="badge bg-warning">Điều chỉnh</span>
-                            @endif
-                        </td>
+                                        @endif
+                                    </td>
                                     <td class="quantity align-middle ps-4">{{ $inventory->quantity }}</td>
                                     <td class="current_stock align-middle ps-4">
-                            @if ($inventory->variation)
-                                {{ $inventory->variation->stock_quantity ?? 'N/A' }}
-                                @if ($inventory->variation && $inventory->variation->stock_quantity <= $inventory->variation->stock_alert_threshold)
-                                    <span class="badge bg-warning">Tồn thấp</span>
-                                @endif
-                            @elseif ($inventory->product)
-                                {{ $inventory->product->stock_quantity ?? 'N/A' }}
-                                @if ($inventory->product && $inventory->product->stock_quantity <= 10)
-                                    <span class="badge bg-warning">Tồn thấp</span>
-                                @endif
-                            @else
-                                N/A
-                            @endif
-                        </td>
+                                        @if ($inventory->variation)
+                                            {{ $inventory->variation->stock_quantity ?? 'N/A' }}
+                                            @if ($inventory->variation && $inventory->variation->stock_quantity <= $inventory->variation->stock_alert_threshold)
+                                                <span class="badge bg-warning">Tồn thấp</span>
+                                            @endif
+                                        @elseif ($inventory->product)
+                                            {{ $inventory->product->stock_quantity ?? 'N/A' }}
+                                            @if ($inventory->product && $inventory->product->stock_quantity <= 10)
+                                                <span class="badge bg-warning">Tồn thấp</span>
+                                            @endif
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="user align-middle ps-4">{{ $inventory->user->name ?? 'N/A' }}</td>
                                     <td class="date align-middle ps-4">{{ $inventory->created_at->format('d/m/Y H:i') }}</td>
-                        <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
-                            <div class="btn-reveal-trigger position-static">
-                                <button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <span class="fas fa-ellipsis-h fs-10"></span>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end py-2">
-                                    <a class="dropdown-item" href="{{ route('admin.inventory.show', $inventory->id) }}">Xem</a>
-                                    <a class="dropdown-item"
-                                        href="{{ route('admin.inventory.inventory-print', $inventory->id) }}">In phiếu</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+                                    <td class="align-middle text-end pe-0 ps-4 btn-reveal-trigger">
+                                        <div class="btn-reveal-trigger position-static">
+                                            <button
+                                                class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                                type="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                                <span class="fas fa-ellipsis-h fs-10"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                                <a class="dropdown-item" href="{{ route('admin.inventory.show', $inventory->id) }}">Xem</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.inventory.inventory-print', $inventory->id) }}">In phiếu</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
@@ -345,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
     targetSearch.addEventListener('input', function() {
         clearTimeout(searchTimeout);
         const searchTerm = this.value.trim();
-        
+
         if (searchTerm.length < 2) {
             targetSearchResults.style.display = 'none';
             return;
@@ -361,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     targetSearchLoading.style.display = 'none';
-                    
+
                     if (data.results && data.results.length > 0) {
                         data.results.forEach(item => {
                             const div = document.createElement('div');
@@ -447,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 productId.value = item.id;
                                 productSearch.value = item.text;
                                 productSearchResults.style.display = 'none';
-                                // Trigger load biến thể như cũ
+                                // Trigger load biến thể
                                 const event = new Event('change', { bubbles: true });
                                 productId.dispatchEvent(event);
                             });
@@ -464,12 +467,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }, 300);
     });
+
     // Đóng dropdown khi click ra ngoài
     document.addEventListener('click', function(e) {
         if (!productSearch.contains(e.target) && !productSearchResults.contains(e.target)) {
             productSearchResults.style.display = 'none';
         }
     });
+
     // Reset khi submit hoặc chuyển tab
     productSearch.form && productSearch.form.addEventListener('reset', function() {
         productId.value = '';
@@ -494,10 +499,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <tr>
                                     <td class="align-middle ps-4">${variation.name}</td>
                                     <td class="align-middle ps-4">${variation.sku}</td>
-                                    <td class="align-middle ps-4">${variation.stock_quantity}</td>
+                                    <td class="align-middle ps-4 stock-quantity" data-variation-id="${variation.id}">${variation.stock_quantity}</td>
                                     <td class="align-middle ps-4">
                                         <input type="hidden" name="variations[${variation.id}][id]" value="${variation.id}">
-                                        <input type="number" name="variations[${variation.id}][quantity]" class="form-control form-control-sm quantity-input" min="1" required>
+                                        <input type="number" name="variations[${variation.id}][quantity]" class="form-control form-control-sm quantity-input" min="1" data-stock="${variation.stock_quantity}">
                                     </td>
                                 </tr>
                             `);
@@ -511,6 +516,72 @@ document.addEventListener('DOMContentLoaded', function() {
                     tableBody.append('<tr><td colspan="4" class="text-center">Lỗi khi tải biến thể.</td></tr>');
                 }
             });
+        }
+    });
+
+    // Xử lý nút Thêm số lượng
+    $('#add-quantity-btn').on('click', function() {
+        let quantity;
+        do {
+            quantity = prompt('Nhập số lượng (phải là số lớn hơn 0):');
+            if (quantity === null) return; // Người dùng bấm Cancel
+            quantity = parseFloat(quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                alert('Vui lòng nhập một số lượng hợp lệ (lớn hơn 0).');
+            }
+        } while (isNaN(quantity) || quantity <= 0);
+
+        // Cập nhật tất cả các ô số lượng trong bảng biến thể
+        const quantityInputs = document.querySelectorAll('#variations-table .quantity-input');
+        const transactionType = document.getElementById('transaction_type').value;
+        let hasError = false;
+        let errorMessage = '';
+
+        quantityInputs.forEach(input => {
+            const stockQuantity = parseInt(input.getAttribute('data-stock'));
+            if (transactionType === 'export' && quantity > stockQuantity) {
+                hasError = true;
+                const variationName = input.closest('tr').querySelector('td').textContent;
+                errorMessage += `Số lượng xuất kho cho biến thể ${variationName} vượt quá tồn kho hiện tại (${stockQuantity}).\n`;
+            } else {
+                input.value = Math.floor(quantity); // Đảm bảo là số nguyên
+            }
+        });
+
+        if (hasError) {
+            alert(errorMessage + 'Vui lòng nhập lại số lượng.');
+        }
+    });
+
+    // Kiểm tra trước khi submit để đảm bảo ít nhất một biến thể có số lượng và validate xuất kho
+    $('#bulk-inventory-form').on('submit', function(e) {
+        const quantityInputs = document.querySelectorAll('#variations-table .quantity-input');
+        const transactionType = document.getElementById('transaction_type').value;
+        let hasQuantity = false;
+        let hasError = false;
+        let errorMessage = '';
+
+        quantityInputs.forEach(input => {
+            const quantity = parseFloat(input.value);
+            if (quantity && quantity > 0) {
+                hasQuantity = true;
+                if (transactionType === 'export') {
+                    const stockQuantity = parseInt(input.getAttribute('data-stock'));
+                    const variationName = input.closest('tr').querySelector('td').textContent;
+                    if (quantity > stockQuantity) {
+                        hasError = true;
+                        errorMessage += `Số lượng xuất kho cho biến thể ${variationName} vượt quá tồn kho hiện tại (${stockQuantity}).\n`;
+                    }
+                }
+            }
+        });
+
+        if (!hasQuantity) {
+            e.preventDefault();
+            alert('Vui lòng nhập số lượng cho ít nhất một biến thể.');
+        } else if (hasError) {
+            e.preventDefault();
+            alert(errorMessage + 'Vui lòng nhập lại số lượng.');
         }
     });
 });

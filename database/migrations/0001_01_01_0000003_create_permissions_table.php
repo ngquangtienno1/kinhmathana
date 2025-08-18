@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('slug', 100)->unique();
             $table->text('description')->nullable();
+             $table->string('group_permissions')->nullable();
             $table->timestamps();
         });
     }

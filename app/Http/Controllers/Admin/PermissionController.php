@@ -67,6 +67,7 @@ class PermissionController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
             'description' => 'nullable|string|max:1000',
+            'group_permissions' => 'nullable|string|max:255',
         ]);
 
         // Tự động tạo slug từ tên quyền

@@ -260,9 +260,6 @@
                                     <div class="d-flex gap-2 align-items-center mb-2">
                                         <button type="button" id="generate-variations"
                                             class="btn btn-primary btn-sm">Tạo biến thể</button>
-                                        <button type="button" id="set-variations-price"
-                                            class="btn btn-warning btn-sm" style="display: none;">Thêm giá
-                                            gốc</button>
                                     </div>
                                 </div>
                                 <div id="variations-container" class="mt-3"
@@ -277,7 +274,7 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-2">
                                                 <input type="text" name="variations[{{ $index }}][sku]"
                                                     value="{{ $variation['sku'] ?? '' }}" class="form-control"
                                                     placeholder="Mã sản phẩm">
@@ -448,10 +445,10 @@
             .catch(error => {
                 console.error(error);
             });
-        window.colors = @json($colors->pluck('name'));
-        window.sizes = @json($sizes->pluck('name'));
-        window.spherical_values = @json($sphericals->pluck('name'));
-        window.cylindrical_values = @json($cylindricals->pluck('name'));
+        window.colors = @json($colors->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
+        window.sizes = @json($sizes->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
+        window.spherical_values = @json($sphericals->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
+        window.cylindrical_values = @json($cylindricals->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
     </script>
 @endpush
 

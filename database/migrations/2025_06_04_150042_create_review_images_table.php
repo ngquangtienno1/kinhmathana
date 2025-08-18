@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('review_id')->constrained('reviews')->onDelete('cascade');
             $table->string('image_path');
+             $table->string('video_path')->nullable();
             $table->timestamps();
         });
     }

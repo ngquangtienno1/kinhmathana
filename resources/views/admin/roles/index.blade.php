@@ -27,7 +27,7 @@
                 </form>
             </div>
             <div class="ms-xxl-auto">
-                @if (auth()->user()->hasPermission('edit-users'))
+                @if (auth()->user()->hasPermission('them-vai-tro'))
                     <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
                         <span class="fas fa-plus me-2"></span>Thêm vai trò
                     </a>
@@ -64,12 +64,35 @@
                                 </div>
                             </td>
                             <td class="id align-middle">{{ $role->id }}</td>
-                            <td class="name align-middle">{{ $role->name }}</td>
+                            <td class="name align-middle">
+                                @if ($role->name === 'Admin')
+                                    <span class="badge bg-danger">{{ $role->name }}</span>
+                                @elseif($role->name === 'Nhân viên')
+                                    <span class=" badge bg-secondary">{{ $role->name }}</span>
+                                @elseif($role->name === 'Khách hàng')
+                                    <span class="badge bg-info">{{ $role->name }}</span>
+                                @elseif($role->name === 'Test')
+                                    <span class="badge bg-warning text-dark">{{ $role->name }}</span>
+                                @else
+                                    <span class="badge bg-success">{{ $role->name }}</span>
+                                @endif
+                            </td>
                             <td class="description align-middle">{{ $role->description }}</td>
                             <td class="permissions align-middle">
-                                @foreach ($role->permissions as $permission)
-                                    <span class="badge bg-info">{{ $permission->name }}</span>
-                                @endforeach
+                                @if ($role->permissions->count() === $totalPermissions)
+                                    <span class="badge bg-primary">ALL</span>
+                                @else
+                                    @php
+                                        $groups = $role->permissions
+                                            ->pluck('group_permissions')
+                                            ->unique()
+                                            ->filter()
+                                            ->values();
+                                    @endphp
+                                    @foreach ($groups as $group)
+                                        <span class="badge bg-primary">{{ $group ?: 'Khác' }}</span>
+                                    @endforeach
+                                @endif
                             </td>
                             <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                 @if (auth()->user()->hasPermission('them-vai-tro'))

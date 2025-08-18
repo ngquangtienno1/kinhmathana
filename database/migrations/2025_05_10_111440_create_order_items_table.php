@@ -17,11 +17,12 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('restrict');
             $table->string('product_name');
             $table->string('product_sku')->nullable();
-            $table->decimal('price', 10, 2)->comment('Giá sản phẩm tại thời điểm mua');
+            $table->decimal('price', 18, 2)->comment('Giá sản phẩm tại thời điểm mua');
             $table->integer('quantity');
-            $table->decimal('subtotal', 10, 2)->comment('Tổng tiền = price * quantity');
-            $table->decimal('discount_amount', 10, 2)->default(0)->comment('Số tiền giảm giá cho item này');
+            $table->decimal('subtotal', 18, 2)->comment('Tổng tiền = price * quantity');
+            $table->decimal('discount_amount', 18, 2)->default(0)->comment('Số tiền giảm giá cho item này');
             $table->json('product_options')->nullable()->comment('Các tuỳ chọn của sản phẩm (size, color,...)');
+            $table->foreignId('variation_id')->nullable()->constrained('variations')->nullOnDelete();
             $table->text('note')->nullable();
             $table->timestamps();
         });

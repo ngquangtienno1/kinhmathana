@@ -99,11 +99,12 @@ class PromotionController extends Controller
                 'discount_value.required' => 'Vui lòng nhập giá trị giảm.',
                 'discount_value.numeric' => 'Giá trị giảm phải là số.',
                 'discount_value.min' => 'Giá trị giảm phải lớn hơn hoặc bằng 0.',
+                'discount_value.max' => 'Phần trăm giảm giá không được vượt quá 100%.',
                 'minimum_purchase.required' => 'Vui lòng nhập giá trị đơn tối thiểu.',
                 'minimum_purchase.numeric' => 'Giá trị đơn tối thiểu phải là số.',
                 'minimum_purchase.min' => 'Giá trị đơn tối thiểu phải lớn hơn hoặc bằng 0.',
-                'maximum_purchase.min' => 'Giá trị đơn tối thiểu phải lớn hơn hoặc bằng 0.',
-                'maximum_purchase.gt' => 'Giá trị đơn tối thiểu phải lớn hơn giá trị đơn tối thiểu.',
+                'maximum_purchase.min' => 'Giá trị đơn tối đa phải lớn hơn hoặc bằng 0.',
+                'maximum_purchase.gt' => 'Giá trị đơn tối đa phải lớn hơn giá trị đơn tối thiểu.',
                 'usage_limit.integer' => 'Giới hạn lượt dùng phải là số nguyên.',
                 'usage_limit.min' => 'Giới hạn lượt dùng phải lớn hơn 0.',
                 'is_active.boolean' => 'Trạng thái không hợp lệ.',
@@ -123,7 +124,16 @@ class PromotionController extends Controller
                 'code' => 'required|string|max:50|unique:promotions',
                 'description' => 'nullable|string',
                 'discount_type' => 'required|in:percentage,fixed',
-                'discount_value' => 'required|numeric|min:0',
+                'discount_value' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ($request->discount_type === 'percentage' && $value > 100) {
+                            $fail('Phần trăm giảm giá không được vượt quá 100%.');
+                        }
+                    }
+                ],
                 'minimum_purchase' => 'required|numeric|min:0',
                 'maximum_purchase' => 'nullable|numeric|min:0|gt:minimum_purchase',
                 'usage_limit' => 'nullable|integer|min:1',
@@ -211,7 +221,16 @@ class PromotionController extends Controller
                 ],
                 'description' => 'nullable|string',
                 'discount_type' => 'required|in:percentage,fixed',
-                'discount_value' => 'required|numeric|min:0',
+                'discount_value' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ($request->discount_type === 'percentage' && $value > 100) {
+                            $fail('Phần trăm giảm giá không được vượt quá 100%.');
+                        }
+                    }
+                ],
                 'minimum_purchase' => 'required|numeric|min:0',
                 'maximum_purchase' => 'nullable|numeric|min:0|gt:minimum_purchase',
                 'usage_limit' => 'nullable|integer|min:1',
@@ -222,6 +241,36 @@ class PromotionController extends Controller
                 'products.*' => 'exists:products,id',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
+            ], [
+                'name.required' => 'Tên khuyến mãi không được để trống.',
+                'name.max' => 'Tên khuyến mãi không được vượt quá 255 ký tự.',
+                'code.required' => 'Mã khuyến mãi không được để trống.',
+                'code.unique' => 'Mã khuyến mãi đã tồn tại.',
+                'code.max' => 'Mã khuyến mãi không được vượt quá 50 ký tự.',
+                'description.required' => 'Mô tả không được để trống.',
+                'discount_type.required' => 'Vui lòng chọn loại giảm giá.',
+                'discount_type.in' => 'Loại giảm giá không hợp lệ.',
+                'discount_value.required' => 'Vui lòng nhập giá trị giảm.',
+                'discount_value.numeric' => 'Giá trị giảm phải là số.',
+                'discount_value.min' => 'Giá trị giảm phải lớn hơn hoặc bằng 0.',
+                'discount_value.max' => 'Phần trăm giảm giá không được vượt quá 100%.',
+                'minimum_purchase.required' => 'Vui lòng nhập giá trị đơn tối thiểu.',
+                'minimum_purchase.numeric' => 'Giá trị đơn tối thiểu phải là số.',
+                'minimum_purchase.min' => 'Giá trị đơn tối thiểu phải lớn hơn hoặc bằng 0.',
+                'maximum_purchase.min' => 'Giá trị đơn tối đa phải lớn hơn hoặc bằng 0.',
+                'maximum_purchase.gt' => 'Giá trị đơn tối đa phải lớn hơn giá trị đơn tối thiểu.',
+                'usage_limit.integer' => 'Giới hạn lượt dùng phải là số nguyên.',
+                'usage_limit.min' => 'Giới hạn lượt dùng phải lớn hơn 0.',
+                'is_active.boolean' => 'Trạng thái không hợp lệ.',
+                'start_date.required' => 'Vui lòng chọn ngày bắt đầu.',
+                'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
+                'end_date.required' => 'Vui lòng chọn ngày kết thúc.',
+                'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+                'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+                'products.array' => 'Danh sách sản phẩm không hợp lệ.',
+                'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
+                'categories.array' => 'Danh sách danh mục không hợp lệ.',
+                'categories.*.exists' => 'Danh mục được chọn không tồn tại.',
             ]);
 
             // Update promotion
