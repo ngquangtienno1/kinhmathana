@@ -46,18 +46,44 @@ class CartClientController extends Controller
     {
         $user = Auth::user();
         $request->validate([
-            'variation_id' => 'required|exists:variations,id',
             'quantity' => 'required|integer|min:1',
+            'product_id' => 'required|exists:products,id', // Validate product_id
+            'variation_id' => 'nullable|exists:variations,id', // variation_id is optional
         ]);
+
+        $productId = $request->product_id;
         $variationId = $request->variation_id;
         $quantity = $request->quantity;
-        $variation = Variation::findOrFail($variationId);
 
-        $cartItem = Cart::where('user_id', $user->id)
-            ->where('variation_id', $variationId)
-            ->first();
+        // Check if the product has variations
+        $variation = $variationId ? Variation::find($variationId) : null;
+        if ($variation) {
+            $maxQuantity = $variation->quantity ?? 0;
+            if ($maxQuantity <= 0) {
+                return redirect()->route('client.cart.index')->with('error', 'Sản phẩm đã hết hàng!');
+            }
+            $cartItem = Cart::where('user_id', $user->id)
+                ->where('variation_id', $variationId)
+                ->first();
+        } else {
+            // For simple products without variations
+            $product = \App\Models\Product::findOrFail($productId);
+            $maxQuantity = $product->quantity ?? 0;
+            if ($maxQuantity <= 0) {
+                return redirect()->route('client.cart.index')->with('error', 'Sản phẩm đã hết hàng!');
+            }
+            $cartItem = Cart::where('user_id', $user->id)
+                ->where('product_id', $productId)
+                ->whereNull('variation_id')
+                ->first();
+        }
+
         $currentQty = $cartItem ? $cartItem->quantity : 0;
         $totalQty = $currentQty + $quantity;
+
+        if ($totalQty > $maxQuantity) {
+            return redirect()->route('client.cart.index')->with('error', 'Thất bại! Số lượng tồn kho không đủ');
+        }
 
         if ($cartItem) {
             $cartItem->quantity = $totalQty;
@@ -65,10 +91,12 @@ class CartClientController extends Controller
         } else {
             Cart::create([
                 'user_id' => $user->id,
+                'product_id' => $productId,
                 'variation_id' => $variationId,
                 'quantity' => $quantity,
             ]);
         }
+
         return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
     }
 
@@ -80,37 +108,44 @@ class CartClientController extends Controller
         ]);
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
 
-        // Cập nhật số lượng mà không kiểm tra tồn kho
-        $cartItem->quantity = $request->quantity;
+        // Lấy số lượng tồn kho thực tế
+        if ($cartItem->variation) {
+            $maxQty = $cartItem->variation->quantity ?? 0;
+        } else {
+            $maxQty = $cartItem->product->quantity ?? 0;
+        }
+
+        $newQty = min($request->quantity, $maxQty);
+
+        $cartItem->quantity = $newQty;
         $cartItem->save();
 
         // Tính lại tổng tiền dòng
-        $price = $cartItem->variation
-            ? ($cartItem->variation->sale_price ?? $cartItem->variation->price)
-            : ($cartItem->product->sale_price ?? $cartItem->product->price);
-        $itemTotal = $price * $cartItem->quantity;
-
+        if ($cartItem->variation) {
+            $price = $cartItem->variation->sale_price ?? $cartItem->variation->price;
+        } else {
+            $price = $cartItem->product->sale_price ?? $cartItem->product->price;
+        }
+        $item_total = number_format($price * $cartItem->quantity, 0, ',', '.');
         // Tính lại tổng tiền giỏ hàng
-        $cartItems = Cart::with(['variation.product', 'product'])
-            ->where('user_id', $user->id)
+        $cart_total = Cart::where('user_id', $user->id)
             ->orderBy('updated_at', 'desc')
-            ->get();
-        $cartTotal = $cartItems->sum(function ($item) {
-            $price = $item->variation
-                ? ($item->variation->sale_price ?? $item->variation->price)
-                : ($item->product->sale_price ?? $item->product->price);
-            return $price * $item->quantity;
-        });
-
-        // Định dạng số tiền
-        $itemTotalFormatted = number_format($itemTotal, 0, ',', '.') . '₫';
-        $cartTotalFormatted = number_format($cartTotal, 0, ',', '.') . '₫';
+            ->get()
+            ->sum(function ($item) {
+                if ($item->variation) {
+                    $price = $item->variation->sale_price ?? $item->variation->price;
+                } else {
+                    $price = $item->product->sale_price ?? $item->product->price;
+                }
+                return $price * $item->quantity;
+            });
+        $cart_total = number_format($cart_total, 0, ',', '.');
 
         return response()->json([
             'success' => true,
-            'message' => 'Cập nhật số lượng thành công!',
-            'item_total' => $itemTotalFormatted,
-            'cart_total' => $cartTotalFormatted,
+            'message' => $newQty < $request->quantity ? 'Số lượng đã được giới hạn theo tồn kho!' : 'Cập nhật số lượng thành công!',
+            'item_total' => $item_total,
+            'cart_total' => $cart_total,
         ]);
     }
 
@@ -221,9 +256,11 @@ class CartClientController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
         $subtotal = $cartItems->sum(function ($item) {
-            $price = $item->variation
-                ? ($item->variation->sale_price ?? $item->variation->price)
-                : ($item->product->sale_price ?? $item->product->price);
+            if ($item->variation) {
+                $price = $item->variation->sale_price ?? $item->variation->price;
+            } else {
+                $price = $item->product->sale_price ?? $item->product->price;
+            }
             return $price * $item->quantity;
         });
 
@@ -233,6 +270,7 @@ class CartClientController extends Controller
                 'message' => 'Đơn hàng phải có giá trị tối thiểu ' . number_format($promotion->minimum_purchase, 0, ',', '.') . '₫!'
             ]);
         }
+
         if ($promotion->maximum_purchase && $subtotal > $promotion->maximum_purchase) {
             return response()->json([
                 'success' => false,
@@ -392,15 +430,11 @@ class CartClientController extends Controller
             ]);
             if ($item->variation) {
                 $variation = $item->variation;
-                $variation->
-                quantity = max(0, $variation->
-                quantity - $item->quantity);
+                $variation->quantity = max(0, $variation->quantity - $item->quantity);
                 $variation->save();
             } elseif ($item->product) {
                 $product = $item->product;
-                $product->
-                quantity = max(0, $product->
-                quantity - $item->quantity);
+                $product->quantity = max(0, $product->quantity - $item->quantity);
                 $product->save();
             }
         }
@@ -443,19 +477,47 @@ class CartClientController extends Controller
             'variation_id' => $data['variation_id'] ?? null,
         ];
 
+        // Validate quantity before adding
+        if (isset($data['variation_id']) && $data['variation_id']) {
+            $variation = Variation::find($data['variation_id']);
+            if (!$variation) {
+                return false; // Variation not found
+            }
+            $maxQuantity = $variation->quantity ?? 0;
+        } else {
+            $product = \App\Models\Product::find($data['product_id']);
+            if (!$product) {
+                return false; // Product not found
+            }
+            $maxQuantity = $product->quantity ?? 0;
+        }
+
+        if ($maxQuantity <= 0) {
+            return false; // Out of quantity
+        }
+
         $cartItem = Cart::where($query)->first();
+        $quantity = $data['quantity'] ?? 1;
+        $currentQty = $cartItem ? $cartItem->quantity : 0;
+        $totalQty = $currentQty + $quantity;
+
+        if ($totalQty > $maxQuantity) {
+            return false; // Insufficient quantity
+        }
 
         if ($cartItem) {
-            $cartItem->quantity += $data['quantity'];
+            $cartItem->quantity = $totalQty;
             $cartItem->save();
         } else {
             Cart::create([
                 'user_id' => $userId,
                 'product_id' => $data['product_id'],
                 'variation_id' => $data['variation_id'] ?? null,
-                'quantity' => $data['quantity'],
+                'quantity' => $quantity,
             ]);
         }
+
+        return true;
     }
 
     public function execPostRequest($url, $data)
@@ -604,6 +666,15 @@ class CartClientController extends Controller
                 ]) : null,
                 'note' => null,
             ]);
+            if ($item->variation) {
+                $variation = $item->variation;
+                $variation->quantity = max(0, $variation->quantity - $item->quantity);
+                $variation->save();
+            } elseif ($item->product) {
+                $product = $item->product;
+                $product->quantity = max(0, $product->quantity - $item->quantity);
+                $product->save();
+            }
         }
         if ($promotion && $discountAmount > 0) {
             PromotionUsage::create([
@@ -781,6 +852,15 @@ class CartClientController extends Controller
                 ]) : null,
                 'note' => null,
             ]);
+            if ($item->variation) {
+                $variation = $item->variation;
+                $variation->quantity = max(0, $variation->quantity - $item->quantity);
+                $variation->save();
+            } elseif ($item->product) {
+                $product = $item->product;
+                $product->quantity = max(0, $product->quantity - $item->quantity);
+                $product->save();
+            }
         }
         if ($promotion && $discountAmount > 0) {
             PromotionUsage::create([

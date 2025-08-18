@@ -75,7 +75,7 @@
                             <ul class="products columns-3">
                                 @forelse($products as $product)
                                     <li
-                                        class="product type-product post-{{ $product->id }} status-publish {{ $product->quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
+                                        class="product type-product post-{{ $product->id }} status-publish {{ $product->stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image">
                                                 @if ($product->sale_price && $product->sale_price < $product->price)
@@ -255,7 +255,7 @@
                                                             rel="nofollow"
                                                             @if (
                                                                 !$product->variations->first() ||
-                                                                    ($product->variations->first() && $product->variations->first()->quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
+                                                                    ($product->variations->first() && $product->variations->first()->stock_quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
                                                             Add to cart
                                                         </button>
                                                     </form>

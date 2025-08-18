@@ -31,7 +31,6 @@ class OrderClientController extends Controller
                 $query->where('status', $status);
             }
         }
-        // Bổ sung tìm kiếm theo mã đơn hàng hoặc tên sản phẩm
         if ($q) {
             $query->where(function ($sub) use ($q) {
                 $sub->where('order_number', 'like', "%$q%")
@@ -39,8 +38,7 @@ class OrderClientController extends Controller
                         $q2->where('product_name', 'like', "%$q%")
                             ->orWhereHas('product', function ($q3) use ($q) {
                                 $q3->where('name', 'like', "%$q%")
-                                    ->orWhere('slug', 'like', "%$q%")
-                                ;
+                                    ->orWhere('slug', 'like', "%$q%");
                             });
                     });
             });
@@ -71,7 +69,8 @@ class OrderClientController extends Controller
 
     public function cancel(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
+        $user = Auth::user();
+        $order = Order::where('user_id', $user->id)->findOrFail($id);
         $allowCancelStatuses = ['pending', 'confirmed', 'awaiting_pickup'];
         if (!in_array($order->status, $allowCancelStatuses)) {
             return redirect()->route('client.orders.index')->with('error', 'Đơn hàng đã được duyệt hoặc thay đổi trạng thái, không thể hủy.');
@@ -94,7 +93,7 @@ class OrderClientController extends Controller
                 'is_default' => false,
             ];
             Log::info('Tạo lý do huỷ mới từ khách:', $logData);
-            $reason = \App\Models\CancellationReason::create($logData);
+            $reason = CancellationReason::create($logData);
             $order->cancellation_reason_id = $reason->id;
         } else {
             $order->cancellation_reason_id = $reasonId;
@@ -108,14 +107,34 @@ class OrderClientController extends Controller
             if ($item->variation_id) {
                 $variation = \App\Models\Variation::find($item->variation_id);
                 if ($variation) {
-                    $variation->quantity += $item->quantity;
+                    $variation->quantity = ($variation->quantity ?? 0) + $item->quantity;
                     $variation->save();
+                    Log::info('Restored quantity for variation:', [
+                        'variation_id' => $item->variation_id,
+                        'quantity_restored' => $item->quantity,
+                        'new_quantity' => $variation->quantity,
+                    ]);
+                } else {
+                    Log::warning('Variation not found for item during cancellation:', [
+                        'variation_id' => $item->variation_id,
+                        'order_id' => $order->id,
+                    ]);
                 }
             } else {
                 $product = \App\Models\Product::find($item->product_id);
                 if ($product) {
-                    $product->quantity += $item->quantity;
+                    $product->quantity = ($product->quantity ?? 0) + $item->quantity;
                     $product->save();
+                    Log::info('Restored quantity for product:', [
+                        'product_id' => $item->product_id,
+                        'quantity_restored' => $item->quantity,
+                        'new_quantity' => $product->quantity,
+                    ]);
+                } else {
+                    Log::warning('Product not found for item during cancellation:', [
+                        'product_id' => $item->product_id,
+                        'order_id' => $order->id,
+                    ]);
                 }
             }
         }
@@ -168,7 +187,6 @@ class OrderClientController extends Controller
             'content' => $request->content,
             'rating' => $request->rating,
         ]);
-        // Lưu ảnh
         Log::info('Review upload images:', [
             'hasFile' => $request->hasFile('images'),
             'files' => $request->file('images'),
@@ -184,26 +202,20 @@ class OrderClientController extends Controller
                 }
             }
         }
-        // Lưu video (nếu muốn lưu vào bảng review_images, dùng cột video_path, nếu có bảng riêng thì tạo mới)
         if ($request->hasFile('video')) {
             $video = $request->file('video');
             if ($video->isValid()) {
                 $path = $video->store('review_videos', 'public');
-                // Nếu bảng review_images có cột video_path:
                 ReviewImage::create([
                     'review_id' => $review->id,
                     'image_path' => null,
                     'video_path' => $path,
                 ]);
-                // Nếu dùng bảng riêng, hãy tạo bản ghi ở bảng review_videos
             }
         }
         return redirect()->route('client.orders.show', $order->id)->with('success', 'Đánh giá thành công!');
     }
 
-    /**
-     * Xác nhận đã nhận hàng
-     */
     public function confirmReceived($id)
     {
         $user = Auth::user();
@@ -211,12 +223,10 @@ class OrderClientController extends Controller
             ->where('status', 'delivered')
             ->findOrFail($id);
 
-        // Cập nhật trạng thái đơn hàng
         $order->status = 'completed';
         $order->completed_at = now();
         $order->save();
 
-        // Lưu lịch sử trạng thái
         $order->statusHistories()->create([
             'old_status' => 'delivered',
             'new_status' => 'completed',
@@ -224,7 +234,6 @@ class OrderClientController extends Controller
             'updated_by' => $user->id
         ]);
 
-        // Lưu lịch sử
         $order->histories()->create([
             'status_from' => 'delivered',
             'status_to' => 'completed',
@@ -235,43 +244,72 @@ class OrderClientController extends Controller
             ->with('success', 'Đã xác nhận nhận hàng thành công! Bây giờ bạn có thể đánh giá sản phẩm.');
     }
 
-
-    //Tuấn Anh
     public function reorder($id)
     {
         $user = Auth::user();
         $order = Order::with('items')->where('user_id', $user->id)->where('status', 'completed')->findOrFail($id);
-        Log::info('Reorder - order items:', $order->items->toArray());
+        $successItems = [];
+        $failedItems = [];
+
         foreach ($order->items as $item) {
             $variation = null;
+            $product = null;
             $price = 0;
+            $quantityAvailable = true;
+
             if ($item->variation_id) {
                 $variation = \App\Models\Variation::find($item->variation_id);
-                $price = $variation ? ($variation->sale_price ?? $variation->price) : 0;
-                Log::info('Reorder - found variation:', [
-                    'variation_id' => $item->variation_id,
-                    'variation' => $variation ? $variation->toArray() : null,
-                    'price' => $price
-                ]);
+                if ($variation) {
+                    $price = $variation->sale_price ?? $variation->price;
+                    $quantity = $variation->quantity ?? 0;
+                    $quantityAvailable = $quantity >= $item->quantity;
+                } else {
+                    $quantityAvailable = false;
+                }
             } else {
                 $product = \App\Models\Product::find($item->product_id);
-                $price = $product ? ($product->sale_price ?? $product->price) : 0;
-                Log::info('Reorder - found product:', [
-                    'product_id' => $item->product_id,
-                    'product' => $product ? $product->toArray() : null,
-                    'price' => $price
-                ]);
+                if ($product) {
+                    $price = $product->sale_price ?? $product->price;
+                    $quantity = $product->quantity ?? 0;
+                    $quantityAvailable = $quantity >= $item->quantity;
+                } else {
+                    $quantityAvailable = false;
+                }
             }
+
             $cartData = [
                 'product_id' => $item->product_id,
                 'variation_id' => $item->variation_id ?? null,
                 'quantity' => $item->quantity,
-                'price' => $price,
             ];
+
             Log::info('Reorder - addToCartDirect data:', $cartData);
-            app(CartClientController::class)->addToCartDirect($cartData, $user->id);
+
+            if ($quantityAvailable) {
+                $added = app(CartClientController::class)->addToCartDirect($cartData, $user->id);
+                if ($added) {
+                    $successItems[] = $item->product_name;
+                } else {
+                    $failedItems[] = $item->product_name . ' (hết hàng hoặc không khả dụng)';
+                }
+            } else {
+                $failedItems[] = $item->product_name . ' (hết hàng hoặc không tồn tại)';
+            }
         }
-        return redirect()->route('client.cart.index')->with('success', 'Đã thêm lại sản phẩm vào giỏ hàng!');
+
+        $message = '';
+        if (!empty($successItems)) {
+            $message .= 'Đã thêm các sản phẩm vào giỏ hàng: ' . implode(', ', $successItems) . '. ';
+        }
+        if (!empty($failedItems)) {
+            $message .= 'Không thể thêm các sản phẩm: ' . implode(', ', $failedItems) . '.';
+        }
+
+        if (empty($successItems) && !empty($failedItems)) {
+            return redirect()->route('client.orders.index')->with('error', trim($message));
+        }
+
+        return redirect()->route('client.cart.index')->with('success', trim($message));
     }
 
     public function reasons()

@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tempFiles.featured_image) {
             const preview = document.createElement("small");
             preview.className = "text-muted";
-
             featuredImageInput.insertAdjacentElement("afterend", preview);
         }
 
@@ -87,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tempFiles.gallery_images.length > 0) {
             const previewDiv = document.createElement("div");
             previewDiv.className = "mt-2";
+
             galleryImagesInput.insertAdjacentElement("afterend", previewDiv);
         }
 
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tempFiles.video_path) {
             const preview = document.createElement("small");
             preview.className = "text-muted";
-
+            preview.textContent = `Đã chọn: ${tempFiles.video_path.name}`;
             videoPathInput.insertAdjacentElement("afterend", preview);
         }
 
@@ -481,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
             variationsTableBody.appendChild(tr);
 
             const imageCell = tr.querySelector(".variation-image-cell");
-            if (imageInput?.files?.[0]) {
+            if (imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     const img = document.createElement("img");
@@ -490,13 +490,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     img.className = "variation-image";
                     img.style.maxWidth = "50px";
                     img.style.maxHeight = "50px";
+                    imageCell.innerHTML = ""; // Xóa nội dung cũ
                     imageCell.appendChild(img);
                 };
                 reader.readAsDataURL(imageInput.files[0]);
-            } else if (tempFiles.variation_images[index]) {
-                imageCell.textContent = tempFiles.variation_images[index].name;
             } else {
-                imageCell.textContent = "Không có ảnh";
+                // Nếu không có file mới, dùng tên từ <small> sau input (từ session khi lỗi)
+                const previewSmall = imageInput.nextElementSibling;
+                if (
+                    previewSmall &&
+                    previewSmall.classList.contains("text-muted")
+                ) {
+                    imageCell.textContent = previewSmall.textContent;
+                } else {
+                    imageCell.textContent = "Không có ảnh";
+                }
             }
         });
 
@@ -1048,6 +1056,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     cylindrical_id,
                 });
             });
+        });
+    });
+
+    // Thêm listener cho tất cả input ảnh biến thể (cập nhật table ngay khi change)
+    document.querySelectorAll(".variation-image-input").forEach((input) => {
+        input.addEventListener("change", () => {
+            saveTempFile(
+                input,
+                "variation_image",
+                Array.from(
+                    document.querySelectorAll(".variation-image-input")
+                ).indexOf(input)
+            );
+            updateVariationsTable();
         });
     });
 

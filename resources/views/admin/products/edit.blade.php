@@ -145,13 +145,15 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                       <div class="col-md-6">
-                            <label class="form-label">Số lượng <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" name="quantity" value="{{ old('quantity', $product->quantity ?? 0) }}" min="0" placeholder="Nhập số lượng">
-                            @error('quantity')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="quantity"
+                                        value="{{ old('quantity', $product->quantity ?? 0) }}" min="0"
+                                        placeholder="Nhập số lượng">
+                                    @error('quantity')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Slug sản phẩm</label>
                                     <input type="text" class="form-control" name="slug" id="simple_slug"
@@ -217,13 +219,14 @@
                                             $attributeGroups['cylindrical'] = array_unique(
                                                 $attributeGroups['cylindrical'],
                                             );
+                                            $usedTypes = array_keys(array_filter($attributeGroups, fn($values) => !empty($values)));
                                             $attributeIndex = 0;
                                         @endphp
 
                                         @php
                                             $oldAttributes = old('attributes');
                                         @endphp
-                                        @foreach (['color', 'size', 'spherical', 'cylindrical'] as $type)
+                                        @foreach ($usedTypes as $type)
                                             @php
                                                 if (
                                                     $oldAttributes &&
@@ -240,7 +243,7 @@
                                                 <div class="col-md-3">
                                                     <select name="attributes[{{ $attributeIndex }}][type]"
                                                         class="form-select attribute-type"
-                                                        data-index="{{ $attributeIndex }}">
+                                                        data-index="{{ $attributeIndex }}" disabled>
                                                         <option value="color"
                                                             {{ $type == 'color' ? 'selected' : '' }}>Màu sắc</option>
                                                         <option value="size"
@@ -423,9 +426,11 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        <div class="col-md-1">
-                                            <input type="number" class="form-control" name="variations[{{ $index }}][quantity]" value="{{ $variation['quantity'] ?? 0 }}" min="0" placeholder="Nhập số lượng">
-                                        </div>
+                                            <div class="col-md-1">
+                                                <input type="number" class="form-control" name="variations[{{ $index }}][quantity]"
+                                                    value="{{ $variation['quantity'] ?? 0 }}" min="0"
+                                                    placeholder="Nhập số lượng">
+                                            </div>
                                             <div class="col-md-2">
                                                 <input type="file" name="variations[{{ $index }}][image]"
                                                     class="form-control variation-image-input"

@@ -181,72 +181,58 @@
                                                     <div class="attribute-values-tags">
                                                         @if (isset($attribute['values']))
                                                             @foreach ((array) $attribute['values'] as $value)
+                                                                @php
+                                                                    $displayValue = $value; // Default là ID nếu không tìm thấy
+                                                                    if ($attribute['type'] == 'color') {
+                                                                        $displayValue = $colors->firstWhere('id', $value)?->name ?? $value;
+                                                                    } elseif ($attribute['type'] == 'size') {
+                                                                        $displayValue = $sizes->firstWhere('id', $value)?->name ?? $value;
+                                                                    } elseif ($attribute['type'] == 'spherical') {
+                                                                        $sphericalName = $sphericals->firstWhere('id', $value)?->name ?? $value;
+                                                                        $displayValue = number_format((float) $sphericalName, 2, '.', '');
+                                                                    } elseif ($attribute['type'] == 'cylindrical') {
+                                                                        $cylindricalName = $cylindricals->firstWhere('id', $value)?->name ?? $value;
+                                                                        $displayValue = number_format((float) $cylindricalName, 2, '.', '');
+                                                                    }
+                                                                @endphp
                                                                 <span class="tag">
-                                                                    {{ $value }}
-                                                                    <input type="hidden"
-                                                                        name="attributes[{{ $index }}][values][]"
-                                                                        value="{{ $value }}">
-                                                                    <button type="button" class="remove-tag"
-                                                                        data-value="{{ $value }}">×</button>
+                                                                    {{ $displayValue }}
+                                                                    <input type="hidden" name="attributes[{{ $index }}][values][]" value="{{ $value }}">
+                                                                    <button type="button" class="remove-tag" data-value="{{ $value }}">×</button>
                                                                 </span>
                                                             @endforeach
                                                         @endif
                                                     </div>
-                                                    <div class="border rounded p-3 attribute-values-container"
-                                                        style="max-height: 200px; overflow-y: auto;">
+                                                    <div class="border rounded p-3 attribute-values-container" style="max-height: 200px; overflow-y: auto;">
                                                         @if (isset($attribute['type']))
                                                             @if ($attribute['type'] == 'color')
                                                                 @foreach ($colors as $color)
                                                                     <div class="form-check">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input attribute-value-checkbox"
-                                                                            name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $color->id }}"
-                                                                            data-index="{{ $index }}"
-                                                                            {{ in_array($color->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
-                                                                        <label
-                                                                            class="form-check-label">{{ $color->name }}</label>
+                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $color->id }}" data-index="{{ $index }}" {{ in_array($color->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">{{ $color->name }}</label>
                                                                     </div>
                                                                 @endforeach
                                                             @elseif ($attribute['type'] == 'size')
                                                                 @foreach ($sizes as $size)
                                                                     <div class="form-check">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input attribute-value-checkbox"
-                                                                            name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $size->id }}"
-                                                                            data-index="{{ $index }}"
-                                                                            {{ in_array($size->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
-                                                                        <label
-                                                                            class="form-check-label">{{ $size->name }}</label>
+                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $size->id }}" data-index="{{ $index }}" {{ in_array($size->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">{{ $size->name }}</label>
                                                                     </div>
                                                                 @endforeach
                                                             @elseif ($attribute['type'] == 'spherical')
                                                                 @foreach ($sphericals as $spherical)
-                                                                    @php $val = number_format((float)$spherical->value, 2, '.', ''); @endphp
+                                                                    @php $val = number_format((float) $spherical->name, 2, '.', ''); @endphp  <!-- Sửa: dùng $spherical->name thay vì value -->
                                                                     <div class="form-check">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input attribute-value-checkbox"
-                                                                            name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $spherical->id }}"
-                                                                            data-index="{{ $index }}"
-                                                                            {{ in_array($spherical->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
-                                                                        <label
-                                                                            class="form-check-label">{{ $val }}</label>
+                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $spherical->id }}" data-index="{{ $index }}" {{ in_array($spherical->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">{{ $val }}</label>
                                                                     </div>
                                                                 @endforeach
                                                             @elseif ($attribute['type'] == 'cylindrical')
                                                                 @foreach ($cylindricals as $cylindrical)
-                                                                    @php $val = number_format((float)$cylindrical->value, 2, '.', ''); @endphp
+                                                                    @php $val = number_format((float) $cylindrical->name, 2, '.', ''); @endphp  <!-- Sửa: dùng $cylindrical->name thay vì value -->
                                                                     <div class="form-check">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input attribute-value-checkbox"
-                                                                            name="attributes[{{ $index }}][values][]"
-                                                                            value="{{ $cylindrical->id }}"
-                                                                            data-index="{{ $index }}"
-                                                                            {{ in_array($cylindrical->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
-                                                                        <label
-                                                                            class="form-check-label">{{ $val }}</label>
+                                                                        <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[{{ $index }}][values][]" value="{{ $cylindrical->id }}" data-index="{{ $index }}" {{ in_array($cylindrical->id, (array) ($attribute['values'] ?? [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label">{{ $val }}</label>
                                                                     </div>
                                                                 @endforeach
                                                             @endif
@@ -336,10 +322,7 @@
                                             <div class="col-md-2">
                                                 <input type="file" name="variations[{{ $index }}][image]"
                                                     class="form-control variation-image-input">
-                                                <!-- Hiển thị tên file đã chọn trước đó (nếu có) -->
-                                                @if (session('temp_variation_images') && isset(session('temp_variation_images')[$index]))
-                                                    <small class="text-muted">Đã chọn: {{ session('temp_variation_images')[$index] }}</small>
-                                                @endif
+
                                                 @error("variations.$index.image")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -377,8 +360,7 @@
                                                         <td>{{ $variation['quantity'] ?? 0 }}</td>
                                                         <td>
                                                             @if (session('temp_variation_images') && isset(session('temp_variation_images')[$index]))
-                                                                <small>{{ session('temp_variation_images')[$index] }}</small>
-                                                            @else
+
                                                                 Không có ảnh
                                                             @endif
                                                         </td>
@@ -413,10 +395,6 @@
                             <div class="col-md-6">
                                 <label class="form-label">Ảnh đại diện <span class="text-danger">*</span></label>
                                 <input type="file" class="form-control" name="featured_image" accept="image/*">
-                                <!-- Hiển thị tên file đã chọn trước đó (nếu có) -->
-                                @if (session('temp_featured_image'))
-                                    <small class="text-muted">Đã chọn: {{ session('temp_featured_image') }}</small>
-                                @endif
                                 @error('featured_image')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -425,17 +403,6 @@
                                 <label class="form-label">Album ảnh <span class="text-danger"></span></label>
                                 <input type="file" class="form-control" name="gallery_images[]" multiple
                                     accept="image/*">
-                                <!-- Hiển thị danh sách tên file đã chọn trước đó (nếu có) -->
-                                @if (session('temp_gallery_images'))
-                                    <div class="mt-2">
-                                        <small class="text-muted">Đã chọn:</small>
-                                        <ul>
-                                            @foreach (session('temp_gallery_images') as $fileName)
-                                                <li>{{ $fileName }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
                                 @error('gallery_images')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

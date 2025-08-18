@@ -2,11 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const productType = document.getElementById("product_type");
     const simpleProduct = document.getElementById("simple-product");
     const variableProduct = document.getElementById("variable-product");
-    const nameInput = document.getElementById("name");
-    const simpleSkuInput = document.getElementById("simple_sku");
-    const variableSkuInput = document.getElementById("variable_sku");
-    const simpleSlugInput = document.getElementById("simple_slug");
-    const variableSlugInput = document.getElementById("variable_slug");
     const attributesContainer = document.getElementById("attributes-container");
     const addAttributeBtn = document.getElementById("add-attribute");
     const generateVariationsBtn = document.getElementById(
@@ -19,70 +14,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const variationsTableContainer = document.getElementById(
         "variations-table-container"
     );
-    const setVariationsPriceBtn = document.getElementById(
-        "set-variations-price"
-    );
 
     // Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
     const colors = window.colors || [];
     const sizes = window.sizes || [];
-    const spherical_values = window.spherical_values || [];
-    const cylindrical_values = window.cylindrical_values || [];
+    let spherical_values = window.spherical_values || [];
+    let cylindrical_values = window.cylindrical_values || [];
 
-    // Check if edit mode
-    const isEditMode = !!document.querySelector(
-        'input[name="_method"][value="PUT"]'
-    );
-
-    // Gỡ lỗi trường quantity
-    const simpleQuantity = document.querySelector('input[name="quantity"]');
-    if (simpleQuantity) {
-        console.log("Quantity input:", simpleQuantity);
-        console.log(
-            "Display:",
-            window.getComputedStyle(simpleQuantity).display
-        );
-        console.log(
-            "Visibility:",
-            window.getComputedStyle(simpleQuantity).visibility
-        );
-        console.log(
-            "Opacity:",
-            window.getComputedStyle(simpleQuantity).opacity
-        );
-        console.log("ReadOnly:", simpleQuantity.readOnly);
+    // Chuẩn hóa dữ liệu từ chuỗi thành đối tượng { id, name }
+    if (typeof spherical_values[0] === "string") {
+        spherical_values = spherical_values.map((name, idx) => ({
+            id: window.spherical_ids ? window.spherical_ids[idx] : name,
+            name,
+        }));
     }
-
-    // Tự động sinh SKU và Slug
-    function generateSkuAndSlug(name, prefix = "") {
-        const timestamp = Date.now();
-        const sanitizedName =
-            name
-                .toLowerCase()
-                .replace(/[^a-z0-9\s]/g, "")
-                .replace(/\s+/g, "-") || "product";
-        const sku = `${prefix}${sanitizedName}-${timestamp}`;
-        const slug = `${prefix}${sanitizedName}-${timestamp}`;
-        return { sku, slug };
-    }
-
-    // Cập nhật SKU và Slug khi nhập tên sản phẩm
-    if (
-        nameInput &&
-        simpleSkuInput &&
-        simpleSlugInput &&
-        variableSkuInput &&
-        variableSlugInput
-    ) {
-        nameInput.addEventListener("input", function () {
-            if (!isEditMode) {
-                const { sku, slug } = generateSkuAndSlug(this.value);
-                simpleSkuInput.value = sku;
-                simpleSlugInput.value = slug;
-                variableSkuInput.value = `VAR-${sku}`;
-                variableSlugInput.value = `var-${slug}`;
-            }
-        });
+    if (typeof cylindrical_values[0] === "string") {
+        cylindrical_values = cylindrical_values.map((name, idx) => ({
+            id: window.cylindrical_ids ? window.cylindrical_ids[idx] : name,
+            name,
+        }));
     }
 
     // Xử lý chuyển đổi loại sản phẩm
@@ -94,30 +44,19 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 simpleProduct.style.display = "none";
                 variableProduct.style.display = "block";
-                if (!isEditMode) {
-                    const { sku, slug } = generateSkuAndSlug(
-                        nameInput.value || "product",
-                        "VAR-"
-                    );
-                    variableSkuInput.value = sku;
-                    variableSlugInput.value = `var-${slug}`;
-                }
             }
         }
-
         productType.addEventListener("change", toggleProductType);
-        toggleProductType();
+        toggleProductType(); // Khởi tạo trạng thái ban đầu
     }
 
     // Xử lý định dạng giá trị số
     document.querySelectorAll(".price-input").forEach((input) => {
         input.addEventListener("input", function (e) {
-            let value = e.target.value.replace(/[^0-9,.]/g, "");
-            if (value.includes(",")) value = value.replace(",", ".");
-            if (value.split(".").length > 2) value = value.replace(/\.+$/, "");
+            let value = e.target.value.replace(/[^0-9]/g, "");
             e.target.value = value;
+            updateVariationsTable();
         });
-
         input.addEventListener("blur", function (e) {
             if (e.target.value === "") {
                 e.target.value = "0";
@@ -204,7 +143,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 options.forEach((option) => {
-                    const value = option.id || option;
+                    const value =
+                        option.id !== undefined && option.id !== null
+                            ? String(option.id)
+                            : String(option.name || option);
                     const label = option.name || option;
                     const div = document.createElement("div");
                     div.className = "form-check";
@@ -217,6 +159,35 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
                     valuesContainer.appendChild(div);
                 });
+
+                // Đồng bộ tag với checkbox
+                const selectedValues = Array.from(
+                    valuesContainer.querySelectorAll(
+                        `input[name="attributes[${rowIndex}][values][]"]:checked`
+                    )
+                ).map((cb) => cb.value);
+                tagsContainer.innerHTML = "";
+                selectedValues.forEach((value) => {
+                    let label = value;
+                    if (selectedType === "color")
+                        label =
+                            colors.find((c) => c.id == value)?.name || value;
+                    else if (selectedType === "size")
+                        label = sizes.find((s) => s.id == value)?.name || value;
+                    else if (selectedType === "spherical")
+                        label =
+                            spherical_values.find((s) => s.id == value)?.name ||
+                            value;
+                    else if (selectedType === "cylindrical")
+                        label =
+                            cylindrical_values.find((c) => c.id == value)
+                                ?.name || value;
+
+                    const tag = document.createElement("span");
+                    tag.className = "tag";
+                    tag.innerHTML = `${label}<input type="hidden" name="attributes[${rowIndex}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                    tagsContainer.appendChild(tag);
+                });
             }
 
             typeSelect.addEventListener("change", function () {
@@ -224,6 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     this.closest(".attribute-row").getAttribute("data-index");
                 updateValuesContainer(this.value, rowIndex);
                 checkGenerateButton();
+                updateAddAttributeBtn();
             });
 
             valuesContainer.addEventListener("change", function (e) {
@@ -236,9 +208,26 @@ document.addEventListener("DOMContentLoaded", function () {
                     ).map((cb) => cb.value);
                     tagsContainer.innerHTML = "";
                     selectedValues.forEach((value) => {
+                        let label = value;
+                        if (typeSelect.value === "color")
+                            label =
+                                colors.find((c) => c.id == value)?.name ||
+                                value;
+                        else if (typeSelect.value === "size")
+                            label =
+                                sizes.find((s) => s.id == value)?.name || value;
+                        else if (typeSelect.value === "spherical")
+                            label =
+                                spherical_values.find((s) => s.id == value)
+                                    ?.name || value;
+                        else if (typeSelect.value === "cylindrical")
+                            label =
+                                cylindrical_values.find((c) => c.id == value)
+                                    ?.name || value;
+
                         const tag = document.createElement("span");
                         tag.className = "tag";
-                        tag.innerHTML = `${value}<input type="hidden" name="attributes[${rowIndex}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
+                        tag.innerHTML = `${label}<input type="hidden" name="attributes[${rowIndex}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
                         tagsContainer.appendChild(tag);
                     });
                     checkGenerateButton();
@@ -305,7 +294,55 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
                 .join("");
             r.setAttribute("data-index", rowIndex);
-            updateValuesContainer(typeSelect.value, rowIndex);
+            const valuesContainer = r.querySelector(
+                ".attribute-values-container"
+            );
+            if (valuesContainer) {
+                const selectedType = typeSelect.value;
+                const options =
+                    selectedType === "color"
+                        ? colors
+                        : selectedType === "size"
+                        ? sizes
+                        : selectedType === "spherical"
+                        ? spherical_values
+                        : cylindrical_values;
+
+                const selectedValues = Array.from(
+                    r.querySelectorAll(
+                        `input[name="attributes[${rowIndex}][values][]"]:checked`
+                    )
+                ).map((cb) => cb.value);
+
+                valuesContainer.innerHTML = "";
+                if (options.length === 0) {
+                    valuesContainer.innerHTML =
+                        '<p class="text-muted">Không có giá trị nào để chọn.</p>';
+                } else {
+                    options.forEach((option) => {
+                        const value =
+                            option.id !== undefined && option.id !== null
+                                ? String(option.id)
+                                : String(option.name || option);
+                        const label = option.name || option;
+                        const div = document.createElement("div");
+                        div.className = "form-check";
+                        div.innerHTML = `
+                            <input type="checkbox" class="form-check-input attribute-value-checkbox"
+                                name="attributes[${rowIndex}][values][]"
+                                value="${value}"
+                                data-index="${rowIndex}"
+                                ${
+                                    selectedValues.includes(value)
+                                        ? "checked"
+                                        : ""
+                                }>
+                            <label class="form-check-label">${label}</label>
+                        `;
+                        valuesContainer.appendChild(div);
+                    });
+                }
+            }
         });
     }
 
@@ -365,6 +402,76 @@ document.addEventListener("DOMContentLoaded", function () {
         return result;
     }
 
+    function updateVariationsTable() {
+        if (!variationsTableBody || !variationsContainer) return;
+        variationsTableBody.innerHTML = "";
+        const variationRows =
+            variationsContainer.getElementsByClassName("variation-row");
+
+        Array.from(variationRows).forEach((row, index) => {
+            const nameInput = row.querySelector('input[name$="[name]"]');
+            const skuInput = row.querySelector('input[name$="[sku]"]');
+            const priceInput = row.querySelector('input[name$="[price]"]');
+            const salePriceInput = row.querySelector(
+                'input[name$="[sale_price]"]'
+            );
+            const quantityInput = row.querySelector(
+                'input[name$="[quantity]"]'
+            );
+            const imageInput = row.querySelector('input[name$="[image]"]');
+
+            const name = nameInput?.value || "";
+            const sku = skuInput?.value || "";
+            const price = priceInput?.value
+                ? parseFloat(priceInput.value).toLocaleString("vi-VN")
+                : "0";
+            const salePrice = salePriceInput?.value
+                ? parseFloat(salePriceInput.value).toLocaleString("vi-VN")
+                : "0";
+            const quantity = quantityInput?.value || "0";
+            const imageUrl = imageInput?.dataset.imageUrl || "";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${name}</td>
+                <td>${sku}</td>
+                <td>${price} VNĐ</td>
+                <td>${salePrice} VNĐ</td>
+                <td>${quantity}</td>
+                <td class="variation-image-cell"></td>
+            `;
+            variationsTableBody.appendChild(tr);
+
+            const imageCell = tr.querySelector(".variation-image-cell");
+            if (imageInput?.files?.[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.alt = "Ảnh biến thể";
+                    img.className = "variation-image";
+                    img.style.maxWidth = "50px";
+                    img.style.maxHeight = "50px";
+                    imageCell.appendChild(img);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else if (imageUrl) {
+                const img = document.createElement("img");
+                img.src = imageUrl;
+                img.alt = "Ảnh biến thể";
+                img.className = "variation-image";
+                img.style.maxWidth = "50px";
+                img.style.maxHeight = "50px";
+                imageCell.appendChild(img);
+            } else {
+                imageCell.textContent = "Không có ảnh";
+            }
+        });
+
+        variationsTableContainer.style.display =
+            variationRows.length > 0 ? "block" : "none";
+    }
+
     function updateVariations(
         attributesContainer,
         variationsContainer,
@@ -391,6 +498,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const rawCombinations = generateCombinations(attributes);
+
         const existingVariationRows = Array.from(
             variationsContainer.getElementsByClassName("variation-row")
         );
@@ -444,9 +552,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sphericalName,
                 cylindricalName,
             ].filter(Boolean);
-            const name =
-                nameParts.join(" - ") ||
-                `Biến thể ${existingVariationRows.length + 1}`;
+            const name = nameParts.join(" - ");
 
             return { name, color_id, size_id, spherical_id, cylindrical_id };
         });
@@ -460,18 +566,26 @@ document.addEventListener("DOMContentLoaded", function () {
             (combo) => !existingVariations.includes(combo.name)
         );
 
+        if (!newCombinations.length) {
+            alert("Không có tổ hợp biến thể mới để tạo.");
+            return;
+        }
+
+        const newVariationRows = [];
         newCombinations.forEach((combo, idx) => {
             const globalIndex =
                 variationsContainer.getElementsByClassName(
                     "variation-row"
                 ).length;
             const skuPrefix = variableSkuInput?.value.trim() || "VAR";
+            const randomId = Math.random().toString(36).substring(2, 10);
             const variationSku = `${skuPrefix}-${combo.name
                 .toLowerCase()
-                .replace(/\s+/g, "-")}`;
+                .replace(/\s+/g, "-")}-${randomId}`;
 
             const row = document.createElement("div");
             row.className = "variation-row row g-2 mb-2";
+            row.setAttribute("data-new", "true"); // Đánh dấu biến thể mới
 
             const hiddenInputs = [];
             if (combo.color_id)
@@ -518,11 +632,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
             variationsContainer.appendChild(row);
+            newVariationRows.push(row);
 
             row.querySelectorAll(
-                'input[name$="[price]"], input[name$="[sale_price]"], input[name$="[sku]"], .variation-image-input'
+                'input[name$="[quantity]"], input[name$="[price]"], input[name$="[sale_price]"], input[name$="[sku]"], input[name$="[image]"]'
             ).forEach((input) => {
-                input.addEventListener("change", updateVariationsTable);
+                if (input.type === "file") {
+                    input.addEventListener("change", updateVariationsTable);
+                } else {
+                    input.addEventListener("input", updateVariationsTable);
+                }
             });
         });
 
@@ -531,6 +650,71 @@ document.addEventListener("DOMContentLoaded", function () {
         variationsTableContainer.style.display =
             variationsContainer.children.length > 0 ? "block" : "none";
         updateVariationsTable();
+
+        if (newVariationRows.length > 0) {
+            setTimeout(() => {
+                promptAllVariationPrices(newVariationRows);
+            }, 200);
+        }
+    }
+
+    function promptAllVariationPrices(newVariationRows) {
+        if (!newVariationRows.length) return;
+        let basePrice = null;
+        let salePrice = null;
+        while (true) {
+            basePrice = prompt(
+                "Nhập giá gốc cho các biến thể mới (VD: 1000 hoặc 1234.56):",
+                basePrice || ""
+            );
+            if (basePrice === null) return;
+            basePrice = basePrice.replace(",", ".").trim();
+            if (
+                !basePrice ||
+                isNaN(parseFloat(basePrice)) ||
+                parseFloat(basePrice) < 0
+            ) {
+                alert("Vui lòng nhập giá gốc hợp lệ (số dương).");
+                continue;
+            }
+            break;
+        }
+        while (true) {
+            salePrice = prompt(
+                "Nhập giá khuyến mãi cho các biến thể mới (có thể bỏ trống):",
+                salePrice || ""
+            );
+            if (salePrice === null) return;
+            if (salePrice === "") {
+                salePrice = "";
+                break;
+            }
+            salePrice = salePrice.replace(",", ".").trim();
+            if (
+                !salePrice ||
+                isNaN(parseFloat(salePrice)) ||
+                parseFloat(salePrice) < 0
+            ) {
+                alert(
+                    "Vui lòng nhập giá khuyến mãi hợp lệ (số dương hoặc để trống)."
+                );
+                continue;
+            }
+            if (parseFloat(salePrice) > parseFloat(basePrice)) {
+                alert("Giá khuyến mãi không được lớn hơn giá gốc!");
+                continue;
+            }
+            break;
+        }
+        newVariationRows.forEach((row) => {
+            const priceInput = row.querySelector('input[name$="[price]"]');
+            const salePriceInput = row.querySelector(
+                'input[name$="[sale_price]"]'
+            );
+            if (priceInput) priceInput.value = basePrice;
+            if (salePriceInput) salePriceInput.value = salePrice;
+        });
+        updateVariationsTable();
     }
 
     if (generateVariationsBtn && attributesContainer && variationsContainer) {
@@ -538,12 +722,29 @@ document.addEventListener("DOMContentLoaded", function () {
             updateVariations(
                 attributesContainer,
                 variationsContainer,
-                variableSkuInput
+                document.getElementById("variable_sku")
             );
         });
     }
 
-    // Xử lý xóa biến thể
+    // Thêm sự kiện cho các input số lượng và ảnh của tất cả biến thể
+    if (variationsContainer) {
+        const existingVariationRows =
+            variationsContainer.getElementsByClassName("variation-row");
+        Array.from(existingVariationRows).forEach((row) => {
+            const quantityInput = row.querySelector(
+                'input[name$="[quantity]"]'
+            );
+            const imageInput = row.querySelector('input[name$="[image]"]');
+            if (quantityInput) {
+                quantityInput.addEventListener("input", updateVariationsTable);
+            }
+            if (imageInput) {
+                imageInput.addEventListener("change", updateVariationsTable);
+            }
+        });
+    }
+
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-variation")) {
             const variationRows =
@@ -565,128 +766,71 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Cập nhật bảng danh sách biến thể
-    function updateVariationsTable() {
-        if (!variationsTableBody || !variationsContainer) return;
-        variationsTableBody.innerHTML = "";
-        const variationRows =
-            variationsContainer.getElementsByClassName("variation-row");
-
-        Array.from(variationRows).forEach((row, index) => {
-            const nameInput = row.querySelector('input[name$="[name]"]');
-            const skuInput = row.querySelector('input[name$="[sku]"]');
-            const priceInput = row.querySelector('input[name$="[price]"]');
-            const salePriceInput = row.querySelector(
-                'input[name$="[sale_price]"]'
-            );
-            const quantityInput = row.querySelector(
-                'input[name$="[quantity]"]'
-            );
-            const imageInput = row.querySelector(".variation-image-input");
-
-            const name = nameInput?.value || `Biến thể ${index + 1}`;
-            const sku = skuInput?.value || "";
-            const price = priceInput?.value
-                ? Number(priceInput.value).toLocaleString("vi-VN")
-                : "0";
-            const salePrice = salePriceInput?.value
-                ? Number(salePriceInput.value).toLocaleString("vi-VN")
-                : "0";
-            const quantity = quantityInput?.value || "0";
-            const oldImage =
-                imageInput?.dataset?.oldImage ||
-                imageInput?.dataset?.imageUrl ||
-                "";
-
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${name}</td>
-                <td>${sku}</td>
-                <td>${price} VNĐ</td>
-                <td>${salePrice} VNĐ</td>
-                <td>${quantity}</td>
-                <td class="variation-image-cell"></td>
-            `;
-            variationsTableBody.appendChild(tr);
-
-            const imageCell = tr.querySelector(".variation-image-cell");
-            if (imageInput?.files?.[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.alt = "Ảnh biến thể";
-                    img.className = "variation-image";
-                    img.style.maxWidth = "50px";
-                    img.style.maxHeight = "50px";
-                    imageCell.innerHTML = "";
-                    imageCell.appendChild(img);
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else if (oldImage) {
-                const img = document.createElement("img");
-                img.src = oldImage;
-                img.alt = "Ảnh biến thể";
-                img.className = "variation-image";
-                img.style.maxWidth = "50px";
-                img.style.maxHeight = "50px";
-                img.onerror = function () {
-                    imageCell.textContent = "Ảnh không hợp lệ";
-                };
-                imageCell.innerHTML = "";
-                imageCell.appendChild(img);
-            } else {
-                imageCell.textContent = "Không có ảnh";
-            }
-        });
-
-        variationsTableContainer.style.display =
-            variationRows.length > 0 ? "block" : "none";
-    }
-
-    // Thêm event cho image change
-    document.querySelectorAll(".variation-image-input").forEach((input) => {
-        input.addEventListener("change", updateVariationsTable);
-    });
-
-    // Xử lý submit form
     document.querySelectorAll("form").forEach((form) => {
         form.addEventListener("submit", function (e) {
+            const attributeRows =
+                attributesContainer?.getElementsByClassName("attribute-row") ||
+                [];
+            Array.from(attributeRows).forEach((row, idx) => {
+                const checkedValues = row.querySelectorAll(
+                    ".attribute-value-checkbox:checked"
+                );
+                if (checkedValues.length === 0) {
+                    row.querySelectorAll(
+                        `[name^="attributes[${idx}]"]`
+                    ).forEach((input) => {
+                        input.disabled = true;
+                    });
+                }
+            });
+
             const priceInput = form.querySelector('input[name="price"]');
             const salePriceInput = form.querySelector(
                 'input[name="sale_price"]'
             );
+            const quantityInput = form.querySelector('input[name="quantity"]');
             const variationPriceInputs = form.querySelectorAll(
                 'input[name^="variations"][name$="[price]"]'
             );
             const variationSalePriceInputs = form.querySelectorAll(
                 'input[name^="variations"][name$="[sale_price]"]'
             );
+            const variationQuantityInputs = form.querySelectorAll(
+                'input[name^="variations"][name$="[quantity]"]'
+            );
 
             let hasError = false;
 
-            if (
-                productType?.value === "simple" &&
-                priceInput &&
-                priceInput.value
-            ) {
-                let priceValue = priceInput.value.replace(",", ".").trim();
-                if (
-                    isNaN(parseFloat(priceValue)) ||
-                    parseFloat(priceValue) < 0
-                ) {
-                    priceInput.classList.add("is-invalid");
-                    hasError = true;
-                } else {
-                    priceInput.classList.remove("is-invalid");
-                    priceInput.value = parseFloat(priceValue).toString();
+            if (productType?.value === "simple") {
+                if (priceInput && priceInput.value) {
+                    let priceValue = priceInput.value.replace(",", ".");
+                    if (
+                        isNaN(parseFloat(priceValue)) ||
+                        parseFloat(priceValue) < 0
+                    ) {
+                        priceInput.classList.add("is-invalid");
+                        hasError = true;
+                    } else {
+                        priceInput.classList.remove("is-invalid");
+                        priceInput.value = parseFloat(priceValue).toString();
+                    }
+                }
+                if (quantityInput && quantityInput.value) {
+                    let quantityValue = parseInt(quantityInput.value);
+                    if (isNaN(quantityValue) || quantityValue < 0) {
+                        quantityInput.classList.add("is-invalid");
+                        hasError = true;
+                    } else {
+                        quantityInput.classList.remove("is-invalid");
+                        quantityInput.value = quantityValue;
+                    }
                 }
             }
 
             [...variationPriceInputs, ...variationSalePriceInputs].forEach(
                 (input) => {
                     if (input && input.value) {
-                        let priceValue = input.value.replace(",", ".").trim();
+                        let priceValue = input.value.replace(",", ".");
                         if (
                             isNaN(parseFloat(priceValue)) ||
                             parseFloat(priceValue) < 0
@@ -701,69 +845,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             );
 
+            variationQuantityInputs.forEach((input) => {
+                if (input && input.value) {
+                    let quantityValue = parseInt(input.value);
+                    if (isNaN(quantityValue) || quantityValue < 0) {
+                        input.classList.add("is-invalid");
+                        hasError = true;
+                    } else {
+                        input.classList.remove("is-invalid");
+                        input.value = quantityValue;
+                    }
+                }
+            });
+
             if (hasError) {
                 e.preventDefault();
-                alert("Vui lòng nhập giá hợp lệ (số dương).");
+                alert("Vui lòng nhập giá và số lượng hợp lệ (số dương).");
             }
         });
     });
-
-    // Xử lý nút "Thêm giá gốc" cho tất cả biến thể
-    if (setVariationsPriceBtn) {
-        setVariationsPriceBtn.addEventListener("click", function () {
-            const variationRows =
-                variationsContainer.getElementsByClassName("variation-row");
-            if (variationRows.length === 0) {
-                alert("Chưa có biến thể nào để thêm giá gốc.");
-                return;
-            }
-
-            let price;
-            while (true) {
-                price = prompt(
-                    "Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):"
-                );
-                if (price === null) return;
-                price = price.replace(",", ".").trim();
-                if (
-                    !price ||
-                    isNaN(parseFloat(price)) ||
-                    parseFloat(price) < 0
-                ) {
-                    alert("Vui lòng nhập giá gốc hợp lệ (số dương).");
-                    continue;
-                }
-                break;
-            }
-
-            Array.from(variationRows).forEach((row) => {
-                const priceInput = row.querySelector('input[name$="[price]"]');
-                if (priceInput) {
-                    priceInput.value = parseFloat(price).toString();
-                    priceInput.classList.remove("is-invalid");
-                }
-            });
-            updateVariationsTable();
-        });
-    }
-
-    // Tùy chỉnh edit mode: ẩn nút thêm/xóa thuộc tính, tạo biến thể, disable select/checkbox
-    if (isEditMode) {
-        if (addAttributeBtn) addAttributeBtn.style.display = "none";
-        if (generateVariationsBtn) generateVariationsBtn.style.display = "none";
-        if (setVariationsPriceBtn) setVariationsPriceBtn.style.display = "none";
-        document
-            .querySelectorAll(
-                ".remove-attribute, .remove-tag, .remove-variation"
-            )
-            .forEach((btn) => (btn.style.display = "none"));
-        document
-            .querySelectorAll(".attribute-type")
-            .forEach((select) => (select.disabled = true));
-        document
-            .querySelectorAll(".attribute-value-checkbox")
-            .forEach((cb) => (cb.disabled = true));
-    }
 
     // Khởi tạo
     updateAddAttributeBtn();

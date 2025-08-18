@@ -399,7 +399,8 @@ class ProductController extends Controller
             app(NotificationController::class)->notifyNewProduct($product);
 
             return redirect()->route('admin.products.list')->with('success', 'Sản phẩm đã được thêm thành công!');
-        } catch (\Exception $e) {
+        }
+         catch (\Exception $e) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())->withInput();
         }
     }

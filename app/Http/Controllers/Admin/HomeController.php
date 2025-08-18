@@ -255,37 +255,6 @@ class HomeController extends Controller
                 ->count();
         }
 
-<<<<<<< HEAD
-        // Đơn hàng đang giao
-        $shippingOrders = (clone $orderQuery)->where('status', 'shipping')->count();
-        // Sản phẩm sắp hết hàng (tồn kho < 5, nhưng > 0)
-        $lowStockProducts = Product::where('quantity', '>', 0)->where('quantity', '<', 5)->count();
-        // Sản phẩm khuyến mãi
-        $promotionProducts = Product::whereNotNull('sale_price')->where('sale_price', '>', 0)->count();
-        // Sản phẩm mới trong tháng
-        $newProductsThisMonth = Product::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count();
-        // Khách hàng mua nhiều nhất (top 1)
-        $topCustomer = User::where('role_id', 3)
-            ->withCount(['orders as total_orders' => function($q) { $q->where('status', 'delivered'); }])
-            ->orderByDesc('total_orders')->first();
-        $topCustomerName = $topCustomer ? $topCustomer->name : 'N/A';
-        // Khách hàng chưa từng mua
-        $neverOrderedCustomers = User::where('role_id', 3)->doesntHave('orders')->count();
-        // Sản phẩm được đánh giá nhiều nhất
-        $mostReviewedProduct = Product::withCount('reviews')->orderByDesc('reviews_count')->first();
-        $mostReviewedProductName = $mostReviewedProduct ? $mostReviewedProduct->name : 'N/A';
-        $mostReviewedProductCount = $mostReviewedProduct ? $mostReviewedProduct->reviews_count : 0;
-        // Số lượng bình luận mới trong tuần
-        $newCommentsThisWeek = \App\Models\Comment::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
-        // Tổng số biến thể
-        $totalVariations = \App\Models\Variation::count();
-        // Biến thể sắp hết hàng
-        $lowStockVariations = \App\Models\Variation::where('quantity', '>', 0)->where('quantity', '<', 5)->count();
-        // Số thương hiệu
-        $totalBrands = \App\Models\Brand::count();
-        // Số danh mục
-        $totalCategories = \App\Models\Category::count();
-=======
         // Dữ liệu cho biểu đồ phân bố doanh thu theo danh mục
         $categoryRevenueData = Category::select('categories.*', DB::raw('COALESCE(SUM(order_items.quantity * order_items.price), 0) as total_revenue'))
             ->join('category_product', 'categories.id', '=', 'category_product.category_id')
@@ -402,7 +371,6 @@ class HomeController extends Controller
         } else {
             $filterTimeLabel = 'Tất cả thời gian';
         }
->>>>>>> b81665f1b6c86bc07c898afc4b842ad64baebc03
 
         return view('admin.index', compact(
             // === THỐNG KÊ CƠ BẢN ===
