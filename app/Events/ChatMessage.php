@@ -18,8 +18,9 @@ class ChatMessage implements ShouldBroadcastNow
     public $from_avatar;
     public $attachment;
     public $type;
+    public $message_id;
 
-    public function __construct($from_id, $from_name, $to_id, $message, $from_avatar = null, $attachment = null, $type = 'text')
+    public function __construct($from_id, $from_name, $to_id, $message, $from_avatar = null, $attachment = null, $type = 'text', $message_id = null)
     {
         $this->from_id = $from_id;
         $this->from_name = $from_name;
@@ -28,6 +29,7 @@ class ChatMessage implements ShouldBroadcastNow
         $this->from_avatar = $from_avatar;
         $this->attachment = $attachment;
         $this->type = $type;
+        $this->message_id = $message_id;
     }
 
     public function broadcastOn()
@@ -43,6 +45,7 @@ class ChatMessage implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
+            'id' => $this->message_id,
             'from_id' => $this->from_id,
             'from_name' => $this->from_name,
             'to_id' => $this->to_id,

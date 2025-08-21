@@ -61,7 +61,9 @@ class HomeController extends Controller
         $cancelledOrders = (clone $orderQuery)->whereIn('status', ['cancelled_by_admin', 'cancelled_by_customer'])->count();
 
         // Thống kê sản phẩm
-        $outOfStockProducts = Product::where('stock_quantity', '<=', 0)->count();
+        $totalProducts = Product::count();
+        $totalStock = Product::sum('quantity');
+        $outOfStockProducts = Product::where('quantity', '<=', 0)->count();
 
         // Thống kê khách hàng
         $userQuery = User::where('role_id', 3);

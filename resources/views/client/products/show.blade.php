@@ -108,22 +108,23 @@
                                         </bdi>
                                     </span>
                                 </p>
-                                @if (isset($selectedVariation) && $selectedVariation->stock_quantity === 0)
+                                @if (isset($selectedVariation) && $selectedVariation->quantity === 0)
                                     <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
                                         <strong id="variant-stock-quantity">Hết hàng</strong>
                                     </div>
                                 @else
                                     <div style="margin-top: 15px; font-size: 1.05em; color: #222;">
                                         Số lượng: <strong
-                                            id="variant-stock-quantity">{{ $selectedVariation->stock_quantity ?? $product->total_stock_quantity }}</strong>
+                                            id="variant-stock-quantity">{{ $selectedVariation->quantity ?? $product->quantity }}</strong>
                                     </div>
                                 @endif
                                 <div class="woocommerce-product-details__short-description">
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
                                 </div>
-                                @if ($product->total_stock_quantity <= 0)
-                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng
-                                    </div>
+                                @if ($product->quantity <= 0 && $product->variations->count() === 0)
+                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng</div>
+                                @elseif ($product->variations->count() > 0 && $product->variations->sum('quantity') <= 0)
+                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng</div>
                                 @endif
                                 @if ($product->variations->count() > 0)
                                     <div id="qvsfw-variations-form-wrapper">
@@ -131,7 +132,7 @@
                                             action="{{ route('client.products.add-to-cart') }}"
                                             enctype="multipart/form-data" data-product-name="{{ $product->name }}">
                                             @csrf
-                                            @if ($product->total_stock_quantity <= 0)
+                                             @if ($product->variations->sum('quantity') <= 0)
                                                 <fieldset disabled style="opacity:0.7;pointer-events:none;">
                                             @endif
                                             @if ($colors->count())
@@ -210,13 +211,13 @@
                                                         <span class="qodef-quantity-plus"></span>
                                                     </div>
                                                     <button type="submit" class="single_add_to_cart_button button alt"
-                                                        @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
+                                                        @if ($product->quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
                                                         giỏ hàng</button>
                                                     <input type="hidden" name="variation_id" class="variation_id"
                                                         value="{{ $selectedVariation->id ?? '' }}" />
                                                 </div>
                                             </div>
-                                            @if ($product->total_stock_quantity <= 0)
+                                            @if ($product->quantity <= 0)
                                                 </fieldset>
                                             @endif
                                         </form>
@@ -233,14 +234,14 @@
                                                 <span class="qodef-quantity-minus"></span>
                                                 <input type="text" id="quantity_{{ $product->id }}"
                                                     class="input-text qty text qodef-quantity-input" data-step="1"
-                                                    data-min="1" data-max="{{ $product->total_stock_quantity ?? '' }}"
+                                                    data-min="1" data-max="{{ $product->quantity ?? '' }}"
                                                     name="quantity" value="1" title="Qty" size="4"
                                                     placeholder="" inputmode="numeric"
-                                                    @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif />
+                                                    @if ($product->quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif />
                                                 <span class="qodef-quantity-plus"></span>
                                             </div>
                                             <button type="submit" class="single_add_to_cart_button button alt"
-                                                @if ($product->total_stock_quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
+                                                @if ($product->quantity <= 0) disabled style="opacity:0.7;pointer-events:none;" @endif>Thêm
                                                 giỏ hàng</button>
                                             @if ($product->product_type === 'simple')
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}" />
@@ -585,17 +586,13 @@
                                                                         style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                 </a>
                                                             @endif
-                                                            @if ($media->video_path)
-                                                                <video src="{{ asset('storage/' . $media->video_path) }}"
-                                                                    controls
-                                                                    style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
-                                                            @endif
+
                                                         @endforeach
                                                     </div>
                                                 @endif
                                                 @if ($review->reply)
                                                     <div class="review-reply">
-                                                        <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                        <span class="reply-label">💬 Phản hồi từ cửa hàng:</span>
                                                         <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
                                                     </div>
                                                 @endif
@@ -669,18 +666,13 @@
                                                                             style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                     </a>
                                                                 @endif
-                                                                @if ($media->video_path)
-                                                                    <video
-                                                                        src="{{ asset('storage/' . $media->video_path) }}"
-                                                                        controls
-                                                                        style="width:120px;height:70px;border-radius:6px;border:1.5px solid #eee;background:#000;"></video>
-                                                                @endif
+
                                                             @endforeach
                                                         </div>
                                                     @endif
                                                     @if ($review->reply)
                                                         <div class="review-reply">
-                                                            <span class="reply-label">Phản hồi từ cửa hàng:</span>
+                                                            <span class="reply-label">💬 Phản hồi từ cửa hàng:</span>
                                                             <div class="reply-content">{!! nl2br(e($review->reply)) !!}</div>
                                                         </div>
                                                     @endif
@@ -841,14 +833,14 @@
                             @endif
                         </div>
                     </div>
-
+        <hr style="max-width: 100%;">
                     <section class="related products">
                         <h2>Sản phẩm liên quan</h2>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
                             <ul class="products columns-4">
                                 @foreach ($related_products as $related_product)
                                     <li
-                                        class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
+                                        class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
                                             <div class="qodef-woo-product-image" style="position:relative;">
                                                 @php
@@ -1020,7 +1012,7 @@
                                 <ul class="products columns-4">
                                     @foreach ($recentlyViewed->take(4) as $rvProduct)
                                         <li
-                                            class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
+                                            class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                             <div class="qodef-e-inner">
                                                 <div class="qodef-woo-product-image" style="position:relative;">
                                                     @php
@@ -1258,16 +1250,24 @@
                 document.querySelectorAll('.variation-options').forEach(function(group) {
                     group.addEventListener('click', function(e) {
                         if (e.target.classList.contains('variation-btn')) {
-                            // Bỏ active các nút khác
-                            group.querySelectorAll('.variation-btn').forEach(btn => btn.classList
-                                .remove('active'));
-                            // Active nút vừa chọn
-                            e.target.classList.add('active');
-                            // Gán value vào input hidden
+                            const btn = e.target;
                             const input = group.parentElement.querySelector('.variation-input');
-                            input.value = e.target.getAttribute('data-value');
 
-                            // Sau khi chọn, kiểm tra nếu đã chọn đủ các biến thể thì đổi ảnh
+                            // Kiểm tra nếu nút đã được chọn
+                            if (btn.classList.contains('active')) {
+                                // Bỏ chọn: xóa class active và xóa giá trị input
+                                btn.classList.remove('active');
+                                input.value = '';
+                            } else {
+                                // Bỏ active các nút khác trong cùng group
+                                group.querySelectorAll('.variation-btn').forEach(btn => btn.classList.remove('active'));
+                                // Active nút vừa chọn
+                                btn.classList.add('active');
+                                // Gán value vào input hidden
+                                input.value = btn.getAttribute('data-value');
+                            }
+
+                            // Sau khi chọn hoặc bỏ chọn, kiểm tra và hiển thị ảnh biến thể
                             showVariationImageIfSelected();
                         }
                     });
@@ -1336,7 +1336,7 @@
                     // Cập nhật số lượng tồn kho
                     var stockElem = document.getElementById('variant-stock-quantity');
                     if (found && enough && stockElem) {
-                        if (found.stock_quantity === 0 || found.stock_quantity === '0') {
+                        if (found.quantity === 0 || found.quantity === '0') {
                             stockElem.textContent = 'Hết hàng';
                             if (addBtn) {
                                 addBtn.disabled = true;
@@ -1344,7 +1344,7 @@
                                 addBtn.style.pointerEvents = 'none';
                             }
                         } else {
-                            stockElem.textContent = found.stock_quantity;
+                            stockElem.textContent = found.quantity;
                         }
                     } else if (stockElem) {
                         stockElem.textContent = window.defaultTotalStockQuantity ?? '';
@@ -1371,7 +1371,7 @@
 
                 // Gán biến variationsJson từ blade
                 window.variationsJson = @json($variationsJson ?? []);
-                window.defaultTotalStockQuantity = {{ $product->total_stock_quantity }};
+                window.defaultTotalStockQuantity = {{ $product->quantity }};
             });
         </script>
     @endpush
@@ -1791,22 +1791,26 @@
         }
 
         .review-reply {
-            background: #f5f5f5;
-            border-left: 3px solid #111;
-            padding: 10px 14px;
-            border-radius: 6px;
-            margin-top: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
         }
 
         .reply-label {
-            color: #111;
-            font-weight: bold;
-            font-size: 1em;
+            color: #007bff;
+            font-weight: 600;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 6px;
         }
 
         .reply-content {
             color: #333;
-            margin-top: 2px;
+            margin-top: 4px;
+            line-height: 1.5;
         }
 
         .dmx-review-actions {

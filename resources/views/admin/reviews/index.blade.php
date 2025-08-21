@@ -161,15 +161,12 @@
                             <th class="sort align-middle ps-4" scope="col" style="min-width:300px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'content', 'direction' => request('sort') === 'content' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
-                                    Nội dung
+                                    Nội dung & Trả lời
                                     @if (request('sort') === 'content')
                                         <i
                                             class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
-                            </th>
-                            <th class="sort align-middle ps-4" scope="col" style="min-width:300px;">
-                                Câu trả lời Admin
                             </th>
                             <th class="sort align-middle ps-4" scope="col" style="width:150px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'created_at', 'direction' => request('sort') === 'created_at' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
@@ -218,9 +215,17 @@
                                     </div>
                                 </td>
 
-                                <td class="content align-middle ps-4">{{ $review->content }}</td>
-                                <td class="reply align-middle ps-4">
-                                    {{ $review->reply ?? '' }}
+                                <td class="content align-middle ps-4">
+                                    <div class="mb-2">
+                                        <strong>Đánh giá của khách hàng:</strong><br>
+                                        {{ $review->content }}
+                                    </div>
+                                    @if($review->reply)
+                                        <div class="border-start border-3 border-primary ps-3 mt-2">
+                                            <strong class="text-primary">Trả lời của Admin:</strong><br>
+                                            {{ $review->reply }}
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
                                     {{ $review->created_at->format('d/m/Y H:i') }}
@@ -251,7 +256,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4">Không có đánh giá nào</td>
+                                <td colspan="7" class="text-center py-4">Không có đánh giá nào</td>
                             </tr>
                         @endforelse
                     </tbody>

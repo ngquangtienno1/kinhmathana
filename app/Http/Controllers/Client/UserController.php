@@ -7,8 +7,22 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
+
+    // API: Kiểm tra trạng thái user (dùng cho polling tự động logout nếu bị chặn)
+    public function getUserStatus(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['status' => 'guest']);
+        }
+        if ($user->status_user !== 'active') {
+            return response()->json(['status' => 'blocked']);
+        }
+        return response()->json(['status' => 'active']);
+    }
+    // API: Kiểm tra trạng thái user (dùng cho polling tự động logout nếu bị chặn)
+  
     // Hiển thị trang thông tin tài khoản
     public function index()
     {

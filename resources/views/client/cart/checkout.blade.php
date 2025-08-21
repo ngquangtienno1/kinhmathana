@@ -536,11 +536,12 @@
                         appliedVoucherHidden.value = JSON.stringify(data.voucher);
                         // Cập nhật số tiền giảm và tổng cộng
                         if (discountRow && totalRow) {
-                            discountRow.innerText = '-' + formatCurrency(data.voucher
-                                .discount_amount);
-                            const newTotal = Math.max(0, subtotal + shipping - data
-                                .voucher //Tuấn Anh
-                                .discount_amount);
+                            discountRow.innerText = '-' + formatCurrency(data.voucher.discount_amount);
+                            const currentShipping = (() => {
+                                const checked = document.querySelector('input[name="shipping_method"]:checked');
+                                return Number(checked?.dataset.fee || 0);
+                            })();
+                            const newTotal = Math.max(0, subtotal + currentShipping - data.voucher.discount_amount);
                             totalRow.innerText = formatCurrency(newTotal);
                         }
                     } else {
@@ -548,7 +549,11 @@
                         appliedVoucherHidden.value = '';
                         if (discountRow && totalRow) {
                             discountRow.innerText = '0đ';
-                            totalRow.innerText = formatCurrency(subtotal + shipping);
+                            const currentShipping = (() => {
+                                const checked = document.querySelector('input[name="shipping_method"]:checked');
+                                return Number(checked?.dataset.fee || 0);
+                            })();
+                            totalRow.innerText = formatCurrency(subtotal + currentShipping);
                         }
                     }
                 })
