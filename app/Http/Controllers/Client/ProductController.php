@@ -187,7 +187,20 @@ class ProductController extends Controller
      */
     public function show($slug)
     {
-        $product = Product::with(['categories', 'brand', 'images', 'reviews.user', 'variations.color', 'variations.size', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
+        $product = Product::with([
+                'categories',
+                'brand',
+                'images',
+                // Chỉ lấy các đánh giá chưa bị ẩn và kèm user
+                'reviews' => function ($q) {
+                    $q->where('is_hidden', false)->with('user');
+                },
+                'variations.color',
+                'variations.size',
+                'variations.images',
+                'variations.spherical',
+                'variations.cylindrical',
+            ])
             ->active()
             ->where('slug', $slug)
             ->firstOrFail();

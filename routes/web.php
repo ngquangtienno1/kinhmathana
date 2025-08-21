@@ -581,6 +581,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
 
         // Add route for admin reply
         Route::put('/{review}/reply', [ReviewController::class, 'reply'])->name('reply');
+
+        // Toggle visibility
+        Route::patch('/{id}/toggle-visibility', [ReviewController::class, 'toggleVisibility'])
+            ->name('toggle-visibility');
     });
 
     // Quản lý thanh toán
