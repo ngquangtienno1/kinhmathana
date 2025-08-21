@@ -257,13 +257,13 @@
                                     <div class="d-flex flex-end-center hover-actions-trigger">
                                         <div class="d-none d-sm-flex">
                                             <div class="hover-actions position-relative align-self-center">
-                                                <button class="btn p-2 fs-10 reply-btn" onclick="replyToMessage('${msg.message}', ${isAdmin}, '${msg.type || 'text'}', '${msg.attachment || ''}')" title="Trả lời">
+                                                <button class="btn p-2 fs-10 reply-btn" onclick="replyToMessage(\`${msg.message}\`, ${isAdmin}, '${msg.type || 'text'}', '${msg.attachment || ''}')" title="Trả lời">
                                                     <span class="fa-solid fa-reply text-primary"></span>
                                                 </button>
-                                                <button class="btn p-2 fs-10 edit-btn" onclick="editMessage(this, '${msg.message}', ${msg.id || 'temp-' + Date.now()})" title="Chỉnh sửa">
+                                                <button class="btn p-2 fs-10 edit-btn" onclick="editMessage(this, \`${msg.message}\`, ${msg.id || 'temp-' + Date.now()})" title="Chỉnh sửa">
                                                     <span class="fa-solid fa-pen-to-square text-primary"></span>
                                                 </button>
-                                                <button class="btn p-2 fs-10 delete-btn" onclick="deleteMessage(${msg.id || 'temp-' + Date.now()})" title="Xóa">
+                                                <button class="btn p-2 fs-10 delete-btn" onclick="deleteMessage('${msg.id || 'temp-' + Date.now()}')" title="Xóa">
                                                     <span class="fa-solid fa-trash text-primary"></span>
                                                 </button>
                                             </div>
@@ -298,10 +298,10 @@
                                         </div>
                                         <div class="d-none d-sm-flex">
                                             <div class="hover-actions position-relative align-self-center me-2">
-                                                <button class="btn p-2 fs-10 reply-btn" onclick="replyToMessage('${msg.message}', ${isAdmin}, '${msg.type || 'text'}', '${msg.attachment || ''}')" title="Trả lời">
+                                                <button class="btn p-2 fs-10 reply-btn" onclick="replyToMessage(\`${msg.message}\`, ${isAdmin}, '${msg.type || 'text'}', '${msg.attachment || ''}')" title="Trả lời">
                                                     <span class="fa-solid fa-reply"></span>
                                                 </button>
-                                                <button class="btn p-2 fs-10 delete-btn" onclick="deleteMessage(${msg.id || 'temp-' + Date.now()})" title="Xóa">
+                                                <button class="btn p-2 fs-10 delete-btn" onclick="deleteMessage('${msg.id || 'temp-' + Date.now()}')" title="Xóa">
                                                     <span class="fa-solid fa-trash"></span>
                                                 </button>
                                             </div>
@@ -407,6 +407,13 @@
                 let message = chatInput.textContent.trim();
                 if (!message) return;
 
+                // Tạo tin nhắn tạm thời trước
+                const tempMessage = {
+                    message: message,
+                    id: 'temp-' + Date.now()
+                };
+                appendMessage(tempMessage, true);
+
                 fetch('/admin/chat/send', {
                     method: 'POST',
                     headers: {
@@ -418,9 +425,18 @@
                         message: message
                     })
                 }).then(res => res.json()).then(data => {
-                    appendMessage({
-                        message: message
-                    }, true);
+                    // Cập nhật id thực cho tin nhắn vừa gửi
+                    const tempMessageElement = document.querySelector(
+                        `[data-message-id="${tempMessage.id}"]`);
+                    if (tempMessageElement && data.message && data.message.id) {
+                        tempMessageElement.setAttribute('data-message-id', data.message.id);
+                        // Cập nhật onclick cho nút xóa
+                        const deleteBtn = tempMessageElement.querySelector('.delete-btn');
+                        if (deleteBtn) {
+                            deleteBtn.setAttribute('onclick',
+                                `deleteMessage('${data.message.id}')`);
+                        }
+                    }
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 });
 
@@ -434,6 +450,15 @@
                 const file = e.target.files[0];
                 if (!file) return;
 
+                // Tạo tin nhắn tạm thời trước
+                const tempMessage = {
+                    message: '[IMAGE]',
+                    attachment: URL.createObjectURL(file),
+                    type: 'image',
+                    id: 'temp-' + Date.now()
+                };
+                appendMessage(tempMessage, true);
+
                 const formData = new FormData();
                 formData.append('image', file);
                 formData.append('to_id', selectedUserId);
@@ -443,11 +468,23 @@
                     method: 'POST',
                     body: formData
                 }).then(res => res.json()).then(data => {
-                    appendMessage({
-                        message: '[IMAGE]',
-                        attachment: data.message.attachment,
-                        type: 'image'
-                    }, true);
+                    // Cập nhật id thực và attachment thực cho tin nhắn vừa gửi
+                    const tempMessageElement = document.querySelector(
+                        `[data-message-id="${tempMessage.id}"]`);
+                    if (tempMessageElement && data.message && data.message.id) {
+                        tempMessageElement.setAttribute('data-message-id', data.message.id);
+                        // Cập nhật onclick cho nút xóa
+                        const deleteBtn = tempMessageElement.querySelector('.delete-btn');
+                        if (deleteBtn) {
+                            deleteBtn.setAttribute('onclick',
+                                `deleteMessage('${data.message.id}')`);
+                        }
+                        // Cập nhật src cho hình ảnh
+                        const img = tempMessageElement.querySelector('img');
+                        if (img && data.message.attachment) {
+                            img.src = '/storage/' + data.message.attachment;
+                        }
+                    }
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 });
 
@@ -484,6 +521,15 @@
                 }
                 label.disabled = true;
 
+                // Tạo tin nhắn tạm thời trước
+                const tempMessage = {
+                    message: file.name,
+                    attachment: null,
+                    type: 'file',
+                    id: 'temp-' + Date.now()
+                };
+                appendMessage(tempMessage, true);
+
                 fetch('/admin/chat/send-file', {
                         method: 'POST',
                         body: formData
@@ -495,11 +541,23 @@
                         return res.json();
                     })
                     .then(data => {
-                        appendMessage({
-                            message: data.message.message,
-                            attachment: data.message.attachment,
-                            type: 'file'
-                        }, true);
+                        // Cập nhật id thực và attachment thực cho tin nhắn vừa gửi
+                        const tempMessageElement = document.querySelector(
+                            `[data-message-id="${tempMessage.id}"]`);
+                        if (tempMessageElement && data.message && data.message.id) {
+                            tempMessageElement.setAttribute('data-message-id', data.message.id);
+                            // Cập nhật onclick cho nút xóa
+                            const deleteBtn = tempMessageElement.querySelector('.delete-btn');
+                            if (deleteBtn) {
+                                deleteBtn.setAttribute('onclick',
+                                    `deleteMessage('${data.message.id}')`);
+                            }
+                            // Cập nhật href cho link file
+                            const link = tempMessageElement.querySelector('a');
+                            if (link && data.message.attachment) {
+                                link.href = '/storage/' + data.message.attachment;
+                            }
+                        }
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     })
                     .catch(error => {
@@ -574,6 +632,15 @@
                                     type: mimeType || 'audio/webm'
                                 });
 
+                                // Tạo tin nhắn tạm thời trước
+                                const tempMessage = {
+                                    message: '[VOICE]',
+                                    attachment: URL.createObjectURL(audioBlob),
+                                    type: 'voice',
+                                    id: 'temp-' + Date.now()
+                                };
+                                appendMessage(tempMessage, true);
+
                                 const formData = new FormData();
                                 formData.append('voice', audioBlob, 'voice.webm');
                                 formData.append('to_id', selectedUserId);
@@ -594,11 +661,28 @@
                                         return res.json();
                                     })
                                     .then(data => {
-                                        appendMessage({
-                                            message: '[VOICE]',
-                                            attachment: data.message.attachment,
-                                            type: 'voice'
-                                        }, true);
+                                        // Cập nhật id thực và attachment thực cho tin nhắn vừa gửi
+                                        const tempMessageElement = document.querySelector(
+                                            `[data-message-id="${tempMessage.id}"]`);
+                                        if (tempMessageElement && data.message && data.message
+                                            .id) {
+                                            tempMessageElement.setAttribute('data-message-id',
+                                                data.message.id);
+                                            // Cập nhật onclick cho nút xóa
+                                            const deleteBtn = tempMessageElement.querySelector(
+                                                '.delete-btn');
+                                            if (deleteBtn) {
+                                                deleteBtn.setAttribute('onclick',
+                                                    `deleteMessage('${data.message.id}')`);
+                                            }
+                                            // Cập nhật src cho audio
+                                            const audio = tempMessageElement.querySelector(
+                                                'audio');
+                                            if (audio && data.message.attachment) {
+                                                audio.src = '/storage/' + data.message
+                                                    .attachment;
+                                            }
+                                        }
                                         chatMessages.scrollTop = chatMessages.scrollHeight;
                                     })
                                     .catch(error => {
@@ -1068,14 +1152,23 @@
                 // Thêm nút lưu và hủy
                 const actionButtons = document.createElement('div');
                 actionButtons.className = 'mt-2';
-                actionButtons.innerHTML = `
-                    <button class="btn btn-sm btn-primary me-1" onclick="saveEdit(this, '${originalMessage}', ${messageId})">
-                        <i class="fa-solid fa-check"></i> Lưu
-                    </button>
-                    <button class="btn btn-sm btn-secondary" onclick="cancelEdit(this, '${originalContent}')">
-                        <i class="fa-solid fa-times"></i> Hủy
-                    </button>
-                `;
+
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'btn btn-sm btn-primary me-1';
+                saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Lưu';
+                saveBtn.onclick = function() {
+                    saveEdit(this, originalMessage, messageId);
+                };
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn btn-sm btn-secondary';
+                cancelBtn.innerHTML = '<i class="fa-solid fa-times"></i> Hủy';
+                cancelBtn.onclick = function() {
+                    cancelEdit(this, originalContent);
+                };
+
+                actionButtons.appendChild(saveBtn);
+                actionButtons.appendChild(cancelBtn);
                 messageContent.appendChild(actionButtons);
             };
 
@@ -1139,6 +1232,16 @@
             // Hàm xóa tin nhắn
             window.deleteMessage = function(messageId) {
                 if (!confirm('Bạn có chắc chắn muốn xóa tin nhắn này?')) {
+                    return;
+                }
+
+                // Kiểm tra nếu là tin nhắn tạm thời (chưa có id thực)
+                if (messageId && messageId.startsWith('temp-')) {
+                    // Xóa tin nhắn khỏi DOM ngay lập tức
+                    const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+                    if (messageDiv) {
+                        messageDiv.remove();
+                    }
                     return;
                 }
 

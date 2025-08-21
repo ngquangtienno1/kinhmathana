@@ -1,6 +1,8 @@
 <?php
 // Password OTP routes for client
 require_once base_path('routes/client_password_otp.php');
+// API user status polling for client auto-logout
+require_once base_path('routes/api_client_status.php');
 
 use App\Events\MyEvent;
 use Illuminate\Http\Request;
@@ -34,6 +36,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Client\VoucherController;
+use App\Http\Controllers\Admin\ChatAdminController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SphericalController;
 use App\Http\Controllers\Client\WishlistController;
@@ -47,15 +50,15 @@ use App\Http\Controllers\Client\OrderClientController;
 use App\Http\Controllers\Client\OrderDetailController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\CustomerSupportController;
-
-
-// Authentication
-
 use App\Http\Controllers\Admin\ShippingProviderController;
-use App\Http\Controllers\Admin\CancellationReasonController;
 
 // Authentication
+use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;

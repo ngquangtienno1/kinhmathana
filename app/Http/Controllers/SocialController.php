@@ -19,22 +19,35 @@ class SocialController extends Controller
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
 
-       $user = User::updateOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $googleUser->getName() ?? $googleUser->getNickname(),
-                'address' => null, // Bạn có thể thêm trường address nếu cần (hoặc lấy từ Google nếu có)
-                'phone' => null,    // Bạn có thể thêm trường phone nếu có dữ liệu từ Google
-                'password' => bcrypt(Str::random(24)), // Mật khẩu ngẫu nhiên
-                'date_birth' => null, // Bạn có thể lấy ngày sinh từ Google nếu có (chỉnh sửa nếu Google trả về thông tin này)
-                'gender' => null, // Bạn có thể thêm thông tin giới tính nếu có (hoặc từ Google)
-                'status_user' => 'active', // Trạng thái mặc định
-                'avatar' => $googleUser->getAvatar(), // Lưu ảnh đại diện từ Google
-                'role_id' => 3, // Gán vai trò mặc định (có thể thay đổi tùy nhu cầu)
-                'email_verified_at' => now(), // Thời gian xác minh email
-                'phone_verified_at' => null, // Nếu có thông tin điện thoại, bạn có thể cập nhật tương tự
-            ]
-        );
+            $user = User::where('email', $googleUser->getEmail())->first();
+            if ($user) {
+                // Nếu user đã bị chặn thì không cho đăng nhập
+                if ($user->status_user !== 'active') {
+                    return redirect()->route('client.login')->withErrors(['email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt']);
+                }
+                // Cập nhật thông tin cơ bản (trừ status_user)
+                $user->update([
+                    'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'email_verified_at' => now(),
+                ]);
+            } else {
+                // Tạo mới user
+                $user = User::create([
+                    'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                    'address' => null,
+                    'phone' => null,
+                    'password' => bcrypt(Str::random(24)),
+                    'date_birth' => null,
+                    'gender' => null,
+                    'status_user' => 'active',
+                    'avatar' => $googleUser->getAvatar(),
+                    'role_id' => 3,
+                    'email' => $googleUser->getEmail(),
+                    'email_verified_at' => now(),
+                    'phone_verified_at' => null,
+                ]);
+            }
 
             Auth::login($user);
 
@@ -57,14 +70,25 @@ class SocialController extends Controller
         try {
             $facebookUser = Socialite::driver('facebook')->stateless()->user();
 
-            $user = User::updateOrCreate(
-                ['email' => $facebookUser->getEmail()],
-                [
+            $user = User::where('email', $facebookUser->getEmail())->first();
+            if ($user) {
+                if ($user->status_user !== 'active') {
+                    return redirect()->route('login')->with('error', 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt.');
+                }
+                $user->update([
+                    'name' => $facebookUser->getName() ?? $facebookUser->getNickname(),
+                    'email_verified_at' => now(),
+                ]);
+            } else {
+                $user = User::create([
                     'name' => $facebookUser->getName() ?? $facebookUser->getNickname(),
                     'password' => bcrypt(Str::random(24)),
                     'role_id' => 3,
-                ]
-            );
+                    'email' => $facebookUser->getEmail(),
+                    'status_user' => 'active',
+                    'email_verified_at' => now(),
+                ]);
+            }
 
             Auth::login($user);
 
