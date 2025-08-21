@@ -73,14 +73,15 @@ class HomeController extends Controller
         $newCustomers = (clone $userQuery)->count();
 
         // Thống kê đánh giá
-        $reviewQuery = Review::query();
+        $reviewQuery = Review::query()->where('is_hidden', false);
         if ($dateFrom) $reviewQuery->whereDate('created_at', '>=', $dateFrom);
         if ($dateTo) $reviewQuery->whereDate('created_at', '<=', $dateTo);
 
         $averageRating = round((clone $reviewQuery)->avg('rating'), 1);
 
         // Đánh giá mới nhất (7 ngày gần đây)
-        $latestReviews = Review::where('created_at', '>=', now()->subDays(7))
+        $latestReviews = Review::where('is_hidden', false)
+            ->where('created_at', '>=', now()->subDays(7))
             ->with(['user', 'product', 'images', 'order.items.variation.color', 'order.items.variation.size', 'order.items.variation.spherical', 'order.items.variation.cylindrical', 'order.items.variation.images'])
             ->orderByDesc('created_at')
             ->limit(6)
@@ -97,7 +98,19 @@ class HomeController extends Controller
             ->when($dateTo, function ($query) use ($dateTo) {
                 return $query->whereDate('orders.created_at', '<=', $dateTo);
             })
-            ->with(['categories', 'reviews', 'variations.images', 'images', 'orderItems.variation.color', 'orderItems.variation.size', 'orderItems.variation.spherical', 'orderItems.variation.cylindrical'])
+            ->with([
+                'categories',
+                // Chỉ lấy đánh giá chưa bị ẩn
+                'reviews' => function ($q) {
+                    $q->where('is_hidden', false);
+                },
+                'variations.images',
+                'images',
+                'orderItems.variation.color',
+                'orderItems.variation.size',
+                'orderItems.variation.spherical',
+                'orderItems.variation.cylindrical'
+            ])
             ->groupBy('products.id')
             ->orderByDesc('sold')
             ->limit(5)
@@ -239,6 +252,7 @@ class HomeController extends Controller
         $ratingDistribution = [];
         for ($i = 1; $i <= 5; $i++) {
             $ratingDistribution[$i] = Review::where('rating', $i)
+                ->where('is_hidden', false)
                 ->when($request->filled('quick_range') || $request->filled('date_from'), function ($query) use ($request) {
                     if ($request->quick_range === 'today') {
                         $query->whereDate('created_at', now()->toDateString());
