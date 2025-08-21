@@ -68,6 +68,27 @@
                     alertBox.style.display = 'none';
                 }, 3000); // 3 giây
             }
+
+            // Polling kiểm tra trạng thái user mỗi 10s
+            function pollUserStatus() {
+                fetch('/client/user-status', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.status === 'blocked') {
+                        // Tự động logout nếu bị chặn
+                        window.location.href = '/client/logout';
+                    }
+                })
+                .catch(function() {});
+            }
+            setInterval(pollUserStatus, 6000); // 2s
         });
     </script>
 </body>
