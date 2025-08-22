@@ -375,7 +375,7 @@
                 </button>
             </form>
             <div class="login-bottom-text">
-                Bạn chưa có tài khoản Anna ?<br>
+                Bạn chưa có tài khoản Hana ?<br>
                 <a class="login-link" href="{{ route('client.register') }}">Đăng ký ngay</a>
             </div>
         </div>

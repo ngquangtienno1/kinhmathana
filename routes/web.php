@@ -326,9 +326,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
             ->middleware(['permission:khoi-phuc-san-pham']);
         Route::delete('forceDelete/{id}', [AdminProductController::class, 'forceDelete'])->name('forceDelete')
             ->middleware(['permission:xoa-vinh-vien-san-pham']);
-        Route::delete('bulk-delete', [AdminProductController::class, 'bulkDelete'])->name('bulk-delete')
+        Route::delete('bulk-delete', [AdminProductController::class, 'bulkDestroy'])->name('bulkDestroy')
             ->middleware(['permission:xoa-nhieu-san-pham']);
-        Route::delete('/bulk-delete', [AdminProductController::class, 'bulkDestroy'])->name('bulkDestroy');
         Route::post('/bulk-restore', [AdminProductController::class, 'bulkRestore'])->name('bulkRestore');
         Route::delete('/bulk-force-delete', [AdminProductController::class, 'bulkForceDelete'])->name('bulkForceDelete');
     });
