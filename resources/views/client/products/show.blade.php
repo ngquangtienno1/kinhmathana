@@ -784,9 +784,9 @@
                                     <div style="margin-top: 2px; font-size: 15px; color: #222;">
                                         {{ $comment->content }}
                                     </div>
-                                    @if ($comment->replies && $comment->replies->count())
+                                    @if ($comment->replies && $comment->replies->where('status', 'đã duyệt')->where('is_hidden', false)->count())
                                         <div class="comment-replies" style="margin-left:32px; margin-top:8px;">
-                                            @foreach ($comment->replies as $reply)
+                                            @foreach ($comment->replies->filter(function($reply) { return $reply->status === 'đã duyệt' && !$reply->is_hidden; }) as $reply)
                                                 <div class="reply-item"
                                                     style="background:#f8f9fa; border-radius:6px; padding:8px 12px; margin-bottom:6px;">
                                                     <div style="display: flex; align-items: baseline; gap: 8px;">
@@ -813,7 +813,7 @@
                                         {{ now()->diffForHumans(Auth::user()->banned_until, ['parts' => 2, 'short' => true]) }})
                                     </div>
                                 @else
-                                    <form action="{{ route('client.products.comment', $product->id) }}" method="POST"
+                                    <form action="{{ route('client.products.comment', $product) }}" method="POST"
                                         style="margin-top: 18px;">
                                         @csrf
                                         <div class="form-group">

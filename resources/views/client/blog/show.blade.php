@@ -150,9 +150,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @if ($comment->replies && $comment->replies->count())
+                                                @if ($comment->replies && $comment->replies->filter(function($reply) { return $reply->status === 'đã duyệt' && !$reply->is_hidden; })->count())
                                                     <ul class="children">
-                                                        @foreach ($comment->replies as $reply)
+                                                        @foreach ($comment->replies->filter(function($reply) { return $reply->status === 'đã duyệt' && !$reply->is_hidden; }) as $reply)
                                                             <li class="qodef-comment-item qodef-e">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-e-image">
