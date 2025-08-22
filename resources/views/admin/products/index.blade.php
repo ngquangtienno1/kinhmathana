@@ -219,7 +219,7 @@
     style="display:none;">
     @csrf
     @method('DELETE')
-    <input type="hidden" name="ids[]" id="bulk-delete-ids">
+    <input type="hidden" name="ids" id="bulk-delete-ids">
 </form>
 
 <script>
@@ -265,7 +265,7 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa mềm các sản phẩm đã chọn?')) return;
-            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteIds.value = JSON.stringify(checkedIds);
             bulkDeleteForm.submit();
         });
     });
