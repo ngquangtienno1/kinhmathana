@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('banned_until')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

@@ -124,7 +124,7 @@ Route::prefix('client')->name('client.')->group(function () {
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ClientProductController::class, 'index'])->name('index');
         Route::get('{slug}', [ClientProductController::class, 'show'])->name('show');
-        Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
+        Route::post('add-to-cart', [ClientProductController::class, 'addToCart'])->name('add-to-cart');
         Route::post('{product}/comment', [ClientProductController::class, 'comment'])->name('comment');
     });
 
@@ -639,8 +639,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/generate-code', [PromotionController::class, 'generateCode'])->name('generate-code');
         Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show');
         Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
-        Route::put('/{promotion}', [PromotionController::class, 'update']);
-        Route::delete('/{promotion}', [PromotionController::class, 'destroy']);
+        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
     });
 
     // Quản lý ticket

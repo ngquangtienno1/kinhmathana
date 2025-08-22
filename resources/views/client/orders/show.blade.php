@@ -254,8 +254,26 @@
                         @foreach ($order->items as $item)
                             <tr>
                                 <td>
-                                    <img src="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
-                                        alt=""
+                                    @php
+                                        $product = $item->variation
+                                            ? $item->variation->product
+                                            : $item->product ?? null;
+                                        if ($item->variation && $item->variation->images->count()) {
+                                            $featuredImage =
+                                                $item->variation->images->where('is_featured', true)->first() ??
+                                                $item->variation->images->first();
+                                        } else {
+                                            $featuredImage =
+                                                $product && isset($product->images)
+                                                    ? $product->images->where('is_featured', true)->first() ??
+                                                        $product->images->first()
+                                                    : null;
+                                        }
+                                        $imagePath = $featuredImage
+                                            ? asset('storage/' . $featuredImage->image_path)
+                                            : asset('/assets/img/products/1.png');
+                                    @endphp
+                                    <img src="{{ $imagePath }}" alt=""
                                         style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
                                 </td>
                                 <td>

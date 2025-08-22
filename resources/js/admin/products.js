@@ -20,33 +20,45 @@ document.addEventListener("DOMContentLoaded", function () {
         "set-variations-sale-price"
     );
 
+    // Check if in edit mode (e.g., product ID exists in a hidden input or URL)
+    const isEditMode = !!document.querySelector(
+        'input[name="_method"][value="PUT"]'
+    );
+
     // Danh sách màu sắc, kích thước, độ cận và độ loạn từ PHP
     const colors = window.colors || [];
     const sizes = window.sizes || [];
     let spherical_values = window.spherical_values || [];
     let cylindrical_values = window.cylindrical_values || [];
-    // Nếu là mảng chuỗi, convert sang object {id, name}
-    if (typeof spherical_values[0] === 'string') {
-        spherical_values = spherical_values.map((name, idx) => ({ id: (window.spherical_ids ? window.spherical_ids[idx] : name), name }));
+    if (typeof spherical_values[0] === "string") {
+        spherical_values = spherical_values.map((name, idx) => ({
+            id: window.spherical_ids ? window.spherical_ids[idx] : name,
+            name,
+        }));
     }
-    if (typeof cylindrical_values[0] === 'string') {
-        cylindrical_values = cylindrical_values.map((name, idx) => ({ id: (window.cylindrical_ids ? window.cylindrical_ids[idx] : name), name }));
+    if (typeof cylindrical_values[0] === "string") {
+        cylindrical_values = cylindrical_values.map((name, idx) => ({
+            id: window.cylindrical_ids ? window.cylindrical_ids[idx] : name,
+            name,
+        }));
     }
 
-    // Tự động sinh SKU và Slug
+    // Hàm tạo SKU ngẫu nhiên và Slug thân thiện SEO
     function generateSkuAndSlug(name, prefix = "") {
-        const timestamp = Date.now();
+        const randomId = Math.random().toString(36).substring(2, 10); // Random 8-character string
         const sanitizedName =
             name
                 .toLowerCase()
-                .replace(/[^a-z0-9\s]/g, "")
-                .replace(/\s+/g, "-") || "product";
-        const sku = `${prefix}${sanitizedName}-${timestamp}`;
-        const slug = `${prefix}${sanitizedName}-${timestamp}`;
+                .replace(/[^a-z0-9\s]/g, "") // Loại bỏ ký tự đặc biệt
+                .replace(/\s+/g, "-") // Thay khoảng trắng bằng dấu gạch ngang
+                .substring(0, 50) || // Giới hạn độ dài slug
+            "product";
+        const sku = `${prefix}${sanitizedName}-${randomId}`;
+        const slug = `${prefix}${sanitizedName}`; // Slug chỉ dùng tên sản phẩm, không thêm randomId
         return { sku, slug };
     }
 
-    // Cập nhật SKU và Slug khi nhập tên sản phẩm
+    // Cập nhật SKU và Slug khi nhập tên sản phẩm, chỉ khi không ở chế độ chỉnh sửa
     if (
         nameInput &&
         simpleSkuInput &&
@@ -55,11 +67,14 @@ document.addEventListener("DOMContentLoaded", function () {
         variableSlugInput
     ) {
         nameInput.addEventListener("input", function () {
-            const { sku, slug } = generateSkuAndSlug(this.value);
-            simpleSkuInput.value = sku;
-            simpleSlugInput.value = slug;
-            variableSkuInput.value = `VAR-${sku}`;
-            variableSlugInput.value = `var-${slug}`;
+            if (!isEditMode) {
+                // Chỉ cập nhật nếu không phải chế độ chỉnh sửa
+                const { sku, slug } = generateSkuAndSlug(this.value);
+                simpleSkuInput.value = sku;
+                simpleSlugInput.value = slug;
+                variableSkuInput.value = `VAR-${sku}`;
+                variableSlugInput.value = `var-${slug}`;
+            }
         });
     }
 
@@ -72,12 +87,15 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 simpleProduct.style.display = "none";
                 variableProduct.style.display = "block";
-                const { sku, slug } = generateSkuAndSlug(
-                    `nameInput`.value || "product",
-                    "VAR-"
-                );
-                variableSkuInput.value = sku;
-                variableSlugInput.value = `var-${slug}`;
+                if (!isEditMode) {
+                    // Chỉ tạo mới SKU và slug nếu không phải chế độ chỉnh sửa
+                    const { sku, slug } = generateSkuAndSlug(
+                        nameInput.value || "product",
+                        "VAR-"
+                    );
+                    variableSkuInput.value = sku;
+                    variableSlugInput.value = `var-${slug}`;
+                }
             }
         }
 
@@ -88,9 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Xử lý định dạng giá trị số
     document.querySelectorAll(".price-input").forEach((input) => {
         input.addEventListener("input", function (e) {
-            let value = e.target.value.replace(/[^0-9,.]/g, "");
-            if (value.includes(",")) value = value.replace(",", ".");
-            if (value.split(".").length > 2) value = value.replace(/\.+$/, "");
+            let value = e.target.value.replace(/[^0-9]/g, "");
             e.target.value = value;
         });
 
@@ -178,7 +194,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 options.forEach((option) => {
-                    const value = (option.id !== undefined && option.id !== null) ? String(option.id) : '';
+                    const value =
+                        option.id !== undefined && option.id !== null
+                            ? String(option.id)
+                            : String(option.name || option);
                     const label = option.name || option;
                     const div = document.createElement("div");
                     div.className = "form-check";
@@ -211,10 +230,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     tagsContainer.innerHTML = "";
                     selectedValues.forEach((value) => {
                         let label = value;
-                        if (typeSelect.value === "color") label = colors.find(c => c.id == value)?.name || value;
-                        else if (typeSelect.value === "size") label = sizes.find(s => s.id == value)?.name || value;
-                        else if (typeSelect.value === "spherical") label = spherical_values.find(s => s.id == value)?.name || value;
-                        else if (typeSelect.value === "cylindrical") label = cylindrical_values.find(c => c.id == value)?.name || value;
+                        if (typeSelect.value === "color")
+                            label =
+                                colors.find((c) => c.id == value)?.name ||
+                                value;
+                        else if (typeSelect.value === "size")
+                            label =
+                                sizes.find((s) => s.id == value)?.name || value;
+                        else if (typeSelect.value === "spherical")
+                            label =
+                                spherical_values.find((s) => s.id == value)
+                                    ?.name || value;
+                        else if (typeSelect.value === "cylindrical")
+                            label =
+                                cylindrical_values.find((c) => c.id == value)
+                                    ?.name || value;
 
                         const tag = document.createElement("span");
                         tag.className = "tag";
@@ -345,7 +375,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const result = [];
         for (let val of first.values) {
             for (let combo of combinationsOfRest) {
-                result.push([{ type: first.type, value: val.trim() }, ...combo]);
+                result.push([
+                    { type: first.type, value: val.trim() },
+                    ...combo,
+                ]);
             }
         }
         return result;
@@ -377,72 +410,172 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const rawCombinations = generateCombinations(attributes);
-        const combinationNames = rawCombinations.map((combo) => Array.isArray(combo) ? combo.join(' - ') : Object.values(combo).join(' - '));
-        const existingVariationNames = Array.from(
+
+        const existingVariationRows = Array.from(
             variationsContainer.getElementsByClassName("variation-row")
-        )
-            .map((row) =>
-                row.querySelector('input[name$="[name]"]')?.value.trim()
-            )
-            .filter((name) => name);
-        const newCombinations = rawCombinations
-            .map((combo, idx) => ({ combo, name: combinationNames[idx] }))
-            .filter(({ name }) => !existingVariationNames.includes(name));
+        );
 
-        if (!newCombinations.length) {
-            alert("Không có tổ hợp biến thể mới để tạo.");
-            return;
-        }
+        const validCombinations = rawCombinations.map((combo) => {
+            let color_id = "",
+                size_id = "",
+                spherical_id = "",
+                cylindrical_id = "";
+            let colorName = "",
+                sizeName = "",
+                sphericalName = "",
+                cylindricalName = "";
 
-        variationsContainer.style.display = "block";
-        if (setVariationsPriceBtn)
-            setVariationsPriceBtn.style.display = "block";
-        if (setVariationsSalePriceBtn)
-            setVariationsSalePriceBtn.style.display = "block";
-
-        newCombinations.forEach(({ combo }, idx) => {
-            const globalIndex = variationsContainer.getElementsByClassName("variation-row").length;
-            const skuPrefix = variableSkuInput?.value.trim() || "VAR";
-            let color_id = '', size_id = '', spherical_id = '', cylindrical_id = '';
-            let colorName = '', sizeName = '', sphericalName = '', cylindricalName = '';
-            combo.forEach(item => {
-                if (item.type === 'color') {
+            combo.forEach((item) => {
+                if (item.type === "color") {
                     color_id = item.value;
-                    colorName = colors.find(c => String(c.id) == color_id)?.name || '';
+                    const color = colors.find(
+                        (c) => String(c.id) === String(color_id)
+                    );
+                    colorName = color ? color.name : item.value;
                 }
-                if (item.type === 'size') {
+                if (item.type === "size") {
                     size_id = item.value;
-                    sizeName = sizes.find(s => String(s.id) == size_id)?.name || '';
+                    const size = sizes.find(
+                        (s) => String(s.id) === String(size_id)
+                    );
+                    sizeName = size ? size.name : item.value;
                 }
-                if (item.type === 'spherical') {
+                if (item.type === "spherical") {
                     spherical_id = item.value;
-                    sphericalName = spherical_values.find(s => String(s.id) == spherical_id)?.name || '';
+                    const spherical = spherical_values.find(
+                        (s) => String(s.id) === String(spherical_id)
+                    );
+                    sphericalName = spherical ? spherical.name : item.value;
                 }
-                if (item.type === 'cylindrical') {
+                if (item.type === "cylindrical") {
                     cylindrical_id = item.value;
-                    cylindricalName = cylindrical_values.find(c => String(c.id) == cylindrical_id)?.name || '';
+                    const cylindrical = cylindrical_values.find(
+                        (c) => String(c.id) === String(cylindrical_id)
+                    );
+                    cylindricalName = cylindrical
+                        ? cylindrical.name
+                        : item.value;
                 }
             });
-            const nameParts = [colorName, sizeName, sphericalName, cylindricalName].filter(Boolean);
-            const name = nameParts.join(' - ');
+
+            const nameParts = [
+                colorName,
+                sizeName,
+                sphericalName,
+                cylindricalName,
+            ].filter(Boolean);
+            const name = nameParts.join(" - ");
+
+            return {
+                name,
+                color_id,
+                size_id,
+                spherical_id,
+                cylindrical_id,
+            };
+        });
+
+        const existingVariations = existingVariationRows.map((row) => {
+            const nameInput = row.querySelector('input[name$="[name]"]');
+            const colorInput = row.querySelector('input[name$="[color_id]"]');
+            const sizeInput = row.querySelector('input[name$="[size_id]"]');
+            const sphericalInput = row.querySelector(
+                'input[name$="[spherical_id]"]'
+            );
+            const cylindricalInput = row.querySelector(
+                'input[name$="[cylindrical_id]"]'
+            );
+
+            return {
+                name: nameInput?.value.trim(),
+                color_id: colorInput?.value,
+                size_id: sizeInput?.value,
+                spherical_id: sphericalInput?.value,
+                cylindrical_id: cylindricalInput?.value,
+            };
+        });
+
+        existingVariationRows.forEach((row, index) => {
+            const existingVariation = existingVariations[index];
+            const isValid = validCombinations.some((combo) => {
+                if (combo.name === existingVariation.name) return true;
+                if (
+                    combo.color_id === existingVariation.color_id &&
+                    combo.size_id === existingVariation.size_id &&
+                    combo.spherical_id === existingVariation.spherical_id &&
+                    combo.cylindrical_id === existingVariation.cylindrical_id
+                ) {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!isValid) {
+                row.remove();
+            }
+        });
+
+        const remainingVariations = Array.from(
+            variationsContainer.getElementsByClassName("variation-row")
+        ).map((row) => {
+            const nameInput = row.querySelector('input[name$="[name]"]');
+            return nameInput?.value.trim();
+        });
+
+        const newCombinations = validCombinations.filter(
+            (combo) => !remainingVariations.includes(combo.name)
+        );
+
+        newCombinations.forEach((combo, idx) => {
+            const globalIndex =
+                variationsContainer.getElementsByClassName(
+                    "variation-row"
+                ).length;
+            const skuPrefix = variableSkuInput?.value.trim() || "VAR";
+            const randomId = Math.random().toString(36).substring(2, 10); // Random SKU suffix for variations
+            const variationSku = `${skuPrefix}-${combo.name
+                .toLowerCase()
+                .replace(/\s+/g, "-")}-${randomId}`;
+
             const row = document.createElement("div");
             row.className = "variation-row row g-2 mb-2";
+
+            const hiddenInputs = [];
+            if (combo.color_id)
+                hiddenInputs.push(
+                    `<input type="hidden" name="variations[${globalIndex}][color_id]" value="${combo.color_id}">`
+                );
+            if (combo.size_id)
+                hiddenInputs.push(
+                    `<input type="hidden" name="variations[${globalIndex}][size_id]" value="${combo.size_id}">`
+                );
+            if (combo.spherical_id)
+                hiddenInputs.push(
+                    `<input type="hidden" name="variations[${globalIndex}][spherical_id]" value="${combo.spherical_id}">`
+                );
+            if (combo.cylindrical_id)
+                hiddenInputs.push(
+                    `<input type="hidden" name="variations[${globalIndex}][cylindrical_id]" value="${combo.cylindrical_id}">`
+                );
+
             row.innerHTML = `
                 <div class="col-md-2">
-                    <input type="text" name="variations[${globalIndex}][name]" value="${name}" class="form-control" placeholder="Tên biến thể" readonly>
-                    <input type="hidden" name="variations[${globalIndex}][color_id]" value="${color_id}">
-                    <input type="hidden" name="variations[${globalIndex}][size_id]" value="${size_id}">
-                    <input type="hidden" name="variations[${globalIndex}][spherical_id]" value="${spherical_id}">
-                    <input type="hidden" name="variations[${globalIndex}][cylindrical_id]" value="${cylindrical_id}">
+                    <input type="text" name="variations[${globalIndex}][name]" value="${
+                combo.name
+            }" class="form-control" placeholder="Tên biến thể" readonly>
+                    ${hiddenInputs.join("")}
                 </div>
                 <div class="col-md-2">
-                    <input type="text" name="variations[${globalIndex}][sku]" value="${skuPrefix}-${name.toLowerCase().replace(/\s+/g, "-")}" class="form-control" placeholder="Mã sản phẩm">
+                    <input type="text" name="variations[${globalIndex}][sku]" value="${variationSku}" class="form-control" placeholder="Mã sản phẩm">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000)">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900)">
                 </div>
                 <div class="col-md-1">
-                    <input type="text" class="form-control price-input" name="variations[${globalIndex}][price]" value="" placeholder="Nhập giá (VD: 1000 hoặc 234.56)">
-                </div>
-                <div class="col-md-1">
-                    <input type="text" class="form-control price-input" name="variations[${globalIndex}][sale_price]" value="" placeholder="Nhập giá (VD: 900 hoặc 234.56)">
+                    <input type="number" class="form-control" value="0" readonly title="Tồn kho được quản lý qua module kho">
                 </div>
                 <div class="col-md-2">
                     <input type="file" name="variations[${globalIndex}][image]" class="form-control variation-image-input">
@@ -453,6 +586,22 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
             variationsContainer.appendChild(row);
         });
+
+        const finalVariations =
+            variationsContainer.getElementsByClassName("variation-row");
+        if (finalVariations.length > 0) {
+            variationsContainer.style.display = "block";
+            if (setVariationsPriceBtn)
+                setVariationsPriceBtn.style.display = "block";
+            if (setVariationsSalePriceBtn)
+                setVariationsSalePriceBtn.style.display = "block";
+        } else {
+            variationsContainer.style.display = "none";
+            if (setVariationsPriceBtn)
+                setVariationsPriceBtn.style.display = "none";
+            if (setVariationsSalePriceBtn)
+                setVariationsSalePriceBtn.style.display = "none";
+        }
     }
 
     if (generateVariationsBtn && attributesContainer && variationsContainer) {
@@ -462,39 +611,53 @@ document.addEventListener("DOMContentLoaded", function () {
                 variationsContainer,
                 variableSkuInput
             );
-            // Sau khi tạo biến thể, prompt nhập giá cho tất cả biến thể
             setTimeout(() => {
                 promptAllVariationPrices();
             }, 200);
         });
-        // Prompt nhập giá cho tất cả biến thể (dạng alert/prompt tuần tự)
+
         function promptAllVariationPrices() {
-            const variationRows = variationsContainer.getElementsByClassName("variation-row");
+            const variationRows =
+                variationsContainer.getElementsByClassName("variation-row");
             if (!variationRows.length) return;
             let basePrice = null;
             let salePrice = null;
-            // Nhập giá gốc trước, chỉ nhập lại nếu sai
             while (true) {
-                basePrice = prompt("Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):", basePrice || "");
-                if (basePrice === null) return; // Hủy
+                basePrice = prompt(
+                    "Nhập giá gốc cho tất cả biến thể (VD: 1000 hoặc 1234.56):",
+                    basePrice || ""
+                );
+                if (basePrice === null) return;
                 basePrice = basePrice.replace(",", ".").trim();
-                if (!basePrice || isNaN(parseFloat(basePrice)) || parseFloat(basePrice) < 0) {
+                if (
+                    !basePrice ||
+                    isNaN(parseFloat(basePrice)) ||
+                    parseFloat(basePrice) < 0
+                ) {
                     alert("Vui lòng nhập giá gốc hợp lệ (số dương).");
                     continue;
                 }
                 break;
             }
-            // Nhập giá khuyến mãi, chỉ bắt nhập lại giá khuyến mãi nếu sai
             while (true) {
-                salePrice = prompt("Nhập giá khuyến mãi cho tất cả biến thể (có thể bỏ trống):", salePrice || "");
-                if (salePrice === null) return; // Hủy
+                salePrice = prompt(
+                    "Nhập giá khuyến mãi cho tất cả biến thể (có thể bỏ trống):",
+                    salePrice || ""
+                );
+                if (salePrice === null) return;
                 if (salePrice === "") {
                     salePrice = "";
                     break;
                 }
                 salePrice = salePrice.replace(",", ".").trim();
-                if (!salePrice || isNaN(parseFloat(salePrice)) || parseFloat(salePrice) < 0) {
-                    alert("Vui lòng nhập giá khuyến mãi hợp lệ (số dương hoặc để trống).");
+                if (
+                    !salePrice ||
+                    isNaN(parseFloat(salePrice)) ||
+                    parseFloat(salePrice) < 0
+                ) {
+                    alert(
+                        "Vui lòng nhập giá khuyến mãi hợp lệ (số dương hoặc để trống)."
+                    );
                     continue;
                 }
                 if (parseFloat(salePrice) > parseFloat(basePrice)) {
@@ -503,100 +666,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 break;
             }
-            // Gán giá trị vào tất cả biến thể
             Array.from(variationRows).forEach((row) => {
                 const priceInput = row.querySelector('input[name$="[price]"]');
-                const salePriceInput = row.querySelector('input[name$="[sale_price]"]');
+                const salePriceInput = row.querySelector(
+                    'input[name$="[sale_price]"]'
+                );
                 if (priceInput) priceInput.value = basePrice;
                 if (salePriceInput) salePriceInput.value = salePrice;
             });
         }
-        // Modal nhập giá cho biến thể
-        function showVariationPriceModal() {
-            const variationPriceModal = document.getElementById("variationPriceModal");
-            const variationPricesTableContainer = document.getElementById("variation-prices-table-container");
-            const variationPriceWarning = document.getElementById("variation-price-warning");
-            const saveVariationPricesBtn = document.getElementById("save-variation-prices");
-            const variationRows = variationsContainer.getElementsByClassName("variation-row");
-            if (!variationRows.length) return;
-            // Tạo bảng nhập giá
-            let tableHtml = '<table class="table table-bordered"><thead><tr><th>Tên biến thể</th><th>Giá gốc</th><th>Giá khuyến mãi</th></tr></thead><tbody>';
-            Array.from(variationRows).forEach((row, idx) => {
-                const name = row.querySelector('input[name$="[name]"]').value;
-                const price = row.querySelector('input[name$="[price]"]').value || '';
-                const salePrice = row.querySelector('input[name$="[sale_price]"]').value || '';
-                tableHtml += `<tr data-index="${idx}">`
-                    + `<td>${name}</td>`
-                    + `<td><input type="text" class="form-control modal-price-input" data-type="price" value="${price}" /></td>`
-                    + `<td><input type="text" class="form-control modal-sale-price-input" data-type="sale_price" value="${salePrice}" /></td>`
-                    + `</tr>`;
-            });
-            tableHtml += '</tbody></table>';
-            variationPricesTableContainer.innerHTML = tableHtml;
-            variationPriceWarning.classList.add("d-none");
-
-            // Gán sự kiện lưu
-            if (saveVariationPricesBtn) {
-                saveVariationPricesBtn.onclick = null;
-                saveVariationPricesBtn.onclick = function () {
-                    const rows = variationPricesTableContainer.querySelectorAll("tbody tr");
-                    let hasWarning = false;
-                    let warningShown = false;
-                    rows.forEach((tr) => {
-                        const priceInput = tr.querySelector('.modal-price-input');
-                        const salePriceInput = tr.querySelector('.modal-sale-price-input');
-                        const price = parseFloat((priceInput.value || '').replace(',', '.')) || 0;
-                        const salePrice = parseFloat((salePriceInput.value || '').replace(',', '.')) || 0;
-                        if (salePrice > price && !warningShown) {
-                            hasWarning = true;
-                            warningShown = true;
-                        }
-                    });
-                    if (hasWarning) {
-                        variationPriceWarning.classList.remove("d-none");
-                        return;
-                    } else {
-                        variationPriceWarning.classList.add("d-none");
-                    }
-                    // Gán giá vào input của từng biến thể
-                    const variationRows = variationsContainer.getElementsByClassName("variation-row");
-                    rows.forEach((tr, idx) => {
-                        const priceInput = tr.querySelector('.modal-price-input');
-                        const salePriceInput = tr.querySelector('.modal-sale-price-input');
-                        const price = priceInput.value;
-                        const salePrice = salePriceInput.value;
-                        const vRow = variationRows[idx];
-                        if (vRow) {
-                            const vPriceInput = vRow.querySelector('input[name$="[price]"]');
-                            const vSalePriceInput = vRow.querySelector('input[name$="[sale_price]"]');
-                            if (vPriceInput) vPriceInput.value = price;
-                            if (vSalePriceInput) vSalePriceInput.value = salePrice;
-                        }
-                    });
-                    // Ẩn modal
-                    if (window.bootstrap && window.bootstrap.Modal) {
-                        if (!variationPriceModal._bsModal) {
-                            variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
-                        }
-                        variationPriceModal._bsModal.hide();
-                    } else {
-                        $(variationPriceModal).modal('hide');
-                    }
-                };
-            }
-            // Hiển thị modal
-            if (window.bootstrap && window.bootstrap.Modal) {
-                if (!variationPriceModal._bsModal) {
-                    variationPriceModal._bsModal = new window.bootstrap.Modal(variationPriceModal);
-                }
-                variationPriceModal._bsModal.show();
-            } else {
-                $(variationPriceModal).modal('show');
-            }
-        }
     }
 
-    // Xử lý xóa biến thể
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("remove-variation")) {
             const variationRows =
@@ -627,28 +707,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Xử lý submit form
     document.querySelectorAll("form").forEach((form) => {
         form.addEventListener("submit", function (e) {
-            // Log toàn bộ dữ liệu form
-            const formData = new FormData(form);
-            // --- BẮT ĐẦU SỬA: Lọc attributes không có values ---
-            // Tìm tất cả các attribute-row
-            const attributeRows = attributesContainer?.getElementsByClassName("attribute-row") || [];
+            const attributeRows =
+                attributesContainer?.getElementsByClassName("attribute-row") ||
+                [];
             Array.from(attributeRows).forEach((row, idx) => {
-                const checkedValues = row.querySelectorAll('.attribute-value-checkbox:checked');
+                const checkedValues = row.querySelectorAll(
+                    ".attribute-value-checkbox:checked"
+                );
                 if (checkedValues.length === 0) {
-                    // Xóa toàn bộ input name="attributes[idx][type]" và name="attributes[idx][values][]"
-                    row.querySelectorAll('[name^="attributes[' + idx + ']"]').forEach(input => {
+                    row.querySelectorAll(
+                        '[name^="attributes[' + idx + ']"]'
+                    ).forEach((input) => {
                         input.disabled = true;
                     });
                 }
             });
-            // --- KẾT THÚC SỬA ---
-            const entries = {};
-            for (let [key, value] of formData.entries()) {
-                entries[key] = value;
-            }
             const priceInput = form.querySelector('input[name="price"]');
             const salePriceInput = form.querySelector(
                 'input[name="sale_price"]'
@@ -701,8 +776,8 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (hasError) {
-                e.preventDefault();
                 alert("Vui lòng nhập giá hợp lệ (số dương).");
+                e.preventDefault();
             }
             // Log variations gửi lên
             const variations = [];
@@ -718,7 +793,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Xử lý nút "Thêm giá gốc" cho tất cả biến thể
     if (setVariationsPriceBtn) {
         setVariationsPriceBtn.addEventListener("click", function () {
             const variationRows =
@@ -754,7 +828,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Xử lý nút "Thêm giá khuyến mãi" cho tất cả biến thể
     if (setVariationsSalePriceBtn) {
         setVariationsSalePriceBtn.addEventListener("click", function () {
             const variationRows =
@@ -808,7 +881,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Khởi tạo
     updateAddAttributeBtn();
     checkGenerateButton();
 });

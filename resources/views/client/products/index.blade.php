@@ -81,17 +81,38 @@
                                                 @if ($product->sale_price && $product->sale_price < $product->price)
                                                     <span class="qodef-woo-product-mark qodef-woo-onsale">sale</span>
                                                 @endif
-                                                @if ($product->images->isNotEmpty())
-                                                    <img loading="lazy" width="600" height="431"
-                                                        src="{{ asset('storage/' . $product->images->first()->image_path) }}"
-                                                        class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail product-fixed-img"
-                                                        alt="{{ $product->name }}" decoding="async" />
-                                                @else
-                                                    <img loading="lazy" width="600" height="431"
-                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Shop-Single-02-img-600x431.jpg') }}"
-                                                        class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail product-fixed-img"
-                                                        alt="{{ $product->name }}" decoding="async" />
-                                                @endif
+                                                @php
+                                                    // Ưu tiên ảnh từ biến thể nếu có
+                                                    $featuredImage = null;
+                                                    if ($product->variations && $product->variations->count() > 0) {
+                                                        $firstVariation = $product->variations->first();
+                                                        if (
+                                                            $firstVariation->images &&
+                                                            $firstVariation->images->count() > 0
+                                                        ) {
+                                                            $featuredImage =
+                                                                $firstVariation->images
+                                                                    ->where('is_featured', true)
+                                                                    ->first() ?? $firstVariation->images->first();
+                                                        }
+                                                    }
+
+                                                    // Nếu không có ảnh biến thể, lấy ảnh sản phẩm chính
+                                                    if (!$featuredImage && $product->images->isNotEmpty()) {
+                                                        $featuredImage =
+                                                            $product->images->where('is_featured', true)->first() ??
+                                                            $product->images->first();
+                                                    }
+
+                                                    $imagePath = $featuredImage
+                                                        ? asset('storage/' . $featuredImage->image_path)
+                                                        : asset(
+                                                            'v1/wp-content/uploads/2021/07/Shop-Single-02-img-600x431.jpg',
+                                                        );
+                                                @endphp
+                                                <img loading="lazy" width="600" height="431" src="{{ $imagePath }}"
+                                                    class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail product-fixed-img"
+                                                    alt="{{ $product->name }}" decoding="async" />
                                             </div>
                                             <div class="qodef-woo-product-content">
                                                 <h6 class="qodef-woo-product-title woocommerce-loop-product__title">
@@ -115,24 +136,56 @@
                                                     @endif
                                                 </div>
                                                 <span class="price">
-                                                    @if ($product->sale_price && $product->sale_price < $product->price)
+                                                    @php
+                                                        // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                        if ($product->variations && $product->variations->count() > 0) {
+                                                            $minPrice = $product->variations->min('price');
+                                                            $minSalePrice = $product->variations
+                                                                ->where('sale_price', '>', 0)
+                                                                ->min('sale_price');
+
+                                                            // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                            if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                $displayPrice = $minSalePrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = true;
+                                                            } else {
+                                                                $displayPrice = $minPrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = false;
+                                                            }
+                                                        } else {
+                                                            // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                            $displayPrice =
+                                                                $product->sale_price &&
+                                                                $product->sale_price < $product->price
+                                                                    ? $product->sale_price
+                                                                    : $product->price;
+                                                            $originalPrice = $product->price;
+                                                            $hasSale =
+                                                                $product->sale_price &&
+                                                                $product->sale_price < $product->price;
+                                                        }
+                                                    @endphp
+
+                                                    @if ($hasSale)
                                                         <del aria-hidden="true">
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </del>
                                                         <span class="screen-reader-text">Giá gốc:
-                                                            {{ number_format($product->price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
                                                         <ins aria-hidden="true">
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </ins>
                                                         <span class="screen-reader-text">Giá khuyến mãi:
-                                                            {{ number_format($product->sale_price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                     @else
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($product->price, 0, ',', '.') }}đ</bdi>
+                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                         </span>
                                                     @endif
                                                 </span>
@@ -426,6 +479,66 @@
                                         @endif
                                     @endforeach
                                     <!-- Bỏ nút lọc cỡ -->
+                                </form>
+                            </div>
+                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
+                                data-area="shop-sidebar">
+                                <h5 class="qodef-widget-title">Lọc theo độ cận</h5>
+                                <form method="get" action="{{ route('client.products.index') }}"
+                                    class="auto-submit-on-change">
+                                    <ul class="woocommerce-widget-layered-nav-list">
+                                        @foreach ($sphericals as $spherical)
+                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                <label style="cursor:pointer;">
+                                                    <input type="checkbox" name="sphericals[]"
+                                                        value="{{ $spherical->id }}"
+                                                        {{ in_array($spherical->id, (array) request('sphericals', [])) ? 'checked' : '' }}>
+                                                    {{ $spherical->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @foreach (request()->except(['sphericals']) as $key => $value)
+                                        @if (is_array($value))
+                                            @foreach ($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]"
+                                                    value="{{ $v }}" />
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $key }}"
+                                                value="{{ $value }}" />
+                                        @endif
+                                    @endforeach
+                                </form>
+                            </div>
+                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
+                                data-area="shop-sidebar">
+                                <h5 class="qodef-widget-title">Lọc theo độ loạn</h5>
+                                <form method="get" action="{{ route('client.products.index') }}"
+                                    class="auto-submit-on-change">
+                                    <ul class="woocommerce-widget-layered-nav-list">
+                                        @foreach ($cylindricals as $cylindrical)
+                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                <label style="cursor:pointer;">
+                                                    <input type="checkbox" name="cylindricals[]"
+                                                        value="{{ $cylindrical->id }}"
+                                                        {{ in_array($cylindrical->id, (array) request('cylindricals', [])) ? 'checked' : '' }}>
+                                                    {{ $cylindrical->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @foreach (request()->except(['cylindricals']) as $key => $value)
+                                        @if (is_array($value))
+                                            @foreach ($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]"
+                                                    value="{{ $v }}" />
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $key }}"
+                                                value="{{ $value }}" />
+                                        @endif
+                                    @endforeach
                                 </form>
                             </div>
                             <div class="widget widget_block widget_media_image" data-area="shop-sidebar">

@@ -14,6 +14,7 @@ use App\Models\PaymentMethod;
 use App\Models\PromotionUsage;
 use App\Models\ShippingProvider;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -298,12 +299,22 @@ class CartClientController extends Controller
     public function checkout(Request $request)
     {
         $user = Auth::user();
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds) {
+            $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
         if ($cartItems->isEmpty()) {
-            return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
+            return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để thanh toán!');
         }
         $validated = $request->validate([
             'receiver_name' => 'required|string|max:255',
@@ -433,7 +444,12 @@ class CartClientController extends Controller
             ]);
             $promotion->increment('used_count');
         }
-        Cart::where('user_id', $user->id)->delete();
+
+        if ($selectedIds) {
+            Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
+        } else {
+            Cart::where('user_id', $user->id)->delete();
+        }
 
         // Cập nhật lại loại khách hàng
         $this->updateCustomerAfterOrder($user->id);
@@ -441,12 +457,12 @@ class CartClientController extends Controller
         // Gửi email xác nhận đơn hàng cho khách hàng
         try {
             if ($order->receiver_email) {
-                \Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
+                Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
             } elseif ($order->customer_email) {
-                \Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
+                Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
             }
         } catch (\Exception $e) {
-            \Log::error('Lỗi gửi mail OrderPlaced (client): ' . $e->getMessage());
+            Log::error('Lỗi gửi mail OrderPlaced (client): ' . $e->getMessage());
         }
 
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
@@ -500,10 +516,22 @@ class CartClientController extends Controller
     public function momo_payment(Request $request)
     {
         $user = Auth::user();
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds) {
+            $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
@@ -673,10 +701,22 @@ class CartClientController extends Controller
     public function vnpay_payment(Request $request)
     {
         $user = Auth::user();
-        $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds) {
+            $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $ids)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            // Nếu không có selected_ids, lấy toàn bộ giỏ hàng
+            $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Giỏ hàng của bạn đang trống!');
         }
@@ -852,7 +892,11 @@ class CartClientController extends Controller
         }
 
         // Xoá giỏ hàng sau khi tạo đơn (nếu muốn)
-        Cart::where('user_id', $user->id)->delete();
+        if ($selectedIds) {
+            Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
+        } else {
+            Cart::where('user_id', $user->id)->delete();
+        }
 
         // Cập nhật lại loại khách hàng (VNPAY)
         $this->updateCustomerAfterOrder($user->id);
@@ -892,12 +936,12 @@ class CartClientController extends Controller
                     // Gửi email xác nhận đơn hàng khi thanh toán VNPAY thành công
                     try {
                         if ($order->receiver_email) {
-                            \Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
+                            Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
                         } elseif ($order->customer_email) {
-                            \Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
+                            Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
                         }
                     } catch (\Exception $e) {
-                        \Log::error('Lỗi gửi mail OrderPlaced (VNPAY): ' . $e->getMessage());
+                        Log::error('Lỗi gửi mail OrderPlaced (VNPAY): ' . $e->getMessage());
                     }
 
                     return view('client.cart.thankyou');
@@ -938,12 +982,12 @@ class CartClientController extends Controller
                 // Gửi email xác nhận đơn hàng khi thanh toán MoMo thành công
                 try {
                     if ($order->receiver_email) {
-                        \Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
+                        Mail::to($order->receiver_email)->send(new \App\Mail\OrderPlaced($order));
                     } elseif ($order->customer_email) {
-                        \Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
+                        Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
                     }
                 } catch (\Exception $e) {
-                    \Log::error('Lỗi gửi mail OrderPlaced (MoMo): ' . $e->getMessage());
+                    Log::error('Lỗi gửi mail OrderPlaced (MoMo): ' . $e->getMessage());
                 }
 
                 return view('client.cart.thankyou');
