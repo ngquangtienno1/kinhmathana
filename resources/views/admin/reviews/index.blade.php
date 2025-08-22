@@ -168,6 +168,7 @@
                                     @endif
                                 </a>
                             </th>
+                            <th class="sort align-middle ps-4" scope="col" style="width:100px;">Hiển thị</th>
                             <th class="sort align-middle ps-4" scope="col" style="width:150px;">
                                 <a href="{{ route('admin.reviews.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'created_at', 'direction' => request('sort') === 'created_at' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}"
                                     class="text-body" style="text-decoration:none;">
@@ -227,6 +228,13 @@
                                         </div>
                                     @endif
                                 </td>
+                                <td class="align-middle ps-4">
+                                    @if ($review->is_hidden)
+                                        <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">Đã ẩn</span>
+                                    @else
+                                        <span class="badge badge-phoenix fs-10 badge-phoenix-success">Đang hiển thị</span>
+                                    @endif
+                                </td>
                                 <td class="created_at align-middle white-space-nowrap text-body-tertiary ps-4">
                                     {{ $review->created_at->format('d/m/Y H:i') }}
                                 </td>
@@ -243,6 +251,14 @@
                                                 href="{{ route('admin.reviews.show', $review->id) }}">Xem</a>
                                             {{-- <a class="dropdown-item" href="{{ route('admin.reviews.edit', $review->id) }}">Sửa</a> --}}
                                             <div class="dropdown-divider"></div>
+                                            <form action="{{ route('admin.reviews.toggle-visibility', $review->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="is_hidden" value="{{ $review->is_hidden ? 0 : 1 }}">
+                                                <button type="submit" class="dropdown-item">
+                                                    {{ $review->is_hidden ? 'Hiện đánh giá' : 'Ẩn đánh giá' }}
+                                                </button>
+                                            </form>
                                             <form action="{{ route('admin.reviews.destroy', $review->id) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf

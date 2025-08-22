@@ -74,7 +74,21 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['images', 'variations.color', 'variations.size', 'brand', 'categories', 'reviews', 'comments.user'])->findOrFail($id);
+        $product = Product::with([
+            'images',
+            'variations.color',
+            'variations.size',
+            'brand',
+            'categories',
+            // Chỉ lấy đánh giá chưa bị ẩn
+            'reviews' => function ($q) {
+                $q->where('is_hidden', false);
+            },
+            // Chỉ lấy bình luận đã duyệt và chưa bị ẩn
+            'comments' => function ($q) {
+                $q->where('status', 'đã duyệt')->where('is_hidden', false);
+            }
+        ])->findOrFail($id);
 
         if ($product->product_type === 'variable') {
             $product->default_price = $product->variations->first()->price ?? 0;
@@ -848,7 +862,17 @@ class ProductController extends Controller
     public function showBySlug($slug)
     {
         $product = Product::where('slug', $slug)
-            ->with(['images', 'variations.color', 'variations.size', 'brand', 'categories', 'reviews'])
+            ->with([
+                'images',
+                'variations.color',
+                'variations.size',
+                'brand',
+                'categories',
+                // Chỉ lấy đánh giá chưa bị ẩn
+                'reviews' => function ($q) {
+                    $q->where('is_hidden', false);
+                }
+            ])
             ->firstOrFail();
 
         if ($product->product_type === 'variable') {
