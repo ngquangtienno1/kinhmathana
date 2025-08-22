@@ -121,22 +121,30 @@
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">
                     <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
-                        {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} Items of
-                        {{ $products->total() }}
+                        @if ($products instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                            {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} Items of
+                            {{ $products->total() }}
+                        @else
+                            {{ $products->count() }} Items
+                        @endif
                     </p>
-                    <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
-                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
-                    <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn <span
-                            class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    @if ($products instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                        <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
+                                class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                        <a class="fw-semibold d-none" href="#" data-list-view="less">Xem ít hơn <span
+                                class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                    @endif
                 </div>
-                <div class="col-auto d-flex">
-                    <button class="page-link" data-list-pagination="prev"><span
-                            class="fas fa-chevron-left"></span></button>
-                    <ul class="mb-0 pagination"></ul>
-                    <button class="page-link pe-0" data-list-pagination="next">
-                        <span class="fas fa-chevron-right"></span>
-                    </button>
-                </div>
+                @if ($products instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                    <div class="col-auto d-flex">
+                        <button class="page-link" data-list-pagination="prev"><span
+                                class="fas fa-chevron-left"></span></button>
+                        <ul class="mb-0 pagination"></ul>
+                        <button class="page-link pe-0" data-list-pagination="next">
+                            <span class="fas fa-chevron-right"></span>
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -145,13 +153,13 @@
 <form id="bulk-restore-form" action="{{ route('admin.products.bulkRestore') }}" method="POST"
     style="display:none;">
     @csrf
-    <input type="hidden" name="ids[]" id="bulk-restore-ids">
+    <input type="hidden" name="ids" id="bulk-restore-ids">
 </form>
 <form id="bulk-force-delete-form" action="{{ route('admin.products.bulkForceDelete') }}" method="POST"
     style="display:none;">
     @csrf
     @method('DELETE')
-    <input type="hidden" name="ids[]" id="bulk-force-delete-ids">
+    <input type="hidden" name="ids" id="bulk-force-delete-ids">
 </form>
 
 <script>
@@ -166,17 +174,17 @@
         const viewLessLink = document.querySelector('[data-list-view="less"]');
         const listInfo = document.querySelector('[data-list-info]');
 
-        // Xử lý xem tất cả
+        // Xử lý xem tất cả (chỉ khi có pagination)
         if (viewAllLink) {
             viewAllLink.addEventListener('click', function(e) {
                 e.preventDefault();
                 const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('per_page', '{{ $products->total() }}');
+                currentUrl.searchParams.set('per_page', 'all');
                 window.location.href = currentUrl.toString();
             });
         }
 
-        // Xử lý xem ít hơn
+        // Xử lý xem ít hơn (chỉ khi có pagination)
         if (viewLessLink) {
             viewLessLink.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -186,16 +194,16 @@
             });
         }
 
-        // Hiển thị/ẩn link xem ít hơn
-        if (listInfo) {
-            const totalItems = {{ $products->total() }};
-            const currentItems = {{ $products->count() }};
-            if (currentItems < totalItems) {
-                viewAllLink.classList.remove('d-none');
-                viewLessLink.classList.add('d-none');
-            } else {
+        // Hiển thị/ẩn link xem ít hơn (chỉ khi có pagination)
+        if (listInfo && viewAllLink && viewLessLink) {
+            const currentPerPage = '{{ request('per_page', '10') }}';
+
+            if (currentPerPage === 'all') {
                 viewAllLink.classList.add('d-none');
                 viewLessLink.classList.remove('d-none');
+            } else {
+                viewAllLink.classList.remove('d-none');
+                viewLessLink.classList.add('d-none');
             }
         }
 
@@ -237,27 +245,9 @@
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn khôi phục các sản phẩm đã chọn?')) return;
 
-            // Tạo các input hidden cho từng ID
-            const form = document.getElementById('bulk-restore-form');
-            form.innerHTML = ''; // Xóa các input cũ
-
-            // Thêm CSRF token
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-
-            // Thêm từng ID vào form
-            checkedIds.forEach(id => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'ids[]';
-                input.value = id;
-                form.appendChild(input);
-            });
-
-            form.submit();
+            // Gửi IDs dưới dạng JSON string
+            document.getElementById('bulk-restore-ids').value = JSON.stringify(checkedIds);
+            document.getElementById('bulk-restore-form').submit();
         });
 
         // Xử lý submit xóa vĩnh viễn
@@ -269,33 +259,9 @@
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa vĩnh viễn các sản phẩm đã chọn?')) return;
 
-            // Tạo các input hidden cho từng ID
-            const form = document.getElementById('bulk-force-delete-form');
-            form.innerHTML = ''; // Xóa các input cũ
-
-            // Thêm CSRF token và method
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-
-            // Thêm từng ID vào form
-            checkedIds.forEach(id => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'ids[]';
-                input.value = id;
-                form.appendChild(input);
-            });
-
-            form.submit();
+            // Gửi IDs dưới dạng JSON string
+            document.getElementById('bulk-force-delete-ids').value = JSON.stringify(checkedIds);
+            document.getElementById('bulk-force-delete-form').submit();
         });
     });
 </script>
