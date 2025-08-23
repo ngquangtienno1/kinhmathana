@@ -219,7 +219,9 @@
                                             $attributeGroups['cylindrical'] = array_unique(
                                                 $attributeGroups['cylindrical'],
                                             );
-                                            $usedTypes = array_keys(array_filter($attributeGroups, fn($values) => !empty($values)));
+                                            $usedTypes = array_keys(
+                                                array_filter($attributeGroups, fn($values) => !empty($values)),
+                                            );
                                             $attributeIndex = 0;
                                         @endphp
 
@@ -427,7 +429,8 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-1">
-                                                <input type="number" class="form-control" name="variations[{{ $index }}][quantity]"
+                                                <input type="number" class="form-control"
+                                                    name="variations[{{ $index }}][quantity]"
                                                     value="{{ $variation['quantity'] ?? 0 }}" min="0"
                                                     placeholder="Nhập số lượng">
                                             </div>
@@ -468,8 +471,10 @@
                                                     <tr>
                                                         <td>{{ $variation['name'] ?? '' }}</td>
                                                         <td>{{ $variation['sku'] ?? '' }}</td>
-                                                        <td>{{ isset($variation['price']) ? number_format((int) $variation['price'], 0, ',', '.') : '0' }} VNĐ</td>
-                                                        <td>{{ isset($variation['sale_price']) ? number_format((int) $variation['sale_price'], 0, ',', '.') : '0' }} VNĐ</td>
+                                                        <td>{{ isset($variation['price']) ? number_format((int) $variation['price'], 0, ',', '.') : '0' }}
+                                                            VNĐ</td>
+                                                        <td>{{ isset($variation['sale_price']) ? number_format((int) $variation['sale_price'], 0, ',', '.') : '0' }}
+                                                            VNĐ</td>
                                                         <td>{{ $variation['quantity'] ?? 0 }}</td>
                                                         <td>
                                                             @if (!empty($variation['images']) && is_array($variation['images']) && count($variation['images']))
@@ -602,6 +607,10 @@
 </div>
 
 <style>
+    .remove-attribute {
+        display: none;
+    }
+
     .tag {
         display: inline-block;
         background-color: #e9ecef;
