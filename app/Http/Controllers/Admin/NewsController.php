@@ -111,7 +111,7 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'summary' => 'required|string',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'is_active' => 'boolean',
             'published_at' => 'nullable|date',
         ]);
@@ -142,7 +142,7 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'summary' => 'required|string',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'is_active' => 'boolean',
             'published_at' => 'nullable|date',
         ]);
