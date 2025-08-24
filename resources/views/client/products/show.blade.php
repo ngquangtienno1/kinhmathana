@@ -122,9 +122,11 @@
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
                                 </div>
                                 @if ($product->quantity <= 0 && $product->variations->count() === 0)
-                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng</div>
+                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng
+                                    </div>
                                 @elseif ($product->variations->count() > 0 && $product->variations->sum('quantity') <= 0)
-                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng</div>
+                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng
+                                    </div>
                                 @endif
                                 @if ($product->variations->count() > 0)
                                     <div id="qvsfw-variations-form-wrapper">
@@ -132,7 +134,7 @@
                                             action="{{ route('client.products.add-to-cart') }}"
                                             enctype="multipart/form-data" data-product-name="{{ $product->name }}">
                                             @csrf
-                                             @if ($product->variations->sum('quantity') <= 0)
+                                            @if ($product->variations->sum('quantity') <= 0)
                                                 <fieldset disabled style="opacity:0.7;pointer-events:none;">
                                             @endif
                                             @if ($colors->count())
@@ -586,7 +588,6 @@
                                                                         style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                 </a>
                                                             @endif
-
                                                         @endforeach
                                                     </div>
                                                 @endif
@@ -666,7 +667,6 @@
                                                                             style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                     </a>
                                                                 @endif
-
                                                             @endforeach
                                                         </div>
                                                     @endif
@@ -833,7 +833,7 @@
                             @endif
                         </div>
                     </div>
-        <hr style="max-width: 100%;">
+                    <hr style="max-width: 100%;">
                     <section class="related products">
                         <h2>Sản phẩm liên quan</h2>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
@@ -842,7 +842,8 @@
                                     <li
                                         class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
-                                            <div class="qodef-woo-product-image" style="position:relative;">
+                                            <div class="qodef-woo-product-image"
+                                                style="position:relative;width:320px;height:200px;overflow:hidden;">
                                                 @php
                                                     $relatedFeaturedImage = null;
                                                     $relatedImagePath = '';
@@ -878,9 +879,10 @@
                                                     <span class="qodef-woo-product-mark qodef-woo-onsale"
                                                         style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                 @endif
-                                                <img width="600" height="431" src="{{ $relatedImagePath }}"
+                                                <img width="320" height="200" src="{{ $relatedImagePath }}"
                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-                                                    alt="{{ $related_product->name }}" decoding="async" />
+                                                    alt="{{ $related_product->name }}" decoding="async"
+                                                    style="width:100%;height:100%;object-fit:cover;" />
                                             </div>
                                             <div class="qodef-woo-product-content">
                                                 <h6 class="qodef-woo-product-title woocommerce-loop-product__link"><a
@@ -897,24 +899,60 @@
                                                     <div class="qodef-info-separator-end"></div>
                                                 </div>
                                                 <span class="price">
-                                                    @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
+                                                    @php
+                                                        // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                        if (
+                                                            $related_product->variations &&
+                                                            $related_product->variations->count() > 0
+                                                        ) {
+                                                            $minPrice = $related_product->variations->min('price');
+                                                            $minSalePrice = $related_product->variations
+                                                                ->where('sale_price', '>', 0)
+                                                                ->min('sale_price');
+
+                                                            // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                            if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                $displayPrice = $minSalePrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = true;
+                                                            } else {
+                                                                $displayPrice = $minPrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = false;
+                                                            }
+                                                        } else {
+                                                            // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                            $displayPrice =
+                                                                $related_product->sale_price &&
+                                                                $related_product->sale_price < $related_product->price
+                                                                    ? $related_product->sale_price
+                                                                    : $related_product->price;
+                                                            $originalPrice = $related_product->price;
+                                                            $hasSale =
+                                                                $related_product->sale_price &&
+                                                                $related_product->sale_price < $related_product->price;
+                                                        }
+                                                    @endphp
+
+                                                    @if ($hasSale)
                                                         <del aria-hidden="true" class="original-price">
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($related_product->price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </del>
                                                         <span class="screen-reader-text">Giá gốc:
-                                                            {{ number_format($related_product->price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
                                                         <ins aria-hidden="true" class="sale-price">
-                                                            <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($related_product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                            <span class="woocommerce-Price-amount amount"
+                                                                style="color: #dc3545; font-weight: bold;">
+                                                                <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </ins>
                                                         <span class="screen-reader-text">Giá khuyến mãi:
-                                                            {{ number_format($related_product->sale_price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                     @else
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($related_product->price ?? $related_product->minimum_price, 0, ',', '.') }}đ</bdi>
+                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                         </span>
                                                     @endif
                                                 </span>
@@ -1014,7 +1052,8 @@
                                         <li
                                             class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                             <div class="qodef-e-inner">
-                                                <div class="qodef-woo-product-image" style="position:relative;">
+                                                <div class="qodef-woo-product-image"
+                                                    style="position:relative;width:320px;height:200px;overflow:hidden;">
                                                     @php
                                                         $rvFeaturedImage = null;
                                                         $rvImagePath = '';
@@ -1050,9 +1089,10 @@
                                                         <span class="qodef-woo-product-mark qodef-woo-onsale"
                                                             style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                     @endif
-                                                    <img width="600" height="431" src="{{ $rvImagePath }}"
+                                                    <img width="320" height="200" src="{{ $rvImagePath }}"
                                                         class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-                                                        alt="{{ $rvProduct->name }}" decoding="async" />
+                                                        alt="{{ $rvProduct->name }}" decoding="async"
+                                                        style="width:100%;height:100%;object-fit:cover;" />
                                                 </div>
                                                 <div class="qodef-woo-product-content">
                                                     <h6 class="qodef-woo-product-title woocommerce-loop-product__link"><a
@@ -1069,24 +1109,60 @@
                                                         <div class="qodef-info-separator-end"></div>
                                                     </div>
                                                     <span class="price">
-                                                        @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
+                                                        @php
+                                                            // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                            if (
+                                                                $rvProduct->variations &&
+                                                                $rvProduct->variations->count() > 0
+                                                            ) {
+                                                                $minPrice = $rvProduct->variations->min('price');
+                                                                $minSalePrice = $rvProduct->variations
+                                                                    ->where('sale_price', '>', 0)
+                                                                    ->min('sale_price');
+
+                                                                // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                                if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                    $displayPrice = $minSalePrice;
+                                                                    $originalPrice = $minPrice;
+                                                                    $hasSale = true;
+                                                                } else {
+                                                                    $displayPrice = $minPrice;
+                                                                    $originalPrice = $minPrice;
+                                                                    $hasSale = false;
+                                                                }
+                                                            } else {
+                                                                // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                                $displayPrice =
+                                                                    $rvProduct->sale_price &&
+                                                                    $rvProduct->sale_price < $rvProduct->price
+                                                                        ? $rvProduct->sale_price
+                                                                        : $rvProduct->price;
+                                                                $originalPrice = $rvProduct->price;
+                                                                $hasSale =
+                                                                    $rvProduct->sale_price &&
+                                                                    $rvProduct->sale_price < $rvProduct->price;
+                                                            }
+                                                        @endphp
+
+                                                        @if ($hasSale)
                                                             <del aria-hidden="true" class="original-price">
                                                                 <span class="woocommerce-Price-amount amount">
-                                                                    <bdi>{{ number_format($rvProduct->price, 0, ',', '.') }}đ</bdi>
+                                                                    <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                                 </span>
                                                             </del>
                                                             <span class="screen-reader-text">Giá gốc:
-                                                                {{ number_format($rvProduct->price, 0, ',', '.') }}đ.</span>
+                                                                {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
                                                             <ins aria-hidden="true" class="sale-price">
-                                                                <span class="woocommerce-Price-amount amount">
-                                                                    <bdi>{{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                <span class="woocommerce-Price-amount amount"
+                                                                    style="color: #dc3545; font-weight: bold;">
+                                                                    <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                                 </span>
                                                             </ins>
                                                             <span class="screen-reader-text">Giá khuyến mãi:
-                                                                {{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ.</span>
+                                                                {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                         @else
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($rvProduct->price ?? $rvProduct->minimum_price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         @endif
                                                     </span>
@@ -1260,7 +1336,8 @@
                                 input.value = '';
                             } else {
                                 // Bỏ active các nút khác trong cùng group
-                                group.querySelectorAll('.variation-btn').forEach(btn => btn.classList.remove('active'));
+                                group.querySelectorAll('.variation-btn').forEach(btn => btn.classList
+                                    .remove('active'));
                                 // Active nút vừa chọn
                                 btn.classList.add('active');
                                 // Gán value vào input hidden
@@ -1916,6 +1993,43 @@
         .price .woocommerce-Price-amount {
             color: #111;
             font-weight: 600;
+        }
+
+        /* Đảm bảo tất cả sản phẩm có chiều cao bằng nhau */
+        .products .product {
+            height: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .products .product .qodef-e-inner {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .products .product .qodef-woo-product-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .products .product .qodef-woo-product-title {
+            flex: 1;
+            margin-bottom: 8px;
+        }
+
+        .products .product .qodef-woo-product-categories {
+            margin-bottom: 8px;
+        }
+
+        .products .product .price {
+            margin-top: auto;
+            margin-bottom: 12px;
+        }
+
+        .products .product .qodef-woo-product-image-inner {
+            margin-top: auto;
         }
     </style>
     <script>
