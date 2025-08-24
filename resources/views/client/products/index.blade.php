@@ -541,6 +541,36 @@
                                     @endforeach
                                 </form>
                             </div>
+
+                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
+                                data-area="shop-sidebar">
+                                <h5 class="qodef-widget-title">Lọc theo thương hiệu</h5>
+                                <form method="get" action="{{ route('client.products.index') }}"
+                                    class="auto-submit-on-change">
+                                    <ul class="woocommerce-widget-layered-nav-list">
+                                        @foreach ($brands as $brand)
+                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                <label style="cursor:pointer;">
+                                                    <input type="checkbox" name="brands[]" value="{{ $brand->id }}"
+                                                        {{ in_array($brand->id, (array) request('brands', [])) ? 'checked' : '' }}>
+                                                    {{ $brand->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @foreach (request()->except(['brands']) as $key => $value)
+                                        @if (is_array($value))
+                                            @foreach ($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]"
+                                                    value="{{ $v }}" />
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $key }}"
+                                                value="{{ $value }}" />
+                                        @endif
+                                    @endforeach
+                                </form>
+                            </div>
                             <div class="widget widget_block widget_media_image" data-area="shop-sidebar">
                                 <figure class="wp-block-image size-large"><a href="../vouchers/index.html"><img
                                             fetchpriority="high" fetchpriority="high" decoding="async" width="1024"

@@ -133,8 +133,8 @@
                                 <ul class="sub-menu">
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4641">
-                                        <a href="about-us/index.html"><span class="qodef-menu-item-text">About
-                                                Us</span></a>
+                                        <a href="{{ route('client.service.index') }}"><span
+                                                class="qodef-menu-item-text">Dịch vụ</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
@@ -144,7 +144,7 @@
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4643">
                                         <a href="{{ route('client.faq.index') }}"><span
-                                                class="qodef-menu-item-text">FAQ
+                                                class="qodef-menu-item-text">Câu hỏi thường gặp
                                             </span></a>
                                     </li>
                                 </ul>
@@ -240,13 +240,12 @@
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
                                                 <a href="{{ route('client.orders.index') }}"><span
-                                                        class="qodef-menu-item-text">Checkout</span></a>
+                                                        class="qodef-menu-item-text">Thanh toán</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2684">
                                                 <a href="{{ route('client.users.index') }}"><span
-                                                        class="qodef-menu-item-text">My
-                                                        Account</span></a>
+                                                        class="qodef-menu-item-text">Tài khoản của tôi</span></a>
                                             </li>
                                         </ul>
                                     </li>
@@ -403,32 +402,35 @@
                                 });
                             });
                         </script>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    var userWidget = document.querySelector('.qodef-user-logged--in');
-                                    var dropdown = userWidget.querySelector('.qodef-user-dropdown-menu');
-                                    userWidget.addEventListener('mouseenter', function() {
-                                        dropdown.style.display = 'block';
-                                    });
-                                    userWidget.addEventListener('mouseleave', function() {
-                                        dropdown.style.display = 'none';
-                                    });
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var userWidget = document.querySelector('.qodef-user-logged--in');
+                                var dropdown = userWidget.querySelector('.qodef-user-dropdown-menu');
+                                userWidget.addEventListener('mouseenter', function() {
+                                    dropdown.style.display = 'block';
                                 });
-                            </script>
-                        @elseif (isset($role) && ($role == 1 || $role == 2))
-                            <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
-                                <a href="#" onclick="event.preventDefault(); document.getElementById('force-logout-form').submit();" class="qodef-user-dropdown-toggle">
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                                        y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
-                                        enable-background="new 0 0 16.289 16.087" xml:space="preserve">
-                                        <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
-                                            cy="4.594" r="4.094" />
-                                        <path fill="none" stroke="currentColor" stroke-miterlimit="10"
-                                            d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
-                                    </svg>
-                                </a>
-                                <form id="force-logout-form" action="{{ route('client.logout') }}" method="GET" style="display: none;"></form>
-                            </div>
+                                userWidget.addEventListener('mouseleave', function() {
+                                    dropdown.style.display = 'none';
+                                });
+                            });
+                        </script>
+                    @elseif (isset($role) && ($role == 1 || $role == 2))
+                        <div class="qodef-login-opener-widget qodef-user-logged--in" style="position: relative;">
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('force-logout-form').submit();"
+                                class="qodef-user-dropdown-toggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" width="16.289px" height="16.087px" viewBox="0 0 16.289 16.087"
+                                    enable-background="new 0 0 16.289 16.087" xml:space="preserve">
+                                    <circle fill="none" stroke="currentColor" stroke-miterlimit="10" cx="8.144"
+                                        cy="4.594" r="4.094" />
+                                    <path fill="none" stroke="currentColor" stroke-miterlimit="10"
+                                        d="M15.677,15.587c-0.633-3.107-3.76-5.469-7.532-5.469 c-3.772,0-6.899,2.362-7.532,5.469H15.677z" />
+                                </svg>
+                            </a>
+                            <form id="force-logout-form" action="{{ route('client.logout') }}" method="GET"
+                                style="display: none;"></form>
+                        </div>
                     @endauth
                 </div>
                 <div id="neoocular_core_woo_side_area_cart-2"
@@ -649,8 +651,8 @@
                                 <ul class="sub-menu">
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4641">
-                                        <a href="about-us/index.html"><span class="qodef-menu-item-text">About
-                                                Us</span></a>
+                                        <a href="{{ route('client.service.index') }}"><span
+                                                class="qodef-menu-item-text">Dịch vụ</span></a>
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4464">
@@ -660,7 +662,7 @@
                                     <li
                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4643">
                                         <a href="{{ route('client.faq.index') }}"><span
-                                                class="qodef-menu-item-text">FAQ
+                                                class="qodef-menu-item-text">Câu hỏi thường gặp
                                             </span></a>
                                     </li>
                                 </ul>
@@ -758,13 +760,12 @@
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2685">
                                                 <a href="{{ route('client.orders.index') }}"><span
-                                                        class="qodef-menu-item-text">Checkout</span></a>
+                                                        class="qodef-menu-item-text">Thanh toán</span></a>
                                             </li>
                                             <li
                                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2684">
                                                 <a href="{{ route('client.users.index') }}"><span
-                                                        class="qodef-menu-item-text">My
-                                                        Account</span></a>
+                                                        class="qodef-menu-item-text">Tài khoản của tôi</span></a>
                                             </li>
                                         </ul>
                                     </li>
