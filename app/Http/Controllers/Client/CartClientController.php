@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartClientController extends Controller
 {
@@ -55,7 +56,8 @@ class CartClientController extends Controller
         $variationId = $request->variation_id;
         $quantity = $request->quantity;
 
-        // Check if the product has variations
+        // Kiểm tra xem sản phẩm có biến thể không
+
         $variation = $variationId ? Variation::find($variationId) : null;
         if ($variation) {
             $maxQuantity = $variation->quantity ?? 0;
@@ -66,7 +68,7 @@ class CartClientController extends Controller
                 ->where('variation_id', $variationId)
                 ->first();
         } else {
-            // For simple products without variations
+            // Đối với các sản phẩm đơn giản không có biến thể
             $product = \App\Models\Product::findOrFail($productId);
             $maxQuantity = $product->quantity ?? 0;
             if ($maxQuantity <= 0) {
@@ -212,7 +214,15 @@ class CartClientController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions'));
+        // Kiểm tra xem có lỗi thanh toán từ session không
+        $paymentFailed = session()->has('error') && (
+            str_contains(strtolower(session('error')), 'thanh toán') ||
+            str_contains(strtolower(session('error')), 'payment') ||
+            str_contains(strtolower(session('error')), 'momo') ||
+            str_contains(strtolower(session('error')), 'vnpay')
+        );
+        
+        return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions', 'paymentFailed'));
     }
 
     public function applyVoucher(Request $request)
@@ -327,6 +337,13 @@ class CartClientController extends Controller
         if ($cartItems->isEmpty()) {
             return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để thanh toán!');
         }
+
+        // Kiểm tra số lượng tồn kho trước khi đặt hàng
+        $inventoryCheck = $this->checkInventoryAvailability($cartItems);
+        if (!$inventoryCheck['success']) {
+            return redirect()->route('client.cart.checkout')->with('error', $inventoryCheck['message']);
+        }
+
         $validated = $request->validate([
             'receiver_name' => 'required|string|max:255',
             'receiver_phone' => 'required|string|max:20',
@@ -1066,6 +1083,63 @@ class CartClientController extends Controller
             }
         } else {
             return redirect()->route('client.cart.checkout.form')->with('error', 'Không tìm thấy đơn hàng!');
+        }
+    }
+
+    /**
+     * Kiểm tra số lượng tồn kho sử dụng lockForUpdate để tránh race condition
+     */
+    private function checkInventoryAvailability($cartItems)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $unavailableItems = [];
+            
+            foreach ($cartItems as $item) {
+                if ($item->variation_id) {
+                    // Kiểm tra biến thể sản phẩm
+                    $variation = Variation::lockForUpdate()->find($item->variation_id);
+                    if (!$variation) {
+                        $unavailableItems[] = 'Biến thể sản phẩm không tồn tại';
+                        continue;
+                    }
+                    
+                    if ($variation->quantity < $item->quantity) {
+                        $unavailableItems[] = "Sản phẩm đã hết hàng";
+                    }
+                } else {
+                    // Kiểm tra sản phẩm đơn giản
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if (!$product) {
+                        $unavailableItems[] = 'Sản phẩm không tồn tại';
+                        continue;
+                    }
+                    
+                    if ($product->quantity < $item->quantity) {
+                        $unavailableItems[] = "Sản phẩm đã hết hàng";
+                    }
+                }
+            }
+            
+            if (!empty($unavailableItems)) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'message' => 'Sản phẩm đã hết hàng'
+                ];
+            }
+            
+            DB::commit();
+            return ['success' => true];
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi kiểm tra tồn kho: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi kiểm tra tồn kho. Vui lòng thử lại!'
+            ];
         }
     }
 
