@@ -212,7 +212,7 @@
                     </li>
                 @endif
 
-               
+
 
                 @if (canAccess('xem-danh-sach-don-hang'))
                     <!-- Orders Management -->
@@ -279,7 +279,7 @@
                                             <a class="nav-link {{ request()->routeIs('admin.payments.index') ? 'active' : '' }}"
                                                 href="{{ route('admin.payments.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Quản lý thanh toán</span>
+                                                    <span class="nav-link-text">Danh sách thanh toán</span>
                                                 </div>
                                             </a>
                                         </li>
