@@ -111,11 +111,22 @@
                                 <div class="col mx-auto">
                                     <div class="auth-form-box">
                                         <div class="text-center mb-7">
-                                            <a class="d-flex flex-center text-decoration-none mb-4"
-                                                href="../../../index.html">
+                                            <a class="d-flex flex-center text-decoration-none"
+                                                href="{{ route('admin.home') }}">
                                                 <div class="d-flex align-items-center fw-bolder fs-3 d-inline-block">
-                                                    <img src="{{ asset('v1/assets/img/icons/logo.png') }}"
-                                                        alt="phoenix" width="58" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 150"
+                                                        width="160" height="150">
+                                                        <!-- HANA -->
+                                                        <text x="50%" y="50%" text-anchor="middle"
+                                                            style="font-family: Arial, sans-serif; font-size: 70px; font-weight: bold; letter-spacing: 14px; fill: #000;">
+                                                            HANA
+                                                        </text>
+                                                        <!-- EYEWEAR -->
+                                                        <text x="50%" y="80%" text-anchor="middle"
+                                                            style="font-family: Arial, sans-serif; font-size: 22px; letter-spacing: 12px; fill: #000;">
+                                                            EYEWEAR
+                                                        </text>
+                                                    </svg>
                                                 </div>
                                             </a>
                                             <h3 class="text-body-highlight">Đăng nhập</h3>
@@ -126,7 +137,7 @@
                                         <form action="{{ route('postLogin') }}" method="POST">
                                             @csrf
 
-                                            <button type="button" class="btn btn-phoenix-secondary w-100 mb-3"
+                                            {{-- <button type="button" class="btn btn-phoenix-secondary w-100 mb-3"
                                                 onclick="location.href='{{ route('login.google') }}'">
                                                 <span class="fab fa-google text-danger me-2 fs-9"></span>Đăng nhập bằng
                                                 google
@@ -142,7 +153,7 @@
                                                 <hr class="bg-body-secondary mt-5 mb-4" />
                                                 <div class="divider-content-center bg-body-emphasis">hoặc sử dụng email
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="mb-3 text-start">
                                                 <label class="form-label" for="email">Email</label>

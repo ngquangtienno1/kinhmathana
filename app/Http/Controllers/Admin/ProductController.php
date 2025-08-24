@@ -67,7 +67,7 @@ class ProductController extends Controller
 
         $activeCount = Product::where('status', 'Hoạt động')->count();
         $deletedCount = Product::onlyTrashed()->count();
-        $categories = Category::all();
+        $categories = Category::where('is_active', true)->orderBy('name')->get();
 
         return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
     }
