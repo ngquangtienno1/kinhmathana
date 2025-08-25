@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Cart;
+use App\Models\News;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -35,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         // if (config('app.env') === 'local') {
         //     URL::forceScheme('https');
         // }
+        Relation::enforceMorphMap([
+            'product' => Product::class,
+            'news' => News::class,
+        ]);
         // Chỉ thực hiện cấu hình nếu bảng website_settings tồn tại
         if (Schema::hasTable('website_settings')) {
             Config::set('mail.mailers.smtp.host', getSetting('smtp_host') ?? env('MAIL_HOST', 'default.host.com'));
