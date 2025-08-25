@@ -72,8 +72,20 @@ class ColorController extends Controller
     public function destroy($id)
     {
         $color = Color::findOrFail($id);
-        $color->delete();
 
+        // Kiểm tra xem color có được sử dụng trong variations không
+        if (!$color->canBeDeleted()) {
+            $variationCount = $color->variations()->count();
+            $orderCount = $color->orderItems()->count();
+
+            $message = "Không thể xóa màu sắc này vì nó đang được sử dụng trong {$variationCount} biến thể sản phẩm";
+            if ($orderCount > 0) {
+                $message .= " và {$orderCount} đơn hàng";
+            }
+            return redirect()->route('admin.colors.index')->with('error', $message);
+        }
+
+        $color->delete();
         return redirect()->route('admin.colors.index')->with('success', 'Xóa màu thành công.');
     }
 }

@@ -168,7 +168,12 @@ class CategoryController extends Controller
             $category->forceDelete();
             return redirect()->route('admin.categories.bin')->with('success', 'Xóa vĩnh viễn danh mục thành công.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn danh mục.');
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn danh mục này vì nó đang được sử dụng bởi sản phẩm hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
+            return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn danh mục: ' . $e->getMessage());
         }
     }
 
@@ -219,6 +224,12 @@ class CategoryController extends Controller
             Category::withTrashed()->whereIn('id', $ids)->forceDelete();
             return redirect()->route('admin.categories.bin')->with('success', 'Đã xóa vĩnh viễn các danh mục đã chọn!');
         } catch (\Exception $e) {
+            // Xử lý lỗi foreign key constraint
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn một số danh mục vì chúng đang được sử dụng bởi sản phẩm hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }
