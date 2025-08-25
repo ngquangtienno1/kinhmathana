@@ -382,6 +382,28 @@ class OrderController extends Controller
                 }
             }
 
+            // Khi đơn hàng bị giao thất bại, hoàn lại tồn kho (chỉ thực hiện nếu trước đó đơn chưa ở trạng thái giao thất bại)
+            if (
+                $request->status === 'delivery_failed' &&
+                $oldStatus !== 'delivery_failed'
+            ) {
+                foreach ($order->items as $item) {
+                    if ($item->variation_id) {
+                        $variation = \App\Models\Variation::find($item->variation_id);
+                        if ($variation) {
+                            $variation->quantity = ($variation->quantity ?? 0) + $item->quantity;
+                            $variation->save();
+                        }
+                    } else if ($item->product_id) {
+                        $product = \App\Models\Product::find($item->product_id);
+                        if ($product) {
+                            $product->quantity = ($product->quantity ?? 0) + $item->quantity;
+                            $product->save();
+                        }
+                    }
+                }
+            }
+
             // Cập nhật trạng thái thanh toán dựa trên trạng thái đơn hàng mới
             $this->updatePaymentStatusBasedOnOrderStatus($order, $request->status);
 

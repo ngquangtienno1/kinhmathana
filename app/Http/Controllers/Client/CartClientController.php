@@ -447,6 +447,46 @@ class CartClientController extends Controller
             ]);
         }
 
+        // Trừ số lượng sản phẩm sau khi tạo đơn hàng thành công
+        try {
+            foreach ($cartItems as $item) {
+                if ($item->variation_id) {
+                    $variation = Variation::find($item->variation_id);
+                    if ($variation) {
+                        $variation->quantity = max(0, $variation->quantity - $item->quantity);
+                        $variation->save();
+                    }
+                } else {
+                    $product = \App\Models\Product::find($item->product_id);
+                    if ($product) {
+                        $product->quantity = max(0, $product->quantity - $item->quantity);
+                        $product->save();
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Lỗi trừ số lượng sản phẩm sau khi đặt hàng: ' . $e->getMessage());
+        }
+
+        // Ghi log sử dụng khuyến mãi nếu có
+        if ($promotion && $discountAmount > 0) {
+            try {
+                if (!\App\Models\PromotionUsage::where('promotion_id', $promotion->id)
+                    ->where('order_id', $order->id)
+                    ->exists()) {
+                    \App\Models\PromotionUsage::create([
+                        'promotion_id' => $promotion->id,
+                        'order_id' => $order->id,
+                        'user_id' => $order->user_id,
+                        'discount_amount' => $discountAmount
+                    ]);
+                    $promotion->increment('used_count');
+                }
+            } catch (\Exception $e) {
+                Log::error('Lỗi ghi log sử dụng khuyến mãi: ' . $e->getMessage());
+            }
+        }
+
         if ($selectedIds) {
             Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
         } else {
