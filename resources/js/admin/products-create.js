@@ -672,8 +672,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 'input[name$="[quantity]"], input[name$="[price]"], input[name$="[sale_price]"], input[name$="[sku]"], input[name$="[image]"]'
             ).forEach((input, inputIndex) => {
                 if (input.type === "file") {
-                    input.addEventListener("change", () => {
+                    input.addEventListener("change", function () {
                         saveTempFile(input, "variation_image", globalIndex);
+
+                        // Thêm preview ảnh
+                        const file = this.files[0];
+                        let previewContainer = row.querySelector('.variation-image-preview');
+
+                        // Xóa preview cũ nếu có
+                        if (previewContainer) {
+                            previewContainer.remove();
+                        }
+
+                        if (file) {
+                            // Tạo preview mới
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                previewContainer = document.createElement('div');
+                                previewContainer.className = 'variation-image-preview mt-2';
+                                previewContainer.innerHTML = `
+                                    <img src="${e.target.result}"
+                                         alt="Preview"
+                                         class="variation-image"
+                                         style="max-width: 50px; max-height: 50px; object-fit: cover; border-radius: 4px;">
+                                `;
+                                input.parentNode.appendChild(previewContainer);
+                            };
+                            reader.readAsDataURL(file);
+                        }
                     });
                 } else {
                     input.addEventListener("change", () => {
@@ -974,20 +1000,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Thêm listener cho tất cả input ảnh biến thể (cập nhật table ngay khi change)
     document.querySelectorAll(".variation-image-input").forEach((input) => {
-        input.addEventListener("change", () => {
-            saveTempFile(
-                input,
-                "variation_image",
-                Array.from(
-                    document.querySelectorAll(".variation-image-input")
-                ).indexOf(input)
-            );
+        input.addEventListener("change", function () {
+            const index = Array.from(
+                document.querySelectorAll(".variation-image-input")
+            ).indexOf(input);
+            saveTempFile(input, "variation_image", index);
+
+            // Thêm preview ảnh
+            const file = this.files[0];
+            const row = this.closest('tr');
+            let previewContainer = row.querySelector('.variation-image-preview');
+
+            // Xóa preview cũ nếu có
+            if (previewContainer) {
+                previewContainer.remove();
+            }
+
+            if (file) {
+                // Tạo preview mới
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewContainer = document.createElement('div');
+                    previewContainer.className = 'variation-image-preview mt-2';
+                    previewContainer.innerHTML = `
+                        <img src="${e.target.result}"
+                             alt="Preview"
+                             class="variation-image"
+                             style="max-width: 50px; max-height: 50px; object-fit: cover; border-radius: 4px;">
+                    `;
+                    input.parentNode.appendChild(previewContainer);
+                };
+                reader.readAsDataURL(file);
+            }
         });
     });
 
 
 
 
+
+    // Thêm event listener cho các input ảnh biến thể có sẵn
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll(".variation-image-input").forEach((input) => {
+            input.addEventListener("change", function () {
+                const index = Array.from(
+                    document.querySelectorAll(".variation-image-input")
+                ).indexOf(input);
+                saveTempFile(input, "variation_image", index);
+
+                // Thêm preview ảnh
+                const file = this.files[0];
+                const row = this.closest('tr');
+                let previewContainer = row.querySelector('.variation-image-preview');
+
+                // Xóa preview cũ nếu có
+                if (previewContainer) {
+                    previewContainer.remove();
+                }
+
+                if (file) {
+                    // Tạo preview mới
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewContainer = document.createElement('div');
+                        previewContainer.className = 'variation-image-preview mt-2';
+                        previewContainer.innerHTML = `
+                            <img src="${e.target.result}"
+                                 alt="Preview"
+                                 class="variation-image"
+                                 style="max-width: 50px; max-height: 50px; object-fit: cover; border-radius: 4px;">
+                        `;
+                        input.parentNode.appendChild(previewContainer);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    });
 
     // Khởi tạo
     loadTempFiles();
