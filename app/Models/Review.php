@@ -9,7 +9,7 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'product_id', 'order_id', 'content', 'rating'];
+    protected $fillable = ['user_id', 'product_id', 'order_id', 'content', 'rating', 'is_hidden'];
 
     // public $timestamps = ['created_at'];
     // const UPDATED_AT = null;

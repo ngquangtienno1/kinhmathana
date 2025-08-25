@@ -62,8 +62,20 @@ class SphericalController extends Controller
     public function destroy($id)
     {
         $spherical = Spherical::findOrFail($id);
-        $spherical->delete();
 
+        if (!$spherical->canBeDeleted()) {
+            $variationCount = $spherical->variations()->count();
+            $orderCount = $spherical->orderItems()->count();
+
+            $message = "Không thể xóa độ cận này vì nó đang được sử dụng trong {$variationCount} biến thể sản phẩm";
+            if ($orderCount > 0) {
+                $message .= " và {$orderCount} đơn hàng";
+            }
+
+            return redirect()->route('admin.sphericals.index')->with('error', $message);
+        }
+
+        $spherical->delete();
         return redirect()->route('admin.sphericals.index')->with('success', 'Xóa Độ cận thành công.');
     }
 }

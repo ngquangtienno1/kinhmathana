@@ -30,16 +30,16 @@
             </li>
         </ul>
         <div id="brands"
-            data-list='{"valueNames":["name","description","status","created_at"],"page":10,"pagination":true}'>
+            data-list='{"valueNames":["id","name","description","status","created_at"],"page":10,"pagination":true,"search":true}'>
             <div class="mb-4">
                 <div class="d-flex flex-wrap gap-3">
                     <div class="search-box">
-                        <form class="position-relative" action="{{ route('admin.brands.index') }}" method="GET">
+                        <div class="position-relative">
                             <input class="form-control search-input search" type="search" name="search"
-                                placeholder="Tìm kiếm thương hiệu" value="{{ request('search') }}"
-                                aria-label="Search" />
+                                placeholder="Tìm kiếm thương hiệu" value="{{ request('search') }}" aria-label="Search"
+                                data-list-search />
                             <span class="fas fa-search search-box-icon"></span>
-                        </form>
+                        </div>
                     </div>
                     <div class="ms-xxl-auto">
                         <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
@@ -163,11 +163,12 @@
                 </div>
                 <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                     <div class="col-auto d-flex">
-                        <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
+                        <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info>
+                            Tổng: {{ $brands->count() }} thương hiệu
                         </p>
-                        <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả<span
+                        <a class="fw-semibold" href="#!" data-list-view="*">Xem tất cả <span
                                 class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
-                        <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn<span
+                        <a class="fw-semibold d-none" href="#!" data-list-view="less">Xem ít hơn <span
                                 class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
                     </div>
                     <div class="col-auto d-flex">

@@ -231,6 +231,19 @@
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.orders.show', $order->id) }}">Chi tiết</a>
+                                                  <!-- Thêm nút xóa -->
+                                            @if(in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin']))
+                                                <div class="dropdown-divider"></div>
+                                                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" 
+                                                      style="display: inline;" 
+                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <span class="fas fa-trash me-2"></span>Xóa đơn hàng
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

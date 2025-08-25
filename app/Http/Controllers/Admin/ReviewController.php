@@ -200,4 +200,13 @@ class ReviewController extends Controller
 
         return back()->with('success', 'Đã trả lời đánh giá thành công!');
     }
+
+    public function toggleVisibility($id, Request $request)
+    {
+        $review = Review::findOrFail($id);
+        $review->is_hidden = (bool) $request->input('is_hidden');
+        $review->save();
+
+        return back()->with('success', 'Cập nhật trạng thái đánh giá thành công!');
+    }
 }

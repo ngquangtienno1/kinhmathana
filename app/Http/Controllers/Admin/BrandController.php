@@ -111,7 +111,6 @@ class BrandController extends Controller
                 'is_active' => 'nullable|boolean'
             ], $messages);
 
-            // Set is_active value based on checkbox
             $dataNew['is_active'] = $request->boolean('is_active');
 
             if ($request->hasFile('image')) {
@@ -171,8 +170,13 @@ class BrandController extends Controller
             }
 
             $brand->forceDelete();
-            return redirect()->route('admin.brands.bin')->with('error', 'Xóa vĩnh viễn thương hiệu thành công!');
+            return redirect()->route('admin.brands.bin')->with('success', 'Xóa vĩnh viễn thương hiệu thành công!');
         } catch (\Exception $e) {
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn thương hiệu này vì nó đang được sử dụng bởi sản phẩm hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn thương hiệu: ' . $e->getMessage());
         }
     }
@@ -224,12 +228,18 @@ class BrandController extends Controller
             $brands = Brand::withTrashed()->whereIn('id', $ids)->get();
             foreach ($brands as $brand) {
                 if ($brand->image) {
-                    \Storage::disk('public')->delete($brand->image);
+                    Storage::disk('public')->delete($brand->image);
                 }
                 $brand->forceDelete();
             }
             return redirect()->route('admin.brands.bin')->with('success', 'Đã xóa vĩnh viễn các thương hiệu đã chọn!');
         } catch (\Exception $e) {
+            // Xử lý lỗi foreign key constraint
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn một số thương hiệu vì chúng đang được sử dụng bởi sản phẩm hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }

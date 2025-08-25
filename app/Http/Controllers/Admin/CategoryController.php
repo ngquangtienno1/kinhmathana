@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::query()->withCount('products');
+        $query = Category::query()->with(['parent'])->withCount('products');
 
         if ($request->filled('search')) {
             $search = mb_strtolower(trim($request->search));
@@ -35,7 +35,7 @@ class CategoryController extends Controller
             if ($request->status === 'active') {
                 $query->where('is_active', true);
             } elseif ($request->status === 'inactive') {
-                $query->where('is_active', false);
+                $query->addSelect('is_active');
             }
         }
 
@@ -106,19 +106,26 @@ class CategoryController extends Controller
             'name' => 'required|string|max:125',
             'description' => 'required|string',
             'slug' => 'nullable|string|unique:categories,slug,' . $id,
+            'parent_id' => 'nullable|exists:categories,id',
             'is_active' => 'boolean',
         ], [
             'name.required' => 'Tên danh mục là bắt buộc.',
             'description.required' => 'Mô tả là bắt buộc.',
             'name.max' => 'Tên danh mục không được vượt quá 125 ký tự.',
             'slug.unique' => 'Slug đã tồn tại, vui lòng chọn slug khác.',
+            'parent_id.exists' => 'Danh mục cha không tồn tại.',
         ]);
 
         $category = Category::findOrFail($id);
 
-        $data = $request->all();
+        $data = $request->only(['name', 'description', 'slug', 'parent_id']);
         // Convert checkbox value to boolean
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->has('is_active') && $request->input('is_active') == 1;
+
+        // Xử lý parent_id - nếu để trống thì set null
+        if (empty($data['parent_id'])) {
+            $data['parent_id'] = null;
+        }
 
         if (empty($data['slug']) || $category->name !== $request->input('name')) {
             $data['slug'] = Str::slug($request->input('name'));
@@ -161,7 +168,12 @@ class CategoryController extends Controller
             $category->forceDelete();
             return redirect()->route('admin.categories.bin')->with('success', 'Xóa vĩnh viễn danh mục thành công.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn danh mục.');
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn danh mục này vì nó đang được sử dụng bởi sản phẩm hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
+            return redirect()->back()->with('error', 'Không thể xóa vĩnh viễn danh mục: ' . $e->getMessage());
         }
     }
 
@@ -212,6 +224,12 @@ class CategoryController extends Controller
             Category::withTrashed()->whereIn('id', $ids)->forceDelete();
             return redirect()->route('admin.categories.bin')->with('success', 'Đã xóa vĩnh viễn các danh mục đã chọn!');
         } catch (\Exception $e) {
+            // Xử lý lỗi foreign key constraint
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn một số danh mục vì chúng đang được sử dụng bởi sản phẩm hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }
