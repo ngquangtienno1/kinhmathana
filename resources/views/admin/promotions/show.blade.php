@@ -77,12 +77,7 @@
                                             {{ $promotion->minimum_purchase ? number_format($promotion->minimum_purchase, 0, ',', '.') . 'đ' : 'Không có' }}
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Giá trị đơn tối đa</th>
-                                        <td>
-                                            {{ $promotion->maximum_purchase ? number_format($promotion->maximum_purchase, 0, ',', '.') . 'đ' : 'Không giới hạn' }}
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <th>Giới hạn lượt dùng</th>
                                         <td>
@@ -137,16 +132,7 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Giá trị đơn hàng tối đa</th>
-                                        <td>
-                                            @if ($promotion->maximum_purchase > 0)
-                                                {{ number_format($promotion->maximum_purchase, 0, ',', '.') }}đ
-                                            @else
-                                                Không giới hạn
-                                            @endif
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <th>Danh mục áp dụng</th>
                                         <td>

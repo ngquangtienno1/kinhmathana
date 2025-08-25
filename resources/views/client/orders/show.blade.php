@@ -464,7 +464,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="images" class="form-label">Thêm hình ảnh (tối đa 5 ảnh)</label>
+                                <label for="images" class="form-label">Thêm hình ảnh đánh giá</label>
                                 <input type="file" name="images[]" id="images" class="form-control rounded-0"
                                     multiple accept="image/*" onchange="previewImages()">
                                 <div class="d-flex flex-wrap mt-2 gap-2" id="image-preview"></div>
