@@ -42,4 +42,16 @@ class Comment extends Model
     {
         return $this->morphTo('entity', [Product::class, News::class]);
     }
+
+    // Scope để lọc bình luận đã duyệt và không bị ẩn
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'đã duyệt')->where('is_hidden', false);
+    }
+
+    // Scope để lọc bình luận cha (không phải replies)
+    public function scopeParentComments($query)
+    {
+        return $query->whereNull('parent_id');
+    }
 }
