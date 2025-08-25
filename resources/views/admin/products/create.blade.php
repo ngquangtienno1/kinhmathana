@@ -304,8 +304,8 @@
                                                 class="btn btn-primary btn-sm">Tạo biến thể</button>
                                             <!-- Ẩn nút này đi -->
                                             <!-- <button type="button" id="set-variations-quantity"
-                                                                                                            class="btn btn-primary btn-sm" style="display: none">Đặt số lượng cho tất
-                                                                                                            cả biến thể</button> -->
+                                                                                                                class="btn btn-primary btn-sm" style="display: none">Đặt số lượng cho tất
+                                                                                                                cả biến thể</button> -->
                                         </div>
                                     </div>
                                     <div id="variations-container" class="mt-3"
@@ -451,19 +451,7 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-label">Video sản phẩm</label>
-                                    <input type="file" class="form-control" name="video_path"
-                                        accept="video/mp4,video/webm,video/ogg">
-                                    @if (session('temp_video_path'))
-                                        <small class="text-muted">Đã chọn: {{ session('temp_video_path') }}</small>
-                                    @endif
-                                    <small class="text-muted">Hỗ trợ định dạng: MP4, WebM, Ogg. Kích thước tối đa:
-                                        50MB</small>
-                                    @error('video_path')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+
                             </div>
                         </div>
                     </div>
