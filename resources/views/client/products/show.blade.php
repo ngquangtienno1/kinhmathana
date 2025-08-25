@@ -1564,7 +1564,7 @@
                         const salePrice = Number(found.sale_price);
                         if (salePrice && salePrice < price) {
                             html =
-                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del>${price.toLocaleString('vi-VN')} VNĐ</del> <ins>${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
+                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del class=\"original-price\">${price.toLocaleString('vi-VN')} VNĐ</del> <ins class=\"sale-price\">${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
                         } else {
                             html =
                                 `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>${price.toLocaleString('vi-VN')} VNĐ</bdi></span>`;

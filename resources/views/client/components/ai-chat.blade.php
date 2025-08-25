@@ -978,13 +978,13 @@
                         <div style="font-size: 12px; color: #666; margin-bottom: 8px; font-weight: 600;">🛍️ Sản phẩm gợi ý:</div>
                         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                             ${suggestedProducts.map(product => `
-                                                                <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-width: 120px; max-width: 150px; cursor: pointer;" onclick="window.open('${product.url}', '_blank')">
-                                                                    ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px; margin-bottom: 4px;">` : ''}
-                                                                    <div style="font-size: 11px; font-weight: 600; color: #333; margin-bottom: 2px; line-height: 1.2;">${product.name}</div>
-                                                                    <div style="font-size: 10px; color: #666; margin-bottom: 2px;">${product.category}</div>
-                                                                    <div style="font-size: 11px; color: #232323; font-weight: 600;">${product.price}</div>
-                                                                </div>
-                                                            `).join('')}
+                                                                    <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-width: 120px; max-width: 150px; cursor: pointer;" onclick="window.open('${product.url}', '_blank')">
+                                                                        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px; margin-bottom: 4px;">` : ''}
+                                                                        <div style="font-size: 11px; font-weight: 600; color: #333; margin-bottom: 2px; line-height: 1.2;">${product.name}</div>
+                                                                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">${product.category}</div>
+                                                                        <div style="font-size: 11px; color: #232323; font-weight: 600;">${product.price}</div>
+                                                                    </div>
+                                                                `).join('')}
                         </div>
                     </div>
                 `;
