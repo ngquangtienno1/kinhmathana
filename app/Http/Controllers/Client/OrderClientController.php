@@ -7,7 +7,7 @@ use App\Models\Review;
 use App\Models\ReviewImage;
 use Illuminate\Http\Request;
 use App\Models\CancellationReason;
-use Illuminate\Support\Facades\Log;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Client\CartClientController;
@@ -86,14 +86,12 @@ class OrderClientController extends Controller
             if (!$newReason) {
                 return redirect()->route('client.orders.index')->with('error', 'Vui lòng nhập lý do hủy mới!');
             }
-            $logData = [
+            $reason = CancellationReason::create([
                 'reason' => $newReason,
                 'type' => 'customer',
                 'is_active' => true,
                 'is_default' => false,
-            ];
-            Log::info('Tạo lý do huỷ mới từ khách:', $logData);
-            $reason = CancellationReason::create($logData);
+            ]);
             $order->cancellation_reason_id = $reason->id;
         } else {
             $order->cancellation_reason_id = $reasonId;
@@ -109,32 +107,14 @@ class OrderClientController extends Controller
                 if ($variation) {
                     $variation->quantity = ($variation->quantity ?? 0) + $item->quantity;
                     $variation->save();
-                    Log::info('Restored quantity for variation:', [
-                        'variation_id' => $item->variation_id,
-                        'quantity_restored' => $item->quantity,
-                        'new_quantity' => $variation->quantity,
-                    ]);
                 } else {
-                    Log::warning('Variation not found for item during cancellation:', [
-                        'variation_id' => $item->variation_id,
-                        'order_id' => $order->id,
-                    ]);
                 }
             } else {
                 $product = \App\Models\Product::find($item->product_id);
                 if ($product) {
                     $product->quantity = ($product->quantity ?? 0) + $item->quantity;
                     $product->save();
-                    Log::info('Restored quantity for product:', [
-                        'product_id' => $item->product_id,
-                        'quantity_restored' => $item->quantity,
-                        'new_quantity' => $product->quantity,
-                    ]);
                 } else {
-                    Log::warning('Product not found for item during cancellation:', [
-                        'product_id' => $item->product_id,
-                        'order_id' => $order->id,
-                    ]);
                 }
             }
         }
@@ -187,10 +167,7 @@ class OrderClientController extends Controller
             'content' => $request->content,
             'rating' => $request->rating,
         ]);
-        Log::info('Review upload images:', [
-            'hasFile' => $request->hasFile('images'),
-            'files' => $request->file('images'),
-        ]);
+
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 if ($image->isValid()) {
@@ -283,7 +260,7 @@ class OrderClientController extends Controller
                 'quantity' => $item->quantity,
             ];
 
-            Log::info('Reorder - addToCartDirect data:', $cartData);
+
 
             if ($quantityAvailable) {
                 $added = app(CartClientController::class)->addToCartDirect($cartData, $user->id);
@@ -319,7 +296,7 @@ class OrderClientController extends Controller
             'is_active' => true,
             'is_default' => true,
         ])->get(['id', 'reason']);
-        Log::info('Lấy danh sách lý do huỷ mặc định:', $reasons->toArray());
+
         return response()->json($reasons);
     }
 }

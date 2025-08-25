@@ -14,6 +14,7 @@ class Order extends Model
         'order_number',
         'user_id',
         'promotion_id',
+        'shipping_provider_id',
         'customer_name',
         'customer_phone',
         'customer_email',
