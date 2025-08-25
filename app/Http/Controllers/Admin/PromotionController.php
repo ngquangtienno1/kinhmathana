@@ -87,8 +87,7 @@ class PromotionController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $messages = [
+        $messages = [
                 'name.required' => 'Tên khuyến mãi không được để trống.',
                 'name.max' => 'Tên khuyến mãi không được vượt quá 255 ký tự.',
                 'code.required' => 'Mã khuyến mãi không được để trống.',
@@ -117,9 +116,10 @@ class PromotionController extends Controller
                 'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
                 'categories.array' => 'Danh sách danh mục không hợp lệ.',
                 'categories.*.exists' => 'Danh mục được chọn không tồn tại.',
-            ];
+        ];
 
-            $validated = $request->validate([
+        // Đưa validate ra ngoài try/catch để Laravel tự redirect back với old input khi lỗi
+        $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'code' => 'required|string|max:50|unique:promotions',
                 'description' => 'nullable|string',
@@ -144,7 +144,9 @@ class PromotionController extends Controller
                 'products.*' => 'exists:products,id',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
-            ], $messages);
+        ], $messages);
+
+        try {
 
             // Create promotion
             $promotion = Promotion::create($validated);
@@ -162,7 +164,7 @@ class PromotionController extends Controller
             return redirect()->route('admin.promotions.index')
                 ->with('success', 'Khuyến mãi đã được tạo thành công.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo khuyến mãi: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Có lỗi xảy ra khi tạo khuyến mãi: ' . $e->getMessage());
         }
     }
 
@@ -208,10 +210,10 @@ class PromotionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $promotion = Promotion::findOrFail($id);
+        $promotion = Promotion::findOrFail($id);
 
-            $validated = $request->validate([
+        // Đưa validate ra ngoài try/catch để Laravel tự redirect back với old input khi lỗi
+        $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'code' => [
                     'required',
@@ -241,7 +243,7 @@ class PromotionController extends Controller
                 'products.*' => 'exists:products,id',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
-            ], [
+        ], [
                 'name.required' => 'Tên khuyến mãi không được để trống.',
                 'name.max' => 'Tên khuyến mãi không được vượt quá 255 ký tự.',
                 'code.required' => 'Mã khuyến mãi không được để trống.',
@@ -271,7 +273,9 @@ class PromotionController extends Controller
                 'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
                 'categories.array' => 'Danh sách danh mục không hợp lệ.',
                 'categories.*.exists' => 'Danh mục được chọn không tồn tại.',
-            ]);
+        ]);
+
+        try {
 
             // Update promotion
             $promotion->update($validated);
@@ -293,7 +297,7 @@ class PromotionController extends Controller
             return redirect()->route('admin.promotions.index')
                 ->with('success', 'Khuyến mãi đã được cập nhật thành công.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật khuyến mãi: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Có lỗi xảy ra khi cập nhật khuyến mãi: ' . $e->getMessage());
         }
     }
 

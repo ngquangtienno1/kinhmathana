@@ -369,14 +369,12 @@ class OrderController extends Controller
                         if ($variation) {
                             $variation->quantity = ($variation->quantity ?? 0) + $item->quantity;
                             $variation->save();
-                            
                         }
                     } else if ($item->product_id) {
                         $product = \App\Models\Product::find($item->product_id);
                         if ($product) {
                             $product->quantity = ($product->quantity ?? 0) + $item->quantity;
                             $product->save();
-                            
                         }
                     }
                 }
@@ -454,7 +452,7 @@ class OrderController extends Controller
         }
     }
 
-  
+
 
     /**
      * Xóa đơn hàng
@@ -468,11 +466,10 @@ class OrderController extends Controller
 
         try {
             $order->delete();
-            
+
             return redirect()
                 ->route('admin.orders.index')
                 ->with('success', 'Xóa đơn hàng thành công');
-                
         } catch (\Exception $e) {
             return back()->with('error', 'Có lỗi xảy ra khi xóa đơn hàng');
         }

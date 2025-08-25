@@ -113,6 +113,7 @@
                                         <button type="button" id="saveRoleBtn" class="btn btn-primary">
                                             <i class="fas fa-save me-2"></i>Cập nhật vai trò
                                         </button>
+                                        <button type="submit" id="hiddenSubmitBtn" style="display: none;">Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -284,22 +285,19 @@
             const progressBar = document.getElementById('permissionProgressBar');
             const permissionProgress = document.getElementById('permissionProgress');
             const permissionCount = document.getElementById('permissionCountDisplay');
-            const roleName = document.getElementById('roleName');
             const roleNameDisplay = document.getElementById('roleNameDisplay');
-            const permissionSummary = document.getElementById('permissionSummary');
 
             // Update summary
             function updateSummary() {
                 const name = nameInput.value || '-';
-                const checkedCount = document.querySelectorAll('.permission-checkbox:checked').length;
-                const totalCount = permissionCheckboxes.length;
+                const checkedCount = document.querySelectorAll('.permission-checkbox:checked:not(:disabled)')
+                    .length;
+                const totalCount = document.querySelectorAll('.permission-checkbox:not(:disabled)').length;
 
                 // Update all role name displays
-                if (roleName) roleName.textContent = name;
                 if (roleNameDisplay) roleNameDisplay.textContent = name;
 
                 // Update all permission count displays
-                if (permissionSummary) permissionSummary.textContent = `${checkedCount}/${totalCount}`;
                 if (permissionCount) permissionCount.textContent = checkedCount;
 
                 // Update progress bar
@@ -310,7 +308,8 @@
                 // Update group counts
                 groupSelectors.forEach(selector => {
                     const group = selector.getAttribute('data-group');
-                    const checkedGroupCount = document.querySelectorAll(`.group-${group}:checked`).length;
+                    const checkedGroupCount = document.querySelectorAll(
+                        `.group-${group}:checked:not(:disabled)`).length;
                     const countElement = document.getElementById(`count-${group}`);
                     if (countElement) {
                         countElement.textContent = checkedGroupCount;
@@ -388,53 +387,54 @@
                 const isCustomerRole = {{ $isCustomerRole ? 'true' : 'false' }};
 
                 if (!isCustomerRole) {
-                    const checkedPermissions = document.querySelectorAll('.permission-checkbox:checked');
+                    // Chỉ đếm các checkbox không bị disabled
+                    const checkedPermissions = document.querySelectorAll(
+                        '.permission-checkbox:checked:not(:disabled)');
+                    const totalPermissions = document.querySelectorAll(
+                        '.permission-checkbox:not(:disabled)');
 
-                    if (checkedPermissions.length === 0) {
+                    if (checkedPermissions.length === 0 && totalPermissions.length > 0) {
                         alert('Vui lòng chọn ít nhất một quyền cho vai trò này!');
                         return false;
-                    }
-                }
+                    } else {
+                        // Tạo FormData thủ công để đảm bảo gửi được permissions
+                        try {
+                            const formData = new FormData();
 
-                // Debug: kiểm tra form data
-                const formData = new FormData(form);
-                const permissionsData = formData.getAll('permissions[]');
+                            // Thêm các field cơ bản
+                            formData.append('_token', document.querySelector('input[name="_token"]').value);
+                            formData.append('_method', 'PUT');
+                            formData.append('name', nameInput.value);
+                            formData.append('description', descriptionInput.value);
 
-                if (permissionsData.length === 0 && !isCustomerRole) {
-                    // Thử cách khác: tạo form data thủ công
-                    const manualFormData = new FormData();
-                    manualFormData.append('_token', formData.get('_token'));
-                    manualFormData.append('_method', 'PUT');
-                    manualFormData.append('name', formData.get('name'));
-                    manualFormData.append('description', formData.get('description'));
+                            // Thêm tất cả permissions đã chọn
+                            const checkedPermissions = document.querySelectorAll(
+                                '.permission-checkbox:checked:not(:disabled)');
+                            checkedPermissions.forEach(checkbox => {
+                                formData.append('permissions[]', checkbox.value);
+                            });
 
-                    // Thêm tất cả permissions đã chọn (chỉ khi không phải vai trò Khách hàng)
-                    if (!isCustomerRole) {
-                        checkedPermissions.forEach(checkbox => {
-                            manualFormData.append('permissions[]', checkbox.value);
-                        });
-                    }
+                            // Submit bằng fetch
+                            fetch(form.action, {
+                                method: 'POST',
+                                body: formData
+                            }).then(response => {
+                                if (response.redirected) {
+                                    window.location.href = response.url;
+                                } else {
+                                    window.location.reload();
+                                }
+                            }).catch(error => {
+                                alert('Có lỗi xảy ra khi gửi form!');
+                            });
 
-                    // Submit bằng fetch
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: manualFormData
-                    }).then(response => {
-                        if (response.redirected) {
-                            window.location.href = response.url;
-                        } else {
-                            window.location.reload();
+                        } catch (error) {
+                            alert('Có lỗi xảy ra khi tạo form data!');
                         }
-                    }).catch(error => {
-                        console.error('Error:', error);
-                        alert('Có lỗi xảy ra khi gửi form!');
-                    });
-
-                    return false;
+                    }
+                } else {
+                    form.submit();
                 }
-
-                // Submit form
-                form.submit();
             });
         });
     </script>

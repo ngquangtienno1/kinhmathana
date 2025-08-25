@@ -476,8 +476,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                                                                                            font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                                        } */
+                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                                } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {

@@ -158,17 +158,6 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label" for="maximum_purchase">Giá trị đơn tối đa</label>
-                                <input type="number" name="maximum_purchase" id="maximum_purchase"
-                                    class="form-control @error('maximum_purchase') is-invalid @enderror"
-                                    value="{{ old('maximum_purchase') }}" step="1" min="0"
-                                    placeholder="Không giới hạn">
-                                @error('maximum_purchase')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4">
                                 <label class="form-label" for="usage_limit">Giới hạn lượt dùng</label>
                                 <input type="number" name="usage_limit" id="usage_limit"
                                     class="form-control @error('usage_limit') is-invalid @enderror"
@@ -334,7 +323,7 @@
                     start_date: $('#start_date').val(),
                     end_date: $('#end_date').val(),
                     minimum_purchase: $('#minimum_purchase').val(),
-                    maximum_purchase: $('#maximum_purchase').val(),
+
                     usage_limit: $('#usage_limit').val(),
                     is_active: $('#is_active').val()
                 };

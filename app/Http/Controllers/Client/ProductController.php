@@ -266,7 +266,7 @@ class ProductController extends Controller
 
         // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt và không bị ẩn
         $comments = $product->comments()
-            ->with(['user', 'replies' => function($query) {
+            ->with(['user', 'replies' => function ($query) {
                 $query->approved()->with('user');
             }])
             ->approved()

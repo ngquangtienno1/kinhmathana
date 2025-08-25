@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\PromotionUsage;
 use App\Models\ShippingProvider;
-use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -485,7 +485,7 @@ class CartClientController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Lỗi trừ số lượng sản phẩm sau khi đặt hàng: ' . $e->getMessage());
+            // Lỗi trừ số lượng sản phẩm
         }
 
         // Ghi log sử dụng khuyến mãi nếu có
@@ -503,7 +503,7 @@ class CartClientController extends Controller
                     $promotion->increment('used_count');
                 }
             } catch (\Exception $e) {
-                Log::error('Lỗi ghi log sử dụng khuyến mãi: ' . $e->getMessage());
+                // Lỗi ghi log sử dụng khuyến mãi
             }
         }
 
@@ -522,7 +522,7 @@ class CartClientController extends Controller
                 Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
             }
         } catch (\Exception $e) {
-            Log::error('Lỗi gửi mail OrderPlaced (client): ' . $e->getMessage());
+            // Lỗi gửi mail OrderPlaced
         }
 
         return redirect()->route('client.orders.index')->with('success', 'Đặt hàng thành công!');
@@ -811,6 +811,8 @@ class CartClientController extends Controller
             $shippingFee = 30000;
         }
 
+
+
         $discountAmount = 0;
         $promotion = null;
         if ($request->filled('applied_voucher')) {
@@ -866,6 +868,8 @@ class CartClientController extends Controller
             'selected_ids' => $selectedIds,
             'ids' => $selectedIds ? (is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds)) : null,
         ];
+
+
 
         session(['pending_vnpay_order' => $orderData]);
 
@@ -957,7 +961,7 @@ class CartClientController extends Controller
                                 Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
                             }
                         } catch (\Exception $e) {
-                            Log::error('Lỗi gửi mail OrderPlaced (VNPAY): ' . $e->getMessage());
+                            // Lỗi gửi mail OrderPlaced
                         }
 
                         // Xóa session
@@ -965,7 +969,6 @@ class CartClientController extends Controller
 
                         return view('client.cart.thankyou');
                     } catch (\Exception $e) {
-                        Log::error('Lỗi xử lý thanh toán VNPAY thành công: ' . $e->getMessage());
                         return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra khi xử lý đơn hàng!');
                     }
                 } else {
@@ -1013,7 +1016,7 @@ class CartClientController extends Controller
                             Mail::to($order->customer_email)->send(new \App\Mail\OrderPlaced($order));
                         }
                     } catch (\Exception $e) {
-                        Log::error('Lỗi gửi mail OrderPlaced (MoMo): ' . $e->getMessage());
+                        // Lỗi gửi mail OrderPlaced
                     }
 
                     // Xóa session
@@ -1021,7 +1024,6 @@ class CartClientController extends Controller
 
                     return view('client.cart.thankyou');
                 } catch (\Exception $e) {
-                    Log::error('Lỗi xử lý thanh toán MoMo thành công: ' . $e->getMessage());
                     return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra khi xử lý đơn hàng!');
                 }
             } elseif (in_array($resultCode, [7002, '7002'])) {
@@ -1043,6 +1045,8 @@ class CartClientController extends Controller
     {
         try {
             DB::beginTransaction();
+
+
 
             // Tạo đơn hàng
             $order = Order::create([
@@ -1069,6 +1073,8 @@ class CartClientController extends Controller
                 'payment_gateway' => $orderData['payment_gateway'],
                 'payment_gateway_order_id' => $orderData['payment_gateway_order_id'],
             ]);
+
+
 
             // Tạo order items
             foreach ($orderData['cart_items'] as $item) {
@@ -1136,7 +1142,6 @@ class CartClientController extends Controller
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Lỗi tạo đơn hàng sau thanh toán: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -1217,7 +1222,6 @@ class CartClientController extends Controller
             return ['success' => true];
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Lỗi kiểm tra tồn kho: ' . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Có lỗi xảy ra khi kiểm tra tồn kho. Vui lòng thử lại!'
