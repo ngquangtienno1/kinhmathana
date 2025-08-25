@@ -52,8 +52,6 @@
                         </th>
                         <th class="sort white-space-nowrap" scope="col" data-sort="province">Tỉnh/Thành</th>
                         <th class="sort white-space-nowrap" scope="col" data-sort="base_fee">Phí cơ bản</th>
-                        <th class="sort white-space-nowrap" scope="col" data-sort="weight_fee">Phí theo cân nặng</th>
-                        <th class="sort white-space-nowrap" scope="col" data-sort="distance_fee">Phí theo khoảng cách</th>
                         <th class="sort white-space-nowrap" scope="col" data-sort="note">Ghi chú</th>
                         <th class="text-end" scope="col">Thao tác</th>
                     </tr>
@@ -69,8 +67,6 @@
                         </td>
                         <td class="province align-middle">{{ $fee->province_name }} ({{ $fee->province_code }})</td>
                         <td class="base_fee align-middle">{{ number_format($fee->base_fee) }}đ</td>
-                        <td class="weight_fee align-middle">{{ number_format($fee->weight_fee) }}đ</td>
-                        <td class="distance_fee align-middle">{{ number_format($fee->distance_fee) }}đ</td>
                         <td class="note align-middle">{{ $fee->note }}</td>
                         <td class="text-end">
                             <div class="btn-group">
