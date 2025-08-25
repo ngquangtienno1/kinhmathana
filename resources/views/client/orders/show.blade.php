@@ -277,7 +277,20 @@
                                         style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
                                 </td>
                                 <td>
-                                    <div class="fw-bold">{{ $item->product_name }}</div>
+                                    <div class="fw-bold">
+                                        @php
+                                            $product = $item->variation ? $item->variation->product : $item->product ?? null;
+                                            $productSlug = $product ? $product->slug : null;
+                                        @endphp
+                                        @if($productSlug)
+                                            <a href="{{ route('client.products.show', $productSlug) }}" 
+                                               class="text-decoration-none text-dark hover-primary">
+                                                {{ $item->product_name }}
+                                            </a>
+                                        @else
+                                            <span class="fw-bold">{{ $item->product_name }}</span>
+                                        @endif
+                                    </div>
                                     @php
                                         $options = $item->product_options
                                             ? json_decode($item->product_options, true)
@@ -537,6 +550,13 @@
 
         #star-rating .star {
             font-size: 2rem;                /* Kích thước sao lớn */
+        }
+
+        /* ===== STYLE CHO LINK SẢN PHẨM ===== */
+        .hover-primary:hover {
+            color: #0d6efd !important;  /* Màu xanh khi hover */
+            text-decoration: underline !important;  /* Gạch chân khi hover */
+            transition: color 0.2s ease;  /* Hiệu ứng chuyển màu mượt mà */
         }
 
         /* ===== STYLE CHO LABEL TRẠNG THÁI ĐƠN HÀNG ===== */

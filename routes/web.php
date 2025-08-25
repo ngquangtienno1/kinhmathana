@@ -564,6 +564,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [AdminOrderController::class, 'show'])->name('show');
         Route::get('/{order}/print', [AdminOrderController::class, 'print'])->name('print');
+        Route::delete('/{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
+        
         Route::put('{order}/status', [AdminOrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
