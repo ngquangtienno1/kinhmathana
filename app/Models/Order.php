@@ -99,6 +99,12 @@ class Order extends Model
         return $this->hasMany(Payment::class, 'order_id', 'id');
     }
 
+    public function customer()
+    {
+        // Tạo một relationship ảo để truy cập thông tin customer từ các trường trong bảng orders
+        return $this->belongsTo(Customer::class, 'user_id', 'user_id');
+    }
+
 
     public function getStatusLabelAttribute()
     {
