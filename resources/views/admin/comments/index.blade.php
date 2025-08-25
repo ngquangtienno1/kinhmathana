@@ -121,7 +121,7 @@
                                     <small class="text-body-tertiary">{{ $comment->user->email ?? '' }}</small>
                                 </td>
                                 <td class="entityType align-middle ps-4">
-                                    <span class="text-body-tertiary">{{ $comment->entity_type }}</span>
+                                    <span class="text-body-tertiary">{{ class_basename($comment->entity_type) }}</span>
                                 </td>
                                 <td class="entityId align-middle ps-4">
                                     @if ($comment->entity_type === 'product' && $comment->product)
