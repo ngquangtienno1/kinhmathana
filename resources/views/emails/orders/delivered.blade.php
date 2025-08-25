@@ -130,7 +130,7 @@
                 <tfoot>
                     @php
                         $subtotal = $order->items->sum('subtotal');
-                        $discountAmount = $order->discount_amount ?? 0;
+                        $discountAmount = $order->promotion_amount ?? 0;
                         $shippingFee = $order->shipping_fee ?? 0;
                         $total = $subtotal - $discountAmount + $shippingFee;
                     @endphp
