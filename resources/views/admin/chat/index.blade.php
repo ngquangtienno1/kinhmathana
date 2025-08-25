@@ -87,7 +87,6 @@
                                     class="btn fs-7 fw-semibold text-body-emphasis d-flex align-items-center p-0 me-3 text-start"
                                     data-phoenix-toggle="offcanvas" data-phoenix-target="#thread-details-0">
                                     <span class="line-clamp-1" id="chat-with">Chọn khách hàng để chat</span>
-                                    <span class="fa-solid fa-chevron-down ms-2 fs-10"></span>
                                 </button>
                                 <p class="fs-9 mb-0 me-2" id="user-status" style="display: none;">
                                     <span class="fa-solid fa-circle text-success fs-11 me-2"></span>Đang hoạt động
