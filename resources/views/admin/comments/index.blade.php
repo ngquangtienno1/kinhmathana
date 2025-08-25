@@ -130,8 +130,7 @@
                                     @elseif ($comment->entity_type === 'news' && $comment->news)
                                         <a class="fw-semibold line-clamp-3 mb-0"
                                             href="#">{{ $comment->news->title }}</a>
-                                    @else
-                                        <span class="text-body-tertiary">{{ $comment->entity_id }}</span>
+                                   
                                     @endif
                                 </td>
                                 <td class="content align-middle ps-4">
