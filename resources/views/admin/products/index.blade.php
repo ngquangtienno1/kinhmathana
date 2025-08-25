@@ -129,7 +129,7 @@
                                         : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
                                 </td>
                                 <td class="align-middle ps-4 text-center">
-                                    {{ $product->total_stock }}
+                                    {{ number_format($product->total_stock_quantity ?? 0, 0, ',', '.') }}
                                 </td>
                                 <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}
                                 </td>
@@ -219,7 +219,7 @@
     style="display:none;">
     @csrf
     @method('DELETE')
-    <input type="hidden" name="ids[]" id="bulk-delete-ids">
+    <input type="hidden" name="ids" id="bulk-delete-ids">
 </form>
 
 <script>
@@ -265,7 +265,7 @@
                 .map(cb => cb.value);
             if (checkedIds.length === 0) return;
             if (!confirm('Bạn có chắc chắn muốn xóa mềm các sản phẩm đã chọn?')) return;
-            bulkDeleteIds.value = checkedIds.join(',');
+            bulkDeleteIds.value = JSON.stringify(checkedIds);
             bulkDeleteForm.submit();
         });
     });

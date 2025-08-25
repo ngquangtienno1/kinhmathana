@@ -26,7 +26,7 @@ class ProductFactory extends Factory
             'product_type' => $this->faker->randomElement(['simple', 'variable']),
             'slug' => Str::slug($name . '-' . $this->faker->unique()->numberBetween(1000, 9999)),
             'sku' => 'PROD-' . $this->faker->unique()->numberBetween(10000, 99999),
-            'stock_quantity' => $this->faker->numberBetween(0, 100),
+            'quantity' => $this->faker->numberBetween(0, 100),
             'sale_price' => $this->faker->optional()->numberBetween(80000, 900000),
             'brand_id' => null, // Gán brand sau nếu cần
             'is_featured' => $this->faker->boolean(20),
@@ -78,8 +78,7 @@ class ProductFactory extends Factory
                         'import_price' => $variationPrice * 0.7,
                         'sale_price' => $salePrice,
                         'discount_price' => $hasSale ? $variationPrice * 0.85 : null,
-                        'stock_quantity' => $this->faker->numberBetween(0, 50),
-                        'stock_alert_threshold' => 10,
+                        'quantity' => $this->faker->numberBetween(0, 50),
                         'status' => $this->faker->randomElement(['active', 'in_stock', 'out_of_stock', 'hidden']),
                         'color_id' => $color->id,
                         'size_id' => $size->id,

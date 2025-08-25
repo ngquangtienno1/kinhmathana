@@ -27,12 +27,12 @@ class ProductController extends Controller
         if ($request->has('availability') && is_array($availabilities = $request->input('availability', []))) {
             $query->where(function ($q) use ($availabilities) {
                 if (in_array('in_stock', $availabilities)) {
-                    $q->orWhere('stock_quantity', '>', 0)
-                        ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '>', 0));
+                    $q->orWhere('quantity', '>', 0)
+                        ->orWhereHas('variations', fn($qv) => $qv->where('quantity', '>', 0));
                 }
                 if (in_array('out_of_stock', $availabilities)) {
-                    $q->orWhere('stock_quantity', '=', 0)
-                        ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '=', 0));
+                    $q->orWhere('quantity', '=', 0)
+                        ->orWhereHas('variations', fn($qv) => $qv->where('quantity', '=', 0));
                 }
             });
         }
@@ -187,7 +187,20 @@ class ProductController extends Controller
      */
     public function show($slug)
     {
-        $product = Product::with(['categories', 'brand', 'images', 'reviews.user', 'variations.color', 'variations.size', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
+        $product = Product::with([
+                'categories',
+                'brand',
+                'images',
+                // Chỉ lấy các đánh giá chưa bị ẩn và kèm user
+                'reviews' => function ($q) {
+                    $q->where('is_hidden', false)->with('user');
+                },
+                'variations.color',
+                'variations.size',
+                'variations.images',
+                'variations.spherical',
+                'variations.cylindrical',
+            ])
             ->active()
             ->where('slug', $slug)
             ->firstOrFail();
@@ -217,7 +230,7 @@ class ProductController extends Controller
             ? ($selectedVariation->images->where('is_featured', true)->first() ?? $selectedVariation->images->first())
             : ($product->images->where('is_featured', true)->first() ?? $product->images->first());
 
-        $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size'])
+        $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size', 'variations.images'])
             ->active()
             ->where('id', '!=', $product->id)
             ->whereHas('categories', function ($q) use ($product) {
@@ -237,7 +250,7 @@ class ProductController extends Controller
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
                 'price' => (float) $v->price,
                 'sale_price' => (float) $v->sale_price,
-                'stock_quantity' => $v->stock_quantity, // Đảm bảo có trường này
+                'quantity' => $v->quantity, // Sửa từ stock_quantity thành quantity
             ];
         })->values()->toArray();
 
@@ -283,7 +296,7 @@ class ProductController extends Controller
             $currentQty = $cartItem ? $cartItem->quantity : 0;
             $totalQty = $currentQty + $quantity;
 
-            if ($totalQty > $variation->stock_quantity) {
+            if ($totalQty > $variation->quantity) { // Sửa từ stock_quantity thành quantity
                 if ($request->ajax()) {
                     return response()->json(['success' => false, 'message' => 'Số lượng vượt quá tồn kho!'], 400);
                 }
@@ -320,7 +333,7 @@ class ProductController extends Controller
             $currentQty = $cartItem ? $cartItem->quantity : 0;
             $totalQty = $currentQty + $quantity;
 
-            if ($totalQty > $product->stock_quantity) {
+            if ($totalQty > $product->quantity) { // Sửa từ stock_quantity thành quantity
                 if ($request->ajax()) {
                     return response()->json(['success' => false, 'message' => 'Thất bại! Số lượng vượt quá tồn kho'], 400);
                 }

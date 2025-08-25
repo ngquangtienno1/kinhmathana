@@ -7,8 +7,22 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
+
+    // API: Kiểm tra trạng thái user (dùng cho polling tự động logout nếu bị chặn)
+    public function getUserStatus(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['status' => 'guest']);
+        }
+        if ($user->status_user !== 'active') {
+            return response()->json(['status' => 'blocked']);
+        }
+        return response()->json(['status' => 'active']);
+    }
+    // API: Kiểm tra trạng thái user (dùng cho polling tự động logout nếu bị chặn)
+  
     // Hiển thị trang thông tin tài khoản
     public function index()
     {
@@ -33,7 +47,7 @@ class UserController extends Controller
         return view('client.users.information', compact('user'));
     }
 
-    // Cập nhật thông tin tài khoản
+    // Cập nhật thông tin tài khoản (không đổi mật khẩu trực tiếp)
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -43,15 +57,20 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => [
+                'nullable',
+                'regex:/^\d{10}$/',
+            ],
+            'address' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'current_password' => 'nullable|string',
-            'new_password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'phone.regex' => 'Số điện thoại phải có 10 chữ số.',
         ]);
         // Cập nhật thông tin cơ bản
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->phone = $validated['phone'] ?? null;
+        $user->address = $validated['address'] ?? null;
         // Xử lý avatar nếu có upload
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
@@ -59,15 +78,57 @@ class UserController extends Controller
             $avatar->move(public_path('uploads/avatars'), $avatarName);
             $user->avatar = 'uploads/avatars/'.$avatarName;
         }
-        // Đổi mật khẩu nếu nhập đủ
-        if ($request->filled('current_password') && $request->filled('new_password')) {
-            if (\Hash::check($request->current_password, $user->password)) {
-                $user->password = bcrypt($request->new_password);
-            } else {
-                return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
-            }
-        }
         $user->save();
-        return back()->with('success', 'Cập nhật thông tin thành công!');
+        return back()->with('success1', 'Cập nhật thông tin thành công!');
+    }
+
+    // Gửi OTP về email để đổi mật khẩu
+    public function sendOtp(Request $request)
+    {
+        $user = Auth::user();
+        $email = $request->input('email');
+        if (!$user || $user->email !== $email) {
+            return response()->json(['success' => false, 'message' => 'Email không hợp lệ hoặc không trùng với tài khoản đang đăng nhập.']);
+        }
+        $otp = rand(100000, 999999);
+        $expiresAt = now()->addMinutes(5);
+        \App\Models\PasswordOtp::where('user_id', $user->id)->update(['used' => true]); // Hủy các OTP cũ
+        $otpModel = \App\Models\PasswordOtp::create([
+            'user_id' => $user->id,
+            'email' => $email,
+            'otp_code' => $otp,
+            'expires_at' => $expiresAt,
+            'used' => false,
+        ]);
+        \Mail::to($email)->send(new \App\Mail\SendPasswordOtp($otp));
+        return response()->json(['success' => true]);
+    }
+
+    // Đổi mật khẩu qua OTP
+    public function changePassword(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required',
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+        if (!$user || $user->email !== $request->email) {
+            return back()->withErrors(['email' => 'Email không hợp lệ hoặc không trùng với tài khoản đang đăng nhập.']);
+        }
+        $otpModel = \App\Models\PasswordOtp::where('user_id', $user->id)
+            ->where('email', $request->email)
+            ->where('otp_code', $request->otp)
+            ->where('used', false)
+            ->where('expires_at', '>', now())
+            ->first();
+        if (!$otpModel) {
+            return back()->withErrors(['otp' => 'Mã OTP không đúng hoặc đã hết hạn.']);
+        }
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+        $otpModel->used = true;
+        $otpModel->save();
+        return back()->with('success1', 'Đổi mật khẩu thành công!');
     }
 }

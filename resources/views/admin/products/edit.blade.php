@@ -146,6 +146,15 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="quantity"
+                                        value="{{ old('quantity', $product->quantity ?? 0) }}" min="0"
+                                        placeholder="Nhập số lượng">
+                                    @error('quantity')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">Slug sản phẩm</label>
                                     <input type="text" class="form-control" name="slug" id="simple_slug"
                                         value="{{ old('slug', $product->slug) }}" readonly>
@@ -163,17 +172,6 @@
                                     <input type="text" class="form-control" name="sku" id="variable_sku"
                                         value="{{ old('sku', $product->sku) }}" readonly>
                                     @error('sku')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Theo dõi tồn kho</label>
-                                    <input type="number" class="form-control" name="stock_quantity"
-                                        id="variable_stock_quantity"
-                                        value="{{ old('stock_quantity', $product->total_stock) }}" min="0"
-                                        readonly title="Tồn kho được quản lý qua module kho">
-                                    <small class="text-muted">Cập nhật tồn kho trong mục Quản lý kho.</small>
-                                    @error('stock_quantity')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -221,13 +219,14 @@
                                             $attributeGroups['cylindrical'] = array_unique(
                                                 $attributeGroups['cylindrical'],
                                             );
+                                            $usedTypes = array_keys(array_filter($attributeGroups, fn($values) => !empty($values)));
                                             $attributeIndex = 0;
                                         @endphp
 
                                         @php
                                             $oldAttributes = old('attributes');
                                         @endphp
-                                        @foreach (['color', 'size', 'spherical', 'cylindrical'] as $type)
+                                        @foreach ($usedTypes as $type)
                                             @php
                                                 if (
                                                     $oldAttributes &&
@@ -244,7 +243,7 @@
                                                 <div class="col-md-3">
                                                     <select name="attributes[{{ $attributeIndex }}][type]"
                                                         class="form-select attribute-type"
-                                                        data-index="{{ $attributeIndex }}">
+                                                        data-index="{{ $attributeIndex }}" disabled>
                                                         <option value="color"
                                                             {{ $type == 'color' ? 'selected' : '' }}>Màu sắc</option>
                                                         <option value="size"
@@ -428,18 +427,14 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-1">
-                                                <input type="number" class="form-control"
-                                                    value="{{ $variation['stock_quantity'] ?? 0 }}" readonly
-                                                    title="Tồn kho được quản lý qua module kho">
+                                                <input type="number" class="form-control" name="variations[{{ $index }}][quantity]"
+                                                    value="{{ $variation['quantity'] ?? 0 }}" min="0"
+                                                    placeholder="Nhập số lượng">
                                             </div>
                                             <div class="col-md-2">
                                                 <input type="file" name="variations[{{ $index }}][image]"
-                                                    class="form-control variation-image-input">
-                                                @if (!empty($variation['images']) && is_array($variation['images']) && count($variation['images']))
-                                                    <img src="{{ Storage::url($variation['images'][0]['image_path']) }}"
-                                                        alt="Variation Image"
-                                                        style="width: 50px; height: 50px; margin-top: 10px;">
-                                                @endif
+                                                    class="form-control variation-image-input"
+                                                    data-image-url="{{ !empty($variation['images']) && is_array($variation['images']) && count($variation['images']) ? Storage::url($variation['images'][0]['image_path']) : '' }}">
                                                 @error("variations.$index.image")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -450,6 +445,46 @@
                                             </div>
                                         </div>
                                     @endforeach
+                                </div>
+
+                                <!-- Bảng hiển thị danh sách biến thể -->
+                                <div id="variations-table-container" class="mt-3"
+                                    style="{{ $variations && count($variations) > 0 ? '' : 'display: none' }}">
+                                    <h5>Danh sách biến thể</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tên biến thể</th>
+                                                    <th>Mã sản phẩm</th>
+                                                    <th>Giá gốc</th>
+                                                    <th>Giá khuyến mãi</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Ảnh</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="variations-table-body">
+                                                @foreach ($variations as $index => $variation)
+                                                    <tr>
+                                                        <td>{{ $variation['name'] ?? '' }}</td>
+                                                        <td>{{ $variation['sku'] ?? '' }}</td>
+                                                        <td>{{ isset($variation['price']) ? number_format((int) $variation['price'], 0, ',', '.') : '0' }} VNĐ</td>
+                                                        <td>{{ isset($variation['sale_price']) ? number_format((int) $variation['sale_price'], 0, ',', '.') : '0' }} VNĐ</td>
+                                                        <td>{{ $variation['quantity'] ?? 0 }}</td>
+                                                        <td>
+                                                            @if (!empty($variation['images']) && is_array($variation['images']) && count($variation['images']))
+                                                                <img src="{{ Storage::url($variation['images'][0]['image_path']) }}"
+                                                                    alt="Ảnh biến thể" class="variation-image"
+                                                                    style="max-width: 50px; max-height: 50px;">
+                                                            @else
+                                                                Không có ảnh
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -590,7 +625,6 @@
         margin-top: 5px;
     }
 
-    /* Style cho CKEditor */
     .ck-editor__editable {
         min-height: 200px !important;
         max-height: 400px !important;
@@ -604,124 +638,26 @@
         font-size: 14px;
         line-height: 1.5;
     }
+
+    #variations-table-container table {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    #variations-table-container th,
+    #variations-table-container td {
+        padding: 8px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .variation-image {
+        max-width: 50px;
+        max-height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
 </style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        window.colors = @json($colors->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
-        window.sizes = @json($sizes->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
-        window.spherical_values = @json($sphericals->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
-        window.cylindrical_values = @json($cylindricals->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
-
-        function updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index) {
-            const type = typeSelect.value;
-            valuesContainer.innerHTML = '';
-            const options = type === 'color' ? window.colors :
-                type === 'size' ? window.sizes :
-                type === 'spherical' ? window.spherical_values :
-                window.cylindrical_values;
-
-            options.forEach(option => {
-                const value = option.id || option;
-                const label = option.name || option;
-                const div = document.createElement('div');
-                div.className = 'form-check';
-                div.innerHTML = `
-                <input type="checkbox" class="form-check-input attribute-value-checkbox" name="attributes[${index}][values][]" value="${value}" data-index="${index}" ${tagsContainer.querySelector(`input[value="${value}"]`) ? 'checked' : ''}>
-                <label class="form-check-label">${label}</label>
-            `;
-                valuesContainer.appendChild(div);
-            });
-        }
-
-        function reindexAttributes() {
-            document.querySelectorAll('.attribute-row').forEach((row, index) => {
-                row.setAttribute('data-index', index);
-                const typeSelect = row.querySelector('.attribute-type');
-                const valuesInputs = row.querySelectorAll('input[name$="[values][]"]');
-                const typeInput = row.querySelector('select[name$="[type]"]');
-                if (typeInput) typeInput.name = `attributes[${index}][type]`;
-                valuesInputs.forEach(input => {
-                    input.name = `attributes[${index}][values][]`;
-                    input.dataset.index = index;
-                });
-            });
-        }
-
-        document.querySelectorAll('.attribute-type').forEach(typeSelect => {
-            const row = typeSelect.closest('.attribute-row');
-            const valuesContainer = row.querySelector('.attribute-values-container');
-            const tagsContainer = row.querySelector('.attribute-values-tags');
-            const index = row.getAttribute('data-index');
-            updateAttributeValues(typeSelect, valuesContainer, tagsContainer, index);
-        });
-
-        document.addEventListener('change', function(e) {
-            if (e.target.classList.contains('attribute-type')) {
-                const row = e.target.closest('.attribute-row');
-                const valuesContainer = row.querySelector('.attribute-values-container');
-                const tagsContainer = row.querySelector('.attribute-values-tags');
-                const index = row.getAttribute('data-index');
-                updateAttributeValues(e.target, valuesContainer, tagsContainer, index);
-                checkGenerateButton();
-            } else if (e.target.classList.contains('attribute-value-checkbox')) {
-                const row = e.target.closest('.attribute-row');
-                const tagsContainer = row.querySelector('.attribute-values-tags');
-                const index = row.getAttribute('data-index');
-                const type = row.querySelector('.attribute-type').value;
-                const selectedValues = Array.from(row.querySelectorAll(
-                    `input[name="attributes[${index}][values][]"]:checked`)).map(cb => cb.value);
-                tagsContainer.innerHTML = '';
-                selectedValues.forEach(value => {
-                    if (value) {
-                        // Tìm label tương ứng với value
-                        let label = value;
-                        const options = type === 'color' ? window.colors :
-                            type === 'size' ? window.sizes :
-                            type === 'spherical' ? window.spherical_values :
-                            window.cylindrical_values;
-
-                        const option = options.find(opt => (opt.id || opt) === value);
-                        if (option) {
-                            label = option.name || option;
-                        }
-
-                        const tag = document.createElement('span');
-                        tag.className = 'tag';
-                        tag.innerHTML =
-                            `${label}<input type="hidden" name="attributes[${index}][values][]" value="${value}"><button type="button" class="remove-tag" data-value="${value}">×</button>`;
-                        tagsContainer.appendChild(tag);
-                    }
-                });
-                checkGenerateButton();
-            }
-        });
-
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-tag')) {
-                const value = e.target.getAttribute('data-value');
-                const row = e.target.closest('.attribute-row');
-                const valuesContainer = row.querySelector('.attribute-values-container');
-                const checkbox = valuesContainer.querySelector(`input[value="${value}"]`);
-                if (checkbox) checkbox.checked = false;
-                e.target.parentElement.remove();
-                checkGenerateButton();
-            } else if (e.target.classList.contains('remove-attribute')) {
-                e.target.closest('.attribute-row').remove();
-                reindexAttributes();
-                checkGenerateButton();
-            }
-        });
-
-        function checkGenerateButton() {
-            const attributeRows = document.querySelectorAll('.attribute-row');
-            const hasValues = Array.from(attributeRows).some(row => row.querySelectorAll('.tag').length > 0);
-            document.getElementById('generate-variations').style.display = hasValues ? 'block' : 'none';
-        }
-
-        checkGenerateButton();
-    });
-</script>
 
 @push('scripts')
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
@@ -731,8 +667,12 @@
             .catch(error => {
                 console.error(error);
             });
+        window.colors = @json($colors->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
+        window.sizes = @json($sizes->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
+        window.spherical_values = @json($sphericals->map(fn($s) => ['id' => (string) $s->id, 'name' => $s->name])->values());
+        window.cylindrical_values = @json($cylindricals->map(fn($c) => ['id' => (string) $c->id, 'name' => $c->name])->values());
     </script>
 @endpush
 
-@vite(['resources/js/admin/products.js'])
+@vite(['resources/js/admin/products-edit.js'])
 @endsection

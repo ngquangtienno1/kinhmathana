@@ -22,9 +22,6 @@
                 <a href="{{ route('admin.products.list') }}" class="btn btn-phoenix-secondary">
                     <span class="fas fa-arrow-left me-2"></span>Quay lại
                 </a>
-                <a href="{{ route('admin.inventory.index') }}?search={{ $product->sku }}" class="btn btn-info">
-                    <span class="fas fa-history me-2"></span>Xem lịch sử kho
-                </a>
             </div>
         </div>
     </div>
@@ -125,16 +122,16 @@
                                 </tr>
                                 <tr>
                                     <th>Tổng tồn kho</th>
-                                    <td>{{ $product->total_stock }}</td>
+                                    <td>{{ number_format($product->total_stock_quantity ?? 0, 0, ',', '.') }}</td>
                                 </tr>
                                 @if ($product->product_type === 'simple')
                                     <tr>
                                         <th>Giá gốc</th>
-                                        <td>{{ number_format($product->price, 0, ',', '.') }} VNĐ</td>
+                                        <td>{{ number_format($product->price ?? 0, 0, ',', '.') }} VNĐ</td>
                                     </tr>
                                     <tr>
                                         <th>Giá khuyến mãi</th>
-                                        <td>{{ number_format($product->sale_price, 0, ',', '.') }} VNĐ</td>
+                                        <td>{{ number_format($product->sale_price ?? 0, 0, ',', '.') }} VNĐ</td>
                                     </tr>
                                 @endif
                                 <tr>
@@ -184,7 +181,7 @@
                                                     data-bs-target="#collapse{{ $index }}"
                                                     aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
                                                     aria-controls="collapse{{ $index }}">
-                                                    {{ $variation->name }} (Tồn kho: {{ $variation->stock_quantity }})
+                                                    {{ $variation->name }} (Tồn kho: {{ number_format($variation->quantity ?? 0, 0, ',', '.') }})
                                                 </button>
                                             </h2>
                                             <div id="collapse{{ $index }}"
@@ -199,21 +196,21 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Giá gốc</th>
-                                                            <td>{{ number_format($variation->price, 0, ',', '.') }} VNĐ
+                                                            <td>{{ number_format($variation->price ?? 0, 0, ',', '.') }} VNĐ
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Giá khuyến mãi</th>
-                                                            <td>{{ number_format($variation->sale_price, 0, ',', '.') }}
+                                                            <td>{{ number_format($variation->sale_price ?? 0, 0, ',', '.') }}
                                                                 VNĐ</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Tồn kho</th>
-                                                            <td>{{ $variation->stock_quantity }}</td>
+                                                            <td>{{ number_format($variation->quantity ?? 0, 0, ',', '.') }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Trạng thái</th>
-                                                            <td>{{ $variation->stock_quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}</td>
+                                                            <td>{{ $variation->quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th>Ảnh</th>
@@ -284,6 +281,12 @@
                                         @endfor
                                     </div>
                                     <p class="mt-2">{{ $review->content }}</p>
+                                    @if($review->reply)
+                                        <div class="admin-reply mt-3 p-3 bg-light border-start border-primary border-3">
+                                            <strong class="text-primary">💬 Trả lời của Admin:</strong><br>
+                                            {{ $review->reply }}
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>

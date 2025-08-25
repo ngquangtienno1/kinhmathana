@@ -212,37 +212,7 @@
                     </li>
                 @endif
 
-                <!-- Quản lý kho -->
-                @if (canAccess('xem-giao-dich-kho'))
-                    <li class="nav-item">
-                        <div class="nav-item-wrapper">
-                            <a class="nav-link dropdown-indicator label-1 {{ request()->routeIs('admin.inventory.*') ? 'active' : '' }}"
-                                href="#nv-inventory" role="button" data-bs-toggle="collapse" aria-expanded="false"
-                                aria-controls="nv-inventory">
-                                <div class="d-flex align-items-center">
-                                    <div class="dropdown-indicator-icon-wrapper">
-                                        <span class="fas fa-caret-right dropdown-indicator-icon"></span>
-                                    </div>
-                                    <span class="nav-link-icon"><span data-feather="package"></span></span>
-                                    <span class="nav-link-text">Quản lý kho</span>
-                                </div>
-                            </a>
-                            <div class="parent-wrapper label-1">
-                                <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse"
-                                    id="nv-inventory">
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ request()->routeIs('admin.inventory.index') ? 'active' : '' }}"
-                                            href="{{ route('admin.inventory.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách kho</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                @endif
+               
 
                 @if (canAccess('xem-danh-sach-don-hang'))
                     <!-- Orders Management -->
@@ -692,7 +662,7 @@
                                         <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                     </div>
                                     <span class="nav-link-icon"><span data-feather="mail"></span></span>
-                                    <span class="nav-link-text">Hộp thư khách hàng</span>
+                                    <span class="nav-link-text">Chat với khách hàng</span>
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
@@ -702,7 +672,7 @@
                                         <a class="nav-link {{ request()->routeIs('admin.chat.index') ? 'active' : '' }}"
                                             href="{{ route('admin.chat.index') }}">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách hộp thư</span>
+                                                <span class="nav-link-text">Danh sách chat</span>
                                             </div>
                                         </a>
                                     </li>

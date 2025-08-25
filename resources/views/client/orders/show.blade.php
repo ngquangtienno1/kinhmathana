@@ -332,7 +332,7 @@
                                                 data-product-options='@json($item->product_options)'
                                                 data-product-variant="{{ $variantText }}"
                                                 data-order-id="{{ $order->id }}"
-                                                data-review-url="{{ route('client.orders.review.form', [$order->id, $item->id]) }}">Đánh
+                                                data-review-url="{{ route('client.orders.review.submit', [$order->id, $item->id]) }}">Đánh
                                                 giá</button>
                                         @else
                                             <span class="text-success">Đã đánh giá</span>
@@ -454,15 +454,7 @@
                                     multiple accept="image/*" onchange="previewImages()">
                                 <div class="d-flex flex-wrap mt-2 gap-2" id="image-preview"></div>
                             </div>
-                            <div class="mb-3">
-                                <label for="video" class="form-label">Thêm video (tối đa 1 video, dung lượng tối đa
-                                    50MB)</label>
-                                <input type="file" name="video" id="video" class="form-control rounded-0"
-                                    accept="video/*" onchange="previewVideo(); checkVideoSize();">
-                                <div class="text-danger small mt-1" id="video-size-warning" style="display:none;">Video
-                                    vượt quá dung lượng cho phép (50MB).</div>
-                                <div class="mt-2" id="video-preview"></div>
-                            </div>
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -516,36 +508,35 @@
     <!-- Thêm Bootstrap JS nếu chưa có -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        /* ===== STYLE CHO HỆ THỐNG ĐÁNH GIÁ SAO ===== */
         .star {
-            color: #ccc;
-            cursor: pointer;
-            transition: color 0.2s;
+            color: #ccc;                    /* Màu sao mặc định (xám) */
+            cursor: pointer;                /* Con trỏ chuột pointer khi hover */
+            transition: color 0.2s;         /* Hiệu ứng chuyển màu mượt mà */
         }
 
-        .star.selected,
-        .star:hover,
-        .star:hover~.star {
-            color: #f39c12;
+        /* ===== STYLE CHO SAO ĐƯỢC CHỌN VÀ HOVER ===== */
+        .star.selected,                     /* Sao đã được chọn */
+        .star:hover,                        /* Hover vào sao */
+        .star:hover~.star {                 /* Các sao phía sau khi hover (hiệu ứng fill) */
+            color: #f39c12;                 /* Màu vàng cam */
         }
 
+        /* ===== STYLE CHO PREVIEW HÌNH ẢNH ===== */
         #image-preview img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border: 1px solid #ccc;
+            width: 60px;                    /* Chiều rộng ảnh preview */
+            height: 60px;                   /* Chiều cao ảnh preview */
+            object-fit: cover;              /* Cắt ảnh vừa khít container */
+            border: 1px solid #ccc;         /* Viền xám */
         }
 
-        #video-preview video {
-            width: 120px;
-            border: 1px solid #ccc;
-        }
-
+        /* ===== STYLE CHO CONTAINER SAO ===== */
         #star-rating {
-            font-size: 0;
+            font-size: 0;                   /* Ẩn khoảng trắng giữa các sao */
         }
 
         #star-rating .star {
-            font-size: 2rem;
+            font-size: 2rem;                /* Kích thước sao lớn */
         }
         .status-label {
         font-weight: 700;
@@ -578,103 +569,100 @@
     }
     </style>
     <script>
+        // ===== XỬ LÝ MODAL ĐÁNH GIÁ SẢN PHẨM =====
         document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== XỬ LÝ SỰ KIỆN CLICK NÚT "ĐÁNH GIÁ" =====
             document.querySelectorAll('.btn-review').forEach(function(btn) {
                 btn.addEventListener('click', function() {
-                    let itemId = this.getAttribute('data-item-id');
-                    let productName = this.getAttribute('data-product-name');
-                    let productImg = this.getAttribute('data-product-img');
-                    let productOptions = this.getAttribute('data-product-options');
-                    let productVariant = this.getAttribute('data-product-variant');
-                    let orderId = this.getAttribute('data-order-id');
-                    let opts = productOptions ? JSON.parse(productOptions) : {};
+
+                    // ===== LẤY DỮ LIỆU TỪ DATA ATTRIBUTES CỦA BUTTON =====
+                    let itemId = this.getAttribute('data-item-id');           // ID của item trong đơn hàng
+                    let productName = this.getAttribute('data-product-name'); // Tên sản phẩm
+                    let productImg = this.getAttribute('data-product-img');   // URL ảnh sản phẩm
+                    let productOptions = this.getAttribute('data-product-options'); // JSON options (màu, size...)
+                    let productVariant = this.getAttribute('data-product-variant'); // Text phân loại
+                    let orderId = this.getAttribute('data-order-id');         // ID đơn hàng
+
+                    // ===== XỬ LÝ THÔNG TIN PHÂN LOẠI SẢN PHẨM =====
+                    let opts = productOptions ? JSON.parse(productOptions) : {}; // Parse JSON options
                     let optionsText = productVariant ? ('Phân loại: ' + productVariant.replace(
-                        / - /g, ' | ')) : '';
-                    document.getElementById('modal-product-name').innerText = productName;
-                    document.getElementById('modal-product-img').src = productImg;
-                    document.getElementById('modal-product-options').innerText = optionsText;
-                    document.getElementById('review-form').action = btn.getAttribute(
-                        'data-review-url');
-                    document.getElementById('rating').value = 5;
+                        / - /g, ' | ')) : ''; // Format text phân loại (thay - bằng |)
+
+                    // ===== CẬP NHẬT THÔNG TIN SẢN PHẨM TRONG MODAL =====
+                    document.getElementById('modal-product-name').innerText = productName;     // Hiển thị tên SP
+                    document.getElementById('modal-product-img').src = productImg;             // Hiển thị ảnh SP
+                    document.getElementById('modal-product-options').innerText = optionsText;  // Hiển thị phân loại
+
+                    // ===== THIẾT LẬP FORM ACTION =====
+                    document.getElementById('review-form').action = btn.getAttribute('data-review-url'); // Set URL submit
+
+                    // ===== KHỞI TẠO ĐÁNH GIÁ SAO MẶC ĐỊNH (5 SAO) =====
+                    document.getElementById('rating').value = 5; // Set giá trị ẩn
                     document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
-                        s.classList.toggle('selected', idx < 5);
+                        s.classList.toggle('selected', idx < 5); // Highlight 5 sao đầu tiên
                     });
-                    document.getElementById('content').value = '';
-                    document.getElementById('char-count').innerText = 0;
-                    document.getElementById('images').value = '';
-                    document.getElementById('image-preview').innerHTML = '';
-                    document.getElementById('video').value = '';
-                    document.getElementById('video-preview').innerHTML = '';
-                    document.getElementById('video-size-warning').style.display = 'none';
+
+                    // ===== RESET FORM VỀ TRẠNG THÁI BAN ĐẦU =====
+                    document.getElementById('content').value = '';           // Xóa nội dung đánh giá
+                    document.getElementById('char-count').innerText = 0;     // Reset đếm ký tự
+                    document.getElementById('images').value = '';            // Xóa file ảnh đã chọn
+                    document.getElementById('image-preview').innerHTML = ''; // Xóa preview ảnh
+
+                    // ===== HIỂN THỊ MODAL =====
                     var reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
                     reviewModal.show();
                 });
             });
+
+            // ===== XỬ LÝ SỰ KIỆN CLICK VÀO SAO ĐÁNH GIÁ =====
             document.querySelectorAll('#star-rating .star').forEach(function(star) {
                 star.addEventListener('click', function() {
-                    let value = this.getAttribute('data-value');
-                    document.getElementById('rating').value = value;
+                    let value = this.getAttribute('data-value'); // Lấy giá trị sao (1-5)
+                    document.getElementById('rating').value = value; // Cập nhật giá trị ẩn
+
+                    // ===== CẬP NHẬT HIỂN THỊ SAO =====
                     document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
-                        s.classList.toggle('selected', idx < value);
+                        s.classList.toggle('selected', idx < value); // Highlight sao từ 1 đến value
                     });
                 });
             });
         });
 
+        // ===== XỬ LÝ ĐẾM KÝ TỰ TRONG TEXTAREA =====
         function updateCharCount() {
-            document.getElementById('char-count').innerText = document.getElementById('content').value.length;
+            document.getElementById('char-count').innerText = document.getElementById('content').value.length; // Cập nhật số ký tự đã nhập
         }
 
+        // ===== XỬ LÝ PREVIEW HÌNH ẢNH TRƯỚC KHI UPLOAD =====
         function previewImages() {
-            let preview = document.getElementById('image-preview');
-            preview.innerHTML = '';
-            let files = document.getElementById('images').files;
+            let preview = document.getElementById('image-preview'); // Lấy container hiển thị preview
+            preview.innerHTML = ''; // Xóa preview cũ
+            let files = document.getElementById('images').files; // Lấy danh sách file đã chọn
+
+            // ===== XỬ LÝ TỪNG FILE ẢNH (TỐI ĐA 5 ẢNH) =====
             for (let i = 0; i < files.length && i < 5; i++) {
-                let reader = new FileReader();
+                let reader = new FileReader(); // Tạo FileReader để đọc file
                 reader.onload = function(e) {
-                    let img = document.createElement('img');
-                    img.src = e.target.result;
-                    preview.appendChild(img);
+                    let img = document.createElement('img'); // Tạo element img
+                    img.src = e.target.result; // Set source từ kết quả đọc file
+                    preview.appendChild(img); // Thêm vào container preview
                 }
-                reader.readAsDataURL(files[i]);
+                reader.readAsDataURL(files[i]); // Đọc file dưới dạng Data URL
             }
         }
 
-        function previewVideo() {
-            let preview = document.getElementById('video-preview');
-            preview.innerHTML = '';
-            let file = document.getElementById('video').files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let video = document.createElement('video');
-                    video.src = e.target.result;
-                    video.controls = true;
-                    preview.appendChild(video);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
 
-        function checkVideoSize() {
-            let file = document.getElementById('video').files[0];
-            let warning = document.getElementById('video-size-warning');
-            if (file && file.size > 50 * 1024 * 1024) {
-                warning.style.display = 'block';
-                document.getElementById('video').value = '';
-                document.getElementById('video-preview').innerHTML = '';
-            } else {
-                warning.style.display = 'none';
-            }
-        }
     </script>
     <script>
+        // ===== XỬ LÝ MODAL HỦY ĐƠN HÀNG =====
         document.addEventListener('DOMContentLoaded', function() {
-            var select = document.getElementById('cancellation_reason_id');
+            var select = document.getElementById('cancellation_reason_id'); // Lấy select box lý do hủy
             if (select) {
                 select.addEventListener('change', function() {
+                    // ===== HIỂN THỊ/ẨN Ô NHẬP LÝ DO KHÁC =====
                     document.getElementById('other-reason-group').style.display = this.value === 'other' ?
-                        'block' : 'none';
+                        'block' : 'none'; // Hiển thị nếu chọn "Khác", ẩn nếu chọn lý do khác
                 });
             }
         });
