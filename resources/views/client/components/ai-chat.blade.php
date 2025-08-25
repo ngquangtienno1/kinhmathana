@@ -29,9 +29,9 @@
                     <p>Tư vấn kính mắt chuyên nghiệp</p>
                     <small>
                         @if(auth()->check())
-                            Giới hạn: 20 tin nhắn/giờ
-                        @else
                             Giới hạn: 5 tin nhắn/giờ
+                        @else
+                            Vui lòng đăng nhập để chat
                         @endif
                     </small>
                 </div>
@@ -39,6 +39,9 @@
             <div class="ai-chat-actions">
                 <button id="ai-chat-clear-btn" class="ai-chat-btn" title="Xóa lịch sử">
                     <i class="fas fa-trash"></i>
+                </button>
+                <button id="ai-chat-reset-limit-btn" class="ai-chat-btn" title="Reset giới hạn chat" style="display: none;">
+                    <i class="fas fa-redo"></i>
                 </button>
                 <button id="ai-chat-minimize-btn" class="ai-chat-btn">
                     <i class="fa-solid fa-chevron-down"></i>
@@ -58,12 +61,17 @@
                     <div style="display: flex; flex-direction: column; align-items: flex-start;">
                         <span
                             style="display: inline-block; padding: 12px 16px; border-radius: 18px; font-size: 14px; background: #fff; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.08); word-break: break-word; border: 1px solid #e5e7eb;">
-                            👋 Xin chào! Tôi là Hana AI Assistant, chuyên gia tư vấn kính mắt. Tôi có thể giúp bạn:
-                            <br>• Chọn kính phù hợp với khuôn mặt
-                            <br>• Tư vấn màu sắc và kiểu dáng
-                            <br>• Giải đáp về phong thủy kính mắt
-                            <br>• Thông tin về các loại kính
-                            <br><br>Hãy hỏi tôi bất cứ điều gì về kính mắt nhé! 😊
+                            @if(auth()->check())
+                                👋 Xin chào {{ auth()->user()->name }}! Tôi là Hana AI Assistant, chuyên gia tư vấn kính mắt. Tôi có thể giúp bạn:
+                                <br>• Chọn kính phù hợp với khuôn mặt
+                                <br>• Tư vấn màu sắc và kiểu dáng
+                                <br>• Giải đáp về phong thủy kính mắt
+                                <br>• Thông tin về các loại kính
+                                <br><br>Hãy hỏi tôi bất cứ điều gì về kính mắt nhé! 😊
+                            @else
+                                🔐 Vui lòng đăng nhập để sử dụng AI Chat
+                                <br><br><a href="/login" style="color: #007bff; text-decoration: underline;">Đăng nhập ngay</a>
+                            @endif
                         </span>
                         <span style="font-size:11px;color:#999;margin-top:4px;">Vừa xong</span>
                     </div>
@@ -377,26 +385,27 @@
         font-weight: 600;
     }
 
-    .product-suggestions-grid {
+    .product-suggestions-list {
         display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 8px;
     }
 
-    .product-card {
-        background: #f8f9fa;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 8px;
-        min-width: 120px;
-        max-width: 150px;
+    .product-item {
+        background: #232323;
+        border-radius: 6px;
+        padding: 8px 12px;
         cursor: pointer;
         transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .product-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .product-item:hover {
+        background: #333;
+        transform: translateX(2px);
     }
 
     .product-image {
@@ -418,6 +427,22 @@
         white-space: nowrap;
     }
 
+    .product-item .product-name {
+        font-size: 12px;
+        color: #ffffff;
+        font-weight: 500;
+        flex: 1;
+        margin-right: 8px;
+        margin-bottom: 0;
+    }
+
+    .product-item .product-price {
+        font-size: 11px;
+        color: #ffffff;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
     .product-category {
         font-size: 10px;
         color: #666;
@@ -426,8 +451,58 @@
 
     .product-price {
         font-size: 11px;
-        color: #232323;
+        color: #ffffff;
         font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .product-image-placeholder {
+        width: 100%;
+        height: 60px;
+        background: #f0f0f0;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #999;
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ffd700;
+        color: #333;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: bold;
+    }
+
+    .product-type-badge {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        background: #007bff;
+        color: white;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8px;
+        font-weight: bold;
+    }
+
+    .product-card {
+        position: relative;
     }
 
     /* Animations */
@@ -479,6 +554,28 @@
     @keyframes typing {
         0%, 60%, 100% { opacity: 0; }
         30% { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
     }
 
     /* Responsive Design */
@@ -752,6 +849,28 @@
 </style>
 
 <script>
+    // Load chat history từ localStorage
+    function loadChatHistory() {
+        const history = localStorage.getItem('ai_chat_history');
+        if (history) {
+            try {
+                const chatHistory = JSON.parse(history);
+                if (chatHistory.length > 0) {
+                    chatHistory.forEach(item => {
+                        // Hiển thị tin nhắn người dùng
+                        appendAiMessage(item.user_message, true);
+
+                        // Hiển thị tin nhắn AI
+                        appendAiMessage(item.ai_response, false);
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading chat history:', e);
+                localStorage.removeItem('ai_chat_history');
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
     const aiChatToggleBtn = document.getElementById('ai-chat-toggle-btn');
     const aiChatContainer = document.getElementById('ai-chat-container');
@@ -764,6 +883,9 @@
 
     let isAiChatOpen = false;
     let isTyping = false;
+
+    // Load chat history khi khởi tạo
+    loadChatHistory();
 
     // Hiển thị tooltip khi hover
     aiChatToggleBtn.addEventListener('mouseenter', function() {
@@ -799,6 +921,10 @@
     // Xóa lịch sử chat
     aiChatClearBtn.onclick = () => {
         if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử chat?')) {
+            // Xóa localStorage
+            localStorage.removeItem('ai_chat_history');
+
+            // Xóa server session
             fetch('/client/ai-chat/clear', {
                 method: 'DELETE',
                 headers: {
@@ -834,6 +960,52 @@
         }
     };
 
+    // Reset giới hạn chat (chỉ để test)
+    const aiChatResetLimitBtn = document.getElementById('ai-chat-reset-limit-btn');
+    aiChatResetLimitBtn.onclick = () => {
+        if (confirm('Bạn có chắc muốn reset giới hạn chat? (Chỉ để test)')) {
+            // Reset rate limit
+            fetch('/client/ai-chat/reset-limit', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    appendAiMessage('✅ Đã reset giới hạn chat. Bạn có thể chat lại!', false);
+                    aiChatResetLimitBtn.style.display = 'none';
+                }
+            });
+        }
+    };
+
+    // Event delegation cho product items
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.product-item')) {
+            const productItem = e.target.closest('.product-item');
+            const url = productItem.dataset.productUrl;
+            const name = productItem.dataset.productName;
+
+
+            openProduct(url, name);
+        }
+    });
+
+    // Keyboard support cho product items
+    document.addEventListener('keydown', function(e) {
+        if (e.target.classList.contains('product-item')) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const url = e.target.dataset.productUrl;
+                const name = e.target.dataset.productName;
+                openProduct(url, name);
+            }
+        }
+    });
+
     // Gửi tin nhắn
     function sendAiMessage() {
         const message = aiChatInput.value.trim();
@@ -857,12 +1029,29 @@
             body: JSON.stringify({ message: message })
         })
         .then(res => res.json())
-        .then(data => {
+                        .then(data => {
             hideTypingIndicator();
             if (data.success) {
-                appendAiMessage(data.ai_response, false, data.suggested_products);
+                // Thêm thông tin về filter giá nếu có
+                let responseMessage = data.ai_response;
+                if (data.price_filter && data.products_count !== undefined) {
+                    responseMessage += `\n\n📊 Tìm thấy ${data.products_count} sản phẩm phù hợp với yêu cầu giá của bạn.`;
+                }
+
+                appendAiMessage(responseMessage, false, data.suggested_products);
+
+                // Lưu chat history vào localStorage
+                if (data.chat_history) {
+                    localStorage.setItem('ai_chat_history', JSON.stringify(data.chat_history));
+                }
             } else {
-                appendAiMessage('Xin lỗi, tôi gặp sự cố. Vui lòng thử lại sau.', false);
+                if (data.require_login) {
+                    appendAiMessage('🔐 Vui lòng đăng nhập để sử dụng AI Chat. <a href="/client/login" style="color: #007bff; text-decoration: underline;">Đăng nhập ngay</a>', false);
+                } else if (data.message && data.message.includes('vượt quá giới hạn')) {
+                    appendAiMessage(`⏰ ${data.message}`, false);
+                } else {
+                    appendAiMessage('Xin lỗi, tôi gặp sự cố. Vui lòng thử lại sau.', false);
+                }
             }
         })
         .catch(error => {
@@ -890,16 +1079,20 @@
         } else {
             let productsHtml = '';
             if (suggestedProducts && suggestedProducts.length > 0) {
+
                 productsHtml = `
-                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
-                        <div style="font-size: 12px; color: #666; margin-bottom: 8px; font-weight: 600;">🛍️ Sản phẩm gợi ý:</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                            ${suggestedProducts.map(product => `
-                                <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-width: 120px; max-width: 150px; cursor: pointer;" onclick="window.open('${product.url}', '_blank')">
-                                    ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px; margin-bottom: 4px;">` : ''}
-                                    <div style="font-size: 11px; font-weight: 600; color: #333; margin-bottom: 2px; line-height: 1.2;">${product.name}</div>
-                                    <div style="font-size: 10px; color: #666; margin-bottom: 2px;">${product.category}</div>
-                                    <div style="font-size: 11px; color: #232323; font-weight: 600;">${product.price}</div>
+                    <div class="product-suggestions">
+                        <div class="product-suggestions-title">🛍️ Sản phẩm gợi ý:</div>
+                        <div class="product-suggestions-list">
+                            ${suggestedProducts.map((product, index) => `
+                                <div class="product-item"
+                                     data-product-url="${product.url}"
+                                     data-product-name="${product.name}"
+                                     tabindex="0"
+                                     role="button"
+                                     title="Xem chi tiết ${product.name}">
+                                    <span class="product-name">${product.name}</span>
+                                    <span class="product-price">${product.price}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -957,6 +1150,66 @@
         }
     }
 
+        // Function để mở sản phẩm
+    function openProduct(url, productName) {
+        try {
+
+
+            if (url && url !== '#' && url !== 'undefined') {
+                // Thêm tracking cho analytics
+
+
+                // Mở sản phẩm trong tab mới
+                const newWindow = window.open(url, '_blank');
+
+                if (newWindow) {
+                    // Hiển thị thông báo nhỏ
+                    showProductNotification(productName);
+                } else {
+                    // Nếu popup bị block, thử mở trong tab hiện tại
+                    window.location.href = url;
+                }
+            } else {
+
+                alert('Không thể mở sản phẩm này. Vui lòng thử lại sau.');
+            }
+        } catch (error) {
+            console.error('Error in openProduct:', error);
+            alert('Có lỗi xảy ra khi mở sản phẩm. Vui lòng thử lại.');
+        }
+    }
+
+    // Hiển thị thông báo khi click sản phẩm
+    function showProductNotification(productName) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #232323;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            font-size: 14px;
+            max-width: 300px;
+            word-wrap: break-word;
+            font-size: 14px;
+            z-index: 10002;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = `Đã mở sản phẩm: ${productName}`;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }
+
     // Event listeners
     aiChatSendBtn.addEventListener('click', sendAiMessage);
 
@@ -984,7 +1237,7 @@
                 }
             })
             .catch(error => {
-                console.log('Không thể tải lịch sử chat');
+
             });
     }
 

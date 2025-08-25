@@ -35,6 +35,7 @@ use App\Http\Controllers\Client\AIChatController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Client\ServiceController;
 use App\Http\Controllers\Client\VoucherController;
 use App\Http\Controllers\Admin\ChatAdminController;
 use App\Http\Controllers\Admin\PromotionController;
@@ -48,16 +49,16 @@ use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Client\OrderClientController;
 use App\Http\Controllers\Client\OrderDetailController;
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 
-
 // Authentication
-
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
-
-// Authentication
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
@@ -181,6 +182,8 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
 
+    Route::get('about-us', [ServiceController::class, 'index'])->name('service.index');
+
     Route::prefix('wishlist')->name('wishlist.')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('index');
         Route::post('/add', [WishlistController::class, 'addToWishlist'])->name('add');
@@ -202,7 +205,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::get('/history', [AIChatController::class, 'getChatHistory'])->name('history');
         Route::delete('/clear', [AIChatController::class, 'clearChatHistory'])->name('clear');
         Route::get('/stats', [AIChatController::class, 'getChatStats'])->name('stats')->middleware('auth');
-        Route::get('/test-enhanced', [AIChatController::class, 'testEnhanced'])->name('test-enhanced');
+        Route::post('/reset-limit', [AIChatController::class, 'resetLimit'])->name('reset-limit');
     });
 });
 
@@ -495,7 +498,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::post('/{id}/mark-as-unread', [NotificationController::class, 'markAsUnread'])->name('mark-as-unread');
         Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
         Route::get('/dropdown', [NotificationController::class, 'getDropdownNotifications'])->name('dropdown');
-        // Test routes - Chỉ nên sử dụng trong môi trường development
+
         if (app()->environment('local', 'development')) {
             Route::get('/test/new-order', [NotificationController::class, 'testNewOrder'])->name('test.new-order');
             Route::get('/test/order-status', [NotificationController::class, 'testOrderStatus'])->name('test.order-status');
@@ -561,6 +564,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [AdminOrderController::class, 'show'])->name('show');
         Route::get('/{order}/print', [AdminOrderController::class, 'print'])->name('print');
+        Route::delete('/{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
+
         Route::put('{order}/status', [AdminOrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('update-payment-status')

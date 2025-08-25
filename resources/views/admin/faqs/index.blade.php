@@ -82,42 +82,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="scrollbar overflow-hidden-y">
-                    <div class="btn-group position-static" role="group">
-                        <div class="btn-group position-static text-nowrap">
-                            <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
-                                data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                                aria-expanded="false" data-bs-reference="parent">
-                                Đánh giá
-                                <span class="fas fa-angle-down ms-2"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item {{ !request('rating') ? 'active' : '' }}"
-                                        href="{{ route('admin.faqs.index', array_merge(request()->except(['rating', 'page']), ['search' => request('search')])) }}">
-                                        Tất cả
-                                    </a>
-                                </li>
-                                @for ($i = 5; $i >= 1; $i--)
-                                    <li>
-                                        <a class="dropdown-item {{ request('rating') == $i ? 'active' : '' }}"
-                                            href="{{ route('admin.faqs.index', array_merge(request()->except(['rating', 'page']), ['rating' => $i, 'search' => request('search')])) }}">
-                                            <span class="text-warning me-1">
-                                                @for ($j = 1; $j <= 5; $j++)
-                                                    @if ($j <= $i)
-                                                        <i class="fas fa-star"></i>
-                                                    @else
-                                                        <i class="far fa-star"></i>
-                                                    @endif
-                                                @endfor
-                                            </span>
-                                        </a>
-                                    </li>
-                                @endfor
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="ms-xxl-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
                         <span class="fas fa-trash me-2"></span>Xóa tất cả
@@ -128,7 +93,8 @@
                 </div>
             </div>
         </div>
-        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+        <div
+            class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
             <div class="table-responsive scrollbar mx-n1 px-1">
                 <table class="table fs-9 mb-0">
                     <thead>
@@ -144,17 +110,21 @@
                                     class="text-body" style="text-decoration:none;">
                                     ID
                                     @if (request('sort') === 'id')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:90px;">Ảnh</th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="min-width:300px;">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:90px;">Ảnh
+                            </th>
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                style="min-width:300px;">
                                 <a href="{{ route('admin.faqs.index', ['sort' => 'question', 'direction' => request('sort') === 'question' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Câu hỏi
                                     @if (request('sort') === 'question')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
@@ -163,38 +133,35 @@
                                     class="text-body" style="text-decoration:none;">
                                     Danh mục
                                     @if (request('sort') === 'category')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:150px;">
-                                <a href="{{ route('admin.faqs.index', ['sort' => 'rating', 'direction' => request('sort') === 'rating' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
-                                    class="text-body" style="text-decoration:none;">
-                                    Đánh giá
-                                    @if (request('sort') === 'rating')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
-                                    @endif
-                                </a>
-                            </th>
+
                             <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:100px;">
                                 <a href="{{ route('admin.faqs.index', ['sort' => 'sort_order', 'direction' => request('sort') === 'sort_order' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Thứ tự
                                     @if (request('sort') === 'sort_order')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4" scope="col" style="width:100px;">
+                            <th class="sort white-space-nowrap align-middle ps-4" scope="col"
+                                style="width:100px;">
                                 <a href="{{ route('admin.faqs.index', ['sort' => 'is_active', 'direction' => request('sort') === 'is_active' && request('direction') === 'asc' ? 'desc' : 'asc'] + request()->except(['sort', 'direction', 'page'])) }}"
                                     class="text-body" style="text-decoration:none;">
                                     Trạng thái
                                     @if (request('sort') === 'is_active')
-                                        <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
+                                        <i
+                                            class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }}"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">Thao tác</th>
+                            <th class="sort text-end align-middle pe-0 ps-4" scope="col" style="width:90px;">Thao
+                                tác</th>
                         </tr>
                     </thead>
                     <tbody class="list" id="faqs-table-body">
@@ -202,20 +169,22 @@
                             <tr>
                                 <td class="align-middle text-center px-3">
                                     <div class="form-check mb-0 fs-8">
-                                        <input class="form-check-input faq-checkbox" type="checkbox" value="{{ $faq->id }}">
+                                        <input class="form-check-input faq-checkbox" type="checkbox"
+                                            value="{{ $faq->id }}">
                                     </div>
                                 </td>
                                 <td class="id align-middle ps-4">
                                     <span class="text-body-tertiary">{{ $faq->id }}</span>
                                 </td>
                                 <td class="align-middle ps-4">
-                                    @if($faq->images)
+                                    @if ($faq->images)
                                         @php
                                             $images = json_decode($faq->images, true);
                                             $firstImage = $images[0] ?? null;
                                         @endphp
-                                        @if($firstImage)
-                                            <img src="{{ asset('storage/' . $firstImage) }}" alt="FAQ Image" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                        @if ($firstImage)
+                                            <img src="{{ asset('storage/' . $firstImage) }}" alt="FAQ Image"
+                                                class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                         @else
                                             <div class="rounded bg-light" style="width: 50px; height: 50px;"></div>
                                         @endif
@@ -226,41 +195,35 @@
                                 <td class="question align-middle ps-4">
                                     <div class="d-flex flex-column">
                                         <span class="fw-bold">{{ Str::limit($faq->question, 50) }}</span>
-                                        <small class="text-muted">{{ Str::limit(strip_tags($faq->answer), 100) }}</small>
+                                        <small
+                                            class="text-muted">{{ Str::limit(strip_tags($faq->answer), 100) }}</small>
                                     </div>
                                 </td>
                                 <td class="category align-middle ps-4">{{ $faq->category }}</td>
-                                <td class="rating align-middle ps-4">
-                                    <div class="text-warning d-flex align-items-center" style="min-width: 100px;">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $faq->rating)
-                                                <i class="fas fa-star me-1"></i>
-                                            @else
-                                                <i class="far fa-star me-1"></i>
-                                            @endif
-                                        @endfor
-                                    </div>
-                                </td>
+
                                 <td class="sort_order align-middle ps-4">{{ $faq->sort_order }}</td>
                                 <td class="status align-middle ps-4">
                                     <div class="form-check form-switch d-flex justify-content-center">
                                         <input class="form-check-input status-switch" type="checkbox" role="switch"
-                                            data-id="{{ $faq->id }}"
-                                            {{ $faq->is_active ? 'checked' : '' }}>
+                                            data-id="{{ $faq->id }}" {{ $faq->is_active ? 'checked' : '' }}>
                                     </div>
                                 </td>
                                 <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
                                     <div class="btn-reveal-trigger position-static">
-                                        <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                        <button
+                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
                                             type="button" data-bs-toggle="dropdown" data-boundary="window"
                                             aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                             <span class="fas fa-ellipsis-h fs-10"></span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end py-2">
-                                            <a class="dropdown-item" href="{{ route('admin.faqs.show', $faq->id) }}">Xem</a>
-                                            <a class="dropdown-item" href="{{ route('admin.faqs.edit', $faq->id) }}">Sửa</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('admin.faqs.show', $faq->id) }}">Xem</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('admin.faqs.edit', $faq->id) }}">Sửa</a>
                                             <div class="dropdown-divider"></div>
-                                            <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger"
@@ -298,7 +261,8 @@
             </div>
         </div>
     </div>
-    <form id="bulk-delete-form" action="{{ route('admin.faqs.bulkDestroy') }}" method="POST" style="display:none;">
+    <form id="bulk-delete-form" action="{{ route('admin.faqs.bulkDestroy') }}" method="POST"
+        style="display:none;">
         @csrf
         @method('DELETE')
         <input type="hidden" name="ids" id="bulk-delete-ids">
@@ -351,32 +315,35 @@
             });
 
             // Xử lý switch status
-            document.querySelectorAll('.status-switch').forEach(switch => {
-                switch.addEventListener('change', function() {
-                    const id = this.dataset.id;
-                    const isActive = this.checked;
+            document.querySelectorAll('.status-switch').forEach(
+                switch => {
+                    switch.addEventListener('change', function() {
+                        const id = this.dataset.id;
+                        const isActive = this.checked;
 
-                    fetch(`/admin/faqs/${id}/status`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ is_active: isActive })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.success) {
-                            this.checked = !isActive;
-                            alert('Có lỗi xảy ra khi cập nhật trạng thái');
-                        }
-                    })
-                    .catch(error => {
-                        this.checked = !isActive;
-                        alert('Có lỗi xảy ra khi cập nhật trạng thái');
+                        fetch(`/admin/faqs/${id}/status`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    is_active: isActive
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    this.checked = !isActive;
+                                    alert('Có lỗi xảy ra khi cập nhật trạng thái');
+                                }
+                            })
+                            .catch(error => {
+                                this.checked = !isActive;
+                                alert('Có lỗi xảy ra khi cập nhật trạng thái');
+                            });
                     });
                 });
-            });
         });
     </script>
 </div>

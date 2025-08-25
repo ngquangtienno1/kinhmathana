@@ -77,196 +77,196 @@
                                     <li
                                         class="product type-product post-{{ $product->id }} status-publish {{ $product->stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
-                                            <div class="qodef-woo-product-image">
-                                                @if ($product->sale_price && $product->sale_price < $product->price)
-                                                    <span class="qodef-woo-product-mark qodef-woo-onsale">sale</span>
-                                                @endif
-                                                @php
-                                                    // Ưu tiên ảnh từ biến thể nếu có
-                                                    $featuredImage = null;
-                                                    if ($product->variations && $product->variations->count() > 0) {
-                                                        $firstVariation = $product->variations->first();
-                                                        if (
-                                                            $firstVariation->images &&
-                                                            $firstVariation->images->count() > 0
-                                                        ) {
-                                                            $featuredImage =
-                                                                $firstVariation->images
-                                                                    ->where('is_featured', true)
-                                                                    ->first() ?? $firstVariation->images->first();
-                                                        }
-                                                    }
-
-                                                    // Nếu không có ảnh biến thể, lấy ảnh sản phẩm chính
-                                                    if (!$featuredImage && $product->images->isNotEmpty()) {
-                                                        $featuredImage =
-                                                            $product->images->where('is_featured', true)->first() ??
-                                                            $product->images->first();
-                                                    }
-
-                                                    $imagePath = $featuredImage
-                                                        ? asset('storage/' . $featuredImage->image_path)
-                                                        : asset(
-                                                            'v1/wp-content/uploads/2021/07/Shop-Single-02-img-600x431.jpg',
-                                                        );
-                                                @endphp
-                                                <img loading="lazy" width="600" height="431" src="{{ $imagePath }}"
-                                                    class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail product-fixed-img"
-                                                    alt="{{ $product->name }}" decoding="async" />
-                                            </div>
-                                            <div class="qodef-woo-product-content">
-                                                <h6 class="qodef-woo-product-title woocommerce-loop-product__title">
-                                                    <a href="{{ route('client.products.show', $product->slug) }}"
-                                                        class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
-                                                        {{ $product->name }}
-                                                    </a>
-                                                </h6>
-                                                <div class="qodef-woo-product-categories qodef-e-info">
-                                                    @if ($product->categories->isNotEmpty())
-                                                        @foreach ($product->categories as $index => $category)
-                                                            <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
-                                                                rel="tag">
-                                                                {{ $category->name }}
-                                                            </a>
-                                                            @if ($index < $product->categories->count() - 1)
-                                                                <span class="qodef-info-separator-single"></span>
-                                                            @endif
-                                                        @endforeach
-                                                        <div class="qodef-info-separator-end"></div>
+                                            <a href="{{ route('client.products.show', $product->slug) }}"
+                                                class="woocommerce-LoopProduct-link woocommerce-loop-product__link">
+                                                <div class="qodef-woo-product-image">
+                                                    @if ($product->sale_price && $product->sale_price < $product->price)
+                                                        <span class="qodef-woo-product-mark qodef-woo-onsale">sale</span>
                                                     @endif
-                                                </div>
-                                                <span class="price">
                                                     @php
-                                                        // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                        // Ưu tiên ảnh từ biến thể nếu có
+                                                        $featuredImage = null;
                                                         if ($product->variations && $product->variations->count() > 0) {
-                                                            $minPrice = $product->variations->min('price');
-                                                            $minSalePrice = $product->variations
-                                                                ->where('sale_price', '>', 0)
-                                                                ->min('sale_price');
-
-                                                            // Nếu có giá khuyến mãi thấp hơn giá gốc
-                                                            if ($minSalePrice && $minSalePrice < $minPrice) {
-                                                                $displayPrice = $minSalePrice;
-                                                                $originalPrice = $minPrice;
-                                                                $hasSale = true;
-                                                            } else {
-                                                                $displayPrice = $minPrice;
-                                                                $originalPrice = $minPrice;
-                                                                $hasSale = false;
+                                                            $firstVariation = $product->variations->first();
+                                                            if (
+                                                                $firstVariation->images &&
+                                                                $firstVariation->images->count() > 0
+                                                            ) {
+                                                                $featuredImage =
+                                                                    $firstVariation->images
+                                                                        ->where('is_featured', true)
+                                                                        ->first() ?? $firstVariation->images->first();
                                                             }
-                                                        } else {
-                                                            // Sản phẩm không có biến thể, dùng giá sản phẩm cha
-                                                            $displayPrice =
-                                                                $product->sale_price &&
-                                                                $product->sale_price < $product->price
-                                                                    ? $product->sale_price
-                                                                    : $product->price;
-                                                            $originalPrice = $product->price;
-                                                            $hasSale =
-                                                                $product->sale_price &&
-                                                                $product->sale_price < $product->price;
                                                         }
-                                                    @endphp
 
-                                                    @if ($hasSale)
-                                                        <del aria-hidden="true">
-                                                            <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
-                                                            </span>
-                                                        </del>
-                                                        <span class="screen-reader-text">Giá gốc:
-                                                            {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
-                                                        <ins aria-hidden="true">
+                                                        // Nếu không có ảnh biến thể, lấy ảnh sản phẩm chính
+                                                        if (!$featuredImage && $product->images->isNotEmpty()) {
+                                                            $featuredImage =
+                                                                $product->images->where('is_featured', true)->first() ??
+                                                                $product->images->first();
+                                                        }
+
+                                                        $imagePath = $featuredImage
+                                                            ? asset('storage/' . $featuredImage->image_path)
+                                                            : asset(
+                                                                'v1/wp-content/uploads/2021/07/Shop-Single-02-img-600x431.jpg',
+                                                            );
+                                                    @endphp
+                                                    <img loading="lazy" width="600" height="431"
+                                                        src="{{ $imagePath }}"
+                                                        class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail product-fixed-img"
+                                                        alt="{{ $product->name }}" decoding="async" />
+                                                </div>
+                                                <div class="qodef-woo-product-content">
+                                                    <h6 class="qodef-woo-product-title woocommerce-loop-product__title">
+                                                        {{ $product->name }}
+                                                    </h6>
+                                                    <div class="qodef-woo-product-categories qodef-e-info">
+                                                        @if ($product->categories->isNotEmpty())
+                                                            @foreach ($product->categories as $index => $category)
+                                                                <a href="{{ route('client.products.index', ['category_id' => $category->id]) }}"
+                                                                    rel="tag">
+                                                                    {{ $category->name }}
+                                                                </a>
+                                                                @if ($index < $product->categories->count() - 1)
+                                                                    <span class="qodef-info-separator-single"></span>
+                                                                @endif
+                                                            @endforeach
+                                                            <div class="qodef-info-separator-end"></div>
+                                                        @endif
+                                                    </div>
+                                                    <span class="price">
+                                                        @php
+                                                            // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                            if (
+                                                                $product->variations &&
+                                                                $product->variations->count() > 0
+                                                            ) {
+                                                                $minPrice = $product->variations->min('price');
+                                                                $minSalePrice = $product->variations
+                                                                    ->where('sale_price', '>', 0)
+                                                                    ->min('sale_price');
+
+                                                                // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                                if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                    $displayPrice = $minSalePrice;
+                                                                    $originalPrice = $minPrice;
+                                                                    $hasSale = true;
+                                                                } else {
+                                                                    $displayPrice = $minPrice;
+                                                                    $originalPrice = $minPrice;
+                                                                    $hasSale = false;
+                                                                }
+                                                            } else {
+                                                                // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                                $displayPrice =
+                                                                    $product->sale_price &&
+                                                                    $product->sale_price < $product->price
+                                                                        ? $product->sale_price
+                                                                        : $product->price;
+                                                                $originalPrice = $product->price;
+                                                                $hasSale =
+                                                                    $product->sale_price &&
+                                                                    $product->sale_price < $product->price;
+                                                            }
+                                                        @endphp
+
+                                                        @if ($hasSale)
+                                                            <del aria-hidden="true">
+                                                                <span class="woocommerce-Price-amount amount">
+                                                                    <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
+                                                                </span>
+                                                            </del>
+                                                            <span class="screen-reader-text">Giá gốc:
+                                                                {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
+                                                            <ins aria-hidden="true">
+                                                                <span class="woocommerce-Price-amount amount"
+                                                                    style="color: #dc3545; font-weight: bold;">
+                                                                    <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
+                                                                </span>
+                                                            </ins>
+                                                            <span class="screen-reader-text">Giá khuyến mãi:
+                                                                {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
+                                                        @else
                                                             <span class="woocommerce-Price-amount amount">
                                                                 <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
-                                                        </ins>
-                                                        <span class="screen-reader-text">Giá khuyến mãi:
-                                                            {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
-                                                    @else
-                                                        <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
+                                                        @endif
+                                                    </span>
+                                            </a>
+                                            <div class="qodef-woo-product-image-inner">
+                                                <div
+                                                    class="qwfw-add-to-wishlist-wrapper qwfw--loop qwfw-position--after-add-to-cart qwfw-item-type--icon qodef-neoocular-theme">
+                                                    <a role="button" tabindex="0"
+                                                        class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon"
+                                                        href="#" data-item-id="{{ $product->id }}"
+                                                        data-original-item-id="{{ $product->id }}"
+                                                        aria-label="Add to wishlist" rel="noopener noreferrer">
+                                                        <span class="qwfw-m-spinner qwfw-spinner-icon">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                                <path
+                                                                    d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
+                                                                </path>
+                                                            </svg>
                                                         </span>
-                                                    @endif
-                                                </span>
-                                                <div class="qodef-woo-product-image-inner">
-                                                    <div
-                                                        class="qwfw-add-to-wishlist-wrapper qwfw--loop qwfw-position--after-add-to-cart qwfw-item-type--icon qodef-neoocular-theme">
-                                                        <a role="button" tabindex="0"
-                                                            class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon"
-                                                            href="#" data-item-id="{{ $product->id }}"
-                                                            data-original-item-id="{{ $product->id }}"
-                                                            aria-label="Add to wishlist" rel="noopener noreferrer">
-                                                            <span class="qwfw-m-spinner qwfw-spinner-icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 512 512">
+                                                        <span class="qwfw-m-icon qwfw--predefined">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="32"
+                                                                height="32" viewBox="0 0 32 32" fill="currentColor">
+                                                                <g>
                                                                     <path
-                                                                        d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                                    </path>
-                                                                </svg>
-                                                            </span>
-                                                            <span class="qwfw-m-icon qwfw--predefined">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                                    height="32" viewBox="0 0 32 32" fill="currentColor">
-                                                                    <g>
-                                                                        <path
-                                                                            d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                                    </g>
-                                                                </svg>
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                    <div
-                                                        class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
-                                                        <a role="button" tabindex="0"
-                                                            class="qqvfw-shortcode qqvfw-m qqvfw-quick-view-button qqvfw-type--icon-with-text"
-                                                            data-item-id="{{ $product->id }}"
-                                                            data-quick-view-type="pop-up"
-                                                            data-quick-view-type-mobile="pop-up"
-                                                            href="{{ route('client.products.show', $product->slug) }}"
-                                                            rel="noopener noreferrer">
-                                                            <span class="qqvfw-m-spinner">
-                                                                <svg class="qqvfw-svg--spinner"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 512 512">
-                                                                    <path
-                                                                        d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                                    </path>
-                                                                </svg>
-                                                            </span>
-                                                            <span class="qqvfw-m-icon qqvfw-icon--predefined">
-                                                                <span class="qodef-icon-linear-icons lnr-eye lnr"></span>
-                                                            </span>
-                                                            <span class="qqvfw-m-text"></span>
-                                                        </a>
-                                                    </div>
-                                                    <form method="post"
-                                                        action="{{ route('client.products.add-to-cart') }}"
-                                                        style="display: inline;">
-                                                        @csrf
-                                                        <input type="hidden" name="variation_id"
-                                                            value="{{ $product->variations->first()->id ?? '' }}" />
-                                                        <input type="hidden" name="quantity" value="1" />
-                                                        <button type="submit"
-                                                            class="button product_type_simple add_to_cart_button"
-                                                            data-product_id="{{ $product->id }}"
-                                                            data-product_sku="{{ $product->sku }}"
-                                                            aria-label="Add to cart: &ldquo;{{ $product->name }}&rdquo;"
-                                                            rel="nofollow"
-                                                            @if (
-                                                                !$product->variations->first() ||
-                                                                    ($product->variations->first() && $product->variations->first()->stock_quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
-                                                            Add to cart
-                                                        </button>
-                                                    </form>
-                                                    <span
-                                                        id="woocommerce_loop_add_to_cart_link_describedby_{{ $product->id }}"
-                                                        class="screen-reader-text"></span>
+                                                                        d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
+                                                                </g>
+                                                            </svg>
+                                                        </span>
+                                                    </a>
                                                 </div>
+                                                <div
+                                                    class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
+                                                    <a role="button" tabindex="0"
+                                                        class="qqvfw-shortcode qqvfw-m qqvfw-quick-view-button qqvfw-type--icon-with-text"
+                                                        data-item-id="{{ $product->id }}" data-quick-view-type="pop-up"
+                                                        data-quick-view-type-mobile="pop-up"
+                                                        href="{{ route('client.products.show', $product->slug) }}"
+                                                        rel="noopener noreferrer">
+                                                        <span class="qqvfw-m-spinner">
+                                                            <svg class="qqvfw-svg--spinner"
+                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                                <path
+                                                                    d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
+                                                                </path>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="qqvfw-m-icon qqvfw-icon--predefined">
+                                                            <span class="qodef-icon-linear-icons lnr-eye lnr"></span>
+                                                        </span>
+                                                        <span class="qqvfw-m-text"></span>
+                                                    </a>
+                                                </div>
+                                                <form method="post" action="{{ route('client.products.add-to-cart') }}"
+                                                    style="display: inline;">
+                                                    @csrf
+                                                    <input type="hidden" name="variation_id"
+                                                        value="{{ $product->variations->first()->id ?? '' }}" />
+                                                    <input type="hidden" name="quantity" value="1" />
+                                                    <button type="submit"
+                                                        class="button product_type_simple add_to_cart_button"
+                                                        data-product_id="{{ $product->id }}"
+                                                        data-product_sku="{{ $product->sku }}"
+                                                        aria-label="Add to cart: &ldquo;{{ $product->name }}&rdquo;"
+                                                        rel="nofollow"
+                                                        @if (
+                                                            !$product->variations->first() ||
+                                                                ($product->variations->first() && $product->variations->first()->stock_quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
+                                                        Add to cart
+                                                    </button>
+                                                </form>
+                                                <span
+                                                    id="woocommerce_loop_add_to_cart_link_describedby_{{ $product->id }}"
+                                                    class="screen-reader-text"></span>
                                             </div>
-                                            <a href="{{ route('client.products.show', $product->slug) }}"
-                                                class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
                                         </div>
+                                        <a href="{{ route('client.products.show', $product->slug) }}"
+                                            class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
                                     </li>
                                 @empty
                                     <li class="product">
@@ -529,6 +529,36 @@
                                         @endforeach
                                     </ul>
                                     @foreach (request()->except(['cylindricals']) as $key => $value)
+                                        @if (is_array($value))
+                                            @foreach ($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]"
+                                                    value="{{ $v }}" />
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $key }}"
+                                                value="{{ $value }}" />
+                                        @endif
+                                    @endforeach
+                                </form>
+                            </div>
+
+                            <div class="widget woocommerce widget_layered_nav woocommerce-widget-layered-nav"
+                                data-area="shop-sidebar">
+                                <h5 class="qodef-widget-title">Lọc theo thương hiệu</h5>
+                                <form method="get" action="{{ route('client.products.index') }}"
+                                    class="auto-submit-on-change">
+                                    <ul class="woocommerce-widget-layered-nav-list">
+                                        @foreach ($brands as $brand)
+                                            <li class="woocommerce-widget-layered-nav-list__item wc-layered-nav-term ">
+                                                <label style="cursor:pointer;">
+                                                    <input type="checkbox" name="brands[]" value="{{ $brand->id }}"
+                                                        {{ in_array($brand->id, (array) request('brands', [])) ? 'checked' : '' }}>
+                                                    {{ $brand->name }}
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @foreach (request()->except(['brands']) as $key => $value)
                                         @if (is_array($value))
                                             @foreach ($value as $v)
                                                 <input type="hidden" name="{{ $key }}[]"
