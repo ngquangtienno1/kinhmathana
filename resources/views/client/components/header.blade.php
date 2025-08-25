@@ -380,6 +380,9 @@
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Tài khoản của
                                             tôi</a></li>
+                                    <li style="padding: 8px 24px;"><a href="{{ route('client.cart.index') }}"
+                                            style="color: #232323; text-decoration: none; display: block;">Giỏ hàng</a>
+                                    </li>
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Đơn mua</a>
                                     </li>
@@ -900,6 +903,9 @@
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.users.index') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Tài khoản của
                                             tôi</a></li>
+                                    <li style="padding: 8px 24px;"><a href="{{ route('client.cart.index') }}"
+                                            style="color: #232323; text-decoration: none; display: block;">Giỏ hàng</a>
+                                    </li>
                                     <li style="padding: 8px 24px;"><a href="{{ route('client.orders.index') }}"
                                             style="color: #232323; text-decoration: none; display: block;">Đơn mua</a>
                                     </li>

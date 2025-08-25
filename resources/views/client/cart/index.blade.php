@@ -59,8 +59,8 @@
                                                         ? asset('storage/' . $featuredImage->image_path)
                                                         : asset('/path/to/default.jpg');
                                                     $price = $item->variation
-                                                        ? ($item->variation->sale_price ?? $item->variation->price)
-                                                        : ($cartProduct->sale_price ?? $cartProduct->price);
+                                                        ? $item->variation->sale_price ?? $item->variation->price
+                                                        : $cartProduct->sale_price ?? $cartProduct->price;
                                                 @endphp
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
                                                     <td><input type="checkbox" class="select-cart-item"
@@ -114,16 +114,25 @@
                                                             <span class="qodef-quantity-minus"></span>
                                                             <input type="text" id="quantity_{{ $item->id }}"
                                                                 class="input-text qty text qodef-quantity-input"
-                                                                data-step="1" data-min="1"
-                                                                name="quantity"
+                                                                data-step="1" data-min="1" name="quantity"
                                                                 value="{{ $item->quantity }}" title="Số lượng"
                                                                 size="4" placeholder="" inputmode="numeric">
                                                             <span class="qodef-quantity-plus"></span>
                                                         </div>
+                                                        @php
+                                                            $availableQty = $item->variation
+                                                                ? $item->variation->quantity
+                                                                : $cartProduct->quantity;
+                                                        @endphp
+                                                        <div class="stock-info"
+                                                            style="font-size: 0.85em; color: #666; margin-top: 4px;">
+                                                            Còn lại: {{ $availableQty }} sản phẩm
+                                                        </div>
                                                     </td>
                                                     <td class="product-subtotal" data-title="Thành tiền">
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi class="item-subtotal">{{ number_format($price * $item->quantity, 0, ',', '.') }}₫</bdi>
+                                                            <bdi
+                                                                class="item-subtotal">{{ number_format($price * $item->quantity, 0, ',', '.') }}₫</bdi>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -162,14 +171,15 @@
                                                         ? $item->variation->product
                                                         : $item->product;
                                                     return ($item->variation
-                                                        ? ($item->variation->sale_price ?? $item->variation->price)
-                                                        : ($cartProduct->sale_price ?? $cartProduct->price)) *
+                                                        ? $item->variation->sale_price ?? $item->variation->price
+                                                        : $cartProduct->sale_price ?? $cartProduct->price) *
                                                         $item->quantity;
                                                 });
                                             @endphp
                                             <tr class="cart-subtotal">
                                                 <th>Tạm tính</th>
-                                                <td data-title="Tạm tính"><span class="woocommerce-Price-amount amount"><bdi
+                                                <td data-title="Tạm tính"><span
+                                                        class="woocommerce-Price-amount amount"><bdi
                                                             class="cart-subtotal-value">{{ number_format($subtotal, 0, ',', '.') }}₫</bdi></span>
                                                 </td>
                                             </tr>
@@ -193,7 +203,8 @@
                                                 action="{{ route('client.cart.checkout.form') }}" method="GET"
                                                 style="display:inline;">
                                                 <input type="hidden" name="selected_ids" id="selected_checkout_ids">
-                                                <button type="button" class="button" id="bulk-checkout-btn">Thanh
+                                                <button type="button" class="button" id="bulk-checkout-btn"
+                                                    disabled>Thanh
                                                     toán</button>
                                             </form>
                                         </div>
@@ -331,6 +342,21 @@
             box-sizing: border-box;
             background: #fff;
         }
+
+        /* Disabled button styling */
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #ccc !important;
+            color: #666 !important;
+            border-color: #ccc !important;
+        }
+
+        .button:disabled:hover {
+            background-color: #ccc !important;
+            color: #666 !important;
+            border-color: #ccc !important;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -352,14 +378,26 @@
                 if (plus) {
                     plus.addEventListener('click', function() {
                         let val = parseInt(input.value) || 1;
+                        // Check if we have max quantity and if we're at the limit
+                        if (group.maxQuantity !== undefined && val >= group.maxQuantity) {
+                            showCartAlert('Số lượng đã đạt giới hạn tồn kho!', 'danger');
+                            return;
+                        }
                         input.value = val + 1;
-                        updateCart(id, input.value, group);
+                        updateCart(id, val + 1, group);
                     });
                 }
                 input.addEventListener('change', function() {
                     let val = parseInt(input.value) || 1;
                     if (val < 1) val = 1;
-                    input.value = val;
+
+                    // Check if we have max quantity and if the new value exceeds it
+                    if (group.maxQuantity !== undefined && val > group.maxQuantity) {
+                        showCartAlert('Số lượng đã được giới hạn theo tồn kho!', 'danger');
+                        input.value = group.maxQuantity;
+                        val = group.maxQuantity;
+                    }
+
                     updateCart(id, val, group);
                 });
             });
@@ -369,10 +407,18 @@
                 if (old) old.remove();
                 let alert = document.createElement('div');
                 alert.className = `alert alert-${type} cart-alert`;
-                alert.style =
-                    'position: fixed; top: 100px; right: 20px; z-index: 9999; ; color:green; padding: 15px; border-radius: 5px; border: 1px solid green;';
+
+                // Set proper styling based on type
+                if (type === 'danger') {
+                    alert.style =
+                        'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb; min-width: 300px; max-width: 400px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: space-between; gap: 10px;';
+                } else {
+                    alert.style =
+                        'position: fixed; top: 100px; right: 20px; z-index: 9999; background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; border: 1px solid #c3e6cb; min-width: 300px; max-width: 400px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: space-between; gap: 10px;';
+                }
+
                 alert.innerHTML = message +
-                    '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer;">&times;</button>';
+                    '<button type="button" class="close" onclick="this.parentElement.style.display=\'none\'" style="background: none; border: none; font-size: 20px; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.2s ease; flex-shrink: 0; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">&times;</button>';
                 document.body.appendChild(alert);
                 setTimeout(function() {
                     if (alert) alert.style.display = 'none';
@@ -381,50 +427,82 @@
 
             function updateCart(id, qty, group) {
                 fetch("{{ url('client/cart/update') }}/" + id, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        quantity: qty
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            quantity: qty
+                        })
                     })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        group.closest('tr').querySelector('.item-subtotal').innerText = data.item_total;
-                        document.querySelectorAll('.cart-subtotal-value, .order-total-value').forEach(el => {
-                            el.innerText = data.cart_total;
-                        });
-                        const checkbox = group.closest('tr').querySelector('.select-cart-item');
-                        checkbox.setAttribute('data-qty', qty);
-                        updateCartTotalsBySelection();
-                        showCartAlert(data.message, 'success');
-                    } else {
-                        showCartAlert(data.message || 'Có lỗi xảy ra khi cập nhật giỏ hàng!', 'danger');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showCartAlert('Có lỗi xảy ra khi cập nhật giỏ hàng!', 'danger');
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update item subtotal
+                            group.closest('tr').querySelector('.item-subtotal').innerText = data.item_total;
+
+                            // Update cart totals
+                            document.querySelectorAll('.cart-subtotal-value, .order-total-value').forEach(
+                                el => {
+                                    el.innerText = data.cart_total;
+                                });
+
+                            // Update checkbox data
+                            const checkbox = group.closest('tr').querySelector('.select-cart-item');
+                            checkbox.setAttribute('data-qty', data.current_quantity);
+
+                            // Update input value to match server response
+                            const input = group.querySelector('.qodef-quantity-input');
+                            input.value = data.current_quantity;
+
+                            // Store max quantity for future checks
+                            if (data.max_quantity !== undefined) {
+                                group.maxQuantity = data.max_quantity;
+                            }
+
+                            updateCartTotalsBySelection();
+                            showCartAlert(data.message, 'success');
+                        } else {
+                            // Handle error case
+                            if (data.is_limit_reached) {
+                                // Reset input to current quantity
+                                const input = group.querySelector('.qodef-quantity-input');
+                                input.value = data.current_quantity;
+
+                                // Store max quantity
+                                if (data.max_quantity !== undefined) {
+                                    group.maxQuantity = data.max_quantity;
+                                }
+
+                                showCartAlert(data.message, 'danger');
+                            } else {
+                                showCartAlert(data.message || 'Có lỗi xảy ra khi cập nhật giỏ hàng!', 'danger');
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showCartAlert('Có lỗi xảy ra khi cập nhật giỏ hàng!', 'danger');
+                    });
             }
 
-            function toggleBulkRemoveBtn() {
-                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb.checked);
+            function toggleBulkButtons() {
+                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb
+                    .checked);
                 document.getElementById('bulk-remove-btn').disabled = !anyChecked;
+                document.getElementById('bulk-checkout-btn').disabled = !anyChecked;
             }
             document.getElementById('select-all-cart-items').addEventListener('change', function() {
                 const checked = this.checked;
                 document.querySelectorAll('.select-cart-item').forEach(cb => cb.checked = checked);
-                toggleBulkRemoveBtn();
+                toggleBulkButtons();
                 updateCartTotalsBySelection();
             });
             document.querySelectorAll('.select-cart-item').forEach(function(cb) {
                 cb.addEventListener('change', function() {
-                    toggleBulkRemoveBtn();
+                    toggleBulkButtons();
                     updateCartTotalsBySelection();
                 });
             });
@@ -460,10 +538,11 @@
 
             document.getElementById('bulk-checkout-btn').addEventListener('click', function(e) {
                 const checked = Array.from(document.querySelectorAll('.select-cart-item:checked'));
-                let selectedIds = checked.map(cb => cb.value);
-                if (selectedIds.length === 0) {
-                    selectedIds = Array.from(document.querySelectorAll('.select-cart-item')).map(cb => cb.value);
+                if (checked.length === 0) {
+                    showCartAlert('Vui lòng chọn ít nhất một sản phẩm để thanh toán!', 'danger');
+                    return;
                 }
+                let selectedIds = checked.map(cb => cb.value);
                 document.getElementById('selected_checkout_ids').value = selectedIds.join(',');
                 document.getElementById('bulk-checkout-form').submit();
             });
@@ -488,6 +567,9 @@
             }
 
             updateCartTotalsBySelection();
+
+            // Khởi tạo trạng thái các nút
+            toggleBulkButtons();
         });
     </script>
 @endpush

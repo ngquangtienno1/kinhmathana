@@ -108,6 +108,7 @@ class CartClientController extends Controller
         $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
+
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
 
         // Lấy số lượng tồn kho thực tế
@@ -117,8 +118,24 @@ class CartClientController extends Controller
             $maxQty = $cartItem->product->quantity ?? 0;
         }
 
-        $newQty = min($request->quantity, $maxQty);
+        $requestedQty = (int)$request->quantity;
+        $currentQty = (int)$cartItem->quantity;
+        $isIncreasing = $requestedQty > $currentQty;
 
+        // Kiểm tra nếu đang tăng số lượng và vượt quá tồn kho
+        if ($isIncreasing && $requestedQty > $maxQty) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Số lượng đã được giới hạn theo tồn kho!',
+                'max_quantity' => $maxQty,
+                'current_quantity' => $currentQty,
+                'requested_quantity' => $requestedQty,
+                'is_limit_reached' => true
+            ]);
+        }
+
+        // Nếu giảm số lượng hoặc số lượng hợp lệ
+        $newQty = $requestedQty;
         $cartItem->quantity = $newQty;
         $cartItem->save();
 
@@ -129,6 +146,7 @@ class CartClientController extends Controller
             $price = $cartItem->product->sale_price ?? $cartItem->product->price;
         }
         $item_total = number_format($price * $cartItem->quantity, 0, ',', '.');
+
         // Tính lại tổng tiền giỏ hàng
         $cart_total = Cart::where('user_id', $user->id)
             ->orderBy('updated_at', 'desc')
@@ -145,9 +163,11 @@ class CartClientController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => $newQty < $request->quantity ? 'Số lượng đã được giới hạn theo tồn kho!' : 'Cập nhật số lượng thành công!',
+            'message' => 'Cập nhật số lượng thành công!',
             'item_total' => $item_total,
             'cart_total' => $cart_total,
+            'current_quantity' => $newQty,
+            'max_quantity' => $maxQty
         ]);
     }
 

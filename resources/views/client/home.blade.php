@@ -171,8 +171,29 @@
                                                 <li
                                                     class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                     <div class="qodef-e-inner">
-                                                        <div class="qodef-woo-product-image">
-                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                        <div class="qodef-woo-product-image"
+                                                            style="position: relative; width: 100%; height: 389px; overflow: hidden; display: block;">
+                                                            @php
+                                                                // Kiểm tra logic sale giống như phần hiển thị giá
+                                                                $hasSaleBadge = false;
+                                                                if (
+                                                                    $product->variations &&
+                                                                    $product->variations->count() > 0
+                                                                ) {
+                                                                    $minPrice = $product->variations->min('price');
+                                                                    $minSalePrice = $product->variations
+                                                                        ->where('sale_price', '>', 0)
+                                                                        ->min('sale_price');
+                                                                    if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                        $hasSaleBadge = true;
+                                                                    }
+                                                                } else {
+                                                                    $hasSaleBadge =
+                                                                        $product->sale_price &&
+                                                                        $product->sale_price < $product->price;
+                                                                }
+                                                            @endphp
+                                                            @if ($hasSaleBadge)
                                                                 <span
                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                             @endif
@@ -201,9 +222,10 @@
                                                                     ? asset('storage/' . $featuredImage->image_path)
                                                                     : asset('default-product.jpg');
                                                             @endphp
-                                                            <img loading="lazy" decoding="async" width="800"
-                                                                height="393" src="{{ $imagePath }}"
+                                                            <img loading="lazy" decoding="async" width="621"
+                                                                height="389" src="{{ $imagePath }}"
                                                                 class="attachment-full size-full qodef-list-image"
+                                                                style="width: 100% !important; height: 389px !important; object-fit: cover !important; object-position: center !important;"
                                                                 alt="{{ $product->name }}" />
                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -625,8 +647,35 @@
                                                                 <li
                                                                     class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                                     <div class="qodef-e-inner">
-                                                                        <div class="qodef-woo-product-image">
-                                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                        <div class="qodef-woo-product-image"
+                                                                            style="position: relative; width: 100%; height: 389px; overflow: hidden; display: block;">
+                                                                            @php
+                                                                                // Kiểm tra logic sale giống như phần hiển thị giá
+                                                                                $hasSaleBadge = false;
+                                                                                if (
+                                                                                    $product->variations &&
+                                                                                    $product->variations->count() > 0
+                                                                                ) {
+                                                                                    $minPrice = $product->variations->min(
+                                                                                        'price',
+                                                                                    );
+                                                                                    $minSalePrice = $product->variations
+                                                                                        ->where('sale_price', '>', 0)
+                                                                                        ->min('sale_price');
+                                                                                    if (
+                                                                                        $minSalePrice &&
+                                                                                        $minSalePrice < $minPrice
+                                                                                    ) {
+                                                                                        $hasSaleBadge = true;
+                                                                                    }
+                                                                                } else {
+                                                                                    $hasSaleBadge =
+                                                                                        $product->sale_price &&
+                                                                                        $product->sale_price <
+                                                                                            $product->price;
+                                                                                }
+                                                                            @endphp
+                                                                            @if ($hasSaleBadge)
                                                                                 <span
                                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                                             @endif
@@ -667,9 +716,10 @@
                                                                                     : asset('default-product.jpg');
                                                                             @endphp
                                                                             <img loading="lazy" decoding="async"
-                                                                                width="800" height="393"
+                                                                                width="621" height="389"
                                                                                 src="{{ $imagePath }}"
                                                                                 class="attachment-full size-full qodef-list-image"
+                                                                                style="width: 100% !important; height: 389px !important; object-fit: cover !important; object-position: center !important;"
                                                                                 alt="{{ $product->name }}" />
                                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -1126,64 +1176,44 @@
                                                         class="qodef-shortcode qodef-m  qodef-image-gallery qodef-magnific-popup qodef-popup-gallery qodef-grid qodef-layout--columns  qodef-gutter--normal qodef-col-num--5  qodef-responsive--custom qodef-col-num--1440--5 qodef-col-num--1366--5 qodef-col-num--1024--3 qodef-col-num--768--2 qodef-col-num--680--1 qodef-col-num--480--1">
                                                         <div class="qodef-grid-inner clear">
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-01.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-01.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-01.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-02.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-02.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-02.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-03.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-03.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-03.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-04.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-04.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-04.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-05.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-05.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-05.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1205,142 +1235,252 @@
                                                 data-id="188a30d" data-element_type="widget"
                                                 data-widget_type="neoocular_core_clients_list.default">
                                                 <div class="elementor-widget-container">
-                                                    <div
-                                                        class="qodef-shortcode qodef-m  qodef-clients-list qodef-grid qodef-layout--columns  qodef-gutter--normal qodef-col-num--5 qodef-item-layout--image-only qodef-responsive--custom qodef-col-num--1440--5 qodef-col-num--1366--5 qodef-col-num--1024--5 qodef-col-num--768--5 qodef-col-num--680--1 qodef-col-num--480--1 qodef-hover-animation--fade-in">
-                                                        <div class="qodef-grid-inner clear">
-                                                            <span class="qodef-e qodef-grid-item ">
-                                                                <span class="qodef-e-inner">
-                                                                    <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#" target="_blank">
-                                                                            <span class="qodef-e-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="s" />
-                                                                            </span>
-                                                                            <span class="qodef-e-hover-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-hover.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="h" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </span>
-                                                                </span>
-                                                            </span>
-                                                            <span class="qodef-e qodef-grid-item ">
-                                                                <span class="qodef-e-inner">
-                                                                    <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#" target="_blank">
-                                                                            <span class="qodef-e-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="s" />
-                                                                            </span>
-                                                                            <span class="qodef-e-hover-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-hover-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="h" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </span>
-                                                                </span>
-                                                            </span>
-                                                            <span class="qodef-e qodef-grid-item ">
-                                                                <span class="qodef-e-inner">
-                                                                    <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#" target="_blank">
-                                                                            <span class="qodef-e-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="s" />
-                                                                            </span>
-                                                                            <span class="qodef-e-hover-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-hover-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="h" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </span>
-                                                                </span>
-                                                            </span>
-                                                            <span class="qodef-e qodef-grid-item ">
-                                                                <span class="qodef-e-inner">
-                                                                    <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#" target="_blank">
-                                                                            <span class="qodef-e-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="s" />
-                                                                            </span>
-                                                                            <span class="qodef-e-hover-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-hover-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="h" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </span>
-                                                                </span>
-                                                            </span>
-                                                            <span class="qodef-e qodef-grid-item ">
-                                                                <span class="qodef-e-inner">
-                                                                    <span class="qodef-e-image">
-                                                                        <a itemprop="url" href="#" target="_blank">
-                                                                            <span class="qodef-e-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="s" />
-                                                                            </span>
-                                                                            <span class="qodef-e-hover-logo">
-                                                                                <img loading="lazy" loading="lazy"
-                                                                                    decoding="async" width="170"
-                                                                                    height="70"
-                                                                                    src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-hover-1.png') }}"
-                                                                                    class="attachment-full size-full"
-                                                                                    alt="h" />
-                                                                            </span>
-                                                                        </a>
-                                                                    </span>
-                                                                </span>
-                                                            </span>
+                                                    <div <section
+                                                        class="elementor-section elementor-top-section elementor-element elementor-element-c748857 elementor-section-full_width qodef-elementor-content-grid elementor-section-height-default elementor-section-height-default"
+                                                        data-id="c748857" data-element_type="section"
+                                                        data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                                                        <div class="elementor-container elementor-column-gap-default">
+                                                            <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-6fd8502"
+                                                                data-id="6fd8502" data-element_type="column">
+                                                                <div
+                                                                    class="elementor-widget-wrap elementor-element-populated">
+                                                                    <div class="elementor-element elementor-element-60b715f elementor-widget elementor-widget-neoocular_core_section_title"
+                                                                        data-id="60b715f" data-element_type="widget"
+                                                                        data-widget_type="neoocular_core_section_title.default">
+                                                                        <div class="elementor-widget-container">
+                                                                            <div
+                                                                                class="qodef-shortcode qodef-m  qodef-section-title qodef-alignment--center ">
+                                                                                <h2 class="qodef-m-title"
+                                                                                    style="color: #FFFFFF">
+                                                                                    GHÉ THĂM INSTAGRAM CỦA CHÚNG TÔI </h2>
+                                                                                <p class="qodef-m-subtitle"
+                                                                                    style="color: #FFFFFF">Check our
+                                                                                    bài viết mới nhất hiện nay</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="elementor-element elementor-element-4028bf1 elementor-widget elementor-widget-neoocular_core_image_gallery"
+                                                                        data-id="4028bf1" data-element_type="widget"
+                                                                        data-widget_type="neoocular_core_image_gallery.default">
+                                                                        <div class="elementor-widget-container">
+                                                                            <div
+                                                                                class="qodef-shortcode qodef-m  qodef-image-gallery qodef-magnific-popup qodef-popup-gallery qodef-grid qodef-layout--columns  qodef-gutter--normal qodef-col-num--5  qodef-responsive--custom qodef-col-num--1440--5 qodef-col-num--1366--5 qodef-col-num--1024--3 qodef-col-num--768--2 qodef-col-num--680--1 qodef-col-num--480--1">
+                                                                                <div class="qodef-grid-inner clear">
+                                                                                    <div
+                                                                                        class="qodef-e qodef-image-wrapper qodef-grid-item ">
+                                                                                        <a class="qodef-popup-item"
+                                                                                            itemprop="image"
+                                                                                            data-type="image"
+                                                                                            title="d">
+                                                                                            <img loading="lazy"
+                                                                                                loading="lazy"
+                                                                                                decoding="async"
+                                                                                                width="800"
+                                                                                                height="791"
+                                                                                                src="wp-content/uploads/2023/11/gallery-img-01.jpg"
+                                                                                                class="attachment-full size-full"
+                                                                                                alt="d"
+                                                                                                srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
+                                                                                                sizes="(max-width: 800px) 100vw, 800px" />
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="qodef-e qodef-image-wrapper qodef-grid-item ">
+                                                                                        <a class="qodef-popup-item"
+                                                                                            itemprop="image"
+                                                                                            data-type="image"
+                                                                                            title="d">
+                                                                                            <img loading="lazy"
+                                                                                                loading="lazy"
+                                                                                                decoding="async"
+                                                                                                width="800"
+                                                                                                height="791"
+                                                                                                src="wp-content/uploads/2023/11/gallery-img-02.jpg"
+                                                                                                class="attachment-full size-full"
+                                                                                                alt="d"
+                                                                                                srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
+                                                                                                sizes="(max-width: 800px) 100vw, 800px" />
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="qodef-e qodef-image-wrapper qodef-grid-item ">
+                                                                                        <a class="qodef-popup-item"
+                                                                                            itemprop="image"
+                                                                                            data-type="image"
+                                                                                            title="d">
+                                                                                            <img loading="lazy"
+                                                                                                loading="lazy"
+                                                                                                decoding="async"
+                                                                                                width="800"
+                                                                                                height="791"
+                                                                                                src="wp-content/uploads/2023/11/gallery-img-03.jpg"
+                                                                                                class="attachment-full size-full"
+                                                                                                alt="d"
+                                                                                                srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
+                                                                                                sizes="(max-width: 800px) 100vw, 800px" />
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="qodef-e qodef-image-wrapper qodef-grid-item ">
+                                                                                        <a class="qodef-popup-item"
+                                                                                            itemprop="image"
+                                                                                            href="wp-content/uploads/2023/11/gallery-img-04.jpg"
+                                                                                            data-type="image"
+                                                                                            title="d">
+                                                                                            <img loading="lazy"
+                                                                                                loading="lazy"
+                                                                                                decoding="async"
+                                                                                                width="800"
+                                                                                                height="791"
+                                                                                                src="wp-content/uploads/2023/11/gallery-img-04.jpg"
+                                                                                                class="attachment-full size-full"
+                                                                                                alt="d"
+                                                                                                srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
+                                                                                                sizes="(max-width: 800px) 100vw, 800px" />
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="qodef-e qodef-image-wrapper qodef-grid-item ">
+                                                                                        <a class="qodef-popup-item"
+                                                                                            itemprop="image"
+                                                                                            href="wp-content/uploads/2023/11/gallery-img-05.jpg"
+                                                                                            data-type="image"
+                                                                                            title="d">
+                                                                                            <img loading="lazy"
+                                                                                                loading="lazy"
+                                                                                                decoding="async"
+                                                                                                width="800"
+                                                                                                height="791"
+                                                                                                src="wp-content/uploads/2023/11/gallery-img-05.jpg"
+                                                                                                class="attachment-full size-full"
+                                                                                                alt="d"
+                                                                                                srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
+                                                                                                sizes="(max-width: 800px) 100vw, 800px" />
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </section>
+                            class="qodef-shortcode qodef-m  qodef-clients-list qodef-grid qodef-layout--columns  qodef-gutter--normal qodef-col-num--5 qodef-item-layout--image-only qodef-responsive--custom qodef-col-num--1440--5 qodef-col-num--1366--5 qodef-col-num--1024--5 qodef-col-num--768--5 qodef-col-num--680--1 qodef-col-num--480--1 qodef-hover-animation--fade-in">
+                            <div class="qodef-grid-inner clear">
+                                <span class="qodef-e qodef-grid-item ">
+                                    <span class="qodef-e-inner">
+                                        <span class="qodef-e-image">
+                                            <a itemprop="url" href="#" target="_blank">
+                                                <span class="qodef-e-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-1.png') }}"
+                                                        class="attachment-full size-full" alt="s" />
+                                                </span>
+                                                <span class="qodef-e-hover-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-01-hover.png') }}"
+                                                        class="attachment-full size-full" alt="h" />
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="qodef-e qodef-grid-item ">
+                                    <span class="qodef-e-inner">
+                                        <span class="qodef-e-image">
+                                            <a itemprop="url" href="#" target="_blank">
+                                                <span class="qodef-e-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-1.png') }}"
+                                                        class="attachment-full size-full" alt="s" />
+                                                </span>
+                                                <span class="qodef-e-hover-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-02-hover-1.png') }}"
+                                                        class="attachment-full size-full" alt="h" />
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="qodef-e qodef-grid-item ">
+                                    <span class="qodef-e-inner">
+                                        <span class="qodef-e-image">
+                                            <a itemprop="url" href="#" target="_blank">
+                                                <span class="qodef-e-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-1.png') }}"
+                                                        class="attachment-full size-full" alt="s" />
+                                                </span>
+                                                <span class="qodef-e-hover-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-03-hover-1.png') }}"
+                                                        class="attachment-full size-full" alt="h" />
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="qodef-e qodef-grid-item ">
+                                    <span class="qodef-e-inner">
+                                        <span class="qodef-e-image">
+                                            <a itemprop="url" href="#" target="_blank">
+                                                <span class="qodef-e-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-1.png') }}"
+                                                        class="attachment-full size-full" alt="s" />
+                                                </span>
+                                                <span class="qodef-e-hover-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-04-hover-1.png') }}"
+                                                        class="attachment-full size-full" alt="h" />
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="qodef-e qodef-grid-item ">
+                                    <span class="qodef-e-inner">
+                                        <span class="qodef-e-image">
+                                            <a itemprop="url" href="#" target="_blank">
+                                                <span class="qodef-e-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-1.png') }}"
+                                                        class="attachment-full size-full" alt="s" />
+                                                </span>
+                                                <span class="qodef-e-hover-logo">
+                                                    <img loading="lazy" loading="lazy" decoding="async" width="170"
+                                                        height="70"
+                                                        src="{{ asset('v1/wp-content/uploads/2021/07/Client-05-hover-1.png') }}"
+                                                        class="attachment-full size-full" alt="h" />
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div><!-- close #qodef-page-inner div from header.php -->
+        </div>
+    </div>
+    </div>
+    </section>
+    </div>
+    </div>
+    </div>
+    </main>
+    </div><!-- close #qodef-page-inner div from header.php -->
     </div><!-- close #qodef-page-outer div from header.php -->
 
 @endsection

@@ -782,7 +782,9 @@
                                     </div>
                                     @if ($comment->replies && $comment->replies->where('status', 'đã duyệt')->where('is_hidden', false)->count())
                                         <div class="comment-replies" style="margin-left:32px; margin-top:8px;">
-                                            @foreach ($comment->replies->filter(function($reply) { return $reply->status === 'đã duyệt' && !$reply->is_hidden; }) as $reply)
+                                            @foreach ($comment->replies->filter(function ($reply) {
+            return $reply->status === 'đã duyệt' && !$reply->is_hidden;
+        }) as $reply)
                                                 <div class="reply-item"
                                                     style="background:#f8f9fa; border-radius:6px; padding:8px 12px; margin-bottom:6px;">
                                                     <div style="display: flex; align-items: baseline; gap: 8px;">
