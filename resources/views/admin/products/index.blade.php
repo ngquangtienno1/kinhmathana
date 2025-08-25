@@ -162,7 +162,7 @@
                                     @if ($product->categories->count() > 0)
                                         {{ $product->categories->pluck('name')->join(', ') }}
                                     @else
-                                        -
+                                        <span class="text-muted">Chưa phân loại</span>
                                     @endif
                                 </td>
                                 <td class="brand align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>

@@ -1995,41 +1995,12 @@
             font-weight: 600;
         }
 
-        /* Đảm bảo tất cả sản phẩm có chiều cao bằng nhau */
-        .products .product {
-            height: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .products .product .qodef-e-inner {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .products .product .qodef-woo-product-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .products .product .qodef-woo-product-title {
-            flex: 1;
-            margin-bottom: 8px;
-        }
-
-        .products .product .qodef-woo-product-categories {
-            margin-bottom: 8px;
-        }
-
-        .products .product .price {
-            margin-top: auto;
-            margin-bottom: 12px;
-        }
-
-        .products .product .qodef-woo-product-image-inner {
-            margin-top: auto;
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            .products .product {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
         }
     </style>
     <script>
