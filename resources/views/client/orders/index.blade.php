@@ -133,7 +133,8 @@
                                                         <div class="product-qty">x{{ $item->quantity }}</div>
                                                     </div>
                                                 </a>
-                                                <div class="product-price">{{ number_format($item->price, 0, ',', '.') }}₫
+                                                <div class="product-price">
+                                                    {{ number_format($item->price * $item->quantity, 0, ',', '.') }}₫
                                                 </div>
                                             </div>
                                         @endforeach
