@@ -24,14 +24,16 @@
                 @if (session('success'))
                     <div class="alert alert-success"
                         style="margin-bottom: 16px; padding: 12px 16px; background: #e8f8f5; color: #148f77; border: 1.5px solid #1abc9c; border-radius: 6px;">
-                        <strong>✅ Thành công:</strong> {{ session('success') }}</div>
+                        <strong>✅ Thành công:</strong> {{ session('success') }}
+                    </div>
                 @endif
                 @if (session('error'))
                     <div class="alert alert-danger"
                         style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
                         <strong>⚠️ Lỗi thanh toán:</strong> {{ session('error') }}
-                        @if($paymentFailed)
-                            <br><small style="margin-top: 8px; display: block;">Vui lòng kiểm tra lại thông tin và thử thanh toán lại.</small>
+                        @if ($paymentFailed)
+                            <br><small style="margin-top: 8px; display: block;">Vui lòng kiểm tra lại thông tin và thử thanh
+                                toán lại.</small>
                         @endif
                     </div>
                 @endif
@@ -474,8 +476,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                                    } */
+                                                                                                                                                            font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                        } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -540,12 +542,15 @@
                         appliedVoucherHidden.value = JSON.stringify(data.voucher);
                         // Cập nhật số tiền giảm và tổng cộng
                         if (discountRow && totalRow) {
-                            discountRow.innerText = '-' + formatCurrency(data.voucher.discount_amount);
+                            discountRow.innerText = '-' + formatCurrency(data.voucher
+                                .discount_amount);
                             const currentShipping = (() => {
-                                const checked = document.querySelector('input[name="shipping_method"]:checked');
+                                const checked = document.querySelector(
+                                    'input[name="shipping_method"]:checked');
                                 return Number(checked?.dataset.fee || 0);
                             })();
-                            const newTotal = Math.max(0, subtotal + currentShipping - data.voucher.discount_amount);
+                            const newTotal = Math.max(0, subtotal + currentShipping - data.voucher
+                                .discount_amount);
                             totalRow.innerText = formatCurrency(newTotal);
                         }
                     } else {
@@ -554,7 +559,8 @@
                         if (discountRow && totalRow) {
                             discountRow.innerText = '0đ';
                             const currentShipping = (() => {
-                                const checked = document.querySelector('input[name="shipping_method"]:checked');
+                                const checked = document.querySelector(
+                                    'input[name="shipping_method"]:checked');
                                 return Number(checked?.dataset.fee || 0);
                             })();
                             totalRow.innerText = formatCurrency(subtotal + currentShipping);
@@ -658,11 +664,14 @@
         });
 
         // Tự động scroll đến thông báo lỗi nếu có
-        @if(session('error'))
+        @if (session('error'))
             document.addEventListener('DOMContentLoaded', function() {
                 const errorAlert = document.querySelector('.alert-danger');
                 if (errorAlert) {
-                    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    errorAlert.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
                 }
             });
         @endif

@@ -194,10 +194,9 @@
 
     @php
         $cancelReasons = \App\Models\CancellationReason::where([
-            'type' => 'customer',
+            'type' => 'admin',
             'is_active' => true,
-            'is_default' => true,
-        ])->get(['id', 'reason']);
+        ])->orderByDesc('is_default')->get(['id', 'reason']);
     @endphp
     <!-- Modal chọn lý do huỷ -->
     <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel"

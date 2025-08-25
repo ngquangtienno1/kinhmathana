@@ -28,7 +28,7 @@ class Product extends Model
         'video_path',
     ];
 
-    protected $appends = ['total_quantity'];
+    protected $appends = ['total_stock_quantity'];
 
     public function categories()
     {
@@ -66,9 +66,9 @@ class Product extends Model
     }
 
     public function comments()
-{
-    return $this->morphMany(Comment::class, 'entity');
-}
+    {
+        return $this->morphMany(Comment::class, 'entity');
+    }
 
     // Scope để lấy sản phẩm hoạt động
     public function scopeActive($query)
@@ -86,15 +86,15 @@ class Product extends Model
     }
 
 
-public function getTotalStockQuantityAttribute()
-{
-    // Nếu là sản phẩm đơn giản, trả về quantity
-    if ($this->product_type === 'simple') {
-        return $this->quantity ?? 0;
+    public function getTotalStockQuantityAttribute()
+    {
+        // Nếu là sản phẩm đơn giản, trả về quantity
+        if ($this->product_type === 'simple') {
+            return $this->quantity ?? 0;
+        }
+        // Nếu là sản phẩm biến thể, tính tổng số lượng các biến thể
+        return $this->variations->sum('quantity');
     }
-    // Nếu là sản phẩm biến thể, tính tổng số lượng các biến thể
-    return $this->variations->sum('quantity');
-}
 
     public function getFeaturedMedia()
     {
@@ -117,18 +117,18 @@ public function getTotalStockQuantityAttribute()
             'is_video' => false,
         ];
     }
-public static function getTotalStock()
-{
-    $simpleProductsStock = self::where('product_type', 'simple')->sum('quantity');
-    $variableProductsStock = self::where('product_type', 'variable')
-        ->with('variations')
-        ->get()
-        ->sum(function ($product) {
-            return $product->variations->sum('quantity');
-        });
+    public static function getTotalStock()
+    {
+        $simpleProductsStock = self::where('product_type', 'simple')->sum('quantity');
+        $variableProductsStock = self::where('product_type', 'variable')
+            ->with('variations')
+            ->get()
+            ->sum(function ($product) {
+                return $product->variations->sum('quantity');
+            });
 
-    return $simpleProductsStock + $variableProductsStock;
-}
+        return $simpleProductsStock + $variableProductsStock;
+    }
 
     protected static function booted()
     {

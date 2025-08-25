@@ -315,11 +315,10 @@ class OrderClientController extends Controller
     public function reasons()
     {
         $reasons = CancellationReason::where([
-            'type' => 'customer',
+            'type' => 'admin',
             'is_active' => true,
-            'is_default' => true,
-        ])->get(['id', 'reason']);
-        Log::info('Lấy danh sách lý do huỷ mặc định:', $reasons->toArray());
+        ])->orderByDesc('is_default')->get(['id', 'reason']);
+        Log::info('Lấy danh sách lý do huỷ (admin, đang hoạt động):', $reasons->toArray());
         return response()->json($reasons);
     }
 }
