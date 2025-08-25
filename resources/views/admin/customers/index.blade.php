@@ -99,8 +99,7 @@
                                 style="width:110px;">Số đơn</th>
                             <th class="sort align-middle text-end px-3" scope="col" data-sort="spent"
                                 style="width:130px;">Tổng chi tiêu</th>
-                            <th class="sort align-middle text-center px-3" scope="col" data-sort="type"
-                                style="width:130px;">Loại khách</th>
+
                             <th class="sort align-middle text-center px-3 white-space-nowrap" scope="col"
                                 data-sort="date" style="width:120px;">Ngày đăng ký</th>
                             <th class="sort text-center align-middle px-3" scope="col" style="width:90px;"></th>
@@ -133,27 +132,7 @@
                                     {{ number_format($customer->calculated_total_spent) }} <span
                                         class="text-muted ms-1">VND</span>
                                 </td>
-                                <td
-                                    class="type align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
-                                    @php
-                                        $typeMap = [
-                                            'vip' => ['VIP', 'badge-phoenix-danger', 'star'],
-                                            'new' => ['Mới', 'badge-phoenix-success', 'user-plus'],
-                                            'regular' => ['Thường', 'badge-phoenix-info', 'user'],
-                                            'potential' => ['Tiềm năng', 'badge-phoenix-warning', 'trending-up'],
-                                        ];
-                                        $type = $typeMap[$customer->customer_type] ?? [
-                                            ucfirst($customer->customer_type),
-                                            'badge-phoenix-secondary',
-                                            'user',
-                                        ];
-                                    @endphp
-                                    <span class="badge badge-phoenix fs-10 {{ $type[1] }}">
-                                        <span class="badge-label">{{ $type[0] }}</span>
-                                        <span class="ms-1" data-feather="{{ $type[2] }}"
-                                            style="height:12.8px;width:12.8px;"></span>
-                                    </span>
-                                </td>
+
                                 <td
                                     class="date align-middle text-center white-space-nowrap text-body-tertiary fs-9 px-3">
                                     {{ $customer->created_at->format('d/m/Y H:i') }}
@@ -169,15 +148,13 @@
                                         <div class="dropdown-menu dropdown-menu-end py-2">
                                             <a class="dropdown-item"
                                                 href="{{ route('admin.customers.show', $customer) }}">Chi tiết</a>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#editTypeModal{{ $customer->id }}">Sửa</a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center py-4">Không có khách hàng nào</td>
+                                <td colspan="9" class="text-center py-4">Không có khách hàng nào</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -206,45 +183,6 @@
     </div>
 </div>
 
-@foreach ($customers as $customer)
-    <!-- Modal sửa loại khách hàng -->
-    <div class="modal fade" id="editTypeModal{{ $customer->id }}" tabindex="-1"
-        aria-labelledby="editTypeModalLabel{{ $customer->id }}" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('admin.customers.update-type', $customer) }}" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editTypeModalLabel{{ $customer->id }}">Cập nhật loại khách hàng
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="customer_type{{ $customer->id }}" class="form-label"><strong>Loại khách
-                                    hàng</strong></label>
-                            <select name="customer_type" id="customer_type{{ $customer->id }}" class="form-select">
-                                <option value="new" {{ $customer->customer_type == 'new' ? 'selected' : '' }}>Mới
-                                </option>
-                                <option value="regular" {{ $customer->customer_type == 'regular' ? 'selected' : '' }}>
-                                    Thường</option>
-                                <option value="vip" {{ $customer->customer_type == 'vip' ? 'selected' : '' }}>VIP
-                                </option>
-                                <option value="potential"
-                                    {{ $customer->customer_type == 'potential' ? 'selected' : '' }}>Tiềm năng</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endforeach
+
 
 @endsection
