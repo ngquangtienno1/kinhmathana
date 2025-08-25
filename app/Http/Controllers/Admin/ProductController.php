@@ -828,35 +828,51 @@ class ProductController extends Controller
 
     public function forceDelete($id)
     {
-        $product = Product::onlyTrashed()->findOrFail($id);
+        try {
+            $product = Product::withTrashed()->findOrFail($id);
 
-        $orderCount = $product->orderItems()->count();
-        if ($orderCount > 0) {
-            return redirect()->route('admin.products.trashed')
-                ->with('error', 'Không thể xóa vĩnh viễn sản phẩm đã có trong ' . $orderCount . ' đơn hàng!');
-        }
-
-        foreach ($product->images as $image) {
-            if (Storage::disk('public')->exists($image->image_path)) {
-                Storage::disk('public')->delete($image->image_path);
+            // Kiểm tra xem sản phẩm có trong đơn hàng không
+            $orderCount = $product->orderItems()->count();
+            if ($orderCount > 0) {
+                return redirect()->route('admin.products.trashed')
+                    ->with('error', "Không thể xóa vĩnh viễn sản phẩm này vì nó đang có trong {$orderCount} đơn hàng.");
             }
-            $image->delete();
-        }
 
-        foreach ($product->variations as $variation) {
-            foreach ($variation->images as $image) {
+            // Xóa ảnh sản phẩm
+            foreach ($product->images as $image) {
                 if (Storage::disk('public')->exists($image->image_path)) {
                     Storage::disk('public')->delete($image->image_path);
                 }
                 $image->delete();
             }
-            $variation->delete();
+
+            // Xóa biến thể và ảnh biến thể
+            foreach ($product->variations as $variation) {
+                foreach ($variation->images as $image) {
+                    if (Storage::disk('public')->exists($image->image_path)) {
+                        Storage::disk('public')->delete($image->image_path);
+                    }
+                    $image->delete();
+                }
+                $variation->delete();
+            }
+
+            // Xóa video nếu có
+            if ($product->video_path) {
+                Storage::disk('public')->delete($product->video_path);
+            }
+
+            $product->forceDelete();
+            return redirect()->route('admin.products.trashed')->with('success', 'Đã xóa vĩnh viễn sản phẩm thành công!');
+        } catch (\Exception $e) {
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->route('admin.products.trashed')
+                    ->with('error', 'Không thể xóa vĩnh viễn sản phẩm này vì nó đang được sử dụng trong đơn hàng hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
+            return redirect()->route('admin.products.trashed')
+                ->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn sản phẩm: ' . $e->getMessage());
         }
-
-        $product->forceDelete();
-
-        return redirect()->route('admin.products.trashed')
-            ->with('success', 'Xóa vĩnh viễn sản phẩm thành công.');
     }
 
     public function showBySlug($slug)
@@ -997,8 +1013,28 @@ class ProductController extends Controller
 
         try {
             $products = Product::withTrashed()->whereIn('id', $ids)->get();
+
+            // Kiểm tra xem có sản phẩm nào đang được sử dụng trong đơn hàng không
+            $productsWithOrders = [];
             foreach ($products as $product) {
-                // Xóa ảnh sản phẩm
+                $orderCount = $product->orderItems()->count();
+                if ($orderCount > 0) {
+                    $productsWithOrders[] = [
+                        'name' => $product->name,
+                        'orderCount' => $orderCount
+                    ];
+                }
+            }
+
+            if (!empty($productsWithOrders)) {
+                $message = "Không thể xóa vĩnh viễn các sản phẩm sau vì chúng đang được sử dụng trong đơn hàng:\n";
+                foreach ($productsWithOrders as $item) {
+                    $message .= "- {$item['name']}: {$item['orderCount']} đơn hàng\n";
+                }
+                return redirect()->back()->with('error', $message);
+            }
+
+            foreach ($products as $product) {
                 foreach ($product->images as $image) {
                     if (Storage::disk('public')->exists($image->image_path)) {
                         Storage::disk('public')->delete($image->image_path);
@@ -1006,7 +1042,6 @@ class ProductController extends Controller
                     $image->delete();
                 }
 
-                // Xóa biến thể và ảnh biến thể
                 foreach ($product->variations as $variation) {
                     foreach ($variation->images as $image) {
                         if (Storage::disk('public')->exists($image->image_path)) {
@@ -1026,6 +1061,11 @@ class ProductController extends Controller
             }
             return redirect()->route('admin.products.trashed')->with('success', 'Đã xóa vĩnh viễn ' . count($ids) . ' sản phẩm đã chọn!');
         } catch (\Exception $e) {
+            if (str_contains($e->getMessage(), 'Integrity constraint violation') && str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                return redirect()->back()
+                    ->with('error', 'Không thể xóa vĩnh viễn một số sản phẩm vì chúng đang được sử dụng trong đơn hàng hoặc có dữ liệu liên quan khác. Vui lòng kiểm tra và xóa các dữ liệu liên quan trước.');
+            }
+
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa vĩnh viễn: ' . $e->getMessage());
         }
     }

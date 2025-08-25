@@ -69,8 +69,20 @@ class SizeController extends Controller
     public function destroy($id)
     {
         $size = Size::findOrFail($id);
-        $size->delete();
 
+        if (!$size->canBeDeleted()) {
+            $variationCount = $size->variations()->count();
+            $orderCount = $size->orderItems()->count();
+
+            $message = "Không thể xóa kích thước này vì nó đang được sử dụng trong {$variationCount} biến thể sản phẩm";
+            if ($orderCount > 0) {
+                $message .= " và {$orderCount} đơn hàng";
+            }
+
+            return redirect()->route('admin.sizes.index')->with('error', $message);
+        }
+
+        $size->delete();
         return redirect()->route('admin.sizes.index')->with('success', 'Xóa size thành công.');
     }
 }
