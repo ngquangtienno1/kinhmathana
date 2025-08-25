@@ -418,7 +418,7 @@
             @endif
             --}}
 
-            <a href="#" class="btn btn-outline-secondary">Liên Hệ Người Bán</a>
+            <button type="button" class="btn btn-outline-secondary" onclick="openChatSupport()">Liên Hệ Người Bán</button>
         </div>
         <div class="d-flex justify-content-end">
             <a href="{{ route('client.orders.index') }}" class="btn btn-outline-dark">
@@ -636,6 +636,19 @@
         }
     </style>
     <script>
+        // ===== FUNCTION MỞ CHAT SUPPORT =====
+        function openChatSupport() {
+            // Kiểm tra xem chat component có tồn tại không
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            if (chatToggleBtn) {
+                // Trigger click vào nút chat để mở chat
+                chatToggleBtn.click();
+            } else {
+                // Nếu không có chat component, hiển thị thông báo
+                alert('Chat support chưa sẵn sàng. Vui lòng thử lại sau.');
+            }
+        }
+
         // ===== XỬ LÝ MODAL ĐÁNH GIÁ SẢN PHẨM =====
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -741,4 +754,7 @@
             }
         });
     </script>
+
+    {{-- Include Chat Component --}}
+    @include('client.components.chat')
 @endsection
