@@ -57,8 +57,11 @@ class ProductController extends Controller
 
         foreach ($products as $product) {
             if ($product->product_type === 'variable') {
-                $product->default_price = $product->variations->first()->price ?? 0;
-                $product->default_sale_price = $product->variations->first()->sale_price ?? $product->default_price;
+                $minPrice = $product->variations->min('price') ?? 0;
+                $minSalePrice = $product->variations->where('sale_price', '>', 0)->min('sale_price');
+
+                $product->default_price = $minPrice;
+                $product->default_sale_price = $minSalePrice ?: $minPrice;
             } else {
                 $product->default_price = $product->price ?? 0;
                 $product->default_sale_price = $product->sale_price ?? $product->price ?? 0;
@@ -91,8 +94,11 @@ class ProductController extends Controller
         ])->findOrFail($id);
 
         if ($product->product_type === 'variable') {
-            $product->default_price = $product->variations->first()->price ?? 0;
-            $product->default_sale_price = $product->variations->first()->sale_price ?? $product->default_price;
+            $minPrice = $product->variations->min('price') ?? 0;
+            $minSalePrice = $product->variations->where('sale_price', '>', 0)->min('sale_price');
+
+            $product->default_price = $minPrice;
+            $product->default_sale_price = $minSalePrice ?: $minPrice;
         } else {
             $product->default_price = $product->price ?? 0;
             $product->default_sale_price = $product->sale_price ?? $product->price ?? 0;
@@ -803,8 +809,11 @@ class ProductController extends Controller
 
         foreach ($products as $product) {
             if ($product->product_type === 'variable') {
-                $product->default_price = $product->variations->first()->price ?? 0;
-                $product->default_sale_price = $product->variations->first()->sale_price ?? $product->default_price;
+                $minPrice = $product->variations->min('price') ?? 0;
+                $minSalePrice = $product->variations->where('sale_price', '>', 0)->min('sale_price');
+
+                $product->default_price = $minPrice;
+                $product->default_sale_price = $minSalePrice ?: $minPrice;
             } else {
                 $product->default_price = $product->price ?? 0;
                 $product->default_sale_price = $product->sale_price ?? $product->price ?? 0;
@@ -892,8 +901,11 @@ class ProductController extends Controller
             ->firstOrFail();
 
         if ($product->product_type === 'variable') {
-            $product->default_price = $product->variations->first()->price ?? 0;
-            $product->default_sale_price = $product->variations->first()->sale_price ?? $product->default_price;
+            $minPrice = $product->variations->min('price') ?? 0;
+            $minSalePrice = $product->variations->where('sale_price', '>', 0)->min('sale_price');
+
+            $product->default_price = $minPrice;
+            $product->default_sale_price = $minSalePrice ?: $minPrice;
         } else {
             $product->default_price = $product->price ?? 0;
             $product->default_sale_price = $product->sale_price ?? $product->price ?? 0;
