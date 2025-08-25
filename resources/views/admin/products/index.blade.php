@@ -37,7 +37,7 @@
         </li>
     </ul>
     <div id="products"
-        data-list='{"valueNames":["id","name","price","stock","description","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true,"search":true}'>
+        data-list='{"valueNames":["id","name","price","stock","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true,"search":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
@@ -97,7 +97,6 @@
                             <th class="sort align-middle ps-4" data-sort="name">Tên</th>
                             <th class="sort align-middle ps-4" data-sort="price">Giá</th>
                             <th class="sort align-middle ps-4" data-sort="stock">Số lượng</th>
-                            <th class="sort align-middle ps-4" data-sort="description">Mô tả ngắn</th>
                             <th class="sort align-middle ps-4" data-sort="categories">Danh mục</th>
                             <th class="sort align-middle ps-4" data-sort="brand">Thương hiệu</th>
                             <th class="sort align-middle ps-4" data-sort="has_variations">Sp có biến thể</th>
@@ -155,9 +154,7 @@
                                 <td class="stock align-middle ps-4 text-center">
                                     {{ number_format($product->total_stock_quantity ?? 0, 0, ',', '.') }}
                                 </td>
-                                <td class="description align-middle ps-4">
-                                    {{ Str::limit($product->description_short ?? '', 50) }}
-                                </td>
+
                                 <td class="categories align-middle ps-4">
                                     @if ($product->categories->count() > 0)
                                         {{ $product->categories->pluck('name')->join(', ') }}
@@ -211,7 +208,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
+                                <td colspan="12" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
