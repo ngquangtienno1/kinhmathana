@@ -63,21 +63,17 @@
                                     }
                                 @endphp
                                 @if ($allImages->count() > 0)
-                                    <div class="product-thumbnails"
-                                        style="margin-top:24px;width:867.19px;overflow:hidden;position:relative;">
-                                        <div class="thumbnail-slider"
-                                            style="display:flex;width:max-content;transition:transform 0.3s ease;">
+                                    <div class="product-thumbnails">
+                                        <div class="thumbnail-slider">
                                             @foreach ($allImages as $img)
                                                 <img src="{{ asset('storage/' . $img->image_path) }}"
-                                                    alt="{{ $product->name }} thumbnail"
-                                                    style="width:180px;height:130px;object-fit:cover;border:1px solid #eee;margin-right:16px;" />
+                                                    alt="{{ $product->name }} thumbnail" class="thumbnail-image"
+                                                    data-image="{{ asset('storage/' . $img->image_path) }}" />
                                             @endforeach
                                         </div>
-                                        <button class="slider-prev"
-                                            style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:#fff;border:none;padding:10px;cursor:pointer;">
+                                        <button class="slider-prev">
                                             < </button>
-                                                <button class="slider-next"
-                                                    style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:#fff;border:none;padding:10px;cursor:pointer;">
+                                                <button class="slider-next">
                                                     >
                                                 </button>
                                     </div>
@@ -1217,6 +1213,138 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Product Image Gallery Functionality
+                const mainImage = document.getElementById('main-product-image');
+                const thumbnailImages = document.querySelectorAll('.thumbnail-image');
+                const thumbnailSlider = document.querySelector('.thumbnail-slider');
+                const prevBtn = document.querySelector('.slider-prev');
+                const nextBtn = document.querySelector('.slider-next');
+
+                let isDragging = false;
+                let startPos = 0;
+                let currentTranslate = 0;
+                let prevTranslate = 0;
+                let animationID = 0;
+                let currentIndex = 0;
+
+                // Click on thumbnail to change main image
+                thumbnailImages.forEach((img, index) => {
+                    img.addEventListener('click', function() {
+                        const imageUrl = this.getAttribute('data-image');
+                        if (mainImage && imageUrl) {
+                            mainImage.src = imageUrl;
+
+                            // Update active state
+                            thumbnailImages.forEach(thumb => {
+                                thumb.style.borderColor = '#eee';
+                            });
+                            this.style.borderColor = '#000';
+
+                            // Update current index and position
+                            currentIndex = index;
+                            setPositionByIndex();
+                            setSliderPosition();
+                        }
+                    });
+                });
+
+                // Touch events for mobile drag
+                if (thumbnailSlider) {
+                    thumbnailSlider.addEventListener('touchstart', dragStart);
+                    thumbnailSlider.addEventListener('touchend', dragEnd);
+                    thumbnailSlider.addEventListener('touchmove', drag);
+
+                    // Mouse events for desktop drag
+                    thumbnailSlider.addEventListener('mousedown', dragStart);
+                    thumbnailSlider.addEventListener('mouseup', dragEnd);
+                    thumbnailSlider.addEventListener('mouseleave', dragEnd);
+                    thumbnailSlider.addEventListener('mousemove', drag);
+
+                    // Prevent context menu
+                    thumbnailSlider.addEventListener('contextmenu', e => e.preventDefault());
+                }
+
+                function dragStart(event) {
+                    const clientX = getPositionX(event);
+                    startPos = clientX;
+                    isDragging = true;
+
+                    animationID = requestAnimationFrame(animation);
+                    thumbnailSlider.style.cursor = 'grabbing';
+                }
+
+                function dragEnd() {
+                    isDragging = false;
+                    cancelAnimationFrame(animationID);
+
+                    const movedBy = currentTranslate - prevTranslate;
+
+                    if (Math.abs(movedBy) > 100) {
+                        if (movedBy < 0) {
+                            currentIndex += 1;
+                        } else {
+                            currentIndex -= 1;
+                        }
+                    }
+
+                    setPositionByIndex();
+                    setSliderPosition();
+
+                    thumbnailSlider.style.cursor = 'grab';
+                }
+
+                function drag(event) {
+                    if (isDragging) {
+                        const currentPosition = getPositionX(event);
+                        currentTranslate = prevTranslate + currentPosition - startPos;
+                    }
+                }
+
+                function getPositionX(event) {
+                    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+                }
+
+                function animation() {
+                    setSliderPosition();
+                    if (isDragging) requestAnimationFrame(animation);
+                }
+
+                function setSliderPosition() {
+                    thumbnailSlider.style.transform = `translateX(${currentTranslate}px)`;
+                }
+
+                function setPositionByIndex() {
+                    const slideWidth = 196; // 180px width + 16px margin
+
+                    // Ensure currentIndex stays within bounds
+                    if (currentIndex < 0) {
+                        currentIndex = thumbnailImages.length - 1;
+                    }
+                    if (currentIndex >= thumbnailImages.length) {
+                        currentIndex = 0;
+                    }
+
+                    currentTranslate = currentIndex * -slideWidth;
+                    prevTranslate = currentTranslate;
+                }
+
+                // Navigation buttons
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        currentIndex--;
+                        setPositionByIndex();
+                        setSliderPosition();
+                    });
+                }
+
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        currentIndex++;
+                        setPositionByIndex();
+                        setSliderPosition();
+                    });
+                }
+
                 // Add to cart functionality
                 document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
                     form.addEventListener('submit', function(e) {
@@ -1995,11 +2123,109 @@
             font-weight: 600;
         }
 
+        /* Product Image Gallery Styling */
+        .product-thumbnails {
+            position: relative;
+            margin-top: 24px;
+            width: 867.19px;
+            overflow: hidden;
+        }
+
+        .thumbnail-slider {
+            display: flex;
+            width: max-content;
+            transition: transform 0.3s ease;
+            cursor: grab;
+        }
+
+        .thumbnail-slider:active {
+            cursor: grabbing;
+        }
+
+        .thumbnail-image {
+            width: 180px;
+            height: 130px;
+            object-fit: cover;
+            border: 2px solid #eee;
+            margin-right: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .thumbnail-image:hover {
+            border-color: #ccc;
+            transform: scale(1.02);
+        }
+
+        .thumbnail-image.active {
+            border-color: #000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-prev,
+        .slider-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .slider-prev:hover,
+        .slider-next:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: #999;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-prev {
+            left: 10px;
+        }
+
+        .slider-next {
+            right: 10px;
+        }
+
+        .main-product-image {
+            transition: opacity 0.3s ease;
+        }
+
         /* Responsive cho mobile */
         @media (max-width: 768px) {
             .products .product {
                 flex: 1 1 100%;
                 max-width: 100%;
+            }
+
+            .product-thumbnails {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .thumbnail-image {
+                width: 120px;
+                height: 90px;
+                margin-right: 12px;
+            }
+
+            .slider-prev,
+            .slider-next {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
             }
         }
     </style>
