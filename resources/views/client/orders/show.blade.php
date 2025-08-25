@@ -343,7 +343,7 @@
                                             <button type="button" class="btn btn-sm btn-outline-primary btn-review"
                                                 data-item-id="{{ $item->id }}"
                                                 data-product-name="{{ $item->product_name }}"
-                                                data-product-img="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
+                                                data-product-img="{{ $imagePath }}"
                                                 data-product-options='@json($item->product_options)'
                                                 data-product-variant="{{ $variantText }}"
                                                 data-order-id="{{ $order->id }}"
