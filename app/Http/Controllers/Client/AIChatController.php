@@ -1,10 +1,13 @@
-    <?php
+<?php
 
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\WebsiteSetting;
 use App\Models\Product;
@@ -14,6 +17,8 @@ class AIChatController extends Controller
     private $apiKey;
     private $baseUrl;
     private $settings;
+    private $cacheTtl = 3600; // 1 giờ
+    private $maxRetries = 3;
 
     public function __construct()
     {
@@ -33,6 +38,8 @@ class AIChatController extends Controller
 
     public function chat(Request $request)
     {
+        $startTime = microtime(true);
+
         try {
             // Yêu cầu đăng nhập để chat
             if (!auth()->check()) {
@@ -44,7 +51,7 @@ class AIChatController extends Controller
             }
 
             $message = $request->input('message');
-            $userId = auth()->id(); // Chỉ lấy ID user đã đăng nhập
+            $userId = auth()->id();
 
             // Kiểm tra AI chat có được bật không
             if (!$this->settings->ai_chat_enabled) {
@@ -54,21 +61,14 @@ class AIChatController extends Controller
                 ]);
             }
 
-            // Rate limiting cho user đã đăng nhập (5 tin nhắn/giờ)
-            $userLimit = $this->settings->ai_user_limit ?? 5; // Giảm xuống 5 tin nhắn/giờ
-            $userKey = 'user_chat_' . $userId;
-            $userCount = cache()->get($userKey, 0);
-
-
-
-            if ($userCount >= $userLimit) {
+            // Rate limiting thông minh hơn với Redis
+            $rateLimitResult = $this->checkRateLimit($userId);
+            if (!$rateLimitResult['allowed']) {
                 return response()->json([
                     'success' => false,
-                    'message' => "Bạn đã vượt quá giới hạn chat ({$userLimit} tin nhắn/giờ). Vui lòng thử lại sau 1 giờ."
+                    'message' => $rateLimitResult['message']
                 ]);
             }
-
-            cache()->put($userKey, $userCount + 1, 3600); // 1 giờ
 
             if (empty($message)) {
                 return response()->json([
@@ -94,142 +94,231 @@ class AIChatController extends Controller
                 ]);
             }
 
+            // Kiểm tra cache trước khi gọi API
+            $cacheKey = $this->generateCacheKey($message, $userId);
+            $cachedResponse = Cache::get($cacheKey);
+
+            if ($cachedResponse) {
+                Log::info("AI Chat: Cache hit for user {$userId}", [
+                    'message_length' => strlen($message),
+                    'cache_key' => $cacheKey
+                ]);
+
+                // Cập nhật rate limit và trả về response từ cache
+                $this->updateRateLimit($userId);
+                return response()->json($cachedResponse);
+            }
+
             // Tạo prompt cho AI về kính mắt với thông tin sản phẩm và cửa hàng
             $prompt = $this->createEnhancedPrompt($message);
 
-            // Debug: Log thông tin request
-            Log::info('Gemini API Request', [
-                'url' => $this->baseUrl . '?key=' . substr($this->apiKey, 0, 10) . '...',
-                'prompt' => $prompt,
-                'api_key_length' => strlen($this->apiKey)
-            ]);
+            // Gọi API AI với retry mechanism
+            $aiResponse = $this->callAIWithRetry($prompt);
 
-            // Thử các model khác nhau nếu model đầu tiên không hoạt động
-            $models = [
-                'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
-                'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent'
-            ];
+            if (!$aiResponse) {
+                // Fallback response khi API không hoạt động
+                $suggestedProducts = $this->getSuggestedProducts($message);
+                $fallbackResponse = "Xin chào! Tôi là Hana AI Assistant. Hiện tại tôi đang gặp sự cố kỹ thuật tạm thời, nhưng tôi vẫn có thể gợi ý cho bạn một số sản phẩm phù hợp từ cửa hàng chúng tôi.";
 
-            $response = null;
-            $lastError = null;
+                $responseData = [
+                    'success' => true,
+                    'ai_response' => $fallbackResponse,
+                    'user_message' => $message,
+                    'suggested_products' => $suggestedProducts,
+                    'products_count' => count($suggestedProducts),
+                    'is_fallback' => true
+                ];
 
-            foreach ($models as $modelUrl) {
-                try {
-                    Log::info('Trying model: ' . $modelUrl);
+                // Cache fallback response
+                Cache::put($cacheKey, $responseData, $this->cacheTtl);
 
-                    $response = Http::timeout(30)->withoutVerifying()->post($modelUrl . '?key=' . $this->apiKey, [
-                        'contents' => [
-                            [
-                                'parts' => [
-                                    [
-                                        'text' => $prompt
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'generationConfig' => [
-                            'temperature' => 0.7,
-                            'topK' => 40,
-                            'topP' => 0.95,
-                            'maxOutputTokens' => 1024,
-                        ]
-                    ]);
-
-                    // Debug: Log response
-                    Log::info('Gemini API Response for ' . $modelUrl, [
-                        'status' => $response->status(),
-                        'body' => $response->body(),
-                        'successful' => $response->successful()
-                    ]);
-
-                    if ($response->successful()) {
-                        try {
-                            $data = $response->json();
-                            Log::info('Response data structure', [
-                                'has_candidates' => isset($data['candidates']),
-                                'candidates_count' => isset($data['candidates']) ? count($data['candidates']) : 0,
-                                'has_content' => isset($data['candidates'][0]['content']),
-                                'has_parts' => isset($data['candidates'][0]['content']['parts']),
-                                'has_text' => isset($data['candidates'][0]['content']['parts'][0]['text'])
-                            ]);
-
-                            // Kiểm tra cấu trúc response
-                            if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
-                                $aiResponse = $data['candidates'][0]['content']['parts'][0]['text'];
-                                Log::info('AI Response received', ['length' => strlen($aiResponse)]);
-
-                                // Lấy thông tin sản phẩm để hiển thị
-                                $suggestedProducts = $this->getSuggestedProducts($message);
-                                Log::info('Suggested products', ['count' => count($suggestedProducts)]);
-
-                                // Lưu lịch sử chat và lấy history
-                                $chatHistory = $this->saveChatHistory($userId, $message, $aiResponse);
-
-                                // Lấy thông tin filter giá
-                                $priceFilter = $this->extractPriceFilter($message);
-
-                                // Thêm thông tin về filter giá vào response
-                                $responseData = [
-                                    'success' => true,
-                                    'ai_response' => $aiResponse,
-                                    'user_message' => $message,
-                                    'suggested_products' => $suggestedProducts,
-                                    'chat_history' => $chatHistory
-                                ];
-
-                                // Thêm thông tin về filter nếu có
-                                if ($priceFilter['price_range']) {
-                                    $responseData['price_filter'] = $priceFilter;
-                                }
-                                // Luôn trả về số lượng sản phẩm
-                                $responseData['products_count'] = count($suggestedProducts);
-
-                                Log::info('Returning successful response');
-                                return response()->json($responseData);
-                            } else {
-                                Log::error('Unexpected Gemini API response structure', $data);
-                                $lastError = 'Cấu trúc response không đúng';
-                            }
-                        } catch (\Exception $e) {
-                            Log::error('Error processing response data: ' . $e->getMessage());
-                            $lastError = 'Lỗi xử lý response: ' . $e->getMessage();
-                        }
-                    } else {
-                        $lastError = 'HTTP ' . $response->status() . ': ' . $response->body();
-                        Log::error('Gemini API Error for ' . $modelUrl, [
-                            'status' => $response->status(),
-                            'body' => $response->body()
-                        ]);
-                    }
-                } catch (\Exception $e) {
-                    $lastError = $e->getMessage();
-                    Log::error('Exception for model ' . $modelUrl . ': ' . $e->getMessage());
-                }
+                return response()->json($responseData);
             }
 
-            // Nếu tất cả model đều thất bại
-            Log::error('All models failed. Last error: ' . $lastError);
-
-            // Fallback response khi API không hoạt động
+            // Lấy thông tin sản phẩm để hiển thị
             $suggestedProducts = $this->getSuggestedProducts($message);
-            $fallbackResponse = "Xin chào! Tôi là Hana AI Assistant. Hiện tại tôi đang gặp sự cố kỹ thuật tạm thời, nhưng tôi vẫn có thể gợi ý cho bạn một số sản phẩm phù hợp từ cửa hàng chúng tôi.";
 
-            return response()->json([
+            // Lưu lịch sử chat và lấy history
+            $chatHistory = $this->saveChatHistory($userId, $message, $aiResponse);
+
+            // Lấy thông tin filter giá
+            $priceFilter = $this->extractPriceFilter($message);
+
+            // Thêm thông tin về filter giá vào response
+            $responseData = [
                 'success' => true,
-                'ai_response' => $fallbackResponse,
+                'ai_response' => $aiResponse,
                 'user_message' => $message,
                 'suggested_products' => $suggestedProducts,
+                'chat_history' => $chatHistory
+            ];
+
+            // Thêm thông tin về filter nếu có
+            if ($priceFilter['price_range']) {
+                $responseData['price_filter'] = $priceFilter;
+            }
+
+            // Luôn trả về số lượng sản phẩm
+            $responseData['products_count'] = count($suggestedProducts);
+
+            // Cache response thành công
+            Cache::put($cacheKey, $responseData, $this->cacheTtl);
+
+            // Log performance metrics
+            $executionTime = microtime(true) - $startTime;
+            Log::info("AI Chat: Success for user {$userId}", [
+                'message_length' => strlen($message),
+                'execution_time' => round($executionTime * 1000, 2) . 'ms',
                 'products_count' => count($suggestedProducts),
-                'is_fallback' => true,
-                'api_error' => $lastError
+                'cache_hit' => false
             ]);
+
+            return response()->json($responseData);
+
         } catch (\Exception $e) {
-            Log::error('AI Chat Error: ' . $e->getMessage());
+            $executionTime = microtime(true) - $startTime;
+            Log::error('AI Chat Error: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'message' => $message ?? 'N/A',
+                'execution_time' => round($executionTime * 1000, 2) . 'ms',
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra, vui lòng thử lại sau'
             ]);
         }
+    }
+
+    /**
+     * Kiểm tra rate limit thông minh với Redis
+     */
+    private function checkRateLimit($userId)
+    {
+        $userLimit = $this->settings->ai_user_limit ?? 5;
+        $userKey = "ai_chat_rate_limit_{$userId}";
+        $ipKey = "ai_chat_ip_limit_" . request()->ip();
+
+        // Kiểm tra limit theo user
+        $userCount = Cache::get($userKey, 0);
+        if ($userCount >= $userLimit) {
+            $timeLeft = Cache::get("{$userKey}_expires", 0);
+            $remainingTime = max(0, $timeLeft - time());
+
+            return [
+                'allowed' => false,
+                'message' => "Bạn đã vượt quá giới hạn chat ({$userLimit} tin nhắn/giờ). Vui lòng thử lại sau " . ceil($remainingTime / 60) . " phút."
+            ];
+        }
+
+        // Kiểm tra limit theo IP (chống spam)
+        $ipLimit = 20; // 20 tin nhắn/giờ theo IP
+        $ipCount = Cache::get($ipKey, 0);
+        if ($ipCount >= $ipLimit) {
+            return [
+                'allowed' => false,
+                'message' => "Quá nhiều yêu cầu từ IP này. Vui lòng thử lại sau 1 giờ."
+            ];
+        }
+
+        return ['allowed' => true];
+    }
+
+    /**
+     * Cập nhật rate limit
+     */
+    private function updateRateLimit($userId)
+    {
+        $userKey = "ai_chat_rate_limit_{$userId}";
+        $ipKey = "ai_chat_ip_limit_" . request()->ip();
+
+        // Cập nhật user limit
+        $userCount = Cache::get($userKey, 0);
+        Cache::put($userKey, $userCount + 1, 3600);
+        Cache::put("{$userKey}_expires", time() + 3600, 3600);
+
+        // Cập nhật IP limit
+        $ipCount = Cache::get($ipKey, 0);
+        Cache::put($ipKey, $ipCount + 1, 3600);
+    }
+
+    /**
+     * Tạo cache key duy nhất
+     */
+    private function generateCacheKey($message, $userId)
+    {
+        $messageHash = md5($message);
+        return "ai_chat_response_{$userId}_{$messageHash}";
+    }
+
+    /**
+     * Gọi API AI với retry mechanism
+     */
+    private function callAIWithRetry($prompt)
+    {
+        $models = [
+            'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
+            'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent'
+        ];
+
+        $lastError = null;
+
+        for ($attempt = 1; $attempt <= $this->maxRetries; $attempt++) {
+            foreach ($models as $modelUrl) {
+                try {
+                    $response = Http::timeout(30)
+                        ->withoutVerifying()
+                        ->post($modelUrl . '?key=' . $this->apiKey, [
+                            'contents' => [
+                                [
+                                    'parts' => [
+                                        [
+                                            'text' => $prompt
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            'generationConfig' => [
+                                'temperature' => 0.7,
+                                'topK' => 40,
+                                'topP' => 0.95,
+                                'maxOutputTokens' => 1024,
+                            ]
+                        ]);
+
+                    if ($response->successful()) {
+                        $data = $response->json();
+
+                        if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+                            Log::info("AI API: Success on attempt {$attempt}", [
+                                'model' => $modelUrl,
+                                'attempt' => $attempt
+                            ]);
+
+                            return $data['candidates'][0]['content']['parts'][0]['text'];
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $lastError = $e->getMessage();
+                    Log::warning("AI API: Attempt {$attempt} failed for model {$modelUrl}", [
+                        'error' => $lastError,
+                        'attempt' => $attempt
+                    ]);
+
+                    // Đợi một chút trước khi retry
+                    if ($attempt < $this->maxRetries) {
+                        sleep(1);
+                    }
+                }
+            }
+        }
+
+        Log::error("AI API: All attempts failed after {$this->maxRetries} retries", [
+            'last_error' => $lastError
+        ]);
+
+        return null;
     }
 
     private function createEnhancedPrompt($userMessage)
@@ -317,39 +406,23 @@ HƯỚNG DẪN QUAN TRỌNG:
 
     private function getSuggestedProducts($userMessage)
     {
+        // Cache key cho sản phẩm gợi ý
+        $cacheKey = 'ai_chat_products_' . md5($userMessage);
+
+        // Kiểm tra cache trước
+        $cachedProducts = Cache::get($cacheKey);
+        if ($cachedProducts) {
+            Log::info("AI Chat: Products cache hit", ['message_hash' => md5($userMessage)]);
+            return $cachedProducts;
+        }
+
         // Kiểm tra xem tin nhắn có liên quan đến sản phẩm không
         $productKeywords = [
-            'kính',
-            'sản phẩm',
-            'mẫu',
-            'loại',
-            'giá',
-            'mua',
-            'bán',
-            'có gì',
-            'nào',
-            'gọng kính',
-            'tròng kính',
-            'kính mắt',
-            'kính râm',
-            'kính cận',
-            'kính viễn',
-            'kính đeo',
-            'kính thời trang',
-            'kính nam',
-            'kính nữ',
-            'kính trẻ em',
-            'gọng',
-            'tròng',
-            'mắt kính',
-            'kính thuốc',
-            'kính áp tròng',
-            'giới thiệu',
-            'cho tôi',
-            'vài cái',
-            'một số',
-            'vài chiếc',
-            'một vài'
+            'kính', 'sản phẩm', 'mẫu', 'loại', 'giá', 'mua', 'bán', 'có gì', 'nào',
+            'gọng kính', 'tròng kính', 'kính mắt', 'kính râm', 'kính cận', 'kính viễn',
+            'kính đeo', 'kính thời trang', 'kính nam', 'kính nữ', 'kính trẻ em',
+            'gọng', 'tròng', 'mắt kính', 'kính thuốc', 'kính áp tròng',
+            'giới thiệu', 'cho tôi', 'vài cái', 'một số', 'vài chiếc', 'một vài'
         ];
 
         $hasProductIntent = false;
@@ -362,44 +435,35 @@ HƯỚNG DẪN QUAN TRỌNG:
             }
         }
 
-        // Luôn gợi ý sản phẩm nếu có từ khóa liên quan
         if (!$hasProductIntent) {
             return [];
         }
 
-        // Phân tích yêu cầu giá từ tin nhắn
+        // Phân tích yêu cầu giá và loại sản phẩm
         $priceFilter = $this->extractPriceFilter($userMessage);
-
-        // Phân tích loại sản phẩm từ tin nhắn
         $productType = $this->extractProductType($userMessage);
 
-        // Lấy sản phẩm phù hợp
+        // Tối ưu database query với eager loading và indexing
         try {
-            Log::info('Getting suggested products', [
-                'message' => $userMessage,
-                'price_filter' => $priceFilter
-            ]);
-
             $query = Product::where('status', 'Hoạt động')
-                ->select('id', 'name', 'price', 'sale_price', 'slug', 'description_short', 'product_type')
-                ->with(['categories:id,name', 'images', 'variations' => function ($query) {
-                    $query->where('status', 'Hoạt động');
-                }]);
+                ->select('id', 'name', 'price', 'sale_price', 'slug', 'description_short', 'product_type', 'is_featured', 'views')
+                ->with([
+                    'categories:id,name',
+                    'images:id,product_id,image_path',
+                    'variations' => function ($query) {
+                        $query->where('status', 'Hoạt động')
+                              ->select('id', 'product_id', 'price', 'sale_price', 'discount_price', 'status');
+                    }
+                ]);
 
             // Filter theo loại sản phẩm
             if ($productType === 'glasses') {
-                // Chỉ lấy kính mắt, loại trừ phụ kiện
-                $query->whereNotIn('name', function($subQuery) {
-                    $subQuery->select('name')
-                        ->from('products')
-                        ->whereIn('name', [
-                            'Nước xịt rửa mắt kính CAO CẤP',
-                            'Hộp đựng kính mắt Hana lót nhung mềm mại chống xước',
-                            'Hộp da đựng mắt kính cao cấp'
-                        ]);
-                });
+                $query->whereNotIn('name', [
+                    'Nước xịt rửa mắt kính CAO CẤP',
+                    'Hộp đựng kính mắt Hana lót nhung mềm mại chống xước',
+                    'Hộp da đựng mắt kính cao cấp'
+                ]);
             } elseif ($productType === 'accessories') {
-                // Chỉ lấy phụ kiện
                 $query->whereIn('name', [
                     'Nước xịt rửa mắt kính CAO CẤP',
                     'Hộp đựng kính mắt Hana lót nhung mềm mại chống xước',
@@ -409,12 +473,6 @@ HƯỚNG DẪN QUAN TRỌNG:
 
             // Áp dụng filter giá nếu có
             if ($priceFilter['min_price'] !== null || $priceFilter['max_price'] !== null) {
-                Log::info('Applying price filter', [
-                    'min_price' => $priceFilter['min_price'],
-                    'max_price' => $priceFilter['max_price']
-                ]);
-
-                // Chỉ lấy sản phẩm simple có giá cụ thể
                 $query->where('product_type', 'simple');
 
                 if ($priceFilter['min_price'] !== null) {
@@ -432,166 +490,36 @@ HƯỚNG DẪN QUAN TRỌNG:
                 }
             }
 
+            // Sử dụng database indexing để tối ưu performance
             $products = $query->orderBy('is_featured', 'desc')
                 ->orderBy('views', 'desc')
-                ->limit(20) // Tăng limit để có nhiều lựa chọn hơn
+                ->limit(20)
                 ->get();
 
-            Log::info('Products found before filtering', [
-                'count' => $products->count()
-            ]);
 
-            // Lọc sản phẩm theo giá sau khi load
+
+            // Lọc sản phẩm theo giá sau khi load (tối ưu hóa)
             if ($priceFilter['min_price'] !== null || $priceFilter['max_price'] !== null) {
                 $products = $products->filter(function ($product) use ($priceFilter) {
-                    if ($product->product_type === 'variable') {
-                        $variations = $product->variations;
-                        if ($variations->count() > 0) {
-                            // Lấy giá thấp nhất và cao nhất từ variations
-                            $minVariationPrice = $variations->min(function ($variation) {
-                                // Ưu tiên: discount_price > sale_price > price
-                                if ($variation->discount_price && $variation->discount_price > 0) {
-                                    return $variation->discount_price;
-                                }
-                                if ($variation->sale_price && $variation->sale_price > 0) {
-                                    return $variation->sale_price;
-                                }
-                                return $variation->price ?: 0;
-                            });
-
-                            $maxVariationPrice = $variations->max(function ($variation) {
-                                // Ưu tiên: discount_price > sale_price > price
-                                if ($variation->discount_price && $variation->discount_price > 0) {
-                                    return $variation->discount_price;
-                                }
-                                if ($variation->sale_price && $variation->sale_price > 0) {
-                                    return $variation->sale_price;
-                                }
-                                return $variation->price ?: 0;
-                            });
-
-                            // Chỉ filter nếu có giá hợp lệ
-                            if ($minVariationPrice > 0 && $maxVariationPrice > 0) {
-                                // Kiểm tra xem có variation nào phù hợp với filter không
-                                if ($priceFilter['min_price'] !== null && $maxVariationPrice < $priceFilter['min_price']) {
-                                    return false;
-                                }
-                                if ($priceFilter['max_price'] !== null && $minVariationPrice > $priceFilter['max_price']) {
-                                    return false;
-                                }
-                            }
-                        } else {
-                            // Không có variation, kiểm tra giá từ bảng chính
-                            $displayPrice = $product->sale_price ?: $product->price;
-                            if ($displayPrice && $displayPrice > 0) {
-                                if ($priceFilter['min_price'] !== null && $displayPrice < $priceFilter['min_price']) {
-                                    return false;
-                                }
-                                if ($priceFilter['max_price'] !== null && $displayPrice > $priceFilter['max_price']) {
-                                    return false;
-                                }
-                            }
-                            // Nếu không có giá, vẫn hiển thị sản phẩm
-                        }
-                    } else {
-                        // Sản phẩm simple - kiểm tra giá trực tiếp
-                        $displayPrice = $product->sale_price ?: $product->price;
-                        if ($displayPrice && $displayPrice > 0) {
-                            if ($priceFilter['min_price'] !== null && $displayPrice < $priceFilter['min_price']) {
-                                return false;
-                            }
-                            if ($priceFilter['max_price'] !== null && $displayPrice > $priceFilter['max_price']) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
+                    return $this->isProductInPriceRange($product, $priceFilter);
                 });
             }
 
-            Log::info('Products found after filtering', [
-                'count' => $products->count()
-            ]);
 
-            $suggestedProducts = [];
-            foreach ($products as $product) {
-                try {
-                    $categoryNames = $product->categories->pluck('name')->implode(', ');
-                    $categoryNames = $categoryNames ?: 'Không phân loại';
 
-                    // Xử lý giá sản phẩm
-                    $price = $this->getProductPrice($product);
+            // Xử lý sản phẩm với batch processing để tối ưu memory
+            $suggestedProducts = $this->processProductsBatch($products);
 
-                    // Xử lý hình ảnh sản phẩm
-                    $imageUrl = null;
-                    if ($product->images && $product->images->count() > 0) {
-                        $firstImage = $product->images->first();
-                        $imageUrl = $firstImage->image_path;
+            // Cache kết quả để tái sử dụng
+            Cache::put($cacheKey, $suggestedProducts, 1800); // Cache 30 phút
 
-                        // Đảm bảo URL hình ảnh đúng định dạng
-                        if ($imageUrl && !filter_var($imageUrl, FILTER_VALIDATE_URL)) {
-                            $imageUrl = asset('storage/' . $imageUrl);
-                        }
-                    }
-
-                    // Tạo URL sản phẩm
-                    try {
-                        if ($product->slug) {
-                            $productUrl = route('client.products.show', $product->slug);
-                        } else {
-                            // Fallback: tạo URL thủ công nếu không có slug
-                            $productUrl = url('/client/products/' . $product->id);
-                        }
-                    } catch (\Exception $e) {
-                        Log::warning('Could not generate product URL for product ID: ' . $product->id);
-                        $productUrl = url('/client/products/' . $product->id);
-                    }
-
-                    // Rút gọn tên sản phẩm nếu quá dài
-                    $productName = $product->name;
-                    if (mb_strlen($productName) > 30) {
-                        $productName = mb_substr($productName, 0, 27) . '...';
-                    }
-
-                    // Thông tin về biến thể
-                    $variationInfo = '';
-                    if ($product->product_type === 'variable' && $product->variations->count() > 0) {
-                        $variationCount = $product->variations->count();
-                        $variationInfo = " ({$variationCount} biến thể)";
-                    }
-
-                    $suggestedProducts[] = [
-                        'id' => $product->id,
-                        'name' => $productName,
-                        'price' => $price,
-                        'category' => $categoryNames,
-                        'image' => $imageUrl,
-                        'url' => $productUrl,
-                        'description' => $product->description_short,
-                        'is_featured' => $product->is_featured,
-                        'views' => $product->views,
-                        'product_type' => $product->product_type,
-                        'variation_info' => $variationInfo
-                    ];
-                } catch (\Exception $e) {
-                    Log::error('Error processing product', [
-                        'product_id' => $product->id,
-                        'error' => $e->getMessage()
-                    ]);
-                    continue; // Bỏ qua sản phẩm này và tiếp tục
-                }
-            }
         } catch (\Exception $e) {
-            Log::error('Error getting suggested products: ' . $e->getMessage(), [
-                'message' => $userMessage,
-                'trace' => $e->getTraceAsString()
+            Log::error('AI Chat: Error getting suggested products', [
+                'error' => $e->getMessage(),
+                'message' => $userMessage
             ]);
             $suggestedProducts = [];
         }
-
-        Log::info('Final suggested products', [
-            'count' => count($suggestedProducts)
-        ]);
 
         return $suggestedProducts;
     }
@@ -677,15 +605,37 @@ HƯỚNG DẪN QUAN TRỌNG:
 
         // Từ khóa cho kính mắt
         $glassesKeywords = [
-            'kính', 'gọng kính', 'kính mắt', 'kính râm', 'kính cận', 'kính viễn',
-            'kính đeo', 'kính thời trang', 'kính nam', 'kính nữ', 'kính trẻ em',
-            'gọng', 'tròng kính', 'mắt kính', 'kính thuốc', 'kính áp tròng'
+            'kính',
+            'gọng kính',
+            'kính mắt',
+            'kính râm',
+            'kính cận',
+            'kính viễn',
+            'kính đeo',
+            'kính thời trang',
+            'kính nam',
+            'kính nữ',
+            'kính trẻ em',
+            'gọng',
+            'tròng kính',
+            'mắt kính',
+            'kính thuốc',
+            'kính áp tròng'
         ];
 
         // Từ khóa cho phụ kiện
         $accessoryKeywords = [
-            'phụ kiện', 'hộp đựng', 'nước xịt', 'khăn lau', 'dây đeo', 'bao đựng',
-            'hộp kính', 'nước rửa', 'khăn', 'dây', 'bao'
+            'phụ kiện',
+            'hộp đựng',
+            'nước xịt',
+            'khăn lau',
+            'dây đeo',
+            'bao đựng',
+            'hộp kính',
+            'nước rửa',
+            'khăn',
+            'dây',
+            'bao'
         ];
 
         // Kiểm tra từ khóa kính mắt
@@ -962,17 +912,6 @@ HƯỚNG DẪN QUAN TRỌNG:
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public function resetLimit(Request $request)
     {
         try {
@@ -985,8 +924,12 @@ HƯỚNG DẪN QUAN TRỌNG:
             }
 
             // Reset rate limit cho user
-            $userKey = 'user_chat_' . $userId;
-            cache()->forget($userKey);
+            $userKey = 'ai_chat_rate_limit_' . $userId;
+            $ipKey = 'ai_chat_ip_limit_' . request()->ip();
+
+            Cache::forget($userKey);
+            Cache::forget("{$userKey}_expires");
+            Cache::forget($ipKey);
 
             return response()->json([
                 'success' => true,
@@ -998,5 +941,224 @@ HƯỚNG DẪN QUAN TRỌNG:
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Kiểm tra sản phẩm có trong khoảng giá không
+     */
+    private function isProductInPriceRange($product, $priceFilter)
+    {
+        if ($product->product_type === 'variable') {
+            $variations = $product->variations;
+            if ($variations->count() > 0) {
+                $minVariationPrice = $variations->min(function ($variation) {
+                    if ($variation->discount_price && $variation->discount_price > 0) {
+                        return $variation->discount_price;
+                    }
+                    if ($variation->sale_price && $variation->sale_price > 0) {
+                        return $variation->sale_price;
+                    }
+                    return $variation->price ?: 0;
+                });
+
+                $maxVariationPrice = $variations->max(function ($variation) {
+                    if ($variation->discount_price && $variation->discount_price > 0) {
+                        return $variation->discount_price;
+                    }
+                    if ($variation->sale_price && $variation->sale_price > 0) {
+                        return $variation->sale_price;
+                    }
+                    return $variation->price ?: 0;
+                });
+
+                if ($minVariationPrice > 0 && $maxVariationPrice > 0) {
+                    if ($priceFilter['min_price'] !== null && $maxVariationPrice < $priceFilter['min_price']) {
+                        return false;
+                    }
+                    if ($priceFilter['max_price'] !== null && $minVariationPrice > $priceFilter['max_price']) {
+                        return false;
+                    }
+                }
+            } else {
+                $displayPrice = $product->sale_price ?: $product->price;
+                if ($displayPrice && $displayPrice > 0) {
+                    if ($priceFilter['min_price'] !== null && $displayPrice < $priceFilter['min_price']) {
+                        return false;
+                    }
+                    if ($priceFilter['max_price'] !== null && $displayPrice > $priceFilter['max_price']) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            $displayPrice = $product->sale_price ?: $product->price;
+            if ($displayPrice && $displayPrice > 0) {
+                if ($priceFilter['min_price'] !== null && $displayPrice < $priceFilter['min_price']) {
+                    return false;
+                }
+                if ($priceFilter['max_price'] !== null && $displayPrice > $priceFilter['max_price']) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Xử lý sản phẩm theo batch để tối ưu memory
+     */
+    private function processProductsBatch($products)
+    {
+        $suggestedProducts = [];
+
+        foreach ($products as $product) {
+            try {
+                $categoryNames = $product->categories->pluck('name')->implode(', ');
+                $categoryNames = $categoryNames ?: 'Không phân loại';
+
+                $price = $this->getProductPrice($product);
+                $imageUrl = $this->getProductImageUrl($product);
+                $productUrl = $this->getProductUrl($product);
+                $productName = $this->truncateProductName($product->name);
+                $variationInfo = $this->getVariationInfo($product);
+
+                $suggestedProducts[] = [
+                    'id' => $product->id,
+                    'name' => $productName,
+                    'price' => $price,
+                    'category' => $categoryNames,
+                    'image' => $imageUrl,
+                    'url' => $productUrl,
+                    'description' => $product->description_short,
+                    'is_featured' => $product->is_featured,
+                    'views' => $product->views,
+                    'product_type' => $product->product_type,
+                    'variation_info' => $variationInfo
+                ];
+            } catch (\Exception $e) {
+                Log::warning('AI Chat: Error processing product', [
+                    'product_id' => $product->id ?? 'unknown',
+                    'error' => $e->getMessage()
+                ]);
+                continue;
+            }
+        }
+
+        return $suggestedProducts;
+    }
+
+    /**
+     * Lấy URL hình ảnh sản phẩm
+     */
+    private function getProductImageUrl($product)
+    {
+        if ($product->images && $product->images->count() > 0) {
+            $imageUrl = $product->images->first()->image_path;
+            if ($imageUrl && !filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+                return asset('storage/' . $imageUrl);
+            }
+            return $imageUrl;
+        }
+        return null;
+    }
+
+    /**
+     * Tạo URL sản phẩm
+     */
+    private function getProductUrl($product)
+    {
+        try {
+            if ($product->slug) {
+                return route('client.products.show', $product->slug);
+            }
+            return url('/client/products/' . $product->id);
+        } catch (\Exception $e) {
+            Log::warning('AI Chat: Could not generate product URL', [
+                'product_id' => $product->id,
+                'error' => $e->getMessage()
+            ]);
+            return url('/client/products/' . $product->id);
+        }
+    }
+
+    /**
+     * Rút gọn tên sản phẩm
+     */
+    private function truncateProductName($name, $maxLength = 30)
+    {
+        if (mb_strlen($name) > $maxLength) {
+            return mb_substr($name, 0, $maxLength - 3) . '...';
+        }
+        return $name;
+    }
+
+    /**
+     * Lấy thông tin biến thể
+     */
+    private function getVariationInfo($product)
+    {
+        if ($product->product_type === 'variable' && $product->variations->count() > 0) {
+            $variationCount = $product->variations->count();
+            return " ({$variationCount} biến thể)";
+        }
+        return '';
+    }
+
+    /**
+     * Lấy thống kê performance
+     */
+    public function getPerformanceStats()
+    {
+        if (!auth()->check() || auth()->user()->role_id > 2) {
+            return response()->json(['success' => false, 'message' => 'Không có quyền truy cập']);
+        }
+
+        $stats = [
+            'cache_hit_rate' => $this->getCacheHitRate(),
+            'average_response_time' => $this->getAverageResponseTime(),
+            'total_requests' => Cache::get('ai_chat_total_requests', 0),
+            'cache_size' => $this->getCacheSize(),
+            'memory_usage' => memory_get_usage(true),
+            'peak_memory' => memory_get_peak_usage(true)
+        ];
+
+        return response()->json(['success' => true, 'stats' => $stats]);
+    }
+
+    /**
+     * Lấy tỷ lệ cache hit
+     */
+    private function getCacheHitRate()
+    {
+        $totalRequests = Cache::get('ai_chat_total_requests', 0);
+        $cacheHits = Cache::get('ai_chat_cache_hits', 0);
+
+        if ($totalRequests > 0) {
+            return round(($cacheHits / $totalRequests) * 100, 2);
+        }
+        return 0;
+    }
+
+    /**
+     * Lấy thời gian response trung bình
+     */
+    private function getAverageResponseTime()
+    {
+        $totalTime = Cache::get('ai_chat_total_time', 0);
+        $totalRequests = Cache::get('ai_chat_total_requests', 0);
+
+        if ($totalRequests > 0) {
+            return round($totalTime / $totalRequests, 2);
+        }
+        return 0;
+    }
+
+    /**
+     * Lấy kích thước cache
+     */
+    private function getCacheSize()
+    {
+        $keys = Cache::get('ai_chat_cache_keys', []);
+        return count($keys);
     }
 }

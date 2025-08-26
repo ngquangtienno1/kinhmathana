@@ -205,6 +205,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::get('/history', [AIChatController::class, 'getChatHistory'])->name('history');
         Route::delete('/clear', [AIChatController::class, 'clearChatHistory'])->name('clear');
         Route::get('/stats', [AIChatController::class, 'getChatStats'])->name('stats')->middleware('auth');
+        Route::get('/performance', [AIChatController::class, 'getPerformanceStats'])->name('performance')->middleware('auth');
         Route::post('/reset-limit', [AIChatController::class, 'resetLimit'])->name('reset-limit');
     });
 });

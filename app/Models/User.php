@@ -79,19 +79,10 @@ class User extends Authenticatable
     public function hasPermission($permission)
     {
         if (!$this->role) {
-            // Log::info('User has no role', ['user_id' => $this->id]);
             return false;
         }
 
         $hasPermission = $this->role->permissions->contains('slug', $permission);
-        // Log::info('Checking permission', [
-        //     'user_id' => $this->id,
-        //     'role_id' => $this->role_id,
-        //     'permission' => $permission,
-        //     'has_permission' => $hasPermission,
-        //     'user_permissions' => $this->role->permissions->pluck('slug')
-        // ]);
-
         return $hasPermission;
     }
 
