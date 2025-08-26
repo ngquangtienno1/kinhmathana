@@ -32,10 +32,10 @@ return new class extends Migration
             $table->text('shipping_address');
 
             // Thông tin thanh toán
-            $table->decimal('total_amount', 10, 2);
-            $table->decimal('subtotal', 10, 2)->comment('Tổng tiền hàng trước khi áp dụng giảm giá');
-            $table->decimal('promotion_amount', 10, 2)->default(0)->comment('Số tiền được giảm giá từ khuyến mãi');
-            $table->decimal('shipping_fee', 10, 2)->default(0);
+            $table->decimal('total_amount', 18, 2);
+            $table->decimal('subtotal', 18, 2)->comment('Tổng tiền hàng trước khi áp dụng giảm giá');
+            $table->decimal('promotion_amount', 18, 2)->default(0)->comment('Số tiền được giảm giá từ khuyến mãi');
+            $table->decimal('shipping_fee', 18, 2)->default(0);
             $table->foreignId('payment_method_id')->nullable()->constrained('payment_methods')->nullOnDelete();
             $table->json('payment_details')->nullable();
             $table->enum('payment_status', [

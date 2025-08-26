@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('question');
             $table->text('answer');
+             $table->string('image')->nullable();
             $table->json('images')->nullable();
             $table->decimal('rating', 3, 2)->default(0);
             $table->integer('rating_count')->default(0);

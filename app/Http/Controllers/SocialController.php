@@ -19,14 +19,35 @@ class SocialController extends Controller
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
 
-            $user = User::updateOrCreate(
-                ['email' => $googleUser->getEmail()],
-                [
+            $user = User::where('email', $googleUser->getEmail())->first();
+            if ($user) {
+                // Nếu user đã bị chặn thì không cho đăng nhập
+                if ($user->status_user !== 'active') {
+                    return redirect()->route('client.login')->withErrors(['email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt']);
+                }
+                // Cập nhật thông tin cơ bản (trừ status_user)
+                $user->update([
                     'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'email_verified_at' => now(),
+                ]);
+            } else {
+                // Tạo mới user
+                $user = User::create([
+                    'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                    'address' => null,
+                    'phone' => null,
                     'password' => bcrypt(Str::random(24)),
+                    'date_birth' => null,
+                    'gender' => null,
+                    'status_user' => 'active',
+                    'avatar' => $googleUser->getAvatar(),
                     'role_id' => 3,
-                ]
-            );
+                    'email' => $googleUser->getEmail(),
+                    'email_verified_at' => now(),
+                    'phone_verified_at' => null,
+                ]);
+            }
 
             Auth::login($user);
 
@@ -49,14 +70,25 @@ class SocialController extends Controller
         try {
             $facebookUser = Socialite::driver('facebook')->stateless()->user();
 
-            $user = User::updateOrCreate(
-                ['email' => $facebookUser->getEmail()],
-                [
+            $user = User::where('email', $facebookUser->getEmail())->first();
+            if ($user) {
+                if ($user->status_user !== 'active') {
+                    return redirect()->route('login')->with('error', 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt.');
+                }
+                $user->update([
+                    'name' => $facebookUser->getName() ?? $facebookUser->getNickname(),
+                    'email_verified_at' => now(),
+                ]);
+            } else {
+                $user = User::create([
                     'name' => $facebookUser->getName() ?? $facebookUser->getNickname(),
                     'password' => bcrypt(Str::random(24)),
                     'role_id' => 3,
-                ]
-            );
+                    'email' => $facebookUser->getEmail(),
+                    'status_user' => 'active',
+                    'email_verified_at' => now(),
+                ]);
+            }
 
             Auth::login($user);
 

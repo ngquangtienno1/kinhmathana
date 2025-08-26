@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\Brand;
+use App\Models\Color;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Color;
-use App\Models\Brand;
+use App\Models\Variation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -16,19 +20,19 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with(['categories', 'brand', 'images', 'variations.color'])
+        $query = Product::with(['categories', 'brand', 'images', 'variations.color', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
             ->active();
 
         // Bộ lọc: Availability
         if ($request->has('availability') && is_array($availabilities = $request->input('availability', []))) {
             $query->where(function ($q) use ($availabilities) {
                 if (in_array('in_stock', $availabilities)) {
-                    $q->orWhere('stock_quantity', '>', 0)
-                        ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '>', 0));
+                    $q->orWhere('quantity', '>', 0)
+                        ->orWhereHas('variations', fn($qv) => $qv->where('quantity', '>', 0));
                 }
                 if (in_array('out_of_stock', $availabilities)) {
-                    $q->orWhere('stock_quantity', '=', 0)
-                        ->orWhereHas('variations', fn($qv) => $qv->where('stock_quantity', '=', 0));
+                    $q->orWhere('quantity', '=', 0)
+                        ->orWhereHas('variations', fn($qv) => $qv->where('quantity', '=', 0));
                 }
             });
         }
@@ -40,6 +44,27 @@ class ProductController extends Controller
             });
         }
 
+        // Bộ lọc: Size
+        if ($request->has('sizes') && is_array($sizes = $request->input('sizes', []))) {
+            $query->whereHas('variations.size', function ($q) use ($sizes) {
+                $q->whereIn('sizes.id', $sizes);
+            });
+        }
+
+        // Bộ lọc: Spherical (độ cận)
+        if ($request->has('sphericals') && is_array($sphericals = $request->input('sphericals', []))) {
+            $query->whereHas('variations.spherical', function ($q) use ($sphericals) {
+                $q->whereIn('sphericals.id', $sphericals);
+            });
+        }
+
+        // Bộ lọc: Cylindrical (độ loạn)
+        if ($request->has('cylindricals') && is_array($cylindricals = $request->input('cylindricals', []))) {
+            $query->whereHas('variations.cylindrical', function ($q) use ($cylindricals) {
+                $q->whereIn('cylindricals.id', $cylindricals);
+            });
+        }
+
         // Bộ lọc: Brands
         if ($request->has('brands') && is_array($brands = $request->input('brands', []))) {
             $query->whereIn('brand_id', $brands);
@@ -47,15 +72,37 @@ class ProductController extends Controller
 
         // Bộ lọc: Price range
         if ($request->filled('min_price') || $request->filled('max_price')) {
-            $minPrice = $request->input('min_price', 0);
-            $maxPrice = $request->input('max_price', 999999);
+            $minPriceRaw = $request->input('min_price', 0);
+            $maxPriceRaw = $request->input('max_price', 999999999);
+            $minPrice = preg_replace('/\D/', '', $minPriceRaw);
+            $maxPrice = preg_replace('/\D/', '', $maxPriceRaw);
+            $minPrice = (int) $minPrice;
+            $maxPrice = (int) $maxPrice;
+
+
             $query->where(function ($q) use ($minPrice, $maxPrice) {
-                $q->whereBetween('sale_price', [$minPrice, $maxPrice])
-                    ->orWhereBetween('price', [$minPrice, $maxPrice])
-                    ->orWhereHas('variations', function ($qv) use ($minPrice, $maxPrice) {
-                        $qv->whereBetween('sale_price', [$minPrice, $maxPrice])
-                            ->orWhereBetween('price', [$minPrice, $maxPrice]);
-                    });
+                // Sản phẩm thường
+                $q->where(function ($q2) use ($minPrice, $maxPrice) {
+                    $q2->where(function ($q3) use ($minPrice, $maxPrice) {
+                        $q3->whereNotNull('price')
+                            ->whereBetween('price', [$minPrice, $maxPrice]);
+                    })
+                        ->orWhere(function ($q3) use ($minPrice, $maxPrice) {
+                            $q3->whereNotNull('sale_price')
+                                ->whereBetween('sale_price', [$minPrice, $maxPrice]);
+                        });
+                });
+                // Sản phẩm biến thể
+                $q->orWhereHas('variations', function ($qv) use ($minPrice, $maxPrice) {
+                    $qv->where(function ($q4) use ($minPrice, $maxPrice) {
+                        $q4->whereNotNull('price')
+                            ->whereBetween('price', [$minPrice, $maxPrice]);
+                    })
+                        ->orWhere(function ($q4) use ($minPrice, $maxPrice) {
+                            $q4->whereNotNull('sale_price')
+                                ->whereBetween('sale_price', [$minPrice, $maxPrice]);
+                        });
+                });
             });
         }
 
@@ -76,8 +123,8 @@ class ProductController extends Controller
         }
 
         // Tìm kiếm
-        if ($request->filled('search')) {
-            $search = $request->input('search');
+        $search = $request->input('q') ?? $request->input('search') ?? $request->input('s');
+        if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('sku', 'like', "%{$search}%");
@@ -106,13 +153,33 @@ class ProductController extends Controller
                 break;
         }
 
-        // Phân trang
-        $products = $query->paginate(6); // 6 sản phẩm mỗi trang
-        $categories = Category::with('children')->where('is_active', true)->get();
+        $products = $query->paginate(12);
+        $categories = Category::withCount('products')->with('children')->where('is_active', true)->get();
         $colors = Color::all();
+        // Lấy tất cả size từ variations của các sản phẩm trong trang
+        $sizes = collect();
+        foreach ($products as $product) {
+            $sizes = $sizes->merge($product->variations->pluck('size')->filter());
+        }
+        $sizes = $sizes->unique('id')->values();
+
+        // Lấy tất cả spherical từ variations của các sản phẩm trong trang
+        $sphericals = collect();
+        foreach ($products as $product) {
+            $sphericals = $sphericals->merge($product->variations->pluck('spherical')->filter());
+        }
+        $sphericals = $sphericals->unique('id')->values();
+
+        // Lấy tất cả cylindrical từ variations của các sản phẩm trong trang
+        $cylindricals = collect();
+        foreach ($products as $product) {
+            $cylindricals = $cylindricals->merge($product->variations->pluck('cylindrical')->filter());
+        }
+        $cylindricals = $cylindricals->unique('id')->values();
+
         $brands = Brand::where('is_active', true)->get();
 
-        return view('client.products.index', compact('products', 'categories', 'colors', 'brands'));
+        return view('client.products.index', compact('products', 'categories', 'colors', 'sizes', 'sphericals', 'cylindricals', 'brands'));
     }
 
     /**
@@ -120,7 +187,20 @@ class ProductController extends Controller
      */
     public function show($slug)
     {
-        $product = Product::with(['categories', 'brand', 'images', 'reviews.user', 'variations.color', 'variations.size', 'variations.images', 'variations.spherical', 'variations.cylindrical'])
+        $product = Product::with([
+                'categories',
+                'brand',
+                'images',
+                // Chỉ lấy các đánh giá chưa bị ẩn và kèm user
+                'reviews' => function ($q) {
+                    $q->where('is_hidden', false)->with('user');
+                },
+                'variations.color',
+                'variations.size',
+                'variations.images',
+                'variations.spherical',
+                'variations.cylindrical',
+            ])
             ->active()
             ->where('slug', $slug)
             ->firstOrFail();
@@ -150,7 +230,7 @@ class ProductController extends Controller
             ? ($selectedVariation->images->where('is_featured', true)->first() ?? $selectedVariation->images->first())
             : ($product->images->where('is_featured', true)->first() ?? $product->images->first());
 
-        $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size'])
+        $related_products = Product::with(['images', 'reviews', 'variations.color', 'variations.size', 'variations.images'])
             ->active()
             ->where('id', '!=', $product->id)
             ->whereHas('categories', function ($q) use ($product) {
@@ -160,7 +240,7 @@ class ProductController extends Controller
             ->get();
 
         // Prepare variationsJson for Blade (for JS)
-        $variationsJson = $product->variations->map(function($v) {
+        $variationsJson = $product->variations->map(function ($v) {
             return [
                 'id' => $v->id,
                 'color_id' => $v->color_id ? (string)$v->color_id : '',
@@ -168,9 +248,156 @@ class ProductController extends Controller
                 'spherical_id' => $v->spherical_id ? (string)$v->spherical_id : '',
                 'cylindrical_id' => $v->cylindrical_id ? (string)$v->cylindrical_id : '',
                 'image' => $v->images->first() ? asset('storage/' . $v->images->first()->image_path) : '',
+                'price' => (float) $v->price,
+                'sale_price' => (float) $v->sale_price,
+                'quantity' => $v->quantity, // Sửa từ stock_quantity thành quantity
             ];
         })->values()->toArray();
 
-        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson'));
+        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt
+        $comments = $product->comments()->with('user')->where('status', 'đã duyệt')->orderByDesc('created_at')->get();
+
+        return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
+    }
+
+    /**
+     * Thêm sản phẩm vào giỏ hàng từ trang chi tiết sản phẩm
+     */
+    public function addToCart(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!'
+                ], 401);
+            }
+            return redirect()->back()->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+        }
+
+        $quantity = $request->input('quantity', 1);
+        $variationId = $request->input('variation_id');
+        $productId = $request->input('product_id');
+
+        if ($variationId) {
+            $variation = Variation::find($variationId);
+            if (!$variation) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Không tìm thấy biến thể sản phẩm!'], 404);
+                }
+                return back()->with('error', 'Không tìm thấy biến thể sản phẩm!');
+            }
+
+            // Kiểm tra tổng số lượng trong giỏ hàng
+            $cartItem = Cart::where('user_id', $user->id)
+                ->where('variation_id', $variationId)
+                ->first();
+            $currentQty = $cartItem ? $cartItem->quantity : 0;
+            $totalQty = $currentQty + $quantity;
+
+            if ($totalQty > $variation->quantity) { // Sửa từ stock_quantity thành quantity
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Số lượng vượt quá tồn kho!'], 400);
+                }
+                return back()->with('error', 'Số lượng vượt quá tồn kho!');
+            }
+
+            if ($cartItem) {
+                $cartItem->quantity = $totalQty;
+                $cartItem->save();
+            } else {
+                Cart::create([
+                    'user_id' => $user->id,
+                    'variation_id' => $variationId,
+                    'quantity' => $quantity,
+                ]);
+            }
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
+        } elseif ($productId) {
+            $product = Product::find($productId);
+            if (!$product) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Không tìm thấy sản phẩm!'], 404);
+                }
+                return back()->with('error', 'Không tìm thấy sản phẩm!');
+            }
+
+            // Kiểm tra tổng số lượng trong giỏ hàng
+            $cartItem = Cart::where('user_id', $user->id)
+                ->where('product_id', $productId)
+                ->whereNull('variation_id')
+                ->first();
+            $currentQty = $cartItem ? $cartItem->quantity : 0;
+            $totalQty = $currentQty + $quantity;
+
+            if ($totalQty > $product->quantity) { // Sửa từ stock_quantity thành quantity
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Thất bại! Số lượng vượt quá tồn kho'], 400);
+                }
+                return back()->with('error', 'Thất bại! Số lượng vượt quá tồn kho!');
+            }
+
+            if ($cartItem) {
+                $cartItem->quantity = $totalQty;
+                $cartItem->save();
+            } else {
+                Cart::create([
+                    'user_id' => $user->id,
+                    'product_id' => $productId,
+                    'variation_id' => $variationId,
+                    'quantity' => $quantity,
+                ]);
+            }
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
+            // return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Không xác định được sản phẩm!'], 400);
+            }
+            return back()->with('error', 'Không xác định được sản phẩm cần thêm vào giỏ hàng!');
+        }
+    }
+    public function comment(Request $request, $productId)
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'Bạn cần đăng nhập để bình luận.');
+        }
+
+        // Kiểm tra nếu user đang bị cấm bình luận
+        if ($user->banned_until && now()->lt($user->banned_until)) {
+            return redirect()->back()->with('error', 'Bạn đã bị cấm bình luận đến ' . $user->banned_until->format('d/m/Y H:i'));
+        }
+        if ($user->status === 'bị chặn') {
+            return redirect()->back()->with('error', 'Tài khoản của bạn đã bị chặn bình luận.');
+        }
+
+        $product = Product::findOrFail($productId);
+
+        // Kiểm tra nếu user có bình luận nào bị chặn trong sản phẩm này hoặc toàn hệ thống
+        $hasBlockedComment = $user->comments()->where('status', 'chặn')->exists();
+        if ($hasBlockedComment) {
+            // Cấm user bình luận 1 ngày kể từ bây giờ
+            $user->banned_until = now()->addDay();
+            $user->save();
+            return redirect()->back()->with('error', 'Bạn đã bị cấm bình luận 1 ngày do có bình luận vi phạm.');
+        }
+
+        $product->comments()->create([
+            'user_id' => $user->id,
+            'content' => $request->input('content'),
+            'status' => 'chờ duyệt',
+        ]);
+
+        return redirect()->back()->with('success', 'Bình luận của bạn đã được gửi và đang chờ duyệt!');
     }
 }

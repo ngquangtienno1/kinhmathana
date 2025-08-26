@@ -11,6 +11,7 @@ php artisan storage:link
 composer require simplesoftwareio/simple-qrcode
 composer require maatwebsite/excel
 composer require barryvdh/laravel-dompdf
+composer require pusher/pusher-php-server // Cài đặt Pusher Realtime
 ```
 
 ## 2. Tạo file cấu hình môi trường
@@ -57,7 +58,22 @@ FACEBOOK_REDIRECT_URI=http://127.0.0.1:8000/auth/facebook/callback
 
 -   Đăng ký OAuth trên Google/Facebook Developers và lấy thông tin điền vào.
 
-## 7. Truy cập trang chủ
+## 7. Chạy Pusher Realtime
+
+-   Cấu hình các biến sau trong file `.env`:
+
+```
+BROADCAST_DRIVER=pusher
+
+PUSHER_APP_ID=2006279
+PUSHER_APP_KEY=470ba5e93dce15022f9e
+PUSHER_APP_SECRET=8fb73a994e753605c0dc
+PUSHER_APP_CLUSTER=ap1
+```
+
+-   Chạy `php artisan queue:work`.
+
+## 8. Truy cập trang chủ
 
 -   Mở localhost: http://127.0.0.1:8000
 

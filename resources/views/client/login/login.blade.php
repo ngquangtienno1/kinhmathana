@@ -1,277 +1,404 @@
-<!DOCTYPE html>
-<html lang="vi-VN" dir="ltr" data-navigation-type="default" data-navbar-horizontal-shape="default">
+@extends('client.layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Phoenix</title>
-
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('v1/assets/img/favicons/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('v1/assets/img/favicons/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('v1/assets/img/favicons/favicon-16x16.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('v1/assets/img/favicons/favicon.ico') }}">
-    <link rel="manifest" href="{{ asset('v1/assets/img/favicons/manifest.json') }}">
-    <meta name="msapplication-TileImage" content="{{ asset('v1/assets/img/favicons/mstile-150x150.png') }}">
-    <meta name="theme-color" content="#ffffff">
-    <script src="{{ asset('v1/vendors/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('v1/assets/js/config.js') }}"></script>
-
-    <!-- Stylesheets -->
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap"
-        rel="stylesheet">
-    <link href="{{ asset('v1/vendors/simplebar/simplebar.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('unicons.iconscout.com/release/v4.0.8/css/line.css') }}">
-    <link href="{{ asset('v1/assets/css/theme-rtl.min.css') }}" type="text/css" rel="stylesheet" id="style-rtl">
-    <link href="{{ asset('v1/assets/css/theme.min.css') }}" type="text/css" rel="stylesheet" id="style-default">
-    <link href="{{ asset('v1/assets/css/user-rtl.min.css') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
-    <link href="{{ asset('v1/assets/css/user.min.css') }}" type="text/css" rel="stylesheet" id="user-style-default">
-
+@section('content')
+         @if(session('message') || session('blocked'))
+    <div id="toast-success" class="toast-custom toast-success toast-animate">
+        <span class="toast-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ff0000ff" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e8f5e9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5"/></svg>
+        </span>
+        <span class="toast-content">
+            @if(session('blocked'))
+                Tài khoản của bạn đã bị chặn/khóa
+            @else
+                {{ session('message') }}
+            @endif
+        </span>
+        <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
+    </div>
     <script>
-        var phoenixIsRTL = window.config.config.phoenixIsRTL;
-        if (phoenixIsRTL) {
-            var linkDefault = document.getElementById('style-default');
-            var userLinkDefault = document.getElementById('user-style-default');
-            linkDefault.setAttribute('disabled', true);
-            userLinkDefault.setAttribute('disabled', true);
-            document.querySelector('html').setAttribute('dir', 'rtl');
-        } else {
-            var linkRTL = document.getElementById('style-rtl');
-            var userLinkRTL = document.getElementById('user-style-rtl');
-            linkRTL.setAttribute('disabled', true);
-            userLinkRTL.setAttribute('disabled', true);
-        }
+        setTimeout(function(){
+            var el = document.getElementById('toast-success');
+            if(el) el.style.opacity = 0;
+        }, 3500);
+        setTimeout(function(){
+            var el = document.getElementById('toast-success');
+            if(el) el.remove();
+        }, 4000);
     </script>
-</head>
+    <style>
+    .toast-animate {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.98);
+        animation: toastIn 0.5s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes toastIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.98);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(4px) scale(1.01);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .toast-custom {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        z-index: 9999;
+        width: 400px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 24px;
+        margin-top: 90px;
+        margin-left: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
+        opacity: 1;
+        transition: opacity 0.5s;
+        letter-spacing: 0.2px;
+        border-bottom: 4px solid;
+        border-radius: 10px;
+    }
+    .toast-success {
+        background: #eb2d2d3a;
+        color: #ff0000ff;
+        border-bottom-color: #ff0000ff;
+    }
+    .toast-icon {
+        display: flex;
+        align-items: center;
+        margin-right: 2px;
+    }
+    .toast-content {
+        flex: 1;
+        line-height: 1.5;
+    }
+    .toast-close {
+        cursor: pointer;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #888;
+        margin-left: 8px;
+        transition: color 0.2s;
+    }
+    .toast-close:hover {
+        color: #222;
+    }
+    </style>
+    @endif
+    <style>
+        .login-wrapper {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 48px;
+            max-width: 1400px;
+            margin: 48px auto 64px auto;
+        }
 
-<body>
-    <main class="main" id="top">
-        <div class="container">
-            <div class="row flex-center min-vh-100 py-5">
-                <div class="col-sm-10 col-md-8 col-lg-5 col-xl-5 col-xxl-3">
-                    <a class="d-flex flex-center text-decoration-none mb-4" href="{{ asset('index.html') }}">
-                        <div class="d-flex align-items-center fw-bolder fs-3 d-inline-block">
-                            <img src="{{ asset('v1/assets/img/icons/logo.png') }}" alt="phoenix" width="58" />
-                        </div>
-                    </a>
-                    <div class="text-center mb-7">
-                        <h3 class="text-body-highlight">Đăng nhập</h3>
-                        <p class="text-body-tertiary">Truy cập tài khoản của bạn</p>
-                    </div>
-                    <form action="{{ route('postLogin') }}" method="POST">
-                        @csrf
-                        <button type="button" class="btn btn-phoenix-secondary w-100 mb-3"
-                            onclick="location.href='{{ route('login.google') }}'">
-                            <span class="fab fa-google text-danger me-2 fs-9"></span>Đăng nhập bằng
-                            google
-                        </button>
-                        <div class="position-relative">
-                            <hr class="bg-body-secondary mt-5 mb-4" />
-                            <div class="divider-content-center">hoặc dùng email</div>
-                        </div>
-                        <div class="mb-3 text-start">
-                            <label class="form-label" for="email">Email</label>
-                            <div class="form-icon-container">
-                                <input class="form-control form-icon-input " id="email" name="email"
-                                    type="email" placeholder="Hãy nhập email" value="{{ old('email') }}" />
-                                <span class="fas fa-user text-body fs-9 form-icon"></span>
-                                @error('email')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="mb-3 text-start">
-                            <label class="form-label" for="password">Mật khẩu</label>
-                            <div class="form-icon-container position-relative" data-password="data-password">
-                                <input class="form-control form-icon-input pe-6 " id="password" name="password"
-                                    type="password" placeholder="Mật khẩu"
-                                    data-password-input="data-password-input" />
-                                <span class="fas fa-key text-body fs-9 form-icon"></span>
-                                <button type="button"
-                                    class="btn px-3 py-0 h-100 position-absolute top-0 end-0 fs-7 text-body-tertiary"
-                                    data-password-toggle="data-password-toggle">
-                                    <span class="uil uil-eye show"></span>
-                                    <span class="uil uil-eye-slash hide"></span>
-                                </button>
-                            </div>
+        .login-image {
+            margin-top: 24px;
+            flex: 1 1 50%;
+            border-radius: 32px;
+            overflow: hidden;
+            height: 550px;
+            padding: 0;
+            /* loại bỏ padding nếu có */
+        }
 
-                            {{-- Để text lỗi ra ngoài form-icon-container để không ảnh hưởng chiều cao container --}}
-                            @error('password')
-                                <div class="text-danger mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="row flex-between-center mb-7">
-                            <div class="col-auto">
-                                <div class="form-check mb-0">
-                                    <input class="form-check-input" id="basic-checkbox" type="checkbox"
-                                        checked="checked" />
-                                    <label class="form-check-label mb-0" for="basic-checkbox">Ghi nhớ tài
-                                        khoản</label>
-                                </div>
-                            </div>
-                            <div class="col-auto"><a class="fs-9 fw-semibold"
-                                    href="{{ asset('forgot-password.html') }}">Quên mật khẩu?</a></div>
-                        </div>
-                        <button class="btn btn-primary w-100 mb-3">Đăng nhập</button>
-                    </form>
-                    <div class="text-center">
-                        <a class="fs-9 fw-bold" href="{{ route('client.register') }}">Tạo tài khoản</a>
-                    </div>
-                </div>
-            </div>
+        .login-image img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 32px;
+            object-fit: cover;
+        }
+
+        .login-section {
+            flex: 1 1 50%;
+            background: #fff;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            padding: 36px 32px 28px;
+            font-family: 'Quicksand', 'Segoe UI', Arial, sans-serif;
+            min-width: 340px;
+
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: left;
+            margin-bottom: 6px;
+            color: black;
+            letter-spacing: 0.01em;
+        }
+
+        .login-desc {
+            text-align: left;
+            font-size: 1rem;
+            color: #222;
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 1.08rem;
+            margin-bottom: 7px;
+            color: #222;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            display: block;
+        }
+
+        .form-label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 13px 18px;
+            border: 2.5px solid #7de3e7;
+            border-radius: 10px;
+            font-size: 1.08rem;
+            color: #222;
+            background: #fff;
+            margin-bottom: 18px;
+            transition: border 0.2s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: #1ccfcf;
+            outline: none;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: #1ccfcf;
+        }
+
+        .form-check-label {
+            font-size: 1rem;
+            color: #222;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            display: block;
+            margin: 0 auto 18px auto;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 13px 0;
+            width: 70%;
+            transition: background 0.2s;
+            box-shadow: none;
+            text-align: center;
+        }
+
+        .login-link {
+            padding top: 2px;
+            text-decoration: underline;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .login-link:hover {
+            color: #1ccfcf;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
+            padding: 13px 18px;
+            width: 100%;
+            margin-top: 18px;
+            margin-bottom: 0;
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: #222;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .google-btn:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+        }
+
+        .google-btn .google-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            display: inline-block;
+        }
+
+        .login-bottom-text {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 1rem;
+            color: #222;
+            font-weight: 500;
+        }
+
+        .text-danger {
+            color: #e74c3c;
+            font-size: 0.98rem;
+            margin-top: -12px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .login-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+
+            .login-image,
+            .login-section {
+                max-width: 100%;
+                min-width: 0;
+            }
+
+            .login-section {
+                padding: 24px 8px 18px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .login-wrapper {
+                gap: 12px;
+                margin: 16px 0;
+            }
+
+            .login-image {
+                border-radius: 16px;
+            }
+
+            .login-section {
+                border-radius: 0;
+                padding: 12px 2px 8px;
+            }
+
+            .btn-primary,
+            .google-btn {
+                font-size: 1rem;
+                padding: 11px 0;
+            }
+
+            .form-control {
+                font-size: 1rem;
+                padding: 11px 12px;
+            }
+        }
+    </style>
+    <div class="login-wrapper">
+        <div class="login-image">
+            <img src="{{ asset('uploads/avatars/Pic1.jpg') }}" alt="Login" />
         </div>
-
-        <div class="support-chat-container">
-            <div class="container-fluid support-chat">
-                <div class="card bg-body-emphasis">
-                    <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom border-translucent">
-                        <h5 class="mb-0 d-flex align-items-center gap-2">Widget demo<span
-                                class="fa-solid fa-circle text-success fs-11"></span></h5>
-                        <div class="btn-reveal-trigger">
-                            <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex"
-                                type="button" id="support-chat-dropdown" data-bs-toggle="dropdown"
-                                data-boundary="window" aria-haspopup="true" aria-expanded="false"
-                                data-bs-reference="parent">
-                                <span class="fas fa-ellipsis-h text-body"></span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown">
-                                <a class="dropdown-item" href="#!">Yêu cầu gọi lại</a>
-                                <a class="dropdown-item" href="#!">Tìm kiếm trong trò chuyện</a>
-                                <a class="dropdown-item" href="#!">Hiển thị lịch sử</a>
-                                <a class="dropdown-item" href="#!">Báo cáo cho quản trị viên</a>
-                                <a class="dropdown-item btn-support-chat" href="#!">Đóng hỗ trợ</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body chat p-0">
-                        <div class="d-flex flex-column-reverse scrollbar h-100 p-3">
-                            <div class="text-end mt-6">
-                                <a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
-                                    href="#!">
-                                    <p class="mb-0 fw-semibold fs-9">Tôi cần giúp đỡ về điều gì đó</p>
-                                    <span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                                </a>
-                                <a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
-                                    href="#!">
-                                    <p class="mb-0 fw-semibold fs-9">Tôi không thể đặt lại một sản phẩm tôi đã đặt
-                                        trước
-                                        đó</p>
-                                    <span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                                </a>
-                                <a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
-                                    href="#!">
-                                    <p class="mb-0 fw-semibold fs-9">Làm thế nào để tôi đặt hàng?</p>
-                                    <span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                                </a>
-                                <a class="false d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
-                                    href="#!">
-                                    <p class="mb-0 fw-semibold fs-9">Phương thức thanh toán của tôi không hoạt động</p>
-                                    <span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                                </a>
-                            </div>
-                            <div class="text-center mt-auto">
-                                <div class="avatar avatar-3xl status-online">
-                                    <img class="rounded-circle border border-3 border-light-subtle"
-                                        src="{{ asset('v1/assets/img/team/30.webp') }}" alt="" />
-                                </div>
-                                <h5 class="mt-2 mb-3">Eric</h5>
-                                <p class="text-center text-body-emphasis mb-0">Hỏi chúng tôi bất cứ điều gì – chúng tôi
-                                    sẽ phản hồi bạn ở đây hoặc qua email trong vòng 24 giờ.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="card-footer d-flex align-items-center gap-2 border-top border-translucent ps-3 pe-4 py-3">
-                        <div
-                            class="d-flex align-items-center flex-1 gap-3 border border-translucent rounded-pill px-4">
-                            <input class="form-control outline-none border-0 flex-1 fs-9 px-0" type="text"
-                                placeholder="Viết tin nhắn" />
-                            <label class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
-                                for="supportChatPhotos">
-                                <span class="fa-solid fa-image"></span>
-                            </label>
-                            <input class="d-none" type="file" accept="image/*" id="supportChatPhotos" />
-                            <label class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
-                                for="supportChatAttachment">
-                                <span class="fa-solid fa-paperclip"></span>
-                            </label>
-                            <input class="d-none" type="file" id="supportChatAttachment" />
-                        </div>
-                        <button class="btn p-0 border-0 send-btn">
-                            <span class="fa-solid fa-paper-plane fs-9"></span>
-                        </button>
-                    </div>
+        <div class="login-section">
+            <div class="login-title">Đăng nhập</div>
+            <div class="login-desc">Hãy đăng nhập để được hưởng đặc quyền riêng dành cho bạn</div>
+            <form action="{{ route('postLogin') }}" method="POST">
+                @csrf
+                <label class="form-label" for="email">Tài khoản<span class="required">*</span></label>
+                <input class="form-control" id="email" name="email" type="text" placeholder="Nhập tài khoản"
+                    value="{{ old('email') }}" />
+                @error('email')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+                <label class="form-label" for="password">Mật khẩu<span class="required">*</span></label>
+                <div style="position:relative;display:flex;align-items:center;">
+                    <input class="form-control" id="password" name="password" type="password" placeholder="Nhập mật khẩu"
+                        style="padding-right:40px;" />
+                    <button type="button" onclick="togglePassword('password', this)"
+                        style="position:absolute;right:10px;top:-6px;bottom:0;height:100%;display:flex;align-items:center;background:transparent;border:none;outline:none;cursor:pointer;padding:0;">
+                        <svg id="icon-password" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </button>
                 </div>
-            </div>
-            <button class="btn btn-support-chat p-0 border border-translucent">
-                <span class="fs-8 btn-text text-primary text-nowrap">Chat demo</span>
-                <span class="ping-icon-wrapper mt-n4 ms-n6 mt-sm-0 ms-sm-2 position-absolute position-sm-relative">
-                    <span class="ping-icon-bg"></span>
-                    <span class="fa-solid fa-circle ping-icon"></span>
-                </span>
-                <span class="fa-solid fa-headset text-primary fs-8 d-sm-none"></span>
-                <span class="fa-solid fa-chevron-down text-primary fs-7"></span>
-            </button>
-        </div>
-    </main>
-
-    <div class="offcanvas offcanvas-end settings-panel border-0" id="settings-offcanvas" tabindex="-1"
-        aria-labelledby="settings-offcanvas">
-        <div class="offcanvas-header align-items-start border-bottom flex-column border-translucent">
-            <div class="pt-1 w-100 mb-6 d-flex justify-content-between align-items-start">
-                <div>
-                    <h5 class="mb-2 me-2 lh-sm"><span class="fas fa-palette me-2 fs-8"></span>Tùy chỉnh giao diện</h5>
-                    <p class="mb-0 fs-9">Khám phá các kiểu giao diện theo sở thích của bạn</p>
+                @error('password')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+                <div class="form-check">
+                    <input class="form-check-input" id="basic-checkbox" type="checkbox" />
+                    <label class="form-check-label mb-0" for="basic-checkbox">Lưu tài khoản</label>
                 </div>
-                <button class="btn p-1 fw-bolder" type="button" data-bs-dismiss="offcanvas" aria-label="Đóng"><span
-                        class="fas fa-times fs-8"> </span></button>
+                <button class="btn btn-primary" type="submit"
+                    style="width: 100%; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-align: center;">
+                    Đăng nhập
+                </button>
+
+                <div style="margin-bottom: 12px; margin-top: 10px;"><a class="login-link"
+                        href="{{ route('client.password.request') }}">Quên mật khẩu ?</a></div>
+                <button type="button"
+                    style="display: flex; justify-content: center; align-items: center; text-align: center; margin-bottom: 0px;"
+                    class="google-btn" onclick="location.href='{{ route('login.google') }}'">
+                    <span class="google-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                            <g>
+                                <path fill="#111"
+                                    d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.7 20-21 0-1.4-.2-2.7-.4-3.5z" />
+                                <path fill="#34A853"
+                                    d="M6.3 14.7l6.6 4.8C14.5 16.1 18.8 13 24 13c2.7 0 5.2.9 7.2 2.4l6-6C36.1 5.1 30.4 3 24 3 16.1 3 9.1 7.6 6.3 14.7z" />
+                                <path fill="#FBBC05"
+                                    d="M24 45c6.2 0 11.4-2 15.2-5.4l-7-5.7C29.5 35.7 26.9 37 24 37c-5.5 0-10.1-3.7-11.7-8.7l-6.6 5.1C9.1 40.4 16.1 45 24 45z" />
+                                <path fill="#EA4335"
+                                    d="M43.6 20.5h-1.9V20H24v8h11.3c-0.7 2-2.1 3.7-4.1 4.9l6.6 5.1C41.9 39.1 45 32.7 45 24c0-1.4-.2-2.7-.4-3.5z" />
+                            </g>
+                        </svg></span>
+                    Đăng nhập bằng <b>&nbsp;Google</b>
+
+
+                </button>
+            </form>
+            <div class="login-bottom-text">
+                Bạn chưa có tài khoản Hana ?<br>
+                <a class="login-link" href="{{ route('client.register') }}">Đăng ký ngay</a>
             </div>
-            <button class="btn btn-phoenix-secondary w-100" data-theme-control="reset">
-                <span class="fas fa-arrows-rotate me-2 fs-10"></span>Đặt lại về mặc định
-            </button>
-        </div>
-        <div class="offcanvas-body scrollbar px-card" id="themeController">
-            <!-- Mã tùy chỉnh giao diện của bạn ở đây... -->
         </div>
     </div>
-
-    <a class="card setting-toggle" href="#settings-offcanvas" data-bs-toggle="offcanvas">
-        <div class="card-body d-flex align-items-center px-2 py-1">
-            <div class="position-relative rounded-start" style="height:34px;width:28px">
-                <div class="settings-popover">
-                    <span class="ripple">
-                        <span class="fa-spin position-absolute all-0 d-flex flex-center">
-                            <span class="icon-spin position-absolute all-0 d-flex flex-center">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="#ffffff"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M19.7369 12.3941L19.1989 12.1065C18.4459 11.7041 18.0843 10.8487 18.0843 9.99495C18.0843 9.14118 18.4459 8.28582 19.1989 7.88336L19.7369 7.59581C19.9474 7.47484 20.0316 7.23291 19.9474 7.03131C19.4842 5.57973 18.6843 4.28943 17.6738 3.20075C17.5053 3.03946 17.2527 2.99914 17.0422 3.12011L16.393 3.46714C15.6883 3.84379 14.8377 3.74529 14.1476 3.3427C14.0988 3.31422 14.0496 3.28621 14.0002 3.25868C13.2568 2.84453 12.7055 2.10629 12.7055 1.25525V0.70081C12.7055 0.499202 12.5371 0.297594 12.2845 0.257272C10.7266 -0.105622 9.16879 -0.0653007 7.69516 0.257272C7.44254 0.297594 7.31623 0.499202 7.31623 0.70081V1.23474C7.31623 2.09575 6.74999 2.8362 5.99824 3.25599C5.95774 3.27861 5.91747 3.30159 5.87744 3.32493C5.15643 3.74527 4.26453 3.85902 3.53534 3.45302L2.93743 3.12011C2.72691 2.99914 2.47429 3.03946 2.30587 3.20075C1.29538 4.28943 0.495411 5.57973 0.0322686 7.03131C-0.051939 7.23291 0.0322686 7.47484 0.242788 7.59581L0.784376 7.8853C1.54166 8.29007 1.92694 9.13627 1.92694 9.99495C1.92694 10.8536 1.54166 11.6998 0.784375 12.1046L0.242788 12.3941C0.0322686 12.515 -0.051939 12.757 0.0322686 12.9586C0.495411 14.4102 1.29538 15.7005 2.30587 16.7891C2.47429 16.9504 2.72691 16.9907 2.93743 16.8698L3.58669 16.5227C4.29133 16.1461 5.14131 16.2457 5.8331 16.6455C5.88713 16.6767 5.94159 16.7074 5.99648 16.7375C6.75162 17.1511 7.31623 17.8941 7.31623 18.7552V19.2891C7.31623 19.4425 7.41373 19.5959 7.55309 19.696C7.64066 19.7589 7.74815 19.7843 7.85406 19.8046C9.35884 20.0925 10.8609 20.0456 12.2845 19.7729C12.5371 19.6923 12.7055 19.4907 12.7055 19.2891V18.7346C12.7055 17.8836 13.2568 17.1454 14.0002 16.7312C14.0496 16.7037 14.0988 16.6757 14.1476 16.6472C14.8377 16.2446 15.6883 16.1461 16.393 16.5227L17.0422 16.8698C17.2527 16.9907 17.5053 16.9504 17.6738 16.7891C18.7264 15.7005 19.4842 14.4102 19.9895 12.9586C20.0316 12.757 19.9474 12.515 19.7369 12.3941ZM10.0109 13.2005C8.1162 13.2005 6.64257 11.7893 6.64257 9.97478C6.64257 8.20063 8.1162 6.74905 10.0109 6.74905C11.8634 6.74905 13.3792 8.20063 13.3792 9.97478C13.3792 11.7893 11.8634 13.2005 10.0109 13.2005Z"
-                                        fill="#2A7BE4"></path>
-                                </svg>
-                            </span>
-                        </span>
-                    </span>
-                </div>
-            </div>
-            <small class="text-uppercase text-body-tertiary fw-bold py-2 pe-2 ps-1 rounded-end">tùy chỉnh</small>
-        </div>
-    </a>
-
-    <!-- JavaScripts -->
-    <script src="{{ asset('v1/vendors/popper/popper.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/bootstrap/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/anchorjs/anchor.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/is/is.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/fontawesome/all.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/lodash/lodash.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/list.js/list.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('v1/vendors/dayjs/dayjs.min.js') }}"></script>
-    <script src="{{ asset('v1/assets/js/phoenix.js') }}"></script>
-</body>
-
-</html>
+    <script>
+        function togglePassword(id, btn) {
+            const input = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML =
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.77 21.77 0 0 1 5.06-6.06M1 1l22 22"/><circle cx="12" cy="12" r="3"/></svg>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML =
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+            }
+        }
+    </script>
+@endsection

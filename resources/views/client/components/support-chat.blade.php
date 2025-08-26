@@ -1,17 +1,15 @@
-<a id="qodef-back-to-top" href="#" class="qodef--predefined">
-    <span class="qodef-back-to-top-icon">
-        <span class="qodef-icon-elegant-icons arrow_carrot-up"></span> </span>
-</a>
 <div id="qodef-subscribe-popup-modal" class="qodef-sp-holder qodef-sp-prevent-session">
     <div class="qodef-sp-inner">
         <a class="qodef-sp-close" href="javascript:void(0)">
             <span class="qodef-icon-elegant-icons icon_close"></span> </a>
         <div class="qodef-sp-image-container">
-            <img src="{{asset('v1/wp-content/uploads/2021/08/Newsletter-backgrounf-img.jpg')}}" />
+            <img src="{{ asset('v1/wp-content/uploads/2021/08/Newsletter-backgrounf-img.jpg') }}" />
         </div>
         <div class="qodef-sp-content-container">
-            <h4 class="qodef-sp-title">Subscribe to our newsletter to recive 20% off</h4>
-            <p class="qodef-sp-subtitle">Purchase online and get discount</p>
+
+            {{-- chuyển sang tiếng việt --}}
+            <h4 class="qodef-sp-title">Đăng ký nhận bản tin của chúng tôi để được giảm giá 20%</h4>
+            <p class="qodef-sp-subtitle">Mua online và nhận ưu đãi</p>
 
 
             <div class="wpcf7 no-js" id="wpcf7-f676-o2" lang="en-US" dir="ltr">
@@ -32,15 +30,15 @@
                     <div class="qodef-subscribe">
                         <p><span class="wpcf7-form-control-wrap" data-name="your-name"><input size="40"
                                     maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
-                                    aria-required="true" aria-invalid="false" placeholder="First Name" value=""
+                                    aria-required="true" aria-invalid="false" placeholder="Họ và tên" value=""
                                     type="text" name="your-name" /></span><span class="wpcf7-form-control-wrap"
                                 data-name="your-email"><input size="40" maxlength="400"
                                     class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email"
-                                    aria-required="true" aria-invalid="false" placeholder="Email Address" value=""
+                                    aria-required="true" aria-invalid="false" placeholder="Email" value=""
                                     type="email" name="your-email" /></span><br />
                             <button
                                 class="wpcf7-form-control wpcf7-submit qodef-button qodef-size--normal qodef-layout--filled qodef-m"
-                                type="submit"><span class="qodef-m-text">subscribe</span></button>
+                                type="submit"><span class="qodef-m-text">Đăng ký</span></button>
                         </p>
                     </div>
                     <div class="wpcf7-response-output" aria-hidden="true"></div>
@@ -58,7 +56,7 @@
                                 d="M0.229,9.779c-0.253,0.253-0.305,0.609-0.117,0.799l0,0c0.188,0.189,0.545,0.138,0.799-0.115l9.515-9.495 c0.253-0.254,0.305-0.611,0.117-0.801l0,0C10.355-0.021,9.998,0.03,9.744,0.283L0.229,9.779z" />
                         </svg>
                     </span>
-                    <label class="qodef-sp-prevent-label">Prevent This Pop-up</label>
+                    <label class="qodef-sp-prevent-label">Chặn popup này</label>
                 </div>
             </div>
         </div>

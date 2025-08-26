@@ -46,17 +46,13 @@ class PaymentMethodController extends Controller
         return view('admin.payment_methods.index', compact('paymentMethods', 'deletedCount', 'activeCount'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
         return view('admin.payment_methods.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $messages = [
@@ -97,27 +93,20 @@ class PaymentMethodController extends Controller
         return redirect()->route('admin.payment_methods.index')->with('success', 'Thêm phương thức thanh toán thành công!');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show($id)
     {
         $paymentMethod = PaymentMethod::withTrashed()->findOrFail($id);
         return view('admin.payment_methods.show', compact('paymentMethod'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit($id)
     {
         $paymentMethod = PaymentMethod::findOrFail($id);
         return view('admin.payment_methods.edit', compact('paymentMethod'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $paymentMethod = PaymentMethod::findOrFail($id);
@@ -164,9 +153,7 @@ class PaymentMethodController extends Controller
         return redirect()->route('admin.payment_methods.index')->with('success', 'Cập nhật phương thức thanh toán thành công!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy($id)
     {
         $paymentMethod = PaymentMethod::findOrFail($id);

@@ -24,22 +24,25 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.promotions.store') }}" method="POST">
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h6 class="alert-heading mb-2">Có lỗi xảy ra, vui lòng kiểm tra lại:</h6>
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <form action="{{ route('admin.promotions.store') }}" method="POST" id="promotion-form">
             @csrf
             <div class="row g-3">
                 <div class="col-12 col-xl-8">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="mb-3">Thông tin khuyến mãi</h4>
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul class="mb-0">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
 
                             <div class="mb-4">
                                 <label class="form-label" for="name">Tên khuyến mãi <span
@@ -83,9 +86,11 @@
                                     <select name="discount_type" id="discount_type"
                                         class="form-select @error('discount_type') is-invalid @enderror" required>
                                         <option value="percentage"
-                                            {{ old('discount_type') == 'percentage' ? 'selected' : '' }}>Phần trăm (%)
+                                            {{ old('discount_type', 'percentage') == 'percentage' ? 'selected' : '' }}>Phần
+                                            trăm (%)
                                         </option>
-                                        <option value="fixed" {{ old('discount_type') == 'fixed' ? 'selected' : '' }}>Số
+                                        <option value="fixed"
+                                            {{ old('discount_type', 'percentage') == 'fixed' ? 'selected' : '' }}>Số
                                             tiền cố định</option>
                                     </select>
                                     @error('discount_type')
@@ -98,7 +103,8 @@
                                     <div class="input-group">
                                         <input type="number" name="discount_value" id="discount_value"
                                             class="form-control @error('discount_value') is-invalid @enderror"
-                                            value="{{ old('discount_value') }}" step="0.01" min="0" required>
+                                            value="{{ old('discount_value') }}" step="1" min="0"
+                                            max="100" required>
                                         <span class="input-group-text" id="discount-symbol">%</span>
                                     </div>
                                     @error('discount_value')
@@ -130,52 +136,7 @@
                                 </div>
                             </div>
 
-                            {{-- Hiển thị các mục đã chọn --}}
-                            @if(old('categories', []) || old('products', []))
-                                <div class="mb-3 p-2" style="background: #d4ffb2; border-radius: 5px;">
-                                    <strong>Đã chọn:</strong>
-                                    @foreach($categories as $category)
-                                        @if(in_array($category->id, old('categories', [])))
-                                            <span class="badge bg-success">
-                                                {{ $category->name }}
-                                                <a href="#" class="text-white ms-1 remove-selected" data-type="category" data-id="{{ $category->id }}">×</a>
-                                            </span>
-                                        @endif
-                                    @endforeach
-                                    @foreach($products as $product)
-                                        @if(in_array($product->id, old('products', [])))
-                                            <span class="badge bg-info">
-                                                {{ $product->name }}
-                                                <a href="#" class="text-white ms-1 remove-selected" data-type="product" data-id="{{ $product->id }}">×</a>
-                                            </span>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            @endif
 
-                            <div class="mb-4">
-                                <label class="form-label" for="categories">Chọn danh mục</label>
-                                <select name="categories[]" id="categories" class="form-select select2" multiple>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label" for="products">Chọn sản phẩm</label>
-                                <select name="products[]" id="products" class="form-select select2" multiple>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}"
-                                            {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>
-                                            {{ $product->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -189,7 +150,7 @@
                                 <label class="form-label" for="minimum_purchase">Giá trị đơn tối thiểu</label>
                                 <input type="number" name="minimum_purchase" id="minimum_purchase"
                                     class="form-control @error('minimum_purchase') is-invalid @enderror"
-                                    value="{{ old('minimum_purchase', '0') }}" step="0.01" min="0"
+                                    value="{{ old('minimum_purchase', '0') }}" step="1" min="0"
                                     placeholder="0">
                                 @error('minimum_purchase')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -200,8 +161,8 @@
                                 <label class="form-label" for="maximum_purchase">Giá trị đơn tối đa</label>
                                 <input type="number" name="maximum_purchase" id="maximum_purchase"
                                     class="form-control @error('maximum_purchase') is-invalid @enderror"
-                                    value="{{ old('maximum_purchase', '0') }}" step="0.01" min="0"
-                                    placeholder="0">
+                                    value="{{ old('maximum_purchase') }}" step="1" min="0"
+                                    placeholder="Không giới hạn">
                                 @error('maximum_purchase')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -222,13 +183,17 @@
                                 <select name="is_active" id="is_active" class="form-select">
                                     <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Hoạt động
                                     </option>
-                                    <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Không hoạt động
+                                    <option value="0" {{ old('is_active', '1') == '0' ? 'selected' : '' }}>Không hoạt
+                                        động
                                     </option>
                                 </select>
                             </div>
 
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Tạo khuyến mãi</button>
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <span class="spinner-border spinner-border-sm me-2 d-none" id="submit-spinner"></span>
+                                    Tạo khuyến mãi
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -238,22 +203,68 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <style>
-        .badge { font-size: 1em; margin-right: 5px; }
-        .remove-selected { cursor: pointer; }
+        .badge {
+            font-size: 0.9em;
+            margin-right: 8px;
+            margin-bottom: 5px;
+            padding: 6px 10px;
+        }
+
+        .remove-selected {
+            cursor: pointer;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .remove-selected:hover {
+            opacity: 0.8;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .form-select.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .alert-danger .btn-close {
+            filter: invert(1);
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Khởi tạo Select2
             $('.select2').select2({
                 width: '100%',
                 placeholder: 'Chọn mục...',
                 allowClear: true
             });
+
+            // Không còn khôi phục selections (categories/products) vì đã bỏ chọn theo yêu cầu
+
+            // Set initial max value based on current discount type
+            updateDiscountField();
+
             // Xóa mục đã chọn
-            $(document).on('click', '.remove-selected', function(e){
+            $(document).on('click', '.remove-selected', function(e) {
                 e.preventDefault();
                 let type = $(this).data('type');
                 let id = $(this).data('id').toString();
@@ -261,28 +272,99 @@
                 let values = $(select).val() || [];
                 values = values.filter(v => v != id);
                 $(select).val(values).trigger('change');
-                $(this).parent().remove();
+                updateSelectedItemsDisplay();
             });
 
-            // Change discount symbol based on discount type
+            // Change discount symbol and max value based on discount type
             $('#discount_type').change(function() {
-                if ($(this).val() === 'percentage') {
-                    $('#discount-symbol').text('%');
-                } else {
-                    $('#discount-symbol').text('đ');
-                }
+                updateDiscountField();
             });
+
+            // Bỏ theo dõi selections
 
             // Generate promotion code
             $('#generate-code').click(function() {
+                const $btn = $(this);
+                $btn.prop('disabled', true);
                 $.ajax({
                     url: "{{ route('admin.promotions.generate-code') }}",
                     type: "GET",
                     success: function(response) {
-                        $('#code').val(response.code);
+                        if (response && response.code) {
+                            $('#code').val(response.code);
+                        } else {
+                            alert('Không nhận được mã hợp lệ. Vui lòng thử lại.');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Generate code error:', xhr.responseText || xhr
+                            .statusText);
+                        alert('Không thể tạo mã. Vui lòng thử lại.');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false);
                     }
                 });
             });
+
+            // Form submission handling
+            $('#promotion-form').on('submit', function() {
+                $('#submit-btn').prop('disabled', true);
+                $('#submit-spinner').removeClass('d-none');
+
+                // Lưu form state vào localStorage trước khi submit
+                saveFormState();
+            });
+
+            // Auto-save form state khi user thay đổi
+            $('input, select, textarea').on('change keyup', function() {
+                saveFormState();
+            });
+
+            // Bỏ restore selections
+
+            // Lưu form state vào localStorage
+            function saveFormState() {
+                const state = {
+                    name: $('#name').val(),
+                    description: $('#description').val(),
+                    code: $('#code').val(),
+                    discount_type: $('#discount_type').val(),
+                    discount_value: $('#discount_value').val(),
+                    start_date: $('#start_date').val(),
+                    end_date: $('#end_date').val(),
+                    minimum_purchase: $('#minimum_purchase').val(),
+                    maximum_purchase: $('#maximum_purchase').val(),
+                    usage_limit: $('#usage_limit').val(),
+                    is_active: $('#is_active').val()
+                };
+
+                localStorage.setItem('promotion_form_state', JSON.stringify(state));
+            }
+
+            // Cập nhật trường discount dựa trên loại
+            function updateDiscountField() {
+                if ($('#discount_type').val() === 'percentage') {
+                    $('#discount-symbol').text('%');
+                    $('#discount_value').attr('max', '100');
+                } else {
+                    $('#discount-symbol').text('đ');
+                    $('#discount_value').removeAttr('max');
+                }
+            }
+
+            // Cập nhật hiển thị các mục đã chọn
+            // Bỏ hiển thị selections
+
+            // Xóa form state khi thành công
+            function clearFormState() {
+                localStorage.removeItem('promotion_form_state');
+            }
+
+            // Nếu form submit thành công, xóa state
+            @if (session('success'))
+                clearFormState();
+            @endif
         });
     </script>
-@endsection
+@endpush

@@ -10,6 +10,27 @@
 @endsection
 
 @section('content')
+    @php
+        $isAdmin = auth()->user()->role_id == 1;
+        $isStaff = auth()->user()->role_id == 2;
+        $isEditingSelf = auth()->user()->id == $user->id;
+        $isEditingAdmin = $user->role_id == 1;
+        $isEditingStaff = $user->role_id == 2;
+        $isEditingCustomer = $user->role_id == 3;
+
+        // Logic quyền thay đổi ảnh đại diện
+        $canChangeAvatar = false;
+
+        // Admin có thể thay đổi ảnh của chính mình và Staff
+        if ($isAdmin && ($isEditingSelf || $isEditingStaff)) {
+            $canChangeAvatar = true;
+        }
+
+        // Staff chỉ có thể thay đổi ảnh của chính mình
+        if ($isStaff && $isEditingSelf) {
+            $canChangeAvatar = true;
+        }
+    @endphp
     <div class="container-fluid py-4">
         <div class="row g-4">
             <!-- Left Column: Avatar and Basic Info -->
@@ -22,10 +43,12 @@
                                 class="rounded-circle img-fluid border border-3 border-body-emphasis"
                                 style="width: 180px; height: 180px; object-fit: cover;">
                         </div>
-                        <button type="button" class="btn btn-phoenix-primary btn-sm mb-4" data-bs-toggle="modal"
-                            data-bs-target="#avatarModal">
-                            <span class="fas fa-camera me-1"></span> Thay đổi ảnh
-                        </button>
+                        @if ($canChangeAvatar)
+                            <button type="button" class="btn btn-phoenix-primary btn-sm mb-4" data-bs-toggle="modal"
+                                data-bs-target="#avatarModal">
+                                <span class="fas fa-camera me-1"></span> Thay đổi ảnh
+                            </button>
+                        @endif
                         <div class="text-start px-3">
                             <h5 class="text-body-emphasis mb-3"><span class="fas fa-info-circle me-2"></span>Thông tin cơ
                                 bản</h5>
@@ -56,16 +79,16 @@
                         <h5 class="card-title text-body-emphasis mb-0"><span class="fas fa-user me-2"></span>Thông tin cá
                             nhân</h5>
                         <div>
-                        @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
+                            @if ($user->role_id != 3 && !(auth()->user()->role_id == 2 && $user->role_id == 1))
                                 <button type="button" class="btn btn-phoenix-primary btn-sm me-2" data-bs-toggle="modal"
-                                data-bs-target="#editProfileModal">
-                                <i class="fas fa-edit me-1"></i> Chỉnh sửa
-                            </button>
+                                    data-bs-target="#editProfileModal">
+                                    <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                                </button>
                                 <button type="button" class="btn btn-phoenix-warning btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#changePasswordModal">
                                     <i class="fas fa-key me-1"></i> Đổi mật khẩu
                                 </button>
-                        @endif
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
@@ -321,8 +344,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-phoenix-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-phoenix-primary" id="verifyCurrentPassword">Xác nhận</button>
-                        <button type="submit" class="btn btn-phoenix-primary" id="submitNewPassword" style="display: none;">Lưu mật khẩu mới</button>
+                        <button type="button" class="btn btn-phoenix-primary" id="verifyCurrentPassword">Xác
+                            nhận</button>
+                        <button type="submit" class="btn btn-phoenix-primary" id="submitNewPassword"
+                            style="display: none;">Lưu mật khẩu mới</button>
                     </div>
                 </form>
             </div>
@@ -336,6 +361,7 @@
             background-color: #f8f9fa;
             font-family: 'Inter', sans-serif;
         }
+
         .card {
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -527,58 +553,58 @@
         document.getElementById('verifyCurrentPassword').addEventListener('click', function() {
             const currentPassword = document.getElementById('current_password').value;
             const currentPasswordInput = document.getElementById('current_password');
-            
+
             // Xóa thông báo lỗi cũ nếu có
             currentPasswordInput.classList.remove('is-invalid');
             const oldFeedback = currentPasswordInput.parentNode.querySelector('.invalid-feedback');
             if (oldFeedback) {
                 oldFeedback.remove();
             }
-            
+
             // Gửi request kiểm tra mật khẩu hiện tại
-            fetch('{{ route("admin.users.verifyPassword") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    current_password: currentPassword
+            fetch('{{ route('admin.users.verifyPassword') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Hiển thị form nhập mật khẩu mới
-                    document.getElementById('newPasswordFields').style.display = 'block';
-                    currentPasswordInput.readOnly = true;
-                    document.getElementById('verifyCurrentPassword').style.display = 'none';
-                    document.getElementById('submitNewPassword').style.display = 'block';
-                } else {
-                    // Hiển thị lỗi
-                    const feedback = document.createElement('div');
-                    feedback.className = 'invalid-feedback d-block';
-                    feedback.textContent = 'Mật khẩu hiện tại không đúng';
-                    currentPasswordInput.classList.add('is-invalid');
-                    currentPasswordInput.parentNode.appendChild(feedback);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hiển thị form nhập mật khẩu mới
+                        document.getElementById('newPasswordFields').style.display = 'block';
+                        currentPasswordInput.readOnly = true;
+                        document.getElementById('verifyCurrentPassword').style.display = 'none';
+                        document.getElementById('submitNewPassword').style.display = 'block';
+                    } else {
+                        // Hiển thị lỗi
+                        const feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback d-block';
+                        feedback.textContent = 'Mật khẩu hiện tại không đúng';
+                        currentPasswordInput.classList.add('is-invalid');
+                        currentPasswordInput.parentNode.appendChild(feedback);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
 
         // Reset form when modal is closed
-        document.getElementById('changePasswordModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('changePasswordModal').addEventListener('hidden.bs.modal', function() {
             const form = document.getElementById('changePasswordForm');
             const currentPasswordInput = document.getElementById('current_password');
-            
+
             form.reset();
             document.getElementById('newPasswordFields').style.display = 'none';
             currentPasswordInput.readOnly = false;
             document.getElementById('verifyCurrentPassword').style.display = 'block';
             document.getElementById('submitNewPassword').style.display = 'none';
-            
+
             // Xóa tất cả thông báo lỗi
             currentPasswordInput.classList.remove('is-invalid');
             const feedbacks = form.querySelectorAll('.invalid-feedback');

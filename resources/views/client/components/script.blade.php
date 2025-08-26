@@ -6,6 +6,12 @@
     window.RS_MODULES.moduleWaiting = window.RS_MODULES.moduleWaiting || {};
     window.RS_MODULES.type = 'compiled';
 </script>
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer>
+    var gtm4wp_datalayer_name = "dataLayer";
+    var dataLayer = dataLayer || [];
+</script>
 <script type="speculationrules">
 {"prefetch":[{"source":"document","where":{"and":[{"href_matches":"\/*"},{"not":{"href_matches":["\/wp-*.php","\/wp-admin\/*","\/wp-content\/uploads\/*","\/wp-content\/*","\/wp-content\/plugins\/*","\/wp-content\/themes\/neoocular\/*","\/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
 </script>
@@ -599,9 +605,6 @@
     });
     /* ]]> */
 </script>
-<script type="text/javascript"
-    src="{{ asset('v1/wp-content/plugins/contact-form-7/includes/swv/js/indexe2db.js?ver=5.9.8') }}" id="swv-js">
-</script>
 <script type="text/javascript" id="contact-form-7-js-extra">
     /* <![CDATA[ */
     var wpcf7 = {
@@ -612,11 +615,6 @@
     };
     /* ]]> */
 </script>
-<script type="text/javascript"
-    src="{{ asset('v1/wp-content/plugins/contact-form-7/includes/js/indexe2db.js?ver=5.9.8') }}"
-    id="contact-form-7-js"></script>
-<script type="text/javascript" src="../export.qodethemes.com/_toolbar/assets/js/rbt-modules0899.js?ver=6.8.1"
-    id="rabbit_js-js"></script>
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min4615.js?ver=9.1.4') }}"
     id="sourcebuster-js-js"></script>
@@ -701,9 +699,6 @@
 </script>
 <script type="text/javascript" src="{{ asset('v1/wp-content/themes/neoocular/assets/js/main.min0899.js?ver=6.8.1') }}"
     id="neoocular-main-js-js"></script>
-<script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?key=INSERT_YOUR_API_KEY&callback=initMap&libraries=places&v=weekly&solution_channel=GMP_CCS_placedetails_v2"
-    id="google-map-api-js"></script>
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-core/inc/maps/assets/js/custom-marker0899.js?ver=6.8.1') }}"
     id="neoocular-core-map-custom-marker-js"></script>
@@ -895,12 +890,12 @@
     };
     /* ]]> */
 </script>
-<script type="text/javascript"
+{{-- <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/qode-wishlist-for-woocommerce/assets/js/main.min62ea.js?ver=1.2') }}"
-    id="qode-wishlist-for-woocommerce-main-js"></script>
-<script type="text/javascript"
+    id="qode-wishlist-for-woocommerce-main-js"></script> --}}
+{{-- <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce-premium/assets/js/main.min4bf4.js?ver=1.0.3') }}"
-    id="qode-variation-swatches-for-woocommerce-premium-main-js"></script>
+    id="qode-variation-swatches-for-woocommerce-premium-main-js"></script> --}}
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/themes/neoocular/assets/plugins/swiper/swiper.min0899.js?ver=6.8.1') }}"
     id="swiper-js"></script>
@@ -926,30 +921,6 @@
         "setSrcsetOnWooPagesLoopImage": ""
     };
     /* ]]> */
-</script>
-<script type="text/javascript"
-    src="{{ asset('v1/wp-content/plugins/qode-variation-swatches-for-woocommerce/assets/js/main.min4bf4.js?ver=1.0.3') }}"
-    id="qode-variation-swatches-for-woocommerce-main-js"></script>
-<script type="text/javascript"
-    src="../static.zdassets.com/ekr/snippet7f99.js?key=af3078fd-a5ae-40da-bee0-e589b98c8603&amp;ver=6.8.1"
-    id="ze-snippet"></script>
-<script type="text/javascript">
-    zE(function() {
-        $zopim(function() {
-            var isChatEnabled = sessionStorage.getItem("qodeChatEnabled"),
-                appearingTime = 15000;
-
-            if (isChatEnabled !== "no" && window.innerWidth > 1024) {
-                setTimeout(function() {
-                    $zopim.livechat.window.show();
-
-                    $zopim.livechat.window.onHide(function() {
-                        sessionStorage.setItem("qodeChatEnabled", "no");
-                    });
-                }, appearingTime);
-            }
-        });
-    });
 </script>
 <script type="text/javascript"
     src="{{ asset('v1/wp-content/plugins/neoocular-core/assets/plugins/perfect-scrollbar/perfect-scrollbar.jquery.min0899.js?ver=6.8.1') }}"

@@ -17,9 +17,8 @@ return new class extends Migration
             $table->decimal('import_price', 10, 2)->nullable();
             $table->decimal('sale_price', 10, 2)->nullable();
             $table->decimal('discount_price', 10, 2)->nullable();
-            $table->integer('stock_quantity')->default(0);
-            $table->integer('stock_alert_threshold')->default(10);
-            // $table->string('status')->nullable();
+            $table->integer('quantity')->default(0);
+            $table->string('status')->default('active');
             $table->foreignId('color_id')->nullable()->constrained('colors')->onDelete('set null');
             $table->foreignId('size_id')->nullable()->constrained('sizes')->onDelete('set null');
             $table->foreignId('spherical_id')->nullable()->constrained('sphericals')->onDelete('set null');

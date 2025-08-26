@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Cart;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -49,5 +53,27 @@ class AppServiceProvider extends ServiceProvider
             Config::set('mail.from.address', env('MAIL_FROM_ADDRESS', 'no-reply@yourdomain.com'));
             Config::set('mail.from.name', env('MAIL_FROM_NAME', 'Your Website'));
         }
+
+        // Truyền biến cartCount cho tất cả view
+        View::composer('*', function ($view) {
+            $cartCount = 0;
+            $cartItems = [];
+            if (Auth::check()) {
+                // Lấy danh sách sản phẩm trong giỏ cho user đăng nhập
+                $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
+                    ->where('user_id', Auth::id())
+                    ->orderBy('updated_at', 'desc')
+                    ->get();
+                $cartCount = $cartItems->count();
+            } else {
+                // Lấy danh sách sản phẩm trong session cho khách
+                if (session()->has('cart')) {
+                    $cart = session('cart');
+                    $cartItems = collect($cart);
+                    $cartCount = $cartItems->count();
+                }
+            }
+            $view->with('cartCount', $cartCount)->with('cartItems', $cartItems);
+        });
     }
 }

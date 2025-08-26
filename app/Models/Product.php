@@ -17,7 +17,7 @@ class Product extends Model
         'description_long',
         'product_type',
         'sku',
-        'stock_quantity',
+        'quantity',
         'price',
         'sale_price',
         'slug',
@@ -28,7 +28,7 @@ class Product extends Model
         'video_path',
     ];
 
-    protected $appends = ['total_stock_quantity'];
+    protected $appends = ['total_quantity'];
 
     public function categories()
     {
@@ -66,9 +66,9 @@ class Product extends Model
     }
 
     public function comments()
-    {
-        return $this->hasMany(Comment::class, 'entity_id')->where('entity_type', 'product');
-    }
+{
+    return $this->morphMany(Comment::class, 'entity');
+}
 
     // Scope để lấy sản phẩm hoạt động
     public function scopeActive($query)
@@ -86,15 +86,19 @@ class Product extends Model
     }
 
 
-    public function getTotalStockQuantityAttribute()
-    {
-        return $this->variations->sum('stock_quantity') ?? $this->stock_quantity ?? 0;
+public function getTotalStockQuantityAttribute()
+{
+    // Nếu là sản phẩm đơn giản, trả về quantity
+    if ($this->product_type === 'simple') {
+        return $this->quantity ?? 0;
     }
+    // Nếu là sản phẩm biến thể, tính tổng số lượng các biến thể
+    return $this->variations->sum('quantity');
+}
 
     public function getFeaturedMedia()
     {
         $featured = $this->images()->where('is_featured', true)->first();
-        \Log::info('Featured image for product ID ' . $this->id . ': ' . ($featured ? $featured->image_path : 'null'));
         if ($featured) {
             return (object) [
                 'path' => $featured->image_path,
@@ -102,7 +106,6 @@ class Product extends Model
             ];
         }
         $defaultImage = $this->images()->first();
-        \Log::info('Default image for product ID ' . $this->id . ': ' . ($defaultImage ? $defaultImage->image_path : 'null'));
         if ($defaultImage) {
             return (object) [
                 'path' => $defaultImage->image_path,
@@ -114,6 +117,18 @@ class Product extends Model
             'is_video' => false,
         ];
     }
+public static function getTotalStock()
+{
+    $simpleProductsStock = self::where('product_type', 'simple')->sum('quantity');
+    $variableProductsStock = self::where('product_type', 'variable')
+        ->with('variations')
+        ->get()
+        ->sum(function ($product) {
+            return $product->variations->sum('quantity');
+        });
+
+    return $simpleProductsStock + $variableProductsStock;
+}
 
     protected static function booted()
     {

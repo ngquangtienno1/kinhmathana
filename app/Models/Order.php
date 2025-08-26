@@ -26,7 +26,7 @@ class Order extends Model
         'subtotal',
         'promotion_amount',
         'shipping_fee',
-        'payment_method',
+        'payment_method_id',
         'payment_details',
         'payment_status',
         'status',
@@ -36,6 +36,8 @@ class Order extends Model
         'completed_at',
         'cancelled_at',
         'cancellation_reason_id',
+        'payment_gateway',
+        'payment_gateway_order_id',
     ];
 
     protected $casts = [

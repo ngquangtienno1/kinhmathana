@@ -14,9 +14,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * Send the password reset notification using custom notification.
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ClientResetPassword($token));
+    }
 
     protected $fillable = [
         'name',
@@ -30,11 +39,11 @@ class User extends Authenticatable
         'avatar',
         'role_id',
         'email_verified_at',
-        'phone_verified_at'
+        'phone_verified_at',
     ];
     protected $casts = [
         'banned_until' => 'datetime',
-         'created_at' => 'datetime',
+        'created_at' => 'datetime',
     ];
     protected $hidden = ['password', 'remember_token'];
     protected function casts(): array
@@ -62,21 +71,26 @@ class User extends Authenticatable
         return $this->hasMany(Favorite::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'user_id');
+    }
+
     public function hasPermission($permission)
     {
         if (!$this->role) {
-            Log::info('User has no role', ['user_id' => $this->id]);
+            // Log::info('User has no role', ['user_id' => $this->id]);
             return false;
         }
 
         $hasPermission = $this->role->permissions->contains('slug', $permission);
-        Log::info('Checking permission', [
-            'user_id' => $this->id,
-            'role_id' => $this->role_id,
-            'permission' => $permission,
-            'has_permission' => $hasPermission,
-            'user_permissions' => $this->role->permissions->pluck('slug')
-        ]);
+        // Log::info('Checking permission', [
+        //     'user_id' => $this->id,
+        //     'role_id' => $this->role_id,
+        //     'permission' => $permission,
+        //     'has_permission' => $hasPermission,
+        //     'user_permissions' => $this->role->permissions->pluck('slug')
+        // ]);
 
         return $hasPermission;
     }
@@ -111,5 +125,19 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'from_id')->orWhere('to_id', $this->id);
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'from_id');
+    }
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'to_id');
     }
 }

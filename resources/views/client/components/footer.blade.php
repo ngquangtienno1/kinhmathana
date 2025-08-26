@@ -1,3 +1,6 @@
+@php
+    $logoUrl = getSetting('logo_url') ?? asset('images/default-logo.png');
+@endphp
 <footer id="qodef-page-footer" role="contentinfo">
     <div id="qodef-page-footer-top-area">
         <div id="qodef-page-footer-top-area-inner" class="qodef-content-grid">
@@ -6,11 +9,21 @@
                 <div class="qodef-grid-inner clear">
                     <div class="qodef-grid-item">
                         <div id="media_image-2" class="widget widget_media_image"
-                            data-area="qodef-footer-top-area-column-1"><a href="index.html"><img loading="lazy"
-                                    width="188" height="89"
-                                    src="{{ asset('v1/wp-content/uploads/2021/08/logo-footer-img.jpg') }}"
-                                    class="image wp-image-6507  attachment-full size-full" alt="c"
-                                    style="max-width: 100%; height: auto;" decoding="async" /></a></div>
+                            data-area="qodef-footer-top-area-column-1"><a href="{{ route('client.home') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 150" width="220"
+                                    height="150">
+                                    <!-- HANA -->
+                                    <text x="50%" y="50%" text-anchor="middle"
+                                        style="font-family: Arial, sans-serif; font-size: 70px; font-weight: bold; letter-spacing: 14px; fill: #000;">
+                                        HANA
+                                    </text>
+                                    <!-- EYEWEAR -->
+                                    <text x="50%" y="80%" text-anchor="middle"
+                                        style="font-family: Arial, sans-serif; font-size: 22px; letter-spacing: 12px; fill: #000;">
+                                        EYEWEAR
+                                    </text>
+                                </svg>
+                            </a></div>
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-2" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-2">
@@ -43,32 +56,32 @@
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-3" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-3">
-                            <h5 class="qodef-widget-title">The company</h5>
+                            <h5 class="qodef-widget-title">Công ty</h5>
                             <div class="menu-footer-menu-column-3-container">
                                 <ul id="menu-footer-menu-column-3" class="menu">
                                     <li id="menu-item-126"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-126">
-                                        <a href="contact-us/index.html">Contact</a>
+                                        <a href="contact-us/index.html">Liên hệ</a>
                                     </li>
                                     <li id="menu-item-127"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-127">
-                                        <a href="faq-page/index.html">FAQ</a>
+                                        <a href="faq-page/index.html">Câu hỏi thường gặp</a>
                                     </li>
                                     <li id="menu-item-128"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-128">
-                                        <a href="checkout/index.html">Shipping</a>
+                                        <a href="checkout/index.html">Giao hàng</a>
                                     </li>
                                     <li id="menu-item-129"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                        <a href="get-in-touch/index.html">Stores</a>
+                                        <a href="get-in-touch/index.html">Cửa hàng</a>
                                     </li>
                                     <li id="menu-item-130"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
-                                        <a href="shop/four-columns-grid/index.html">Collection</a>
+                                        <a href="shop/four-columns-grid/index.html">Bộ sưu tập</a>
                                     </li>
                                     <li id="menu-item-131"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-131">
-                                        <a href="who-we-are/index.html">Jobs and carrers</a>
+                                        <a href="who-we-are/index.html">Tuyển dụng</a>
                                     </li>
                                 </ul>
                             </div>
@@ -76,28 +89,28 @@
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-5" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-4">
-                            <h5 class="qodef-widget-title">General</h5>
+                            <h5 class="qodef-widget-title">Thông tin chung</h5>
                             <div class="menu-footer-menu-column-4-container">
                                 <ul id="menu-footer-menu-column-4" class="menu">
                                     <li id="menu-item-6524"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6524">
-                                        <a href="meet-the-doctor/index.html">Our doctors</a>
+                                        <a href="meet-the-doctor/index.html">Đội ngũ bác sĩ</a>
                                     </li>
                                     <li id="menu-item-6525"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6525">
-                                        <a href="about-us/index.html">About company</a>
+                                        <a href="about-us/index.html">Về chúng tôi</a>
                                     </li>
                                     <li id="menu-item-6526"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6526">
-                                        <a href="shop/index.html">Products</a>
+                                        <a href="shop/index.html">Sản phẩm</a>
                                     </li>
                                     <li id="menu-item-6527"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6527">
-                                        <a href="product/way-glasses/index.html">Products on sale</a>
+                                        <a href="product/way-glasses/index.html">Sản phẩm khuyến mãi</a>
                                     </li>
                                     <li id="menu-item-6952"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6952">
-                                        <a href="blog-right-sidebar/index.html">Our news</a>
+                                        <a href="blog-right-sidebar/index.html">Tin tức</a>
                                     </li>
                                 </ul>
                             </div>
@@ -144,8 +157,8 @@
                         <div id="text-2" class="widget widget_text" data-area="qodef-footer-bottom-area-column-2">
                             <div class="textwidget">
                                 <div style="font-size:14px">@ 2025 <a href="https://qodeinteractive.com/"
-                                        target="_blank" rel="noopener" style="font-size:14px">Kính Mắt Hana</a>, All
-                                    Rights Reserved</div>
+                                        target="_blank" rel="noopener" style="font-size:14px">Kính Mắt Hana</a>, Đã
+                                    đăng ký bản quyền</div>
                             </div>
                         </div>
                     </div>
