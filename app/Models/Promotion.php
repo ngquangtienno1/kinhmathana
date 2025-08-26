@@ -51,9 +51,10 @@ class Promotion extends Model
     public function isValid()
     {
         $now = now();
+        $today = now()->startOfDay();
         return $this->is_active &&
             $now->greaterThanOrEqualTo($this->start_date) &&
-            $now->lessThanOrEqualTo($this->end_date) &&
+            $today->lessThanOrEqualTo($this->end_date) &&
             ($this->usage_limit === null || $this->used_count < $this->usage_limit);
     }
 

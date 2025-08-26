@@ -323,7 +323,6 @@
                     start_date: $('#start_date').val(),
                     end_date: $('#end_date').val(),
                     minimum_purchase: $('#minimum_purchase').val(),
-
                     usage_limit: $('#usage_limit').val(),
                     is_active: $('#is_active').val()
                 };

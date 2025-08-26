@@ -178,6 +178,12 @@
                 }
             </style>
             <div class="voucher-list-grid">
+                @if($vouchers->count() > 0)
+                    <div style="grid-column: 1 / -1; margin-bottom: 16px; padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666;">
+                        <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                        Hiển thị các mã giảm giá còn hiệu lực và còn lượt sử dụng
+                    </div>
+                @endif
                 @forelse($vouchers as $voucher)
                     <div class="voucher-card"
                         style="min-width: 0; max-width: 100%; min-height: 260px; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 20px 18px 18px 18px; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
@@ -198,7 +204,7 @@
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">Đơn tối thiểu:
                                 {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫</div>
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">HSD:
-                                {{ $voucher->end_date->utc()->format('Y-m-d\TH:i:s\Z') }}</div>
+                                {{ $voucher->end_date->format('d/m/Y') }}</div>
                             {{-- Hiển thị số lượt còn lại --}}
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">
                                 @if($voucher->usage_limit)
@@ -210,7 +216,7 @@
                         </div>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <div style="text-align: left;">
-                                <div class="voucher-countdown" data-end="{{ $voucher->end_date->utc()->format('Y-m-d H:i:s') }}"
+                                <div class="voucher-countdown" data-end="{{ $voucher->end_date->format('Y-m-d H:i:s') }}"
                                     style="font-size: 16px; color: #e74c3c; font-weight: bold;"></div>
                             </div>
                             <div style="text-align: right;">

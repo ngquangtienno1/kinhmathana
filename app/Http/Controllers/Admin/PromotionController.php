@@ -37,14 +37,7 @@ class PromotionController extends Controller
         // Filter by status
         if ($request->filled('status')) {
             if ($request->status === 'active') {
-                // Active means: enabled, within time window, and remaining uses
-                $query->where('is_active', true)
-                    ->where('start_date', '<=', now())  // <= để hiển thị ngay khi tạo
-                    ->where('end_date', '>=', now())    // >= để còn hiệu lực
-                    ->where(function ($q) {
-                        $q->whereNull('usage_limit')
-                          ->orWhereColumn('used_count', '<', 'usage_limit');
-                    });
+                $query->where('is_active', true);
             } elseif ($request->status === 'inactive') {
                 $query->where('is_active', false);
             }
@@ -60,14 +53,7 @@ class PromotionController extends Controller
         $query->orderBy($sort, $direction);
 
         $promotions = $query->get();
-        $activeCount = Promotion::where('is_active', true)
-            ->where('start_date', '<=', now())  // <= để hiển thị ngay khi tạo
-            ->where('end_date', '>=', now())    // >= để còn hiệu lực
-            ->where(function ($q) {
-                $q->whereNull('usage_limit')
-                  ->orWhereColumn('used_count', '<', 'usage_limit');
-            })
-            ->count();
+        $activeCount = Promotion::where('is_active', true)->count();
         $inactiveCount = Promotion::where('is_active', false)->count();
         $percentageCount = Promotion::where('discount_type', 'percentage')->count();
         $fixedCount = Promotion::where('discount_type', 'fixed')->count();
