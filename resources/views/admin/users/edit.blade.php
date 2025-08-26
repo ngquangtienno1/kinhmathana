@@ -197,25 +197,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="role_id">Vai trò</label>
-                                    <select class="form-select" id="role_id" name="role_id"
-                                        @if ($isAdmin && ($isEditingCustomer || $isEditingStaff)) @else disabled @endif>
-                                        @foreach (\App\Models\Role::all() as $role)
-                                            <option value="{{ $role->id }}"
-                                                {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
-                                                {{ $role->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @if (!($isAdmin && ($isEditingCustomer || $isEditingStaff)))
-                                        <input type="hidden" name="role_id" value="{{ $user->role_id }}">
-                                    @endif
-                                    @if ($isAdmin && ($isEditingCustomer || $isEditingStaff))
-                                        <div class="form-text text-info">Admin có thể thay đổi vai trò để thăng cấp hoặc hạ
-                                            cấp người dùng</div>
-                                    @else
-                                        <div class="form-text text-danger">Chỉ tài khoản Admin mới có quyền thay đổi vai
-                                            trò.</div>
-                                    @endif
+                                    <input type="text" class="form-control" value="{{ $user->role->name ?? '' }}" disabled />
+                                    <input type="hidden" name="role_id" value="{{ $user->role_id }}">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="avatar">Ảnh đại diện</label>
