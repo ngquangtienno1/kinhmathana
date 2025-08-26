@@ -179,14 +179,13 @@
                         return response.json();
                     })
                     .then(function(data) {
-                        if (data.status === 'blocked') {
-                            // Tự động logout nếu bị chặn
-                            window.location.href = '/client/logout';
-                        }
+                       if (data.status === 'blocked') {
+    window.location.href = '/client/logout?blocked=1';
+}
                     })
                     .catch(function() {});
             }
-            setInterval(pollUserStatus, 6000); // 6s
+            setInterval(pollUserStatus, 5000);
         });
     </script>
 </body>

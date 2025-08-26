@@ -1,12 +1,18 @@
 @extends('client.layouts.app')
 
 @section('content')
-    @if(session('message'))
+         @if(session('message') || session('blocked'))
     <div id="toast-success" class="toast-custom toast-success toast-animate">
         <span class="toast-icon">
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ff0000ff" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e8f5e9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5"/></svg>
         </span>
-        <span class="toast-content">{{ session('message') }}</span>
+        <span class="toast-content">
+            @if(session('blocked'))
+                Tài khoản của bạn đã bị chặn/khóa
+            @else
+                {{ session('message') }}
+            @endif
+        </span>
         <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
     </div>
     <script>
