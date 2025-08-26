@@ -1236,10 +1236,10 @@
                 "162e224": [{
                     "parallax_type": "parallax",
                     "parallax_image": {
-                        "url": "https:\/\/neoocular.qodeinteractive.com\/wp-content\/uploads\/2021\/10\/h1-paralax-img-00001.jpg",
+                        "url": "{{ asset('store.png') }}",
                         "id": 11167,
                         "size": "",
-                        "alt": "c",
+                        "alt": "store background",
                         "source": "library"
                     }
                 }]

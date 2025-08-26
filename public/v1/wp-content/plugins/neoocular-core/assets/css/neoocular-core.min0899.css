@@ -7273,31 +7273,7 @@ body:not([class*="neoocular-core"])
     transform: translateY(4px);
     transition: opacity 0.3s ease-out, transform 0.3s ease !important;
 }
-.qodef-woo-product-list.qodef-woo-product-mixed-list
-    .qodef-e.qodef-hover--info
-    .qodef-e-inner:hover
-    .qodef-woo-product-content {
-    opacity: 1;
-    transition: opacity 0.3s ease-out;
-}
-.qodef-woo-product-list.qodef-woo-product-mixed-list
-    .qodef-e.qodef-hover--info
-    .qodef-e-inner:hover
-    .qodef-woo-product-content
-    > * {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s ease-out 0.2s, transform 0.3s ease 0.2s;
-}
-.qodef-woo-product-list.qodef-woo-product-mixed-list
-    .qodef-e.qodef-hover--info
-    .qodef-e-inner:hover
-    .qodef-woo-product-image-inner
-    > * {
-    opacity: 1 !important;
-    transform: translateY(0);
-    transition: opacity 0.3s ease-out 0.3s, transform 0.3s ease 0.3s !important;
-}
+/* Các rule hover đã được xóa */
 .qodef-woo-product-list.qodef-woo-product-mixed-list
     .qodef-e.qodef-hover--button
     .qodef-woo-product-categories,

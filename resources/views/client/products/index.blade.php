@@ -194,76 +194,6 @@
                                                         @endif
                                                     </span>
                                             </a>
-                                            <div class="qodef-woo-product-image-inner">
-                                                <div
-                                                    class="qwfw-add-to-wishlist-wrapper qwfw--loop qwfw-position--after-add-to-cart qwfw-item-type--icon qodef-neoocular-theme">
-                                                    <a role="button" tabindex="0"
-                                                        class="qwfw-shortcode qwfw-m qwfw-add-to-wishlist qwfw-spinner-item qwfw-behavior--view qwfw-type--icon"
-                                                        href="#" data-item-id="{{ $product->id }}"
-                                                        data-original-item-id="{{ $product->id }}"
-                                                        aria-label="Add to wishlist" rel="noopener noreferrer">
-                                                        <span class="qwfw-m-spinner qwfw-spinner-icon">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                                                <path
-                                                                    d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                                </path>
-                                                            </svg>
-                                                        </span>
-                                                        <span class="qwfw-m-icon qwfw--predefined">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                                height="32" viewBox="0 0 32 32" fill="currentColor">
-                                                                <g>
-                                                                    <path
-                                                                        d="M 31.984,13.834C 31.9,8.926, 27.918,4.552, 23,4.552c-2.844,0-5.35,1.488-7,3.672 C 14.35,6.040, 11.844,4.552, 9,4.552c-4.918,0-8.9,4.374-8.984,9.282L0,13.834 c0,0.030, 0.006,0.058, 0.006,0.088 C 0.006,13.944,0,13.966,0,13.99c0,0.138, 0.034,0.242, 0.040,0.374C 0.48,26.872, 15.874,32, 15.874,32s 15.62-5.122, 16.082-17.616 C 31.964,14.244, 32,14.134, 32,13.99c0-0.024-0.006-0.046-0.006-0.068C 31.994,13.89, 32,13.864, 32,13.834L 31.984,13.834 z M 29.958,14.31 c-0.354,9.6-11.316,14.48-14.080,15.558c-2.74-1.080-13.502-5.938-13.84-15.596C 2.034,14.172, 2.024,14.080, 2.010,13.98 c 0.002-0.036, 0.004-0.074, 0.006-0.112C 2.084,9.902, 5.282,6.552, 9,6.552c 2.052,0, 4.022,1.048, 5.404,2.878 C 14.782,9.93, 15.372,10.224, 16,10.224s 1.218-0.294, 1.596-0.794C 18.978,7.6, 20.948,6.552, 23,6.552c 3.718,0, 6.916,3.35, 6.984,7.316 c0,0.038, 0.002,0.076, 0.006,0.114C 29.976,14.080, 29.964,14.184, 29.958,14.31z" />
-                                                                </g>
-                                                            </svg>
-                                                        </span>
-                                                    </a>
-                                                </div>
-                                                <div
-                                                    class="qqvfw-quick-view-button-wrapper qqvfw-position--after-add-to-cart qodef-neoocular-theme">
-                                                    <a role="button" tabindex="0"
-                                                        class="qqvfw-shortcode qqvfw-m qqvfw-quick-view-button qqvfw-type--icon-with-text"
-                                                        data-item-id="{{ $product->id }}" data-quick-view-type="pop-up"
-                                                        data-quick-view-type-mobile="pop-up"
-                                                        href="{{ route('client.products.show', $product->slug) }}"
-                                                        rel="noopener noreferrer">
-                                                        <span class="qqvfw-m-spinner">
-                                                            <svg class="qqvfw-svg--spinner"
-                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                                                <path
-                                                                    d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-                                                                </path>
-                                                            </svg>
-                                                        </span>
-                                                        <span class="qqvfw-m-icon qqvfw-icon--predefined">
-                                                            <span class="qodef-icon-linear-icons lnr-eye lnr"></span>
-                                                        </span>
-                                                        <span class="qqvfw-m-text"></span>
-                                                    </a>
-                                                </div>
-                                                <form method="post" action="{{ route('client.products.add-to-cart') }}"
-                                                    style="display: inline;">
-                                                    @csrf
-                                                    <input type="hidden" name="variation_id"
-                                                        value="{{ $product->variations->first()->id ?? '' }}" />
-                                                    <input type="hidden" name="quantity" value="1" />
-                                                    <button type="submit"
-                                                        class="button product_type_simple add_to_cart_button"
-                                                        data-product_id="{{ $product->id }}"
-                                                        data-product_sku="{{ $product->sku }}"
-                                                        aria-label="Add to cart: &ldquo;{{ $product->name }}&rdquo;"
-                                                        rel="nofollow"
-                                                        @if (
-                                                            !$product->variations->first() ||
-                                                                ($product->variations->first() && $product->variations->first()->stock_quantity <= 0)) disabled style="opacity:0.7;pointer-events:none;" @endif>
-                                                        Add to cart
-                                                    </button>
-                                                </form>
-                                                <span
-                                                    id="woocommerce_loop_add_to_cart_link_describedby_{{ $product->id }}"
-                                                    class="screen-reader-text"></span>
-                                            </div>
                                         </div>
                                         <a href="{{ route('client.products.show', $product->slug) }}"
                                             class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -281,40 +211,60 @@
                         </div>
                         <nav class="woocommerce-pagination">
                             @php
+                                // Lấy thông tin pagination
                                 $currentPage = $products->currentPage();
                                 $lastPage = $products->lastPage();
-                                $pages = [];
+
+                                // Tạo danh sách trang hiển thị
+                                $pages = collect();
+
                                 // Luôn hiển thị trang 1, 2
-                                for ($i = 1; $i <= min(2, $lastPage); $i++) {
-                                    $pages[] = $i;
-                                }
+                                $pages = $pages->merge(range(1, min(2, $lastPage)));
+
                                 // Hiển thị 2 trang trước/sau trang hiện tại
-                                for ($i = max(3, $currentPage - 2); $i <= min($lastPage - 2, $currentPage + 2); $i++) {
-                                    $pages[] = $i;
+                                $startPage = max(3, $currentPage - 2);
+                                $endPage = min($lastPage - 2, $currentPage + 2);
+                                if ($startPage <= $endPage) {
+                                    $pages = $pages->merge(range($startPage, $endPage));
                                 }
+
                                 // Luôn hiển thị trang cuối và áp chót
-                                for ($i = max($lastPage - 1, 1); $i <= $lastPage; $i++) {
-                                    $pages[] = $i;
-                                }
-                                $pages = array_unique($pages);
-                                sort($pages);
+                                $pages = $pages->merge(range(max($lastPage - 1, 1), $lastPage));
+
+                                // Loại bỏ trùng lặp và sắp xếp
+                                $pages = $pages->unique()->sort()->values();
+
+                                // Giữ lại tất cả tham số query hiện tại
+                                $queryParams = request()->query();
                             @endphp
+
                             @php $prev = 0; @endphp
-                            @foreach ($pages as $i)
-                                @if ($prev && $i - $prev > 1)
+                            @foreach ($pages as $pageNumber)
+                                @if ($prev && $pageNumber - $prev > 1)
                                     <span class="page-numbers dots">...</span>
                                 @endif
-                                @if ($i == $currentPage)
-                                    <span aria-current="page"
-                                        class="page-numbers current">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</span>
+
+                                @if ($pageNumber == $currentPage)
+                                    <span aria-current="page" class="page-numbers current">
+                                        {{ str_pad($pageNumber, 2, '0', STR_PAD_LEFT) }}
+                                    </span>
                                 @else
-                                    <a class="page-numbers"
-                                        href="{{ $products->url($i) }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</a>
+                                    @php
+                                        $queryParams['page'] = $pageNumber;
+                                    @endphp
+                                    <a class="page-numbers" href="{{ route('client.products.index', $queryParams) }}">
+                                        {{ str_pad($pageNumber, 2, '0', STR_PAD_LEFT) }}
+                                    </a>
                                 @endif
-                                @php $prev = $i; @endphp
+
+                                @php $prev = $pageNumber; @endphp
                             @endforeach
+
                             @if ($currentPage < $lastPage)
-                                <a class="next page-numbers" href="{{ $products->nextPageUrl() }}">
+                                @php
+                                    $queryParams['page'] = $currentPage + 1;
+                                @endphp
+                                <a class="next page-numbers" href="{{ route('client.products.index', $queryParams) }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="6.344px" height="10.906px"
                                         viewBox="0 0 6.344 10.906">
                                         <g>
