@@ -198,13 +198,20 @@
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">Đơn tối thiểu:
                                 {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫</div>
                             <div style="font-size: 14px; color: #666; margin-bottom: 6px;">HSD:
-                                {{ $voucher->end_date->format('d/m/Y H:i') }}</div>
+                                {{ $voucher->end_date->utc()->format('Y-m-d\TH:i:s\Z') }}</div>
+                            {{-- Hiển thị số lượt còn lại --}}
+                            <div style="font-size: 14px; color: #666; margin-bottom: 6px;">
+                                @if($voucher->usage_limit)
+                                    Còn lại: {{ $voucher->usage_limit - $voucher->used_count }} lượt
+                                @else
+                                    Không giới hạn lượt dùng
+                                @endif
+                            </div>
                         </div>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <div style="text-align: left;">
-                                <div class="voucher-countdown" data-end="{{ $voucher->end_date->format('Y-m-d H:i:s') }}"
+                                <div class="voucher-countdown" data-end="{{ $voucher->end_date->utc()->format('Y-m-d H:i:s') }}"
                                     style="font-size: 16px; color: #e74c3c; font-weight: bold;"></div>
-                                <div style="font-size: 12px; color: #888;">Còn lại</div>
                             </div>
                             <div style="text-align: right;">
                                 <div style="display: flex; flex-direction: column; align-items: flex-end;">

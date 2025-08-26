@@ -15,7 +15,7 @@ class CheckPermission
         }
 
         if (!$request->user()->hasPermission($permission)) {
-            abort(403, 'Bạn không có quyền truy cập trang này. Yêu cầu quyền: ' . $permission);
+            abort(403, 'Bạn không có quyền truy cập trang này.');
         }
 
         return $next($request);
