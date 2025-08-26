@@ -154,8 +154,14 @@
             // Xử lý tất cả các thông báo
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
-                // Tự động ẩn sau 3 giây
-                autoHideAlert(alert, 3000);
+                // Không tự động ẩn các alert có class cart-alert hoặc chứa thông báo hết hàng
+                if (!alert.classList.contains('cart-alert') && 
+                    !alert.textContent.includes('hết hàng') && 
+                    !alert.textContent.includes('Hết hàng') &&
+                    !alert.textContent.includes('Không thể đặt hàng')) {
+                    // Tự động ẩn sau 3 giây chỉ cho các alert thông thường
+                    autoHideAlert(alert, 3000);
+                }
 
                 // Thêm sự kiện click để ẩn thủ công
                 alert.addEventListener('click', function(e) {

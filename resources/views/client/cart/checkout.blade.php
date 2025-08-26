@@ -28,7 +28,7 @@
                     </div>
                 @endif
                 @if (session('error'))
-                    <div class="alert alert-danger"
+                    <div class="alert alert-danger cart-alert"
                         style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
                         <strong>⚠️ Lỗi thanh toán:</strong> {{ session('error') }}
                         @if ($paymentFailed)
@@ -734,6 +734,42 @@
                         behavior: 'smooth',
                         block: 'center'
                     });
+                    
+                    // Nếu là thông báo hết hàng, thêm style đẹp hơn
+                    if (errorAlert.textContent.includes('hết hàng') || 
+                        errorAlert.textContent.includes('Hết hàng') || 
+                        errorAlert.textContent.includes('Không thể đặt hàng')) {
+                        errorAlert.style.cssText = `
+                            position: fixed;
+                            top: 100px;
+                            right: 20px;
+                            z-index: 9999;
+                            background: #f8d7da;
+                            color: #721c24;
+                            padding: 15px;
+                            border-radius: 5px;
+                            border: 1px solid #f5c6cb;
+                            min-width: 300px;
+                            max-width: 400px;
+                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 10px;
+                            margin-bottom: 0;
+                        `;
+                        
+                        // Thêm nút đóng
+                        const closeBtn = document.createElement('button');
+                        closeBtn.type = 'button';
+                        closeBtn.className = 'close';
+                        closeBtn.style = 'background: none; border: none; font-size: 20px; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.2s ease; flex-shrink: 0; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;';
+                        closeBtn.innerHTML = '&times;';
+                        closeBtn.onclick = function() {
+                            errorAlert.style.display = 'none';
+                        };
+                        errorAlert.appendChild(closeBtn);
+                    }
                 }
             });
         @endif
