@@ -38,7 +38,7 @@ class FaqController extends Controller
             $query->where('is_active', $request->status);
         }
 
-        $faqs = $query->orderBy('sort_order')->paginate(10);
+        $faqs = $query->orderBy('sort_order')->get();
         $activeCount = Faq::where('is_active', true)->count();
 
         return view('admin.faqs.index', compact('faqs', 'activeCount'));

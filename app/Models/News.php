@@ -41,6 +41,11 @@ class News extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'entity');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

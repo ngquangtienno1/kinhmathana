@@ -369,14 +369,12 @@ class OrderController extends Controller
                         if ($variation) {
                             $variation->quantity = ($variation->quantity ?? 0) + $item->quantity;
                             $variation->save();
-                            
                         }
                     } else if ($item->product_id) {
                         $product = \App\Models\Product::find($item->product_id);
                         if ($product) {
                             $product->quantity = ($product->quantity ?? 0) + $item->quantity;
                             $product->save();
-                            
                         }
                     }
                 }
@@ -454,34 +452,7 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Cập nhật trạng thái thanh toán đơn hàng
-     */
-    public function updatePaymentStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'payment_status' => 'required|in:unpaid,paid,failed',
-            'comment' => 'nullable|string'
-        ]);
 
-        DB::transaction(function () use ($order, $request) {
-            $oldPaymentStatus = $order->payment_status;
-            $order->update([
-                'payment_status' => $request->payment_status,
-                'admin_note' => $request->comment
-            ]);
-
-            // Lưu lịch sử
-            $order->histories()->create([
-                // 'user_id' => auth()->id(),
-                'payment_status_from' => $oldPaymentStatus,
-                'payment_status_to' => $request->payment_status,
-                'comment' => $request->comment
-            ]);
-        });
-
-        return back()->with('success', 'Cập nhật trạng thái thanh toán thành công');
-    }
 
     /**
      * Xóa đơn hàng
@@ -489,12 +460,13 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         // Kiểm tra xem đơn hàng có ở trạng thái đã hủy không
-        if ($order->status !== 'cancelled') {
+        if (!in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin'])) {
             return back()->with('error', 'Chỉ có thể xóa đơn hàng đã hủy');
         }
 
         try {
             $order->delete();
+
             return redirect()
                 ->route('admin.orders.index')
                 ->with('success', 'Xóa đơn hàng thành công');

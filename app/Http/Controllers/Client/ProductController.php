@@ -65,7 +65,13 @@ class ProductController extends Controller
             });
         }
 
-        // Bộ lọc: Brands
+        // Bộ lọc: Brand
+        if ($request->filled('brand_id')) {
+            $brandId = $request->input('brand_id');
+            $query->where('brand_id', $brandId);
+        }
+
+        // Bộ lọc: Brands (từ sidebar filter)
         if ($request->has('brands') && is_array($brands = $request->input('brands', []))) {
             $query->whereIn('brand_id', $brands);
         }
@@ -131,7 +137,7 @@ class ProductController extends Controller
             });
         }
 
-        $orderby = $request->input('orderby', 'menu_order');
+        $orderby = $request->input('orderby', 'date');
         switch ($orderby) {
             case 'popularity':
                 $query->withCount('orderItems')->orderBy('order_items_count', 'desc');
@@ -149,30 +155,34 @@ class ProductController extends Controller
                 $query->orderBy('price', 'desc');
                 break;
             default:
-                $query->orderBy('id', 'asc');
+                $query->orderBy('created_at', 'desc');
                 break;
         }
 
         $products = $query->paginate(12);
         $categories = Category::withCount('products')->with('children')->where('is_active', true)->get();
         $colors = Color::all();
-        // Lấy tất cả size từ variations của các sản phẩm trong trang
+
+        // Lấy tất cả size từ variations của toàn bộ sản phẩm
         $sizes = collect();
-        foreach ($products as $product) {
+        $allProductsForSizes = Product::with(['variations.size'])->active()->get();
+        foreach ($allProductsForSizes as $product) {
             $sizes = $sizes->merge($product->variations->pluck('size')->filter());
         }
         $sizes = $sizes->unique('id')->values();
 
-        // Lấy tất cả spherical từ variations của các sản phẩm trong trang
+        // Lấy tất cả spherical từ variations của toàn bộ sản phẩm
         $sphericals = collect();
-        foreach ($products as $product) {
+        $allProductsForSphericals = Product::with(['variations.spherical'])->active()->get();
+        foreach ($allProductsForSphericals as $product) {
             $sphericals = $sphericals->merge($product->variations->pluck('spherical')->filter());
         }
         $sphericals = $sphericals->unique('id')->values();
 
-        // Lấy tất cả cylindrical từ variations của các sản phẩm trong trang
+        // Lấy tất cả cylindrical từ variations của toàn bộ sản phẩm
         $cylindricals = collect();
-        foreach ($products as $product) {
+        $allProductsForCylindricals = Product::with(['variations.cylindrical'])->active()->get();
+        foreach ($allProductsForCylindricals as $product) {
             $cylindricals = $cylindricals->merge($product->variations->pluck('cylindrical')->filter());
         }
         $cylindricals = $cylindricals->unique('id')->values();
@@ -188,19 +198,19 @@ class ProductController extends Controller
     public function show($slug)
     {
         $product = Product::with([
-                'categories',
-                'brand',
-                'images',
-                // Chỉ lấy các đánh giá chưa bị ẩn và kèm user
-                'reviews' => function ($q) {
-                    $q->where('is_hidden', false)->with('user');
-                },
-                'variations.color',
-                'variations.size',
-                'variations.images',
-                'variations.spherical',
-                'variations.cylindrical',
-            ])
+            'categories',
+            'brand',
+            'images',
+            // Chỉ lấy các đánh giá chưa bị ẩn và kèm user
+            'reviews' => function ($q) {
+                $q->where('is_hidden', false)->with('user');
+            },
+            'variations.color',
+            'variations.size',
+            'variations.images',
+            'variations.spherical',
+            'variations.cylindrical',
+        ])
             ->active()
             ->where('slug', $slug)
             ->firstOrFail();
@@ -254,8 +264,15 @@ class ProductController extends Controller
             ];
         })->values()->toArray();
 
-        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt
-        $comments = $product->comments()->with('user')->where('status', 'đã duyệt')->orderByDesc('created_at')->get();
+        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt và không bị ẩn
+        $comments = $product->comments()
+            ->with(['user', 'replies' => function ($query) {
+                $query->approved()->with('user');
+            }])
+            ->approved()
+            ->parentComments()
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
     }

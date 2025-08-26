@@ -63,21 +63,17 @@
                                     }
                                 @endphp
                                 @if ($allImages->count() > 0)
-                                    <div class="product-thumbnails"
-                                        style="margin-top:24px;width:867.19px;overflow:hidden;position:relative;">
-                                        <div class="thumbnail-slider"
-                                            style="display:flex;width:max-content;transition:transform 0.3s ease;">
+                                    <div class="product-thumbnails">
+                                        <div class="thumbnail-slider">
                                             @foreach ($allImages as $img)
                                                 <img src="{{ asset('storage/' . $img->image_path) }}"
-                                                    alt="{{ $product->name }} thumbnail"
-                                                    style="width:180px;height:130px;object-fit:cover;border:1px solid #eee;margin-right:16px;" />
+                                                    alt="{{ $product->name }} thumbnail" class="thumbnail-image"
+                                                    data-image="{{ asset('storage/' . $img->image_path) }}" />
                                             @endforeach
                                         </div>
-                                        <button class="slider-prev"
-                                            style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:#fff;border:none;padding:10px;cursor:pointer;">
+                                        <button class="slider-prev">
                                             < </button>
-                                                <button class="slider-next"
-                                                    style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:#fff;border:none;padding:10px;cursor:pointer;">
+                                                <button class="slider-next">
                                                     >
                                                 </button>
                                     </div>
@@ -122,9 +118,11 @@
                                     <p>{{ $product->short_description ?? Str::limit($product->description, 120) }}</p>
                                 </div>
                                 @if ($product->quantity <= 0 && $product->variations->count() === 0)
-                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng</div>
+                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng
+                                    </div>
                                 @elseif ($product->variations->count() > 0 && $product->variations->sum('quantity') <= 0)
-                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng</div>
+                                    <div style="color: red; font-weight: bold; margin-bottom: 12px;">Sản phẩm đã hết hàng
+                                    </div>
                                 @endif
                                 @if ($product->variations->count() > 0)
                                     <div id="qvsfw-variations-form-wrapper">
@@ -132,7 +130,7 @@
                                             action="{{ route('client.products.add-to-cart') }}"
                                             enctype="multipart/form-data" data-product-name="{{ $product->name }}">
                                             @csrf
-                                             @if ($product->variations->sum('quantity') <= 0)
+                                            @if ($product->variations->sum('quantity') <= 0)
                                                 <fieldset disabled style="opacity:0.7;pointer-events:none;">
                                             @endif
                                             @if ($colors->count())
@@ -586,7 +584,6 @@
                                                                         style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                 </a>
                                                             @endif
-
                                                         @endforeach
                                                     </div>
                                                 @endif
@@ -666,7 +663,6 @@
                                                                             style="width:70px;height:70px;object-fit:cover;border-radius:6px;border:1.5px solid #eee;">
                                                                     </a>
                                                                 @endif
-
                                                             @endforeach
                                                         </div>
                                                     @endif
@@ -784,9 +780,11 @@
                                     <div style="margin-top: 2px; font-size: 15px; color: #222;">
                                         {{ $comment->content }}
                                     </div>
-                                    @if ($comment->replies && $comment->replies->count())
+                                    @if ($comment->replies && $comment->replies->where('status', 'đã duyệt')->where('is_hidden', false)->count())
                                         <div class="comment-replies" style="margin-left:32px; margin-top:8px;">
-                                            @foreach ($comment->replies as $reply)
+                                            @foreach ($comment->replies->filter(function ($reply) {
+            return $reply->status === 'đã duyệt' && !$reply->is_hidden;
+        }) as $reply)
                                                 <div class="reply-item"
                                                     style="background:#f8f9fa; border-radius:6px; padding:8px 12px; margin-bottom:6px;">
                                                     <div style="display: flex; align-items: baseline; gap: 8px;">
@@ -813,7 +811,7 @@
                                         {{ now()->diffForHumans(Auth::user()->banned_until, ['parts' => 2, 'short' => true]) }})
                                     </div>
                                 @else
-                                    <form action="{{ route('client.products.comment', $product->id) }}" method="POST"
+                                    <form action="{{ route('client.products.comment', $product) }}" method="POST"
                                         style="margin-top: 18px;">
                                         @csrf
                                         <div class="form-group">
@@ -833,7 +831,7 @@
                             @endif
                         </div>
                     </div>
-        <hr style="max-width: 100%;">
+                    <hr style="max-width: 100%;">
                     <section class="related products">
                         <h2>Sản phẩm liên quan</h2>
                         <div class="qodef-woo-product-list qodef-item-layout--info-below qodef-gutter--medium">
@@ -842,7 +840,8 @@
                                     <li
                                         class="product type-product post-{{ $related_product->id }} status-publish {{ $related_product->quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $related_product->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                         <div class="qodef-e-inner">
-                                            <div class="qodef-woo-product-image" style="position:relative;">
+                                            <div class="qodef-woo-product-image"
+                                                style="position:relative;width:320px;height:200px;overflow:hidden;">
                                                 @php
                                                     $relatedFeaturedImage = null;
                                                     $relatedImagePath = '';
@@ -878,9 +877,10 @@
                                                     <span class="qodef-woo-product-mark qodef-woo-onsale"
                                                         style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                 @endif
-                                                <img width="600" height="431" src="{{ $relatedImagePath }}"
+                                                <img width="320" height="200" src="{{ $relatedImagePath }}"
                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-                                                    alt="{{ $related_product->name }}" decoding="async" />
+                                                    alt="{{ $related_product->name }}" decoding="async"
+                                                    style="width:100%;height:100%;object-fit:cover;" />
                                             </div>
                                             <div class="qodef-woo-product-content">
                                                 <h6 class="qodef-woo-product-title woocommerce-loop-product__link"><a
@@ -897,24 +897,60 @@
                                                     <div class="qodef-info-separator-end"></div>
                                                 </div>
                                                 <span class="price">
-                                                    @if ($related_product->sale_price && $related_product->sale_price < $related_product->price)
+                                                    @php
+                                                        // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                        if (
+                                                            $related_product->variations &&
+                                                            $related_product->variations->count() > 0
+                                                        ) {
+                                                            $minPrice = $related_product->variations->min('price');
+                                                            $minSalePrice = $related_product->variations
+                                                                ->where('sale_price', '>', 0)
+                                                                ->min('sale_price');
+
+                                                            // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                            if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                $displayPrice = $minSalePrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = true;
+                                                            } else {
+                                                                $displayPrice = $minPrice;
+                                                                $originalPrice = $minPrice;
+                                                                $hasSale = false;
+                                                            }
+                                                        } else {
+                                                            // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                            $displayPrice =
+                                                                $related_product->sale_price &&
+                                                                $related_product->sale_price < $related_product->price
+                                                                    ? $related_product->sale_price
+                                                                    : $related_product->price;
+                                                            $originalPrice = $related_product->price;
+                                                            $hasSale =
+                                                                $related_product->sale_price &&
+                                                                $related_product->sale_price < $related_product->price;
+                                                        }
+                                                    @endphp
+
+                                                    @if ($hasSale)
                                                         <del aria-hidden="true" class="original-price">
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($related_product->price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </del>
                                                         <span class="screen-reader-text">Giá gốc:
-                                                            {{ number_format($related_product->price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
                                                         <ins aria-hidden="true" class="sale-price">
-                                                            <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($related_product->sale_price, 0, ',', '.') }}đ</bdi>
+                                                            <span class="woocommerce-Price-amount amount"
+                                                                style="color: #dc3545; font-weight: bold;">
+                                                                <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         </ins>
                                                         <span class="screen-reader-text">Giá khuyến mãi:
-                                                            {{ number_format($related_product->sale_price, 0, ',', '.') }}đ.</span>
+                                                            {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                     @else
                                                         <span class="woocommerce-Price-amount amount">
-                                                            <bdi>{{ number_format($related_product->price ?? $related_product->minimum_price, 0, ',', '.') }}đ</bdi>
+                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                         </span>
                                                     @endif
                                                 </span>
@@ -1014,7 +1050,8 @@
                                         <li
                                             class="product type-product post-{{ $rvProduct->id }} status-publish {{ $rvProduct->quantity > 0 ? 'instock' : 'outofstock' }} {{ implode(' ', $rvProduct->categories->pluck('slug')->map(fn($slug) => 'product_cat-' . $slug)->toArray()) }} has-post-thumbnail shipping-taxable purchasable product-type-simple">
                                             <div class="qodef-e-inner">
-                                                <div class="qodef-woo-product-image" style="position:relative;">
+                                                <div class="qodef-woo-product-image"
+                                                    style="position:relative;width:320px;height:200px;overflow:hidden;">
                                                     @php
                                                         $rvFeaturedImage = null;
                                                         $rvImagePath = '';
@@ -1050,9 +1087,10 @@
                                                         <span class="qodef-woo-product-mark qodef-woo-onsale"
                                                             style="position:absolute;top:10px;left:10px;z-index:2;">sale</span>
                                                     @endif
-                                                    <img width="600" height="431" src="{{ $rvImagePath }}"
+                                                    <img width="320" height="200" src="{{ $rvImagePath }}"
                                                         class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
-                                                        alt="{{ $rvProduct->name }}" decoding="async" />
+                                                        alt="{{ $rvProduct->name }}" decoding="async"
+                                                        style="width:100%;height:100%;object-fit:cover;" />
                                                 </div>
                                                 <div class="qodef-woo-product-content">
                                                     <h6 class="qodef-woo-product-title woocommerce-loop-product__link"><a
@@ -1069,24 +1107,60 @@
                                                         <div class="qodef-info-separator-end"></div>
                                                     </div>
                                                     <span class="price">
-                                                        @if ($rvProduct->sale_price && $rvProduct->sale_price < $rvProduct->price)
+                                                        @php
+                                                            // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                            if (
+                                                                $rvProduct->variations &&
+                                                                $rvProduct->variations->count() > 0
+                                                            ) {
+                                                                $minPrice = $rvProduct->variations->min('price');
+                                                                $minSalePrice = $rvProduct->variations
+                                                                    ->where('sale_price', '>', 0)
+                                                                    ->min('sale_price');
+
+                                                                // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                                if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                    $displayPrice = $minSalePrice;
+                                                                    $originalPrice = $minPrice;
+                                                                    $hasSale = true;
+                                                                } else {
+                                                                    $displayPrice = $minPrice;
+                                                                    $originalPrice = $minPrice;
+                                                                    $hasSale = false;
+                                                                }
+                                                            } else {
+                                                                // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                                $displayPrice =
+                                                                    $rvProduct->sale_price &&
+                                                                    $rvProduct->sale_price < $rvProduct->price
+                                                                        ? $rvProduct->sale_price
+                                                                        : $rvProduct->price;
+                                                                $originalPrice = $rvProduct->price;
+                                                                $hasSale =
+                                                                    $rvProduct->sale_price &&
+                                                                    $rvProduct->sale_price < $rvProduct->price;
+                                                            }
+                                                        @endphp
+
+                                                        @if ($hasSale)
                                                             <del aria-hidden="true" class="original-price">
                                                                 <span class="woocommerce-Price-amount amount">
-                                                                    <bdi>{{ number_format($rvProduct->price, 0, ',', '.') }}đ</bdi>
+                                                                    <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                                 </span>
                                                             </del>
                                                             <span class="screen-reader-text">Giá gốc:
-                                                                {{ number_format($rvProduct->price, 0, ',', '.') }}đ.</span>
+                                                                {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
                                                             <ins aria-hidden="true" class="sale-price">
-                                                                <span class="woocommerce-Price-amount amount">
-                                                                    <bdi>{{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ</bdi>
+                                                                <span class="woocommerce-Price-amount amount"
+                                                                    style="color: #dc3545; font-weight: bold;">
+                                                                    <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                                 </span>
                                                             </ins>
                                                             <span class="screen-reader-text">Giá khuyến mãi:
-                                                                {{ number_format($rvProduct->sale_price, 0, ',', '.') }}đ.</span>
+                                                                {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                         @else
                                                             <span class="woocommerce-Price-amount amount">
-                                                                <bdi>{{ number_format($rvProduct->price ?? $rvProduct->minimum_price, 0, ',', '.') }}đ</bdi>
+                                                                <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                             </span>
                                                         @endif
                                                     </span>
@@ -1141,6 +1215,138 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Product Image Gallery Functionality
+                const mainImage = document.getElementById('main-product-image');
+                const thumbnailImages = document.querySelectorAll('.thumbnail-image');
+                const thumbnailSlider = document.querySelector('.thumbnail-slider');
+                const prevBtn = document.querySelector('.slider-prev');
+                const nextBtn = document.querySelector('.slider-next');
+
+                let isDragging = false;
+                let startPos = 0;
+                let currentTranslate = 0;
+                let prevTranslate = 0;
+                let animationID = 0;
+                let currentIndex = 0;
+
+                // Click on thumbnail to change main image
+                thumbnailImages.forEach((img, index) => {
+                    img.addEventListener('click', function() {
+                        const imageUrl = this.getAttribute('data-image');
+                        if (mainImage && imageUrl) {
+                            mainImage.src = imageUrl;
+
+                            // Update active state
+                            thumbnailImages.forEach(thumb => {
+                                thumb.style.borderColor = '#eee';
+                            });
+                            this.style.borderColor = '#000';
+
+                            // Update current index and position
+                            currentIndex = index;
+                            setPositionByIndex();
+                            setSliderPosition();
+                        }
+                    });
+                });
+
+                // Touch events for mobile drag
+                if (thumbnailSlider) {
+                    thumbnailSlider.addEventListener('touchstart', dragStart);
+                    thumbnailSlider.addEventListener('touchend', dragEnd);
+                    thumbnailSlider.addEventListener('touchmove', drag);
+
+                    // Mouse events for desktop drag
+                    thumbnailSlider.addEventListener('mousedown', dragStart);
+                    thumbnailSlider.addEventListener('mouseup', dragEnd);
+                    thumbnailSlider.addEventListener('mouseleave', dragEnd);
+                    thumbnailSlider.addEventListener('mousemove', drag);
+
+                    // Prevent context menu
+                    thumbnailSlider.addEventListener('contextmenu', e => e.preventDefault());
+                }
+
+                function dragStart(event) {
+                    const clientX = getPositionX(event);
+                    startPos = clientX;
+                    isDragging = true;
+
+                    animationID = requestAnimationFrame(animation);
+                    thumbnailSlider.style.cursor = 'grabbing';
+                }
+
+                function dragEnd() {
+                    isDragging = false;
+                    cancelAnimationFrame(animationID);
+
+                    const movedBy = currentTranslate - prevTranslate;
+
+                    if (Math.abs(movedBy) > 100) {
+                        if (movedBy < 0) {
+                            currentIndex += 1;
+                        } else {
+                            currentIndex -= 1;
+                        }
+                    }
+
+                    setPositionByIndex();
+                    setSliderPosition();
+
+                    thumbnailSlider.style.cursor = 'grab';
+                }
+
+                function drag(event) {
+                    if (isDragging) {
+                        const currentPosition = getPositionX(event);
+                        currentTranslate = prevTranslate + currentPosition - startPos;
+                    }
+                }
+
+                function getPositionX(event) {
+                    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+                }
+
+                function animation() {
+                    setSliderPosition();
+                    if (isDragging) requestAnimationFrame(animation);
+                }
+
+                function setSliderPosition() {
+                    thumbnailSlider.style.transform = `translateX(${currentTranslate}px)`;
+                }
+
+                function setPositionByIndex() {
+                    const slideWidth = 196; // 180px width + 16px margin
+
+                    // Ensure currentIndex stays within bounds
+                    if (currentIndex < 0) {
+                        currentIndex = thumbnailImages.length - 1;
+                    }
+                    if (currentIndex >= thumbnailImages.length) {
+                        currentIndex = 0;
+                    }
+
+                    currentTranslate = currentIndex * -slideWidth;
+                    prevTranslate = currentTranslate;
+                }
+
+                // Navigation buttons
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        currentIndex--;
+                        setPositionByIndex();
+                        setSliderPosition();
+                    });
+                }
+
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        currentIndex++;
+                        setPositionByIndex();
+                        setSliderPosition();
+                    });
+                }
+
                 // Add to cart functionality
                 document.querySelectorAll('.js-add-to-cart-form').forEach(function(form) {
                     form.addEventListener('submit', function(e) {
@@ -1260,7 +1466,8 @@
                                 input.value = '';
                             } else {
                                 // Bỏ active các nút khác trong cùng group
-                                group.querySelectorAll('.variation-btn').forEach(btn => btn.classList.remove('active'));
+                                group.querySelectorAll('.variation-btn').forEach(btn => btn.classList
+                                    .remove('active'));
                                 // Active nút vừa chọn
                                 btn.classList.add('active');
                                 // Gán value vào input hidden
@@ -1357,7 +1564,7 @@
                         const salePrice = Number(found.sale_price);
                         if (salePrice && salePrice < price) {
                             html =
-                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del>${price.toLocaleString('vi-VN')} VNĐ</del> <ins>${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
+                                `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span><del class=\"original-price\">${price.toLocaleString('vi-VN')} VNĐ</del> <ins class=\"sale-price\">${salePrice.toLocaleString('vi-VN')} VNĐ</ins></bdi></span>`;
                         } else {
                             html =
                                 `<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\"></span>${price.toLocaleString('vi-VN')} VNĐ</bdi></span>`;
@@ -1916,6 +2123,125 @@
         .price .woocommerce-Price-amount {
             color: #111;
             font-weight: 600;
+        }
+
+        /* Product Image Gallery Styling */
+        .product-thumbnails {
+            position: relative;
+            margin-top: 24px;
+            width: 867.19px;
+            overflow: hidden;
+        }
+
+        .thumbnail-slider {
+            display: flex;
+            width: max-content;
+            transition: transform 0.3s ease;
+            cursor: grab;
+        }
+
+        .thumbnail-slider:active {
+            cursor: grabbing;
+        }
+
+        .thumbnail-image {
+            width: 180px;
+            height: 130px;
+            object-fit: cover;
+            border: 2px solid #eee;
+            margin-right: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .thumbnail-image:hover {
+            border-color: #ccc;
+            transform: scale(1.02);
+        }
+
+        .thumbnail-image.active {
+            border-color: #000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-prev,
+        .slider-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            opacity: 0.8;
+        }
+
+        .slider-prev:hover,
+        .slider-next:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: rgba(0, 0, 0, 0.9);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .slider-prev {
+            left: 10px;
+        }
+
+        .slider-next {
+            right: 10px;
+        }
+
+        .main-product-image {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            .products .product {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+
+            .product-thumbnails {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .thumbnail-image {
+                width: 120px;
+                height: 90px;
+                margin-right: 12px;
+            }
+
+            .slider-prev,
+            .slider-next {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+                background: rgba(255, 255, 255, 0.8);
+                opacity: 0.9;
+            }
+
+            .slider-prev:hover,
+            .slider-next:hover {
+                transform: translateY(-50%) scale(1.1);
+            }
         }
     </style>
     <script>

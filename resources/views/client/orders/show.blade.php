@@ -277,7 +277,22 @@
                                         style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
                                 </td>
                                 <td>
-                                    <div class="fw-bold">{{ $item->product_name }}</div>
+                                    <div class="fw-bold">
+                                        @php
+                                            $product = $item->variation
+                                                ? $item->variation->product
+                                                : $item->product ?? null;
+                                            $productSlug = $product ? $product->slug : null;
+                                        @endphp
+                                        @if ($productSlug)
+                                            <a href="{{ route('client.products.show', $productSlug) }}"
+                                                class="text-decoration-none text-dark hover-primary">
+                                                {{ $item->product_name }}
+                                            </a>
+                                        @else
+                                            <span class="fw-bold">{{ $item->product_name }}</span>
+                                        @endif
+                                    </div>
                                     @php
                                         $options = $item->product_options
                                             ? json_decode($item->product_options, true)
@@ -328,7 +343,7 @@
                                             <button type="button" class="btn btn-sm btn-outline-primary btn-review"
                                                 data-item-id="{{ $item->id }}"
                                                 data-product-name="{{ $item->product_name }}"
-                                                data-product-img="{{ $item->product->images->first() ? asset('storage/' . $item->product->images->first()->image_path) : '/assets/img/products/1.png' }}"
+                                                data-product-img="{{ $imagePath }}"
                                                 data-product-options='@json($item->product_options)'
                                                 data-product-variant="{{ $variantText }}"
                                                 data-order-id="{{ $order->id }}"
@@ -403,7 +418,7 @@
             @endif
             --}}
 
-            <a href="#" class="btn btn-outline-secondary">Liên Hệ Người Bán</a>
+            <button type="button" class="btn btn-outline-secondary" onclick="openChatSupport()">Liên Hệ Người Bán</button>
         </div>
         <div class="d-flex justify-content-end">
             <a href="{{ route('client.orders.index') }}" class="btn btn-outline-dark">
@@ -449,7 +464,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="images" class="form-label">Thêm hình ảnh (tối đa 5 ảnh)</label>
+                                <label for="images" class="form-label">Thêm hình ảnh đánh giá</label>
                                 <input type="file" name="images[]" id="images" class="form-control rounded-0"
                                     multiple accept="image/*" onchange="previewImages()">
                                 <div class="d-flex flex-wrap mt-2 gap-2" id="image-preview"></div>
@@ -510,125 +525,193 @@
     <style>
         /* ===== STYLE CHO HỆ THỐNG ĐÁNH GIÁ SAO ===== */
         .star {
-            color: #ccc;                    /* Màu sao mặc định (xám) */
-            cursor: pointer;                /* Con trỏ chuột pointer khi hover */
-            transition: color 0.2s;         /* Hiệu ứng chuyển màu mượt mà */
+            color: #ccc;
+            /* Màu sao mặc định (xám) */
+            cursor: pointer;
+            /* Con trỏ chuột pointer khi hover */
+            transition: color 0.2s;
+            /* Hiệu ứng chuyển màu mượt mà */
         }
 
         /* ===== STYLE CHO SAO ĐƯỢC CHỌN VÀ HOVER ===== */
-        .star.selected,                     /* Sao đã được chọn */
-        .star:hover,                        /* Hover vào sao */
-        .star:hover~.star {                 /* Các sao phía sau khi hover (hiệu ứng fill) */
-            color: #f39c12;                 /* Màu vàng cam */
+        .star.selected,
+        /* Sao đã được chọn */
+        .star:hover,
+        /* Hover vào sao */
+        .star:hover~.star {
+            /* Các sao phía sau khi hover (hiệu ứng fill) */
+            color: #f39c12;
+            /* Màu vàng cam */
         }
 
         /* ===== STYLE CHO PREVIEW HÌNH ẢNH ===== */
         #image-preview img {
-            width: 60px;                    /* Chiều rộng ảnh preview */
-            height: 60px;                   /* Chiều cao ảnh preview */
-            object-fit: cover;              /* Cắt ảnh vừa khít container */
-            border: 1px solid #ccc;         /* Viền xám */
+            width: 60px;
+            /* Chiều rộng ảnh preview */
+            height: 60px;
+            /* Chiều cao ảnh preview */
+            object-fit: cover;
+            /* Cắt ảnh vừa khít container */
+            border: 1px solid #ccc;
+            /* Viền xám */
         }
 
         /* ===== STYLE CHO CONTAINER SAO ===== */
         #star-rating {
-            font-size: 0;                   /* Ẩn khoảng trắng giữa các sao */
+            font-size: 0;
+            /* Ẩn khoảng trắng giữa các sao */
         }
 
         #star-rating .star {
-            font-size: 2rem;                /* Kích thước sao lớn */
+            font-size: 2rem;
+            /* Kích thước sao lớn */
+        }
+
+        /* ===== STYLE CHO LINK SẢN PHẨM ===== */
+        .hover-primary:hover {
+            color: #0d6efd !important;
+            /* Màu xanh khi hover */
+            text-decoration: underline !important;
+            /* Gạch chân khi hover */
+            transition: color 0.2s ease;
+            /* Hiệu ứng chuyển màu mượt mà */
         }
 
         /* ===== STYLE CHO LABEL TRẠNG THÁI ĐƠN HÀNG ===== */
         .status-label {
-            font-weight: 700;               /* Chữ đậm */
-            font-size: 15px;                /* Kích thước chữ */
-            border-radius: 4px;             /* Bo góc */
-            padding: 4px 16px;              /* Padding trong */
-            display: inline-block;          /* Hiển thị inline-block */
-            border: 1px solid transparent;  /* Viền trong suốt */
-            margin-bottom: 2px;             /* Margin dưới */
+            font-weight: 700;
+            /* Chữ đậm */
+            font-size: 15px;
+            /* Kích thước chữ */
+            border-radius: 4px;
+            /* Bo góc */
+            padding: 4px 16px;
+            /* Padding trong */
+            display: inline-block;
+            /* Hiển thị inline-block */
+            border: 1px solid transparent;
+            /* Viền trong suốt */
+            margin-bottom: 2px;
+            /* Margin dưới */
         }
 
         /* ===== STYLE CHO TRẠNG THÁI TÍCH CỰC (XANH) ===== */
-        .status-label.status-completed,     /* Hoàn thành */
-        .status-label.status-confirmed,     /* Đã xác nhận */
-        .status-label.status-pending,       /* Chờ xác nhận */
-        .status-label.status-awaiting_pickup, /* Đang chuẩn bị */
-        .status-label.status-shipping,      /* Đang giao */
-        .status-label.status-delivered {    /* Đã giao hàng */
-            background: #e6f9ed;           /* Nền xanh nhạt */
-            color: #219150;                /* Chữ xanh đậm */
-            border: 1px solid #219150;     /* Viền xanh */
-            box-shadow: 0 1px 4px rgba(33, 145, 80, 0.08); /* Bóng xanh */
+        .status-label.status-completed,
+        /* Hoàn thành */
+        .status-label.status-confirmed,
+        /* Đã xác nhận */
+        .status-label.status-pending,
+        /* Chờ xác nhận */
+        .status-label.status-awaiting_pickup,
+        /* Đang chuẩn bị */
+        .status-label.status-shipping,
+        /* Đang giao */
+        .status-label.status-delivered {
+            /* Đã giao hàng */
+            background: #e6f9ed;
+            /* Nền xanh nhạt */
+            color: #219150;
+            /* Chữ xanh đậm */
+            border: 1px solid #219150;
+            /* Viền xanh */
+            box-shadow: 0 1px 4px rgba(33, 145, 80, 0.08);
+            /* Bóng xanh */
         }
 
         /* ===== STYLE CHO TRẠNG THÁI TIÊU CỰC (ĐỎ) ===== */
-        .status-label.status-cancelled_by_customer, /* Khách hủy */
-        .status-label.status-cancelled_by_admin,    /* Admin hủy */
-        .status-label.status-delivery_failed {      /* Giao thất bại */
-            background: #ffeaea;           /* Nền đỏ nhạt */
-            color: #e53935;                /* Chữ đỏ đậm */
-            border: 1px solid #e53935;     /* Viền đỏ */
-            box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08); /* Bóng đỏ */
+        .status-label.status-cancelled_by_customer,
+        /* Khách hủy */
+        .status-label.status-cancelled_by_admin,
+        /* Admin hủy */
+        .status-label.status-delivery_failed {
+            /* Giao thất bại */
+            background: #ffeaea;
+            /* Nền đỏ nhạt */
+            color: #e53935;
+            /* Chữ đỏ đậm */
+            border: 1px solid #e53935;
+            /* Viền đỏ */
+            box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08);
+            /* Bóng đỏ */
         }
     </style>
     <script>
+        // ===== FUNCTION MỞ CHAT SUPPORT =====
+        function openChatSupport() {
+            // Kiểm tra xem chat component có tồn tại không
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            if (chatToggleBtn) {
+                // Trigger click vào nút chat để mở chat
+                chatToggleBtn.click();
+            } else {
+                // Nếu không có chat component, hiển thị thông báo
+                alert('Chat support chưa sẵn sàng. Vui lòng thử lại sau.');
+            }
+        }
+
         // ===== XỬ LÝ MODAL ĐÁNH GIÁ SẢN PHẨM =====
         document.addEventListener('DOMContentLoaded', function() {
-            
+
             // ===== XỬ LÝ SỰ KIỆN CLICK NÚT "ĐÁNH GIÁ" =====
             document.querySelectorAll('.btn-review').forEach(function(btn) {
                 btn.addEventListener('click', function() {
-                    
+
                     // ===== LẤY DỮ LIỆU TỪ DATA ATTRIBUTES CỦA BUTTON =====
-                    let itemId = this.getAttribute('data-item-id');           // ID của item trong đơn hàng
+                    let itemId = this.getAttribute('data-item-id'); // ID của item trong đơn hàng
                     let productName = this.getAttribute('data-product-name'); // Tên sản phẩm
-                    let productImg = this.getAttribute('data-product-img');   // URL ảnh sản phẩm
-                    let productOptions = this.getAttribute('data-product-options'); // JSON options (màu, size...)
-                    let productVariant = this.getAttribute('data-product-variant'); // Text phân loại
-                    let orderId = this.getAttribute('data-order-id');         // ID đơn hàng
-                    
+                    let productImg = this.getAttribute('data-product-img'); // URL ảnh sản phẩm
+                    let productOptions = this.getAttribute(
+                        'data-product-options'); // JSON options (màu, size...)
+                    let productVariant = this.getAttribute(
+                        'data-product-variant'); // Text phân loại
+                    let orderId = this.getAttribute('data-order-id'); // ID đơn hàng
+
                     // ===== XỬ LÝ THÔNG TIN PHÂN LOẠI SẢN PHẨM =====
-                    let opts = productOptions ? JSON.parse(productOptions) : {}; // Parse JSON options
+                    let opts = productOptions ? JSON.parse(productOptions) :
+                    {}; // Parse JSON options
                     let optionsText = productVariant ? ('Phân loại: ' + productVariant.replace(
                         / - /g, ' | ')) : ''; // Format text phân loại (thay - bằng |)
-                    
+
                     // ===== CẬP NHẬT THÔNG TIN SẢN PHẨM TRONG MODAL =====
-                    document.getElementById('modal-product-name').innerText = productName;     // Hiển thị tên SP
-                    document.getElementById('modal-product-img').src = productImg;             // Hiển thị ảnh SP
-                    document.getElementById('modal-product-options').innerText = optionsText;  // Hiển thị phân loại
-                    
+                    document.getElementById('modal-product-name').innerText =
+                        productName; // Hiển thị tên SP
+                    document.getElementById('modal-product-img').src =
+                        productImg; // Hiển thị ảnh SP
+                    document.getElementById('modal-product-options').innerText =
+                        optionsText; // Hiển thị phân loại
+
                     // ===== THIẾT LẬP FORM ACTION =====
-                    document.getElementById('review-form').action = btn.getAttribute('data-review-url'); // Set URL submit
-                    
+                    document.getElementById('review-form').action = btn.getAttribute(
+                        'data-review-url'); // Set URL submit
+
                     // ===== KHỞI TẠO ĐÁNH GIÁ SAO MẶC ĐỊNH (5 SAO) =====
                     document.getElementById('rating').value = 5; // Set giá trị ẩn
                     document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
                         s.classList.toggle('selected', idx < 5); // Highlight 5 sao đầu tiên
                     });
-                    
+
                     // ===== RESET FORM VỀ TRẠNG THÁI BAN ĐẦU =====
-                    document.getElementById('content').value = '';           // Xóa nội dung đánh giá
-                    document.getElementById('char-count').innerText = 0;     // Reset đếm ký tự
-                    document.getElementById('images').value = '';            // Xóa file ảnh đã chọn
+                    document.getElementById('content').value = ''; // Xóa nội dung đánh giá
+                    document.getElementById('char-count').innerText = 0; // Reset đếm ký tự
+                    document.getElementById('images').value = ''; // Xóa file ảnh đã chọn
                     document.getElementById('image-preview').innerHTML = ''; // Xóa preview ảnh
-                    
+
                     // ===== HIỂN THỊ MODAL =====
                     var reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
                     reviewModal.show();
                 });
             });
-            
+
             // ===== XỬ LÝ SỰ KIỆN CLICK VÀO SAO ĐÁNH GIÁ =====
             document.querySelectorAll('#star-rating .star').forEach(function(star) {
                 star.addEventListener('click', function() {
                     let value = this.getAttribute('data-value'); // Lấy giá trị sao (1-5)
                     document.getElementById('rating').value = value; // Cập nhật giá trị ẩn
-                    
+
                     // ===== CẬP NHẬT HIỂN THỊ SAO =====
                     document.querySelectorAll('#star-rating .star').forEach(function(s, idx) {
-                        s.classList.toggle('selected', idx < value); // Highlight sao từ 1 đến value
+                        s.classList.toggle('selected', idx <
+                            value); // Highlight sao từ 1 đến value
                     });
                 });
             });
@@ -636,7 +719,8 @@
 
         // ===== XỬ LÝ ĐẾM KÝ TỰ TRONG TEXTAREA =====
         function updateCharCount() {
-            document.getElementById('char-count').innerText = document.getElementById('content').value.length; // Cập nhật số ký tự đã nhập
+            document.getElementById('char-count').innerText = document.getElementById('content').value
+                .length; // Cập nhật số ký tự đã nhập
         }
 
         // ===== XỬ LÝ PREVIEW HÌNH ẢNH TRƯỚC KHI UPLOAD =====
@@ -644,7 +728,7 @@
             let preview = document.getElementById('image-preview'); // Lấy container hiển thị preview
             preview.innerHTML = ''; // Xóa preview cũ
             let files = document.getElementById('images').files; // Lấy danh sách file đã chọn
-            
+
             // ===== XỬ LÝ TỪNG FILE ẢNH (TỐI ĐA 5 ẢNH) =====
             for (let i = 0; i < files.length && i < 5; i++) {
                 let reader = new FileReader(); // Tạo FileReader để đọc file
@@ -656,8 +740,6 @@
                 reader.readAsDataURL(files[i]); // Đọc file dưới dạng Data URL
             }
         }
-
-
     </script>
     <script>
         // ===== XỬ LÝ MODAL HỦY ĐƠN HÀNG =====
@@ -672,4 +754,7 @@
             }
         });
     </script>
+
+    {{-- Include Chat Component --}}
+    @include('client.components.chat')
 @endsection

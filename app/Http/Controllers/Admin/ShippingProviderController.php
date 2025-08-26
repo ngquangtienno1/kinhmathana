@@ -106,16 +106,20 @@ class ShippingProviderController extends Controller
 
     public function destroy(ShippingProvider $provider)
     {
-        // Xóa logo nếu có
-        if ($provider->logo_url) {
-            $path = str_replace(asset('storage/'), '', $provider->logo_url);
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
+        try {
+            // Xóa logo nếu có
+            if ($provider->logo_url) {
+                $path = str_replace(asset('storage/'), '', $provider->logo_url);
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
             }
-        }
 
-        $provider->delete();
-        return redirect()->back()->with('success', 'Xóa đơn vị vận chuyển thành công');
+            $provider->delete();
+            return redirect()->back()->with('success', 'Xóa đơn vị vận chuyển thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
     public function fees(ShippingProvider $provider)
@@ -169,6 +173,6 @@ class ShippingProviderController extends Controller
         ]);
 
         $provider->update($validated);
-        return response()->json(['success' => true]);
+        return redirect()->back()->with('success', 'Cập nhật trạng thái thành công');
     }
 }

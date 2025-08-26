@@ -1,91 +1,103 @@
 @extends('client.layouts.app')
 
 @section('content')
-    @if(session('message'))
-    <div id="toast-success" class="toast-custom toast-success toast-animate">
-        <span class="toast-icon">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#388e3c" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e8f5e9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5"/></svg>
-        </span>
-        <span class="toast-content">{{ session('message') }}</span>
-        <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
-    </div>
-    <script>
-        setTimeout(function(){
-            var el = document.getElementById('toast-success');
-            if(el) el.style.opacity = 0;
-        }, 3500);
-        setTimeout(function(){
-            var el = document.getElementById('toast-success');
-            if(el) el.remove();
-        }, 4000);
-    </script>
-    <style>
-    .toast-animate {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.98);
-        animation: toastIn 0.5s cubic-bezier(.4,0,.2,1) forwards;
-    }
-    @keyframes toastIn {
-        0% {
-            opacity: 0;
-            transform: translateY(-30px) scale(0.98);
-        }
-        60% {
-            opacity: 1;
-            transform: translateY(4px) scale(1.01);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-    .toast-custom {
-        position: fixed;
-        top: 32px;
-        right: 32px;
-        z-index: 9999;
-        width: 400px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 16px 24px;
-        margin-top: 90px;
-        margin-left: 15px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
-        opacity: 1;
-        transition: opacity 0.5s;
-        letter-spacing: 0.2px;
-        border-bottom: 4px solid;
-        border-radius: 10px;
-    }
-    .toast-success {
-        background: #e8f5e9;
-        color: #388e3c;
-        border-bottom-color: #388e3c;
-    }
-    .toast-icon {
-        display: flex;
-        align-items: center;
-        margin-right: 2px;
-    }
-    .toast-content {
-        flex: 1;
-        line-height: 1.5;
-    }
-    .toast-close {
-        cursor: pointer;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #888;
-        margin-left: 8px;
-        transition: color 0.2s;
-    }
-    .toast-close:hover {
-        color: #222;
-    }
-    </style>
+    @if (session('message'))
+        <div id="toast-success" class="toast-custom toast-success toast-animate">
+            <span class="toast-icon">
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#388e3c" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" fill="#e8f5e9" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.5 2.5 5-5" />
+                </svg>
+            </span>
+            <span class="toast-content">{{ session('message') }}</span>
+            <span class="toast-close" onclick="document.getElementById('toast-success').remove()">&times;</span>
+        </div>
+        <script>
+            setTimeout(function() {
+                var el = document.getElementById('toast-success');
+                if (el) el.style.opacity = 0;
+            }, 3500);
+            setTimeout(function() {
+                var el = document.getElementById('toast-success');
+                if (el) el.remove();
+            }, 4000);
+        </script>
+        <style>
+            .toast-animate {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.98);
+                animation: toastIn 0.5s cubic-bezier(.4, 0, .2, 1) forwards;
+            }
+
+            @keyframes toastIn {
+                0% {
+                    opacity: 0;
+                    transform: translateY(-30px) scale(0.98);
+                }
+
+                60% {
+                    opacity: 1;
+                    transform: translateY(4px) scale(1.01);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .toast-custom {
+                position: fixed;
+                top: 32px;
+                right: 32px;
+                z-index: 9999;
+                width: 400px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 24px;
+                margin-top: 90px;
+                margin-left: 15px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
+                opacity: 1;
+                transition: opacity 0.5s;
+                letter-spacing: 0.2px;
+                border-bottom: 4px solid;
+                border-radius: 10px;
+            }
+
+            .toast-success {
+                background: #e8f5e9;
+                color: #388e3c;
+                border-bottom-color: #388e3c;
+            }
+
+            .toast-icon {
+                display: flex;
+                align-items: center;
+                margin-right: 2px;
+            }
+
+            .toast-content {
+                flex: 1;
+                line-height: 1.5;
+            }
+
+            .toast-close {
+                cursor: pointer;
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #888;
+                margin-left: 8px;
+                transition: color 0.2s;
+            }
+
+            .toast-close:hover {
+                color: #222;
+            }
+        </style>
     @endif
     <div id="qodef-page-outer">
         <div class="qodef-content-full-width">
@@ -157,10 +169,31 @@
                                         <ul class="qodef-grid-inner clear">
                                             @forelse($bestSellerProducts as $product)
                                                 <li
-                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
+                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                     <div class="qodef-e-inner">
-                                                        <div class="qodef-woo-product-image">
-                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                        <div class="qodef-woo-product-image"
+                                                            style="position: relative; width: 100%; height: 389px; overflow: hidden; display: block;">
+                                                            @php
+                                                                // Kiểm tra logic sale giống như phần hiển thị giá
+                                                                $hasSaleBadge = false;
+                                                                if (
+                                                                    $product->variations &&
+                                                                    $product->variations->count() > 0
+                                                                ) {
+                                                                    $minPrice = $product->variations->min('price');
+                                                                    $minSalePrice = $product->variations
+                                                                        ->where('sale_price', '>', 0)
+                                                                        ->min('sale_price');
+                                                                    if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                        $hasSaleBadge = true;
+                                                                    }
+                                                                } else {
+                                                                    $hasSaleBadge =
+                                                                        $product->sale_price &&
+                                                                        $product->sale_price < $product->price;
+                                                                }
+                                                            @endphp
+                                                            @if ($hasSaleBadge)
                                                                 <span
                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                             @endif
@@ -189,9 +222,10 @@
                                                                     ? asset('storage/' . $featuredImage->image_path)
                                                                     : asset('default-product.jpg');
                                                             @endphp
-                                                            <img loading="lazy" decoding="async" width="800"
-                                                                height="393" src="{{ $imagePath }}"
+                                                            <img loading="lazy" decoding="async" width="621"
+                                                                height="389" src="{{ $imagePath }}"
                                                                 class="attachment-full size-full qodef-list-image"
+                                                                style="width: 100% !important; height: 389px !important; object-fit: cover !important; object-position: center !important;"
                                                                 alt="{{ $product->name }}" />
                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -218,36 +252,62 @@
                                                             </div>
                                                             <div class="qodef-woo-product-price price">
                                                                 @php
-                                                                    $price = $product->price;
-                                                                    $salePrice = $product->sale_price;
+                                                                    // Nếu sản phẩm có biến thể, lấy giá từ biến thể
+                                                                    if (
+                                                                        $product->variations &&
+                                                                        $product->variations->count() > 0
+                                                                    ) {
+                                                                        $minPrice = $product->variations->min('price');
+                                                                        $minSalePrice = $product->variations
+                                                                            ->where('sale_price', '>', 0)
+                                                                            ->min('sale_price');
 
-                                                                    if ($product->variations->count() > 0) {
-                                                                        $firstVariation = $product->variations->first();
-                                                                        $price =
-                                                                            $firstVariation->price ?? $product->price;
-                                                                        $salePrice =
-                                                                            $firstVariation->sale_price ??
-                                                                            $product->sale_price;
+                                                                        // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                                        if (
+                                                                            $minSalePrice &&
+                                                                            $minSalePrice < $minPrice
+                                                                        ) {
+                                                                            $displayPrice = $minSalePrice;
+                                                                            $originalPrice = $minPrice;
+                                                                            $hasSale = true;
+                                                                        } else {
+                                                                            $displayPrice = $minPrice;
+                                                                            $originalPrice = $minPrice;
+                                                                            $hasSale = false;
+                                                                        }
+                                                                    } else {
+                                                                        // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                                        $displayPrice =
+                                                                            $product->sale_price &&
+                                                                            $product->sale_price < $product->price
+                                                                                ? $product->sale_price
+                                                                                : $product->price;
+                                                                        $originalPrice = $product->price;
+                                                                        $hasSale =
+                                                                            $product->sale_price &&
+                                                                            $product->sale_price < $product->price;
                                                                     }
                                                                 @endphp
-                                                                @if ($salePrice && $salePrice < $price)
-                                                                    <del aria-hidden="true">
+
+                                                                @if ($hasSale)
+                                                                    <del aria-hidden="true" class="original-price">
                                                                         <span class="woocommerce-Price-amount amount">
-                                                                            <bdi>{{ number_format($price, 0, ',', '.') }}đ</bdi>
+                                                                            <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                                         </span>
                                                                     </del>
                                                                     <span class="screen-reader-text">Giá gốc:
-                                                                        {{ number_format($price, 0, ',', '.') }}đ.</span>
-                                                                    <ins aria-hidden="true">
-                                                                        <span class="woocommerce-Price-amount amount">
-                                                                            <bdi>{{ number_format($salePrice, 0, ',', '.') }}đ</bdi>
+                                                                        {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
+                                                                    <ins aria-hidden="true" class="sale-price">
+                                                                        <span class="woocommerce-Price-amount amount"
+                                                                            style="color: #dc3545; font-weight: bold;">
+                                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                                         </span>
                                                                     </ins>
                                                                     <span class="screen-reader-text">Giá khuyến mãi:
-                                                                        {{ number_format($salePrice, 0, ',', '.') }}đ.</span>
+                                                                        {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                                 @else
                                                                     <span class="woocommerce-Price-amount amount">
-                                                                        <bdi>{{ number_format($price ?? 0, 0, ',', '.') }}đ</bdi>
+                                                                        <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                                     </span>
                                                                 @endif
                                                             </div>
@@ -585,10 +645,37 @@
                                                         <ul class="qodef-grid-inner clear">
                                                             @forelse($featuredProducts as $product)
                                                                 <li
-                                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
+                                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                                     <div class="qodef-e-inner">
-                                                                        <div class="qodef-woo-product-image">
-                                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                        <div class="qodef-woo-product-image"
+                                                                            style="position: relative; width: 100%; height: 389px; overflow: hidden; display: block;">
+                                                                            @php
+                                                                                // Kiểm tra logic sale giống như phần hiển thị giá
+                                                                                $hasSaleBadge = false;
+                                                                                if (
+                                                                                    $product->variations &&
+                                                                                    $product->variations->count() > 0
+                                                                                ) {
+                                                                                    $minPrice = $product->variations->min(
+                                                                                        'price',
+                                                                                    );
+                                                                                    $minSalePrice = $product->variations
+                                                                                        ->where('sale_price', '>', 0)
+                                                                                        ->min('sale_price');
+                                                                                    if (
+                                                                                        $minSalePrice &&
+                                                                                        $minSalePrice < $minPrice
+                                                                                    ) {
+                                                                                        $hasSaleBadge = true;
+                                                                                    }
+                                                                                } else {
+                                                                                    $hasSaleBadge =
+                                                                                        $product->sale_price &&
+                                                                                        $product->sale_price <
+                                                                                            $product->price;
+                                                                                }
+                                                                            @endphp
+                                                                            @if ($hasSaleBadge)
                                                                                 <span
                                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                                             @endif
@@ -629,9 +716,10 @@
                                                                                     : asset('default-product.jpg');
                                                                             @endphp
                                                                             <img loading="lazy" decoding="async"
-                                                                                width="800" height="393"
+                                                                                width="621" height="389"
                                                                                 src="{{ $imagePath }}"
                                                                                 class="attachment-full size-full qodef-list-image"
+                                                                                style="width: 100% !important; height: 389px !important; object-fit: cover !important; object-position: center !important;"
                                                                                 alt="{{ $product->name }}" />
                                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -664,46 +752,79 @@
                                                                             </div>
                                                                             <div class="qodef-woo-product-price price">
                                                                                 @php
-                                                                                    // Lấy giá từ biến thể đầu tiên nếu có
-                                                                                    $price = $product->price;
-                                                                                    $salePrice = $product->sale_price;
-
+                                                                                    // Nếu sản phẩm có biến thể, lấy giá từ biến thể
                                                                                     if (
+                                                                                        $product->variations &&
                                                                                         $product->variations->count() >
-                                                                                        0
+                                                                                            0
                                                                                     ) {
-                                                                                        $firstVariation = $product->variations->first();
-                                                                                        $price =
-                                                                                            $firstVariation->price ??
+                                                                                        $minPrice = $product->variations->min(
+                                                                                            'price',
+                                                                                        );
+                                                                                        $minSalePrice = $product->variations
+                                                                                            ->where(
+                                                                                                'sale_price',
+                                                                                                '>',
+                                                                                                0,
+                                                                                            )
+                                                                                            ->min('sale_price');
+
+                                                                                        // Nếu có giá khuyến mãi thấp hơn giá gốc
+                                                                                        if (
+                                                                                            $minSalePrice &&
+                                                                                            $minSalePrice < $minPrice
+                                                                                        ) {
+                                                                                            $displayPrice = $minSalePrice;
+                                                                                            $originalPrice = $minPrice;
+                                                                                            $hasSale = true;
+                                                                                        } else {
+                                                                                            $displayPrice = $minPrice;
+                                                                                            $originalPrice = $minPrice;
+                                                                                            $hasSale = false;
+                                                                                        }
+                                                                                    } else {
+                                                                                        // Sản phẩm không có biến thể, dùng giá sản phẩm cha
+                                                                                        $displayPrice =
+                                                                                            $product->sale_price &&
+                                                                                            $product->sale_price <
+                                                                                                $product->price
+                                                                                                ? $product->sale_price
+                                                                                                : $product->price;
+                                                                                        $originalPrice =
                                                                                             $product->price;
-                                                                                        $salePrice =
-                                                                                            $firstVariation->sale_price ??
-                                                                                            $product->sale_price;
+                                                                                        $hasSale =
+                                                                                            $product->sale_price &&
+                                                                                            $product->sale_price <
+                                                                                                $product->price;
                                                                                     }
                                                                                 @endphp
-                                                                                @if ($salePrice && $salePrice < $price)
-                                                                                    <del aria-hidden="true">
+
+                                                                                @if ($hasSale)
+                                                                                    <del aria-hidden="true"
+                                                                                        class="original-price">
                                                                                         <span
                                                                                             class="woocommerce-Price-amount amount">
-                                                                                            <bdi>{{ number_format($price, 0, ',', '.') }}đ</bdi>
+                                                                                            <bdi>{{ number_format($originalPrice, 0, ',', '.') }}đ</bdi>
                                                                                         </span>
                                                                                     </del>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         gốc:
-                                                                                        {{ number_format($price, 0, ',', '.') }}đ.</span>
-                                                                                    <ins aria-hidden="true">
+                                                                                        {{ number_format($originalPrice, 0, ',', '.') }}đ.</span>
+                                                                                    <ins aria-hidden="true"
+                                                                                        class="sale-price">
                                                                                         <span
-                                                                                            class="woocommerce-Price-amount amount">
-                                                                                            <bdi>{{ number_format($salePrice, 0, ',', '.') }}đ</bdi>
+                                                                                            class="woocommerce-Price-amount amount"
+                                                                                            style="color: #dc3545; font-weight: bold;">
+                                                                                            <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                                                         </span>
                                                                                     </ins>
                                                                                     <span class="screen-reader-text">Giá
                                                                                         khuyến mãi:
-                                                                                        {{ number_format($salePrice, 0, ',', '.') }}đ.</span>
+                                                                                        {{ number_format($displayPrice, 0, ',', '.') }}đ.</span>
                                                                                 @else
                                                                                     <span
                                                                                         class="woocommerce-Price-amount amount">
-                                                                                        <bdi>{{ number_format($price ?? 0, 0, ',', '.') }}đ</bdi>
+                                                                                        <bdi>{{ number_format($displayPrice, 0, ',', '.') }}đ</bdi>
                                                                                     </span>
                                                                                 @endif
                                                                             </div>
@@ -1055,64 +1176,44 @@
                                                         class="qodef-shortcode qodef-m  qodef-image-gallery qodef-magnific-popup qodef-popup-gallery qodef-grid qodef-layout--columns  qodef-gutter--normal qodef-col-num--5  qodef-responsive--custom qodef-col-num--1440--5 qodef-col-num--1366--5 qodef-col-num--1024--3 qodef-col-num--768--2 qodef-col-num--680--1 qodef-col-num--480--1">
                                                         <div class="qodef-grid-inner clear">
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-01.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-01.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-01.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-02.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-02.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-02.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-03.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-03.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-03.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-04.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-04.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-04.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-05.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-05.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-05.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                         </div>
                                                     </div>

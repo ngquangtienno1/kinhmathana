@@ -14,6 +14,7 @@ class Order extends Model
         'order_number',
         'user_id',
         'promotion_id',
+        'shipping_provider_id',
         'customer_name',
         'customer_phone',
         'customer_email',
@@ -97,6 +98,12 @@ class Order extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class, 'order_id', 'id');
+    }
+
+    public function customer()
+    {
+        // Tạo một relationship ảo để truy cập thông tin customer từ các trường trong bảng orders
+        return $this->belongsTo(Customer::class, 'user_id', 'user_id');
     }
 
 

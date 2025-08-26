@@ -35,6 +35,7 @@ use App\Http\Controllers\Client\AIChatController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Client\ServiceController;
 use App\Http\Controllers\Client\VoucherController;
 use App\Http\Controllers\Admin\ChatAdminController;
 use App\Http\Controllers\Admin\PromotionController;
@@ -48,16 +49,16 @@ use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Client\OrderClientController;
 use App\Http\Controllers\Client\OrderDetailController;
+
+
+// Authentication
+
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\AuthenticationClientController;
 
-
 // Authentication
-
 use App\Http\Controllers\Admin\CustomerSupportController;
 use App\Http\Controllers\Admin\ShippingProviderController;
-
-// Authentication
 use App\Http\Controllers\Admin\CancellationReasonController;
 use App\Http\Controllers\Admin\OrderStatusHistoryController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
@@ -180,6 +181,8 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::get('/', [ClientContactController::class, 'index'])->name('index');
         Route::post('/', [ClientContactController::class, 'store'])->name('store');
     });
+
+    Route::get('about-us', [ServiceController::class, 'index'])->name('service.index');
 
     Route::prefix('wishlist')->name('wishlist.')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('index');
@@ -561,6 +564,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [AdminOrderController::class, 'show'])->name('show');
         Route::get('/{order}/print', [AdminOrderController::class, 'print'])->name('print');
+        Route::delete('/{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
+
         Route::put('{order}/status', [AdminOrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);
         Route::put('{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('update-payment-status')
