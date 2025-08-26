@@ -127,10 +127,10 @@
                         <td colspan="3" class="text-right"><strong>Tạm tính:</strong></td>
                         <td class="text-right">{{ number_format($order->subtotal) }}đ</td>
                     </tr>
-                    @if($order->discount_amount > 0)
+                    @if(($order->promotion_amount ?? 0) > 0)
                     <tr>
                         <td colspan="3" class="text-right"><strong>Giảm giá:</strong></td>
-                        <td class="text-right">-{{ number_format($order->discount_amount) }}đ</td>
+                        <td class="text-right">-{{ number_format($order->promotion_amount) }}đ</td>
                     </tr>
                     @endif
                     <tr>

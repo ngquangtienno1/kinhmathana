@@ -133,7 +133,8 @@
                                                         <div class="product-qty">x{{ $item->quantity }}</div>
                                                     </div>
                                                 </a>
-                                                <div class="product-price">{{ number_format($item->price, 0, ',', '.') }}₫
+                                                <div class="product-price">
+                                                    {{ number_format($item->price * $item->quantity, 0, ',', '.') }}₫
                                                 </div>
                                             </div>
                                         @endforeach
@@ -196,36 +197,89 @@
         $cancelReasons = \App\Models\CancellationReason::where([
             'type' => 'customer',
             'is_active' => true,
-            'is_default' => true,
-        ])->get(['id', 'reason']);
+        ])
+            ->orderBy('is_default', 'desc')
+            ->orderBy('id', 'asc')
+            ->get(['id', 'reason']);
     @endphp
     <!-- Modal chọn lý do huỷ -->
     <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cancelReasonModalLabel">Chọn lý do huỷ đơn hàng</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="border-radius: 12px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid #f0f0f0; padding: 20px 24px;">
+                    <div class="d-flex align-items-center">
+                        <div class="modal-icon me-3">
+                            <i class="fas fa-exclamation-triangle" style="color: #ff6b35; font-size: 24px;"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title mb-0 fw-bold" id="cancelReasonModalLabel"
+                                style="color: #222; font-size: 18px;">
+                                Huỷ đơn hàng
+                            </h5>
+                            <small class="text-muted">Vui lòng chọn lý do huỷ đơn hàng</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="background: none; border: none; font-size: 20px; color: #999;">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="cancel-reason-select" class="form-label">Lý do huỷ <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select" id="cancel-reason-select">
+                <div class="modal-body" style="padding: 24px;">
+                    <div class="mb-4">
+                        <label for="cancel-reason-select" class="form-label fw-semibold mb-3"
+                            style="color: #333; font-size: 14px;">
+                            Lý do huỷ <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="cancel-reason-select"
+                            style="border: 2px solid #e9ecef; border-radius: 8px; padding: 12px 16px; font-size: 14px; transition: all 0.3s ease;">
                             <option value="">-- Chọn lý do huỷ --</option>
                             @foreach ($cancelReasons as $reason)
                                 <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
                             @endforeach
                             <option value="other">-- Khác (Nhập lý do mới) --</option>
                         </select>
-                        <input type="text" class="form-control mt-2 d-none" id="cancel-reason-other"
-                            placeholder="Nhập lý do huỷ mới">
+                        <div class="invalid-feedback" id="reason-error" style="display: none;">
+                            Vui lòng chọn lý do huỷ
+                        </div>
+                    </div>
+
+                    <div class="mb-4" id="other-reason-group" style="display: none;">
+                        <label for="cancel-reason-other" class="form-label fw-semibold mb-3"
+                            style="color: #333; font-size: 14px;">
+                            Lý do khác <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="cancel-reason-other" rows="3"
+                            placeholder="Nhập lý do huỷ đơn hàng của bạn..."
+                            style="border: 2px solid #e9ecef; border-radius: 8px; padding: 12px 16px; font-size: 14px; resize: none; transition: all 0.3s ease;"></textarea>
+                        <div class="invalid-feedback" id="other-reason-error" style="display: none;">
+                            Vui lòng nhập lý do huỷ
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mb-0"
+                        style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 16px; margin-top: 20px; position: relative;">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-info-circle me-2 mt-1" style="color: #856404; flex-shrink: 0;"></i>
+                            <div style="flex: 1;">
+                                <strong style="color: #856404;">Lưu ý:</strong>
+                                <p class="mb-0 mt-1" style="color: #856404; font-size: 13px;">
+                                    Việc huỷ đơn hàng sẽ không thể hoàn tác. Vui lòng cân nhắc kỹ trước khi thực hiện.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="confirm-cancel-reason">Xác nhận</button>
+                <div class="modal-footer" style="border-top: 1px solid #f0f0f0; padding: 20px 24px; gap: 12px;">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                        style="border-radius: 8px; padding: 10px 20px; font-weight: 500; border: 1px solid #dee2e6;">
+                        <i class="fas fa-times me-2"></i>Đóng
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirm-cancel-reason"
+                        style="border-radius: 8px; padding: 10px 24px; font-weight: 500; background: #dc3545; border: none;">
+                        <i class="fas fa-check me-2"></i>Xác nhận huỷ
+                    </button>
                 </div>
             </div>
         </div>
@@ -238,50 +292,256 @@
                 document.querySelectorAll('.btn-cancel-order').forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         currentCancelOrderId = this.getAttribute('data-order-id');
-                        // Reset select và input mỗi lần mở popup
-                        let select = document.getElementById('cancel-reason-select');
-                        select.value = '';
-                        document.getElementById('cancel-reason-other').classList.add('d-none');
-                        document.getElementById('cancel-reason-other').value = '';
+                        resetModal();
                         var modal = new bootstrap.Modal(document.getElementById('cancelReasonModal'));
                         modal.show();
                     });
                 });
+
                 // Hiện ô nhập lý do mới nếu chọn "other"
                 document.getElementById('cancel-reason-select').addEventListener('change', function() {
+                    const otherGroup = document.getElementById('other-reason-group');
+                    const otherInput = document.getElementById('cancel-reason-other');
+
                     if (this.value === 'other') {
-                        document.getElementById('cancel-reason-other').classList.remove('d-none');
+                        otherGroup.style.display = 'block';
+                        otherInput.focus();
+                        // Thêm hiệu ứng fade in
+                        otherGroup.style.opacity = '0';
+                        setTimeout(() => {
+                            otherGroup.style.opacity = '1';
+                        }, 10);
                     } else {
-                        document.getElementById('cancel-reason-other').classList.add('d-none');
+                        otherGroup.style.opacity = '0';
+                        setTimeout(() => {
+                            otherGroup.style.display = 'none';
+                        }, 200);
+                    }
+
+                    // Xóa validation error khi user thay đổi lựa chọn
+                    clearValidationErrors();
+                });
+
+                // Xử lý input lý do khác
+                document.getElementById('cancel-reason-other').addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                        document.getElementById('other-reason-error').style.display = 'none';
                     }
                 });
+
                 // Xác nhận lý do huỷ
                 document.getElementById('confirm-cancel-reason').addEventListener('click', function() {
-                    let select = document.getElementById('cancel-reason-select');
-                    let other = document.getElementById('cancel-reason-other');
-                    let value = select.value;
-                    if (!value) {
-                        select.classList.add('is-invalid');
-                        return;
+                    if (validateForm()) {
+                        submitCancelForm();
                     }
-                    select.classList.remove('is-invalid');
-                    let reasonValue = value;
-                    if (value === 'other') {
-                        if (!other.value.trim()) {
-                            other.classList.add('is-invalid');
-                            return;
+                });
+
+                // Xử lý phím Enter trong modal
+                document.getElementById('cancelReasonModal').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (validateForm()) {
+                            submitCancelForm();
                         }
-                        other.classList.remove('is-invalid');
-                        reasonValue = 'other:' + other.value.trim();
                     }
-                    // Submit form
-                    let form = document.getElementById('cancel-order-form-' + currentCancelOrderId);
-                    form.querySelector('input[name="cancellation_reason_id"]').value = reasonValue;
-                    form.submit();
                 });
             });
+
+            function resetModal() {
+                const select = document.getElementById('cancel-reason-select');
+                const otherGroup = document.getElementById('other-reason-group');
+                const otherInput = document.getElementById('cancel-reason-other');
+
+                select.value = '';
+                otherInput.value = '';
+                otherGroup.style.display = 'none';
+                otherGroup.style.opacity = '1';
+
+                clearValidationErrors();
+            }
+
+            function clearValidationErrors() {
+                const select = document.getElementById('cancel-reason-select');
+                const otherInput = document.getElementById('cancel-reason-other');
+                const reasonError = document.getElementById('reason-error');
+                const otherError = document.getElementById('other-reason-error');
+
+                select.classList.remove('is-invalid');
+                otherInput.classList.remove('is-invalid');
+                reasonError.style.display = 'none';
+                otherError.style.display = 'none';
+            }
+
+            function validateForm() {
+                const select = document.getElementById('cancel-reason-select');
+                const otherInput = document.getElementById('cancel-reason-other');
+                const reasonError = document.getElementById('reason-error');
+                const otherError = document.getElementById('other-reason-error');
+
+                let isValid = true;
+
+                // Validate select
+                if (!select.value) {
+                    select.classList.add('is-invalid');
+                    reasonError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    select.classList.remove('is-invalid');
+                    reasonError.style.display = 'none';
+                }
+
+                // Validate other reason if selected
+                if (select.value === 'other' && !otherInput.value.trim()) {
+                    otherInput.classList.add('is-invalid');
+                    otherError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    otherInput.classList.remove('is-invalid');
+                    otherError.style.display = 'none';
+                }
+
+                return isValid;
+            }
+
+            function submitCancelForm() {
+                const select = document.getElementById('cancel-reason-select');
+                const otherInput = document.getElementById('cancel-reason-other');
+                let reasonValue = select.value;
+
+                if (reasonValue === 'other') {
+                    reasonValue = 'other:' + otherInput.value.trim();
+                }
+
+                // Submit form
+                const form = document.getElementById('cancel-order-form-' + currentCancelOrderId);
+                form.querySelector('input[name="cancellation_reason_id"]').value = reasonValue;
+
+                // Thêm loading state
+                const confirmBtn = document.getElementById('confirm-cancel-reason');
+                const originalText = confirmBtn.innerHTML;
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
+                confirmBtn.disabled = true;
+
+                // Submit form
+                form.submit();
+            }
         </script>
     @endpush
+
+    <style>
+        /* Modal styles */
+        #cancelReasonModal .modal-content {
+            transition: all 0.3s ease;
+        }
+
+        #cancelReasonModal .modal-dialog {
+            transition: all 0.3s ease;
+        }
+
+        #cancelReasonModal .form-select:focus,
+        #cancelReasonModal .form-control:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        #cancelReasonModal .form-select.is-invalid,
+        #cancelReasonModal .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        #other-reason-group {
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 107, 53, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #confirm-cancel-reason:hover {
+            background: #c82333 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        #confirm-cancel-reason:active {
+            transform: translateY(0);
+        }
+
+        .btn-light:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        /* Animation for modal */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #cancelReasonModal.show .modal-dialog {
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        /* Fix alert positioning */
+        #cancelReasonModal .alert {
+            position: static !important;
+            transform: none !important;
+            transition: none !important;
+        }
+
+        #cancelReasonModal .modal-body {
+            overflow: hidden;
+        }
+
+        /* Ensure proper flex layout */
+        #cancelReasonModal .d-flex {
+            display: flex !important;
+        }
+
+        #cancelReasonModal .align-items-start {
+            align-items: flex-start !important;
+        }
+
+        /* Override any conflicting styles */
+        #cancelReasonModal * {
+            box-sizing: border-box;
+        }
+
+        #cancelReasonModal .modal-content {
+            overflow: visible;
+        }
+
+        #cancelReasonModal .modal-body {
+            overflow: visible;
+            position: relative;
+        }
+
+        /* Ensure alert stays in place */
+        #cancelReasonModal .alert-warning {
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+            margin: 20px 0 0 0 !important;
+            width: 100% !important;
+        }
+    </style>
 
 @endsection
 <style>

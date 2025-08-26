@@ -63,21 +63,7 @@
                                     <th style="width: 200px;">Danh mục</th>
                                     <td>{{ $faq->category }}</td>
                                 </tr>
-                                <tr>
-                                    <th>Đánh giá</th>
-                                    <td>
-                                        <div class="text-warning d-flex align-items-center">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($i <= $faq->rating)
-                                                    <i class="fas fa-star me-1"></i>
-                                                @else
-                                                    <i class="far fa-star me-1"></i>
-                                                @endif
-                                            @endfor
-                                            <span class="ms-2">({{ number_format($faq->rating, 1) }})</span>
-                                        </div>
-                                    </td>
-                                </tr>
+
                                 <tr>
                                     <th>Thứ tự sắp xếp</th>
                                     <td>{{ $faq->sort_order }}</td>

@@ -8,6 +8,7 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+
 class RoleController extends Controller
 {
     public function index(Request $request)
@@ -79,12 +80,21 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        $request->validate([
+        // Kiểm tra có phải vai trò Khách hàng không (ID = 3)
+        $isCustomerRole = $role->id == 3;
+
+        $validationRules = [
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
             'description' => 'nullable|string|max:1000',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id'
-        ], [
+        ];
+
+        // Chỉ yêu cầu permissions nếu không phải vai trò Khách hàng
+        if (!$isCustomerRole) {
+            $validationRules['permissions'] = 'required|array';
+            $validationRules['permissions.*'] = 'exists:permissions,id';
+        }
+
+        $request->validate($validationRules, [
             'name.required' => 'Vui lòng nhập tên vai trò',
             'name.unique' => 'Tên vai trò đã tồn tại',
             'permissions.required' => 'Vui lòng chọn ít nhất một quyền',
@@ -99,7 +109,10 @@ class RoleController extends Controller
                 'description' => $request->description
             ]);
 
-            $role->permissions()->sync($request->permissions);
+            // Chỉ sync permissions nếu không phải vai trò Khách hàng
+            if (!$isCustomerRole) {
+                $role->permissions()->sync($request->permissions ?? []);
+            }
 
             DB::commit();
 

@@ -37,15 +37,16 @@
         </li>
     </ul>
     <div id="products"
-        data-list='{"valueNames":["name","price","sale_price","stock","description","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true}'>
+        data-list='{"valueNames":["id","name","price","stock","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true,"search":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
-                    <form class="position-relative" action="{{ route('admin.products.list') }}" method="GET">
+                    <div class="position-relative">
                         <input class="form-control search-input search" type="search" name="search"
-                            placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" aria-label="Search" />
+                            placeholder="Tìm kiếm sản phẩm" value="{{ request('search') }}" aria-label="Search"
+                            data-list-search />
                         <span class="fas fa-search search-box-icon"></span>
-                    </form>
+                    </div>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
                     <select class="form-select" name="category_id" id="category_id">
@@ -63,7 +64,7 @@
                         value="{{ request('date_from') }}" />
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" onclick="applyFilters()">
                         <span class="fas fa-filter me-2"></span>Lọc
                     </button>
                     <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">
@@ -71,7 +72,7 @@
                     </a>
                 </div>
                 <div class="ms-auto">
-                    <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;">
+                    <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;" type="button">
                         <span class="fas fa-trash me-2"></span>Xóa mềm
                     </button>
                     <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
@@ -92,19 +93,17 @@
                                         data-bulk-select='{"body":"products-table-body"}' />
                                 </div>
                             </th>
-                            <th class="sort white-space-nowrap align-middle ps-4">ID</th>
-                            <th class="sort align-middle ps-4">Tên</th>
-                            <th class="sort align-middle ps-4">Giá gốc</th>
-                            <th class="sort align-middle ps-4">Giá km</th>
-                            <th class="sort align-middle ps-4">Số lượng</th>
-                            <th class="sort align-middle ps-4">Mô tả ngắn</th>
-                            <th class="sort align-middle ps-4">Danh mục</th>
-                            <th class="sort align-middle ps-4">Thương hiệu</th>
-                            <th class="sort align-middle ps-4">Sp có biến thể</th>
-                            <th class="sort align-middle ps-4">Nổi bật</th>
-                            <th class="sort align-middle ps-4">Lượt xem</th>
-                            <th class="sort align-middle ps-4">Trạng thái</th>
-                            <th class="sort text-end align-middle pe-0 ps-4">Thao tác</th>
+                            <th class="sort white-space-nowrap align-middle ps-4" data-sort="id">ID</th>
+                            <th class="sort align-middle ps-4" data-sort="name">Tên</th>
+                            <th class="sort align-middle ps-4" data-sort="price">Giá</th>
+                            <th class="sort align-middle ps-4" data-sort="stock">Số lượng</th>
+                            <th class="sort align-middle ps-4" data-sort="categories">Danh mục</th>
+                            <th class="sort align-middle ps-4" data-sort="brand">Thương hiệu</th>
+                            <th class="sort align-middle ps-4" data-sort="has_variations">Sp có biến thể</th>
+                            <th class="sort align-middle ps-4" data-sort="is_featured">Nổi bật</th>
+                            <th class="sort align-middle ps-4" data-sort="views">Lượt xem</th>
+                            <th class="sort align-middle ps-4" data-sort="status">Trạng thái</th>
+                            <th class="sort text-end align-middle pe-0 ps-4" data-sort="created_at">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="list" id="products-table-body">
@@ -116,44 +115,67 @@
                                             value="{{ $product->id }}" />
                                     </div>
                                 </td>
-                                <td class="align-middle ps-4">{{ $loop->iteration }}</td>
-                                <td class="align-middle ps-4">{{ $product->name }}</td>
-                                <td class="align-middle ps-4 text-end">
-                                    {{ $product->product_type === 'simple'
-                                        ? number_format($product->price ?? 0, 0, ',', '.') . 'đ'
-                                        : number_format($product->default_price ?? 0, 0, ',', '.') . 'đ' }}
+                                <td class="id align-middle ps-4">{{ $loop->iteration }}</td>
+                                <td class="name align-middle ps-4">{{ $product->name }}</td>
+                                <td class="price align-middle ps-4 text-end">
+                                    @if ($product->product_type === 'simple')
+                                        @if ($product->sale_price && $product->sale_price < $product->price)
+                                            <div class="d-flex flex-column align-items-end">
+                                                <span class="text-decoration-line-through">
+                                                    {{ number_format($product->price, 0, ',', '.') }}₫
+                                                </span>
+                                                <span class="text-danger fw-bold fs-8">
+                                                    {{ number_format($product->sale_price, 0, ',', '.') }}₫
+                                                </span>
+                                            </div>
+                                        @else
+                                            <span class="fw-bold">
+                                                {{ number_format($product->price ?? 0, 0, ',', '.') }}₫
+                                            </span>
+                                        @endif
+                                    @else
+                                        @if ($product->default_sale_price && $product->default_sale_price < $product->default_price)
+                                            <div class="d-flex flex-column align-items-end">
+                                                <span class="text-decoration-line-through">
+                                                    {{ number_format($product->default_price, 0, ',', '.') }}₫
+                                                </span>
+                                                <span class="text-danger fw-bold fs-8">
+                                                    {{ number_format($product->default_sale_price, 0, ',', '.') }}₫
+                                                </span>
+                                            </div>
+                                        @else
+                                            <span class="fw-bold">
+                                                {{ number_format($product->default_price ?? 0, 0, ',', '.') }}₫
+                                            </span>
+                                        @endif
+                                    @endif
                                 </td>
-                                <td class="align-middle ps-4 text-end">
-                                    {{ $product->product_type === 'simple'
-                                        ? number_format($product->sale_price ?? 0, 0, ',', '.') . 'đ'
-                                        : number_format($product->default_sale_price ?? 0, 0, ',', '.') . 'đ' }}
-                                </td>
-                                <td class="align-middle ps-4 text-center">
+
+                                <td class="stock align-middle ps-4 text-center">
                                     {{ number_format($product->total_stock_quantity ?? 0, 0, ',', '.') }}
                                 </td>
-                                <td class="align-middle ps-4">{{ Str::limit($product->description_short ?? '', 50) }}
-                                </td>
-                                <td class="align-middle ps-4">
+
+                                <td class="categories align-middle ps-4">
                                     @if ($product->categories->count() > 0)
                                         {{ $product->categories->pluck('name')->join(', ') }}
                                     @else
-                                        -
+                                        <span class="text-muted">Chưa phân loại</span>
                                     @endif
                                 </td>
-                                <td class="align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
-                                <td class="align-middle text-center has_variations">
+                                <td class="brand align-middle ps-4">{{ optional($product->brand)->name ?? '-' }}</td>
+                                <td class="has_variations align-middle text-center">
                                     <span
                                         class="badge {{ $product->product_type === 'variable' ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $product->product_type === 'variable' ? 'Có' : 'Không' }}
                                     </span>
                                 </td>
-                                <td class="align-middle text-center">
+                                <td class="is_featured align-middle text-center">
                                     <span class="badge {{ $product->is_featured ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $product->is_featured ? 'Có' : 'Không' }}
                                     </span>
                                 </td>
-                                <td class="align-middle text-center">{{ $product->views ?? 0 }}</td>
-                                <td class="align-middle text-center">
+                                <td class="views align-middle text-center">{{ $product->views ?? 0 }}</td>
+                                <td class="status align-middle text-center">
                                     <span
                                         class="badge {{ $product->status === 'Hoạt động' ? 'bg-success' : 'bg-danger' }}">
                                         {{ $product->status ?? 'Không hoạt động' }}
@@ -177,8 +199,8 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="dropdown-item text-danger"
-                                                    onclick="deleteProduct({{ $product->id }})">Xóa</button>
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</button>
                                             </form>
                                         </div>
                                     </div>
@@ -186,7 +208,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="14" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
+                                <td colspan="12" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -194,7 +216,7 @@
             </div>
             <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
                 <div class="col-auto d-flex">
-                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">
+                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info>
                         Tổng: {{ $products->count() }} sản phẩm
                     </p>
                     <a class="fw-semibold" href="#" data-list-view="*">Xem tất cả <span
@@ -270,78 +292,34 @@
         });
     });
 
-    function deleteProduct(id) {
-        $.ajax({
-            url: `/admin/products/destroy/${id}`,
-            type: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Thành công!',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Xác nhận xóa',
-                        text: response.message,
-                        showCancelButton: true,
-                        confirmButtonText: 'Xóa',
-                        cancelButtonText: 'Hủy',
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Gửi lại request với force true
-                            $.ajax({
-                                url: `/admin/products/destroy/${id}`,
-                                type: 'DELETE',
-                                data: {
-                                    force: true
-                                },
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                        'content')
-                                },
-                                success: function(response) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Thành công!',
-                                        text: 'Sản phẩm đã được chuyển vào thùng rác',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    }).then(() => {
-                                        window.location.reload();
-                                    });
-                                },
-                                error: function() {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Lỗi!',
-                                        text: 'Có lỗi xảy ra khi xóa sản phẩm'
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi!',
-                    text: 'Có lỗi xảy ra khi xóa sản phẩm'
-                });
-            }
-        });
+
+
+    // Hàm lọc sản phẩm theo danh mục và ngày
+    function applyFilters() {
+        const categoryId = document.getElementById('category_id').value;
+        const dateFrom = document.querySelector('input[name="date_from"]').value;
+
+        let url = new URL(window.location);
+
+        if (categoryId) {
+            url.searchParams.set('category_id', categoryId);
+        } else {
+            url.searchParams.delete('category_id');
+        }
+
+        if (dateFrom) {
+            url.searchParams.set('date_from', dateFrom);
+        } else {
+            url.searchParams.delete('date_from');
+        }
+
+        // Giữ nguyên search term nếu có
+        const searchTerm = document.querySelector('input[name="search"]').value;
+        if (searchTerm) {
+            url.searchParams.set('search', searchTerm);
+        }
+
+        window.location.href = url.toString();
     }
 </script>
 

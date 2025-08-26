@@ -79,10 +79,6 @@
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
                                         <a href="shop/four-columns-grid/index.html">Bộ sưu tập</a>
                                     </li>
-                                    <li id="menu-item-131"
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-131">
-                                        <a href="who-we-are/index.html">Tuyển dụng</a>
-                                    </li>
                                 </ul>
                             </div>
                         </div>

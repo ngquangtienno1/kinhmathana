@@ -212,7 +212,7 @@
                     </li>
                 @endif
 
-               
+
 
                 @if (canAccess('xem-danh-sach-don-hang'))
                     <!-- Orders Management -->
@@ -279,7 +279,7 @@
                                             <a class="nav-link {{ request()->routeIs('admin.payments.index') ? 'active' : '' }}"
                                                 href="{{ route('admin.payments.index') }}">
                                                 <div class="d-flex align-items-center">
-                                                    <span class="nav-link-text">Quản lý thanh toán</span>
+                                                    <span class="nav-link-text">Danh sách thanh toán</span>
                                                 </div>
                                             </a>
                                         </li>
@@ -514,7 +514,7 @@
                                         <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                                     </div>
                                     <span class="nav-link-icon"><span data-feather="tag"></span></span>
-                                    <span class="nav-link-text">Brands</span>
+                                    <span class="nav-link-text">Thương hiệu</span>
                                 </div>
                             </a>
                             <div class="parent-wrapper label-1">
@@ -524,7 +524,7 @@
                                         <a class="nav-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}"
                                             href="{{ route('admin.brands.index') }}">
                                             <div class="d-flex align-items-center">
-                                                <span class="nav-link-text">Danh sách Brands</span>
+                                                <span class="nav-link-text">Danh sách thương hiệu</span>
                                             </div>
                                         </a>
                                     </li>
