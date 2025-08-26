@@ -62,7 +62,7 @@ class BlogController extends Controller
 
         // Lấy bình luận đã duyệt và không bị ẩn cho bài viết này
         $comments = $news->comments()
-            ->with(['user', 'replies' => function($query) {
+            ->with(['user', 'replies' => function ($query) {
                 $query->approved()->with('user');
             }])
             ->approved()

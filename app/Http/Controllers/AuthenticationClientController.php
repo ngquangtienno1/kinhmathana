@@ -54,9 +54,7 @@ class AuthenticationClientController extends BaseController
             // Check user status
             if ($user->status_user !== 'active') {
                 Log::warning('Login failed: Account is inactive', ['email' => $request->email]);
-                return redirect()->back()
-                    ->withErrors(['email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt'])
-                    ->withInput();
+                return redirect()->route('client.login')->with('blocked', true);
             }
 
 
@@ -110,6 +108,10 @@ class AuthenticationClientController extends BaseController
             session()->forget('user_id');
         }
 
+        // Nếu logout do bị chặn/inactive (từ polling hoặc session)
+        if (request()->has('blocked') || session('blocked')) {
+            return redirect()->route('client.login')->with('blocked', true);
+        }
         return redirect()->route('client.login')
             ->with('message', 'Đăng xuất thành công');
     }
