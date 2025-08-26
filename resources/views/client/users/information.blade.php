@@ -470,12 +470,7 @@
 
                 <nav>
                     <ul class="nav-menu">
-                        <li class="nav-item">
-                            <a href="{{ route('client.users.index') }}" class="nav-link">
-                                <i class="fas fa-shopping-cart"></i>
-                                Danh sách đơn hàng
-                            </a>
-                        </li>
+                      
                         <li class="nav-item">
                             <a href="#" class="nav-link active">
                                 <i class="fas fa-user"></i>
