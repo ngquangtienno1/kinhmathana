@@ -13,6 +13,9 @@ use App\Http\Requests\UserLoginRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthenticationClientController extends BaseController
 {
@@ -51,13 +54,17 @@ class AuthenticationClientController extends BaseController
             // Check user status
             if ($user->status_user !== 'active') {
                 Log::warning('Login failed: Account is inactive', ['email' => $request->email]);
-                return redirect()->back()
-                    ->withErrors(['email' => 'Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt'])
-                    ->withInput();
+                return redirect()->route('client.login')->with('blocked', true);
             }
 
+
             // Successful login
-            Auth::login($user, $request->has('remember'));
+            $remember = $request->has('remember');
+            Auth::login($user, $remember);
+            if ($remember) {
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+            }
             session()->put('user_id', Auth::id());
 
             Log::info('User logged in successfully', [
@@ -90,19 +97,28 @@ class AuthenticationClientController extends BaseController
 
     public function logout()
     {
+
         if (Auth::check()) {
-            Log::info('User logged out', ['user_id' => Auth::id()]);
+            $user = Auth::user();
+            Log::info('User logged out', ['user_id' => $user->id]);
+            // Xóa remember_token khi logout
+            $user->setRememberToken(null);
+            $user->save();
             Auth::logout();
             session()->forget('user_id');
         }
 
+        // Nếu logout do bị chặn/inactive (từ polling hoặc session)
+        if (request()->has('blocked') || session('blocked')) {
+            return redirect()->route('client.login')->with('blocked', true);
+        }
         return redirect()->route('client.login')
             ->with('message', 'Đăng xuất thành công');
     }
 
     public function register()
     {
-        return view('admin.login.register');
+        return view('client.login.register');
     }
 
     public function postRegister(Request $request)
@@ -140,5 +156,51 @@ class AuthenticationClientController extends BaseController
         return redirect()->back()->with([
             'message' => 'Có lỗi xảy ra, vui lòng thử lại'
         ]);
+    }
+
+    // Hiển thị form quên mật khẩu
+    public function showForgotPasswordForm()
+    {
+        return view('client.login.forgot-password');
+    }
+
+    // Gửi mail reset password
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        $status = Password::broker()->sendResetLink(
+            $request->only('email')
+        );
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('status', 'Đã gửi email xác nhận, vui lòng kiểm tra hộp thư của bạn!');
+        }
+        return back()->withErrors(['email' => 'Không thể gửi email. Vui lòng kiểm tra lại địa chỉ email hoặc thử lại sau.']);
+    }
+
+    // Hiển thị form đặt lại mật khẩu
+    public function showResetForm(Request $request, $token = null)
+    {
+        return view('client.login.reset-password', ['token' => $token, 'email' => $request->email]);
+    }
+
+    // Xử lý đặt lại mật khẩu
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+        $status = Password::broker()->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = bcrypt($password);
+                $user->save();
+            }
+        );
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('client.login')->with('status', __($status));
+        }
+        return back()->withErrors(['email' => [__($status)]]);
     }
 }
