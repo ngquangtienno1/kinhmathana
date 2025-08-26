@@ -220,8 +220,8 @@
                                     </li>
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7770 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
-                                                Pages<svg class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span
+                                                class="qodef-menu-item-text">Trang<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">
@@ -743,8 +743,8 @@
 
                                     <li
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7770 qodef--hide-link">
-                                        <a onclick="JavaScript: return false;"><span class="qodef-menu-item-text">Shop
-                                                Pages<svg class="qodef-menu-item-arrow"
+                                        <a onclick="JavaScript: return false;"><span
+                                                class="qodef-menu-item-text">Trang<svg class="qodef-menu-item-arrow"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="32"
                                                     height="32" viewBox="0 0 32 32">

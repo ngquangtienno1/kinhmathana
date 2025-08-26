@@ -16,12 +16,6 @@
         </div>
     </div>
 
-    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
-        <li class="nav-item"><a class="nav-link active" aria-current="page"
-                href="{{ route('admin.customers.index') }}"><span>Tất cả </span><span
-                    class="text-body-tertiary fw-semibold">({{ $customers->count() }})</span></a></li>
-    </ul>
-
     <div id="customerTable"
         data-list='{"valueNames":["id","name","email","phone","orders","spent","type","date"],"page":10,"pagination":true}'>
 
@@ -38,40 +32,6 @@
                             <span class="fas fa-search search-box-icon"></span>
                         </form>
                     </div>
-                </div>
-                <!-- Các filter dropdown -->
-                <div class="col">
-                    <div class="d-flex align-items-center gap-0">
-                        <!-- Customer type -->
-                        <div class="btn-group position-static text-nowrap" role="group">
-                            <button class="btn btn-phoenix-secondary px-7 py-2 border-end" type="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                data-bs-reference="parent" style="border-radius: 8px 0 0 8px; height: 40px;">
-                                Loại khách hàng <span class="fas fa-angle-down ms-2"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.customers.index', array_merge(request()->except('customer_type'), ['customer_type' => 'new'])) }}">Mới</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.customers.index', array_merge(request()->except('customer_type'), ['customer_type' => 'regular'])) }}">Thường</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.customers.index', array_merge(request()->except('customer_type'), ['customer_type' => 'vip'])) }}">VIP</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.customers.index', array_merge(request()->except('customer_type'), ['customer_type' => 'potential'])) }}">Tiềm
-                                        năng</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- Export -->
-                <div class="col-auto d-flex align-items-center gap-2">
-                    <a href="{{ route('admin.customers.export', request()->query()) }}"
-                        class="btn btn-link text-body px-0 d-flex align-items-center" style="height: 40px;">
-                        <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
-                    </a>
                 </div>
             </div>
         </div>
@@ -109,8 +69,8 @@
                         @forelse ($customers as $customer)
                             <tr>
                                 <td class="fs-9 align-middle px-0 py-3">
-                                    <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                            type="checkbox" /></div>
+                                    <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox" />
+                                    </div>
                                 </td>
                                 <td class="id align-middle text-center white-space-nowrap py-0">
                                     {{ $customer->id }}

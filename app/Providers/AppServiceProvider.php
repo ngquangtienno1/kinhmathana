@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Cart;
 use App\Models\News;
 use App\Models\Product;
+use App\Models\User;
+use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
         // if (config('app.env') === 'local') {
         //     URL::forceScheme('https');
         // }
+
+        User::observe(UserObserver::class);
+
         Relation::enforceMorphMap([
             'product' => Product::class,
             'news' => News::class,
