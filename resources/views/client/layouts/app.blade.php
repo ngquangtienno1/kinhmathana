@@ -26,49 +26,58 @@
         transition: all 0.3s ease;
         opacity: 1;
         transform: translateX(0);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
     }
-    
+
     .alert.alert-success {
         background: #d4edda;
         color: #155724;
         border-color: #c3e6cb;
     }
-    
+
     .alert.alert-danger {
         background: #f8d7da;
         color: #721c24;
         border-color: #f5c6cb;
     }
-    
+
     .alert.alert-warning {
         background: #fff3cd;
         color: #856404;
         border-color: #ffeaa7;
     }
-    
+
     .alert.alert-info {
         background: #d1ecf1;
         color: #0c5460;
         border-color: #bee5eb;
     }
-    
+
     .alert.fade-out {
         opacity: 0;
         transform: translateX(100%);
     }
-    
+
     .alert .close {
         background: none;
         border: none;
         font-size: 20px;
-        margin-left: 10px;
         cursor: pointer;
-        float: right;
         line-height: 1;
         opacity: 0.7;
         transition: opacity 0.2s ease;
+        flex-shrink: 0;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    
+
     .alert .close:hover {
         opacity: 1;
     }
@@ -147,7 +156,7 @@
             alerts.forEach(function(alert) {
                 // Tự động ẩn sau 3 giây
                 autoHideAlert(alert, 3000);
-                
+
                 // Thêm sự kiện click để ẩn thủ công
                 alert.addEventListener('click', function(e) {
                     if (e.target.classList.contains('close')) {
@@ -159,21 +168,23 @@
             // Polling kiểm tra trạng thái user mỗi 10s
             function pollUserStatus() {
                 fetch('/client/user-status', {
-                    method: 'GET',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    },
-                    credentials: 'same-origin'
-                })
-                .then(function(response) { return response.json(); })
-                .then(function(data) {
-                    if (data.status === 'blocked') {
-                        // Tự động logout nếu bị chặn
-                        window.location.href = '/client/logout';
-                    }
-                })
-                .catch(function() {});
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'same-origin'
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.status === 'blocked') {
+                            // Tự động logout nếu bị chặn
+                            window.location.href = '/client/logout';
+                        }
+                    })
+                    .catch(function() {});
             }
             setInterval(pollUserStatus, 6000); // 6s
         });

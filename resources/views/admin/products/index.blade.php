@@ -37,7 +37,7 @@
         </li>
     </ul>
     <div id="products"
-        data-list='{"valueNames":["id","name","price","stock","description","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true,"search":true}'>
+        data-list='{"valueNames":["id","name","price","stock","categories","brand","has_variations","is_featured","views","status","created_at"],"page":10,"pagination":true,"search":true}'>
         <div class="mb-4">
             <div class="d-flex flex-wrap gap-3">
                 <div class="search-box">
@@ -97,7 +97,6 @@
                             <th class="sort align-middle ps-4" data-sort="name">Tên</th>
                             <th class="sort align-middle ps-4" data-sort="price">Giá</th>
                             <th class="sort align-middle ps-4" data-sort="stock">Số lượng</th>
-                            <th class="sort align-middle ps-4" data-sort="description">Mô tả ngắn</th>
                             <th class="sort align-middle ps-4" data-sort="categories">Danh mục</th>
                             <th class="sort align-middle ps-4" data-sort="brand">Thương hiệu</th>
                             <th class="sort align-middle ps-4" data-sort="has_variations">Sp có biến thể</th>
@@ -155,9 +154,7 @@
                                 <td class="stock align-middle ps-4 text-center">
                                     {{ number_format($product->total_stock_quantity ?? 0, 0, ',', '.') }}
                                 </td>
-                                <td class="description align-middle ps-4">
-                                    {{ Str::limit($product->description_short ?? '', 50) }}
-                                </td>
+
                                 <td class="categories align-middle ps-4">
                                     @if ($product->categories->count() > 0)
                                         {{ $product->categories->pluck('name')->join(', ') }}
@@ -202,8 +199,8 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="dropdown-item text-danger"
-                                                    onclick="deleteProduct({{ $product->id }})">Xóa</button>
+                                                <button type="submit" class="dropdown-item text-danger"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</button>
                                             </form>
                                         </div>
                                     </div>
@@ -211,7 +208,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
+                                <td colspan="12" class="text-center py-4 text-muted">Không có sản phẩm nào.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -295,79 +292,7 @@
         });
     });
 
-    function deleteProduct(id) {
-        $.ajax({
-            url: `/admin/products/destroy/${id}`,
-            type: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Thành công!',
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Xác nhận xóa',
-                        text: response.message,
-                        showCancelButton: true,
-                        confirmButtonText: 'Xóa',
-                        cancelButtonText: 'Hủy',
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Gửi lại request với force true
-                            $.ajax({
-                                url: `/admin/products/destroy/${id}`,
-                                type: 'DELETE',
-                                data: {
-                                    force: true
-                                },
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                        'content')
-                                },
-                                success: function(response) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Thành công!',
-                                        text: 'Sản phẩm đã được chuyển vào thùng rác',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    }).then(() => {
-                                        window.location.reload();
-                                    });
-                                },
-                                error: function() {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Lỗi!',
-                                        text: 'Có lỗi xảy ra khi xóa sản phẩm'
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi!',
-                    text: 'Có lỗi xảy ra khi xóa sản phẩm'
-                });
-            }
-        });
-    }
+
 
     // Hàm lọc sản phẩm theo danh mục và ngày
     function applyFilters() {

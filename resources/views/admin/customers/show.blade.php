@@ -271,25 +271,7 @@
                         </div>
                     </form>
 
-                    {{-- Form cập nhật chỉ Loại khách hàng --}}
-                    <form action="{{ route('admin.customers.update', $customer) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-3">
-                            <label class="form-label">Loại khách hàng</label>
-                            <select name="customer_type" class="form-select">
-                                <option value="new" {{ $customer->customer_type == 'new' ? 'selected' : '' }}>Mới
-                                </option>
-                                <option value="regular" {{ $customer->customer_type == 'regular' ? 'selected' : '' }}>
-                                    Thường</option>
-                                <option value="vip" {{ $customer->customer_type == 'vip' ? 'selected' : '' }}>VIP
-                                </option>
-                                <option value="potential"
-                                    {{ $customer->customer_type == 'potential' ? 'selected' : '' }}>Tiềm năng</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-phoenix-primary w-100">Cập nhật</button>
-                    </form>
+
                 </div>
             </div>
         </div>

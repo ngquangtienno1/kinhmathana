@@ -538,25 +538,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-label">Video sản phẩm</label>
-                                    <input type="file" class="form-control" name="video_path"
-                                        accept="video/mp4,video/webm,video/ogg">
-                                    <small class="text-muted">Hỗ trợ định dạng: MP4, WebM, Ogg. Kích thước tối đa:
-                                        50MB</small>
-                                    @error('video_path')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                    @if ($product->video_path)
-                                        <div class="video-container mt-2">
-                                            <video class="product-video" controls style="max-width: 400px;">
-                                                <source src="{{ asset('storage/' . $product->video_path) }}"
-                                                    type="video/mp4">
-                                                Trình duyệt của bạn không hỗ trợ thẻ video.
-                                            </video>
-                                        </div>
-                                    @endif
-                                </div>
+
                             </div>
                         </div>
                     </div>

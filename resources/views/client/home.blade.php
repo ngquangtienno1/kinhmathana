@@ -169,10 +169,31 @@
                                         <ul class="qodef-grid-inner clear">
                                             @forelse($bestSellerProducts as $product)
                                                 <li
-                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
+                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                     <div class="qodef-e-inner">
-                                                        <div class="qodef-woo-product-image">
-                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                        <div class="qodef-woo-product-image"
+                                                            style="position: relative; width: 100%; height: 389px; overflow: hidden; display: block;">
+                                                            @php
+                                                                // Kiểm tra logic sale giống như phần hiển thị giá
+                                                                $hasSaleBadge = false;
+                                                                if (
+                                                                    $product->variations &&
+                                                                    $product->variations->count() > 0
+                                                                ) {
+                                                                    $minPrice = $product->variations->min('price');
+                                                                    $minSalePrice = $product->variations
+                                                                        ->where('sale_price', '>', 0)
+                                                                        ->min('sale_price');
+                                                                    if ($minSalePrice && $minSalePrice < $minPrice) {
+                                                                        $hasSaleBadge = true;
+                                                                    }
+                                                                } else {
+                                                                    $hasSaleBadge =
+                                                                        $product->sale_price &&
+                                                                        $product->sale_price < $product->price;
+                                                                }
+                                                            @endphp
+                                                            @if ($hasSaleBadge)
                                                                 <span
                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                             @endif
@@ -201,9 +222,10 @@
                                                                     ? asset('storage/' . $featuredImage->image_path)
                                                                     : asset('default-product.jpg');
                                                             @endphp
-                                                            <img loading="lazy" decoding="async" width="800"
-                                                                height="393" src="{{ $imagePath }}"
+                                                            <img loading="lazy" decoding="async" width="621"
+                                                                height="389" src="{{ $imagePath }}"
                                                                 class="attachment-full size-full qodef-list-image"
+                                                                style="width: 100% !important; height: 389px !important; object-fit: cover !important; object-position: center !important;"
                                                                 alt="{{ $product->name }}" />
                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -623,10 +645,37 @@
                                                         <ul class="qodef-grid-inner clear">
                                                             @forelse($featuredProducts as $product)
                                                                 <li
-                                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
+                                                                    class="qodef-e qodef-grid-item qodef-item--full product type-product post-{{ $product->id }} status-publish {{ $product->total_stock_quantity > 0 ? 'instock' : 'outofstock' }} has-post-thumbnail {{ $product->sale_price && $product->sale_price < $product->price ? 'sale' : '' }} shipping-taxable purchasable product-type-{{ $product->product_type }}">
                                                                     <div class="qodef-e-inner">
-                                                                        <div class="qodef-woo-product-image">
-                                                                            @if ($product->sale_price && $product->sale_price < $product->price)
+                                                                        <div class="qodef-woo-product-image"
+                                                                            style="position: relative; width: 100%; height: 389px; overflow: hidden; display: block;">
+                                                                            @php
+                                                                                // Kiểm tra logic sale giống như phần hiển thị giá
+                                                                                $hasSaleBadge = false;
+                                                                                if (
+                                                                                    $product->variations &&
+                                                                                    $product->variations->count() > 0
+                                                                                ) {
+                                                                                    $minPrice = $product->variations->min(
+                                                                                        'price',
+                                                                                    );
+                                                                                    $minSalePrice = $product->variations
+                                                                                        ->where('sale_price', '>', 0)
+                                                                                        ->min('sale_price');
+                                                                                    if (
+                                                                                        $minSalePrice &&
+                                                                                        $minSalePrice < $minPrice
+                                                                                    ) {
+                                                                                        $hasSaleBadge = true;
+                                                                                    }
+                                                                                } else {
+                                                                                    $hasSaleBadge =
+                                                                                        $product->sale_price &&
+                                                                                        $product->sale_price <
+                                                                                            $product->price;
+                                                                                }
+                                                                            @endphp
+                                                                            @if ($hasSaleBadge)
                                                                                 <span
                                                                                     class="qodef-woo-product-mark qodef-woo-onsale">Sale</span>
                                                                             @endif
@@ -667,9 +716,10 @@
                                                                                     : asset('default-product.jpg');
                                                                             @endphp
                                                                             <img loading="lazy" decoding="async"
-                                                                                width="800" height="393"
+                                                                                width="621" height="389"
                                                                                 src="{{ $imagePath }}"
                                                                                 class="attachment-full size-full qodef-list-image"
+                                                                                style="width: 100% !important; height: 389px !important; object-fit: cover !important; object-position: center !important;"
                                                                                 alt="{{ $product->name }}" />
                                                                             <a href="{{ route('client.products.show', $product->slug) }}"
                                                                                 class="woocommerce-LoopProduct-link woocommerce-loop-product__link"></a>
@@ -1126,64 +1176,44 @@
                                                         class="qodef-shortcode qodef-m  qodef-image-gallery qodef-magnific-popup qodef-popup-gallery qodef-grid qodef-layout--columns  qodef-gutter--normal qodef-col-num--5  qodef-responsive--custom qodef-col-num--1440--5 qodef-col-num--1366--5 qodef-col-num--1024--3 qodef-col-num--768--2 qodef-col-num--680--1 qodef-col-num--480--1">
                                                         <div class="qodef-grid-inner clear">
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-01.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-01.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-01.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-01-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-02.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-02.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-02.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-02-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-03.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-03.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-03.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-03-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-04.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-04.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-04.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-04-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                             <div class="qodef-e qodef-image-wrapper qodef-grid-item ">
-                                                                <a class="qodef-popup-item" itemprop="image"
-                                                                    href="wp-content/uploads/2023/11/gallery-img-05.jpg"
-                                                                    data-type="image" title="d">
-                                                                    <img loading="lazy" loading="lazy" decoding="async"
-                                                                        width="800" height="791"
-                                                                        src="wp-content/uploads/2023/11/gallery-img-05.jpg"
-                                                                        class="attachment-full size-full" alt="d"
-                                                                        srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
-                                                                        sizes="(max-width: 800px) 100vw, 800px" />
-                                                                </a>
+                                                                <img loading="lazy" loading="lazy" decoding="async"
+                                                                    width="800" height="791"
+                                                                    src="wp-content/uploads/2023/11/gallery-img-05.jpg"
+                                                                    class="attachment-full size-full" alt="d"
+                                                                    srcset="https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05.jpg 800w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-300x297.jpg 300w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-768x759.jpg 768w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-600x593.jpg 600w, https://neoocular.qodeinteractive.com/wp-content/uploads/2023/11/gallery-img-05-100x100.jpg 100w"
+                                                                    sizes="(max-width: 800px) 100vw, 800px" />
                                                             </div>
                                                         </div>
                                                     </div>

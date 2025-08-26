@@ -180,10 +180,23 @@
                                                 </td>
                                                 <td class="qwfw-e-item product-stock-status">
                                                     <div class="qwfw-e-item-inner">
-                                                        <span
-                                                            class="qwfw-e-item-stock {{ ($variation ? $variation->stock_quantity : $item->product->stock_quantity) > 0 ? 'qwfw--in-stock' : 'qwfw--out-of-stock' }}">
-                                                            {{ ($variation ? $variation->stock_quantity : $item->product->stock_quantity) > 0 ? 'Còn hàng' : 'Hết hàng' }}
-                                                        </span>
+                                                        @if ($variation)
+                                                            @if ($variation->quantity === 0)
+                                                                <span class="qwfw-e-item-stock qwfw--out-of-stock">Hết
+                                                                    hàng</span>
+                                                            @else
+                                                                <span class="qwfw-e-item-stock qwfw--in-stock">Còn
+                                                                    hàng</span>
+                                                            @endif
+                                                        @else
+                                                            @if ($item->product->quantity <= 0)
+                                                                <span class="qwfw-e-item-stock qwfw--out-of-stock">Hết
+                                                                    hàng</span>
+                                                            @else
+                                                                <span class="qwfw-e-item-stock qwfw--in-stock">Còn
+                                                                    hàng</span>
+                                                            @endif
+                                                        @endif
                                                     </div>
                                                 </td>
                                                 <td class="qwfw-e-item product-add-to-cart">
@@ -200,7 +213,7 @@
                                                             <button type="submit"
                                                                 class="single_add_to_cart_button button alt"
                                                                 style="min-width:180px;min-height:48px;font-size:15px;letter-spacing:1px;white-space:nowrap;text-transform:uppercase;border:1.5px solid #222;background:#fff;color:#222;font-weight:500;box-shadow:none;outline:none;transition:background 0.2s, color 0.2s;"
-                                                                @if (($variation && $variation->stock_quantity <= 0) || (!$variation && $item->product->stock_quantity <= 0)) disabled @endif>
+                                                                @if (($variation && $variation->quantity === 0) || (!$variation && $item->product->quantity <= 0)) disabled @endif>
                                                                 Thêm giỏ hàng
                                                             </button>
                                                         </form>

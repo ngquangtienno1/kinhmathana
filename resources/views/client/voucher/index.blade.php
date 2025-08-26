@@ -189,7 +189,7 @@
                             <div style="font-size: 15px; margin-bottom: 6px;">
                                 <span>Giảm:
                                     @if ($voucher->discount_type === 'percentage')
-                                        {{ $voucher->discount_value }}%
+                                        {{ number_format($voucher->discount_value, 0, ',', '.') }}%
                                     @else
                                         {{ number_format($voucher->discount_value, 0, ',', '.') }}₫
                                     @endif

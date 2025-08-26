@@ -264,8 +264,15 @@ class ProductController extends Controller
             ];
         })->values()->toArray();
 
-        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt
-        $comments = $product->comments()->with('user')->where('status', 'đã duyệt')->orderByDesc('created_at')->get();
+        // Lấy bình luận (comments) cho sản phẩm, chỉ lấy bình luận đã duyệt và không bị ẩn
+        $comments = $product->comments()
+            ->with(['user', 'replies' => function ($query) {
+                $query->approved()->with('user');
+            }])
+            ->approved()
+            ->parentComments()
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('client.products.show', compact('product', 'related_products', 'selectedVariation', 'activeColor', 'featuredImage', 'colors', 'sizes', 'sphericals', 'cylindricals', 'variationsJson', 'comments'));
     }

@@ -28,7 +28,7 @@ class Product extends Model
         'video_path',
     ];
 
-    protected $appends = ['total_quantity'];
+    protected $appends = ['total_stock_quantity'];
 
     public function categories()
     {

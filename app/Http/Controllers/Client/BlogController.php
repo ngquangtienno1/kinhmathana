@@ -7,6 +7,7 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\NewsCategory;
+use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
 {
@@ -59,12 +60,13 @@ class BlogController extends Controller
             ->orderByDesc('published_at')
             ->first();
 
-        // Lấy bình luận đã duyệt cho bài viết này
-        $comments = Comment::with(['user', 'replies.user'])
-            ->where('entity_type', 'news')
-            ->where('entity_id', $news->id)
-            ->whereNull('parent_id')
-            ->where('status', 'đã duyệt')
+        // Lấy bình luận đã duyệt và không bị ẩn cho bài viết này
+        $comments = $news->comments()
+            ->with(['user', 'replies' => function($query) {
+                $query->approved()->with('user');
+            }])
+            ->approved()
+            ->parentComments()
             ->orderByDesc('created_at')
             ->get();
 
@@ -93,12 +95,12 @@ class BlogController extends Controller
             'content' => 'required|string|max:2000',
         ]);
 
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->back()->withErrors(['Bạn cần đăng nhập để bình luận.']);
         }
 
         Comment::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'entity_type' => 'news',
             'entity_id' => $news->id,
             'content' => $request->content,

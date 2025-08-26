@@ -23,11 +23,11 @@
                 <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general"
                     type="button" role="tab" aria-controls="general" aria-selected="true">Thông tin chung</button>
             </li>
-            <li class="nav-item" role="presentation">
+            {{-- <li class="nav-item" role="presentation">
                 <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping"
                     type="button" role="tab" aria-controls="shipping" aria-selected="false">Cấu hình vận
                     chuyển</button>
-            </li>
+            </li> --}}
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button"
                     role="tab" aria-controls="email" aria-selected="false">Cấu hình email</button>
@@ -164,26 +164,33 @@
                         <div class="form-group mb-3">
                             <label for="ai_api_endpoint">AI API Endpoint</label>
                             <input type="text" class="form-control" id="ai_api_endpoint" name="ai_api_endpoint"
-                                value="{{ old('ai_api_endpoint', $settings->ai_api_endpoint ?? 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent') }}" placeholder="https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent">
+                                value="{{ old('ai_api_endpoint', $settings->ai_api_endpoint ?? 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent') }}"
+                                placeholder="https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent">
                             <small class="form-text text-muted">Endpoint mặc định cho Google Gemini</small>
                         </div>
                         <div class="form-group mb-3">
                             <label for="ai_chat_enabled">Bật AI Chat Bot</label>
                             <select class="form-control" id="ai_chat_enabled" name="ai_chat_enabled">
-                                <option value="0" {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 0 ? 'selected' : '' }}>Tắt</option>
-                                <option value="1" {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 1 ? 'selected' : '' }}>Bật</option>
+                                <option value="0"
+                                    {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 0 ? 'selected' : '' }}>
+                                    Tắt</option>
+                                <option value="1"
+                                    {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 1 ? 'selected' : '' }}>
+                                    Bật</option>
                             </select>
                             <small class="form-text text-muted">Hiển thị AI chat bot cho khách hàng</small>
                         </div>
                         <div class="form-group mb-3">
                             <label for="ai_guest_limit">Giới hạn chat cho khách (tin nhắn/giờ)</label>
                             <input type="number" class="form-control" id="ai_guest_limit" name="ai_guest_limit"
-                                value="{{ old('ai_guest_limit', $settings->ai_guest_limit ?? 5) }}" min="1" max="50">
+                                value="{{ old('ai_guest_limit', $settings->ai_guest_limit ?? 5) }}" min="1"
+                                max="50">
                         </div>
                         <div class="form-group mb-3">
                             <label for="ai_user_limit">Giới hạn chat cho user (tin nhắn/giờ)</label>
                             <input type="number" class="form-control" id="ai_user_limit" name="ai_user_limit"
-                                value="{{ old('ai_user_limit', $settings->ai_user_limit ?? 20) }}" min="1" max="100">
+                                value="{{ old('ai_user_limit', $settings->ai_user_limit ?? 20) }}" min="1"
+                                max="100">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -193,7 +200,8 @@
                             </div>
                             <div class="card-body">
                                 <ol class="mb-0">
-                                    <li>Truy cập <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></li>
+                                    <li>Truy cập <a href="https://aistudio.google.com/" target="_blank">Google AI
+                                            Studio</a></li>
                                     <li>Tạo API Key mới</li>
                                     <li>Copy API Key và paste vào trường "AI API Key"</li>
                                     <li>Bật "AI Chat Bot" để hiển thị cho khách hàng</li>

@@ -89,7 +89,7 @@
                                 <div id="simple-product" class="product-type-content"
                                     style="{{ old('product_type') == 'variable' ? 'display:none' : '' }}">
                                     <div class="col-md-6">
-                                        <label class="form-label">Mã sản phẩm</label>
+                                        <label class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="sku" id="simple_sku"
                                             value="{{ old('sku') }}">
                                         @error('sku')
@@ -122,7 +122,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Slug sản phẩm</label>
+                                        <label class="form-label">Slug sản phẩm <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="slug" id="simple_slug"
                                             value="{{ old('slug') }}">
                                         @error('slug')
@@ -135,7 +135,7 @@
                                 <div id="variable-product" class="product-type-content"
                                     style="{{ old('product_type') == 'variable' ? '' : 'display:none' }}">
                                     <div class="col-md-6">
-                                        <label class="form-label">Mã sản phẩm</label>
+                                        <label class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="sku" id="variable_sku"
                                             value="{{ old('sku') }}" readonly>
                                         @error('sku')
@@ -143,7 +143,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Slug sản phẩm</label>
+                                        <label class="form-label">Slug sản phẩm <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="slug" id="variable_slug"
                                             value="{{ old('slug') }}" readonly>
                                         @error('slug')
@@ -151,7 +151,8 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-12">
-                                        <label class="form-label">Thuộc tính biến thể</label>
+                                        <label class="form-label">Thuộc tính biến thể <span
+                                                class="text-danger">*</span></label>
                                         <button type="button" id="add-attribute"
                                             class="btn btn-primary btn-sm mb-2">Thêm thuộc tính</button>
                                         <div id="attributes-container">
@@ -303,8 +304,8 @@
                                                 class="btn btn-primary btn-sm">Tạo biến thể</button>
                                             <!-- Ẩn nút này đi -->
                                             <!-- <button type="button" id="set-variations-quantity"
-                                                                class="btn btn-primary btn-sm" style="display: none">Đặt số lượng cho tất
-                                                                cả biến thể</button> -->
+                                                                                                                class="btn btn-primary btn-sm" style="display: none">Đặt số lượng cho tất
+                                                                                                                cả biến thể</button> -->
                                         </div>
                                     </div>
                                     <div id="variations-container" class="mt-3"
@@ -314,11 +315,11 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>Tên biến thể</th>
-                                                        <th>Mã sản phẩm</th>
-                                                        <th>Giá gốc</th>
+                                                        <th>Tên biến thể <span class="text-danger">*</span></th>
+                                                        <th>Mã sản phẩm <span class="text-danger">*</span></th>
+                                                        <th>Giá gốc <span class="text-danger">*</span></th>
                                                         <th>Giá khuyến mãi</th>
-                                                        <th>Số lượng</th>
+                                                        <th>Số lượng <span class="text-danger">*</span></th>
                                                         <th>Ảnh</th>
                                                         <th>Thao tác</th>
                                                     </tr>
@@ -433,14 +434,14 @@
                             aria-labelledby="product-images-tab">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Ảnh đại diện <span class="text-danger">*</span></label>
+                                    <label class="form-label">Ảnh đại diện</label>
                                     <input type="file" class="form-control" name="featured_image" accept="image/*">
                                     @error('featured_image')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Album ảnh <span class="text-danger"></span></label>
+                                    <label class="form-label">Album ảnh</label>
                                     <input type="file" class="form-control" name="gallery_images[]" multiple
                                         accept="image/*">
                                     @error('gallery_images')
@@ -450,19 +451,7 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-label">Video sản phẩm</label>
-                                    <input type="file" class="form-control" name="video_path"
-                                        accept="video/mp4,video/webm,video/ogg">
-                                    @if (session('temp_video_path'))
-                                        <small class="text-muted">Đã chọn: {{ session('temp_video_path') }}</small>
-                                    @endif
-                                    <small class="text-muted">Hỗ trợ định dạng: MP4, WebM, Ogg. Kích thước tối đa:
-                                        50MB</small>
-                                    @error('video_path')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -613,6 +602,16 @@
             max-height: 50px;
             object-fit: cover;
             border-radius: 4px;
+        }
+
+        .variation-image-preview {
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .variation-image-preview img {
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 

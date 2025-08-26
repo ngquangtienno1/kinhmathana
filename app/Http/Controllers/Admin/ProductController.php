@@ -757,26 +757,19 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $orderCount = $product->orderItems()->count();
 
-        if ($orderCount > 0 && !$request->input('force')) {
-            $message = "Sản phẩm này đã có trong {$orderCount} đơn hàng. Bạn có chắc chắn muốn xoá sản phẩm này?";
-            return response()->json([
-                'success' => false,
-                'message' => $message,
-                'orderCount' => $orderCount
-            ]);
+        // Chặn xóa mềm nếu sản phẩm đã có đơn hàng
+        if ($orderCount > 0) {
+            return redirect()->route('admin.products.list')
+                ->with('error', "Không thể xóa sản phẩm '{$product->name}' vì nó đã có trong {$orderCount} đơn hàng. Vui lòng xóa các đơn hàng liên quan trước.");
         }
 
         try {
             $product->delete();
-            return response()->json([
-                'success' => true,
-                'message' => 'Sản phẩm đã được chuyển vào thùng rác'
-            ]);
+            return redirect()->route('admin.products.list')
+                ->with('success', "Sản phẩm '{$product->name}' đã được chuyển vào thùng rác");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra khi xóa sản phẩm'
-            ], 500);
+            return redirect()->route('admin.products.list')
+                ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage());
         }
     }
 
@@ -945,9 +938,43 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để xóa.');
         }
 
+        // Kiểm tra sản phẩm nào có đơn hàng
+        $productsWithOrders = [];
+        $productsToDelete = [];
+
+        foreach ($ids as $id) {
+            $product = Product::find($id);
+            if ($product) {
+                $orderCount = $product->orderItems()->count();
+                if ($orderCount > 0) {
+                    $productsWithOrders[] = [
+                        'name' => $product->name,
+                        'orderCount' => $orderCount
+                    ];
+                } else {
+                    $productsToDelete[] = $id;
+                }
+            }
+        }
+
+        // Nếu có sản phẩm có đơn hàng, hiển thị thông báo lỗi
+        if (!empty($productsWithOrders)) {
+            $message = "Không thể xóa các sản phẩm sau vì chúng đã có đơn hàng:\n";
+            foreach ($productsWithOrders as $item) {
+                $message .= "- {$item['name']}: {$item['orderCount']} đơn hàng\n";
+            }
+            $message .= "\nVui lòng xóa các đơn hàng liên quan trước.";
+            return redirect()->back()->with('error', $message);
+        }
+
+        // Nếu không có sản phẩm nào có đơn hàng, tiến hành xóa
+        if (empty($productsToDelete)) {
+            return redirect()->back()->with('error', 'Không có sản phẩm nào có thể xóa.');
+        }
+
         try {
-            Product::whereIn('id', $ids)->delete();
-            return redirect()->route('admin.products.list')->with('success', 'Đã xóa mềm ' . count($ids) . ' sản phẩm đã chọn!');
+            Product::whereIn('id', $productsToDelete)->delete();
+            return redirect()->route('admin.products.list')->with('success', 'Đã xóa mềm ' . count($productsToDelete) . ' sản phẩm đã chọn!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa: ' . $e->getMessage());
         }

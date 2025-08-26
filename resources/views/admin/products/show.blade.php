@@ -39,15 +39,16 @@
                         data-bs-target="#product-images" type="button" role="tab" aria-controls="product-images"
                         aria-selected="false">Album ảnh</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="product-video-tab" data-bs-toggle="tab" data-bs-target="#product-video"
-                        type="button" role="tab" aria-controls="product-video" aria-selected="false">Video sản
-                        phẩm</button>
-                </li>
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="product-reviews-tab" data-bs-toggle="tab"
                         data-bs-target="#product-reviews" type="button" role="tab" aria-controls="product-reviews"
                         aria-selected="false">Bình luận và đánh giá</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="product-orders-tab" data-bs-toggle="tab"
+                        data-bs-target="#product-orders" type="button" role="tab" aria-controls="product-orders"
+                        aria-selected="false">Đơn hàng ({{ $product->orderItems()->count() }})</button>
                 </li>
             </ul>
         </div>
@@ -81,15 +82,17 @@
                                 <tr>
                                     <th>Thương hiệu</th>
                                     <td>
-                                        @if($product->brand)
+                                        @if ($product->brand)
                                             <span class="badge badge-phoenix fs-10 badge-phoenix-primary">
                                                 <span class="badge-label">{{ $product->brand->name }}</span>
-                                                <span class="ms-1" data-feather="award" style="height:12.8px;width:12.8px;"></span>
+                                                <span class="ms-1" data-feather="award"
+                                                    style="height:12.8px;width:12.8px;"></span>
                                             </span>
                                         @else
                                             <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
                                                 <span class="badge-label">N/A</span>
-                                                <span class="ms-1" data-feather="info" style="height:12.8px;width:12.8px;"></span>
+                                                <span class="ms-1" data-feather="info"
+                                                    style="height:12.8px;width:12.8px;"></span>
                                             </span>
                                         @endif
                                     </td>
@@ -97,17 +100,19 @@
                                 <tr>
                                     <th>Danh mục</th>
                                     <td>
-                                        @if($product->categories->count())
-                                            @foreach($product->categories as $cat)
+                                        @if ($product->categories->count())
+                                            @foreach ($product->categories as $cat)
                                                 <span class="badge badge-phoenix fs-10 badge-phoenix-info mb-1">
                                                     <span class="badge-label">{{ $cat->name }}</span>
-                                                    <span class="ms-1" data-feather="tag" style="height:12.8px;width:12.8px;"></span>
+                                                    <span class="ms-1" data-feather="tag"
+                                                        style="height:12.8px;width:12.8px;"></span>
                                                 </span>
                                             @endforeach
                                         @else
                                             <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
                                                 <span class="badge-label">N/A</span>
-                                                <span class="ms-1" data-feather="info" style="height:12.8px;width:12.8px;"></span>
+                                                <span class="ms-1" data-feather="info"
+                                                    style="height:12.8px;width:12.8px;"></span>
                                             </span>
                                         @endif
                                     </td>
@@ -181,7 +186,8 @@
                                                     data-bs-target="#collapse{{ $index }}"
                                                     aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
                                                     aria-controls="collapse{{ $index }}">
-                                                    {{ $variation->name }} (Tồn kho: {{ number_format($variation->quantity ?? 0, 0, ',', '.') }})
+                                                    {{ $variation->name }} (Tồn kho:
+                                                    {{ number_format($variation->quantity ?? 0, 0, ',', '.') }})
                                                 </button>
                                             </h2>
                                             <div id="collapse{{ $index }}"
@@ -196,7 +202,8 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Giá gốc</th>
-                                                            <td>{{ number_format($variation->price ?? 0, 0, ',', '.') }} VNĐ
+                                                            <td>{{ number_format($variation->price ?? 0, 0, ',', '.') }}
+                                                                VNĐ
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -206,11 +213,13 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Tồn kho</th>
-                                                            <td>{{ number_format($variation->quantity ?? 0, 0, ',', '.') }}</td>
+                                                            <td>{{ number_format($variation->quantity ?? 0, 0, ',', '.') }}
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Trạng thái</th>
-                                                            <td>{{ $variation->quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}</td>
+                                                            <td>{{ $variation->quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Ảnh</th>
@@ -248,20 +257,7 @@
                     @endif
                 </div>
 
-                <!-- Tab Video sản phẩm -->
-                <div class="tab-pane fade" id="product-video" role="tabpanel" aria-labelledby="product-video-tab">
-                    <h5>Video sản phẩm</h5>
-                    @if ($product->video_path)
-                        <div class="video-container">
-                            <video class="product-video" controls>
-                                <source src="{{ asset('storage/' . $product->video_path) }}" type="video/mp4">
-                                Trình duyệt của bạn không hỗ trợ thẻ video.
-                            </video>
-                        </div>
-                    @else
-                        <p class="text-muted">Chưa có video sản phẩm.</p>
-                    @endif
-                </div>
+
 
                 <!-- Tab Bình luận và đánh giá -->
                 <div class="tab-pane fade" id="product-reviews" role="tabpanel"
@@ -281,8 +277,9 @@
                                         @endfor
                                     </div>
                                     <p class="mt-2">{{ $review->content }}</p>
-                                    @if($review->reply)
-                                        <div class="admin-reply mt-3 p-3 bg-light border-start border-primary border-3">
+                                    @if ($review->reply)
+                                        <div
+                                            class="admin-reply mt-3 p-3 bg-light border-start border-primary border-3">
                                             <strong class="text-primary">💬 Trả lời của Admin:</strong><br>
                                             {{ $review->reply }}
                                         </div>
@@ -309,6 +306,209 @@
                         </div>
                     @else
                         <p class="text-muted">Chưa có bình luận nào.</p>
+                    @endif
+                </div>
+
+                <!-- Tab Đơn hàng -->
+                <div class="tab-pane fade" id="product-orders" role="tabpanel" aria-labelledby="product-orders-tab">
+                    <div class="mb-4">
+                        <h5 class="mb-0">Danh sách đơn hàng chứa sản phẩm này</h5>
+                    </div>
+
+                    @php
+                        $orderItems = $product
+                            ->orderItems()
+                            ->with(['order.user'])
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+                    @endphp
+
+                    @if ($orderItems->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-sm fs-9 mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="sort align-middle text-center px-3" scope="col"
+                                            style="width:90px;">Mã đơn hàng</th>
+                                        <th class="sort align-middle text-end px-3" scope="col"
+                                            style="width:110px;">Tổng số tiền</th>
+                                        <th class="sort align-middle text-center px-3" scope="col"
+                                            style="width:180px;">Khách hàng</th>
+                                        <th class="sort align-middle text-center px-3" scope="col"
+                                            style="width:130px;">Trạng thái thanh toán</th>
+                                        <th class="sort align-middle text-center px-3" scope="col"
+                                            style="width:150px;">Trạng thái đơn hàng</th>
+                                        <th class="sort align-middle text-center px-3" scope="col"
+                                            style="width:180px;">Phương thức vận chuyển</th>
+                                        <th class="sort align-middle text-center px-3 white-space-nowrap"
+                                            scope="col" style="width:120px;">Ngày đặt hàng</th>
+                                        <th class="sort text-center align-middle px-3" scope="col"
+                                            style="width:90px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list">
+                                    @foreach ($orderItems as $item)
+                                        <tr>
+                                            <td class="order align-middle text-center white-space-nowrap py-0">
+                                                <a class="fw-semibold"
+                                                    href="{{ route('admin.orders.show', $item->order->id) }}">
+                                                    #{{ $item->order->order_number ?? 'N/A' }}
+                                                </a>
+                                            </td>
+                                            <td class="total align-middle text-end fw-semibold text-body-highlight px-3"
+                                                style="white-space:nowrap;">
+                                                {{ number_format($item->order->total_amount, 0, ',', '.') }} <span
+                                                    class="text-muted ms-1">VND</span>
+                                            </td>
+                                            <td class="customer align-middle text-center white-space-nowrap px-3">
+                                                @if ($item->order->user)
+                                                    <div>
+                                                        <strong>{{ $item->order->user->name ?? 'N/A' }}</strong><br>
+                                                        <small
+                                                            class="text-muted">{{ $item->order->user->email ?? 'N/A' }}</small>
+                                                    </div>
+                                                @elseif ($item->order->customer_name)
+                                                    <div>
+                                                        <strong>{{ $item->order->customer_name ?? 'N/A' }}</strong><br>
+                                                        <small
+                                                            class="text-muted">{{ $item->order->customer_phone ?? 'N/A' }}</small>
+                                                    </div>
+                                                @else
+                                                    <span class="text-muted">Khách hàng ẩn danh</span>
+                                                @endif
+                                            </td>
+                                            <td
+                                                class="payment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
+                                                @php
+                                                    $paymentStatusMap = [
+                                                        'unpaid' => [
+                                                            'Chưa thanh toán',
+                                                            'badge-phoenix-warning',
+                                                            'clock',
+                                                        ],
+                                                        'paid' => ['Đã thanh toán', 'badge-phoenix-success', 'check'],
+                                                        'failed' => [
+                                                            'Thanh toán thất bại',
+                                                            'badge-phoenix-danger',
+                                                            'x',
+                                                        ],
+                                                    ];
+                                                    $ps = $paymentStatusMap[$item->order->payment_status] ?? [
+                                                        ucfirst($item->order->payment_status),
+                                                        'badge-phoenix-secondary',
+                                                        'info',
+                                                    ];
+                                                @endphp
+                                                <span class="badge badge-phoenix fs-10 {{ $ps[1] }}">
+                                                    <span class="badge-label">{{ $ps[0] }}</span>
+                                                    <span class="ms-1" data-feather="{{ $ps[2] }}"
+                                                        style="height:12.8px;width:12.8px;"></span>
+                                                </span>
+                                            </td>
+                                            <td
+                                                class="fulfilment_status align-middle text-center white-space-nowrap fw-bold text-body-tertiary px-3">
+                                                @php
+                                                    $orderStatusMap = [
+                                                        'pending' => ['Chờ xác nhận', 'badge-phoenix-warning', 'clock'],
+                                                        'confirmed' => [
+                                                            'Đã xác nhận',
+                                                            'badge-phoenix-primary',
+                                                            'check-circle',
+                                                        ],
+                                                        'awaiting_pickup' => [
+                                                            'Chờ lấy hàng',
+                                                            'badge-phoenix-info',
+                                                            'package',
+                                                        ],
+                                                        'shipping' => ['Đang giao', 'badge-phoenix-dark', 'truck'],
+                                                        'delivered' => [
+                                                            'Đã giao hàng',
+                                                            'badge-phoenix-success',
+                                                            'check',
+                                                        ],
+                                                        'completed' => [
+                                                            'Đã hoàn thành',
+                                                            'badge-phoenix-primary',
+                                                            'award',
+                                                        ],
+                                                        'cancelled_by_customer' => [
+                                                            'Khách hủy đơn',
+                                                            'badge-phoenix-danger',
+                                                            'x',
+                                                        ],
+                                                        'cancelled_by_admin' => [
+                                                            'Admin hủy đơn',
+                                                            'badge-phoenix-danger',
+                                                            'x',
+                                                        ],
+                                                        'delivery_failed' => [
+                                                            'Giao thất bại',
+                                                            'badge-phoenix-danger',
+                                                            'x',
+                                                        ],
+                                                    ];
+                                                    $os = $orderStatusMap[$item->order->status] ?? [
+                                                        ucfirst($item->order->status),
+                                                        'badge-phoenix-secondary',
+                                                        'info',
+                                                    ];
+                                                @endphp
+                                                <span class="badge badge-phoenix fs-10 {{ $os[1] }}">
+                                                    <span class="badge-label">{{ $os[0] }}</span>
+                                                    <span class="ms-1" data-feather="{{ $os[2] }}"
+                                                        style="height:12.8px;width:12.8px;"></span>
+                                                </span>
+                                            </td>
+                                            <td
+                                                class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 px-3">
+                                                @if ($item->order->shippingProvider)
+                                                    <span
+                                                        class="badge bg-primary-subtle text-primary fw-semibold fs-9">{{ $item->order->shippingProvider->name }}</span>
+                                                @else
+                                                    <span
+                                                        class="badge bg-secondary-subtle text-secondary fw-semibold fs-9"
+                                                        style="width: 100px;">Chưa chọn</span>
+                                                @endif
+                                            </td>
+                                            <td
+                                                class="date align-middle text-center white-space-nowrap text-body-tertiary fs-9 px-3">
+                                                {{ $item->order->created_at ? $item->order->created_at->format('d/m/Y H:i') : 'N/A' }}
+                                            </td>
+                                            <td
+                                                class="align-middle text-center white-space-nowrap px-3 btn-reveal-trigger">
+                                                <div class="btn-reveal-trigger position-static">
+                                                    <button
+                                                        class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                                        type="button" data-bs-toggle="dropdown"
+                                                        data-boundary="window" aria-haspopup="true"
+                                                        aria-expanded="false" data-bs-reference="parent">
+                                                        <span class="fas fa-ellipsis-h fs-10"></span>
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-end py-2">
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('admin.orders.show', $item->order->id) }}">Chi
+                                                            tiết</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="row align-items-center justify-content-between py-2 pe-0 fs-9 mt-3">
+                            <div class="col-auto d-flex">
+                                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
+                                    Tổng: {{ $orderItems->count() }} đơn hàng chứa sản phẩm này
+                                </p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Sản phẩm này chưa có trong đơn hàng nào. Bạn có thể xóa sản phẩm này một cách an toàn.
+                        </div>
                     @endif
                 </div>
             </div>
@@ -423,12 +623,12 @@
 </script>
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.feather) {
-            window.feather.replace();
-        }
-    });
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.feather) {
+                window.feather.replace();
+            }
+        });
+    </script>
 @endpush
 @endsection

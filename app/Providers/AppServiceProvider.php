@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Cart;
+use App\Models\News;
+use App\Models\Product;
+use App\Models\User;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -27,7 +32,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-
         // Chỉ thực hiện cấu hình nếu bảng website_settings tồn tại
         if (Schema::hasTable('website_settings')) {
             Config::set('mail.mailers.smtp.host', getSetting('smtp_host') ?? env('MAIL_HOST', 'default.host.com'));
