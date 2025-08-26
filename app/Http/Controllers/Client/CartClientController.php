@@ -250,6 +250,7 @@ class CartClientController extends Controller
         $user = Auth::user();
         $request->validate([
             'voucher_code' => 'required|string|max:50',
+            'selected_ids' => 'nullable|array',
         ]);
 
         $voucherCode = $request->voucher_code;
@@ -281,10 +282,21 @@ class CartClientController extends Controller
             ]);
         }
 
-        $cartItems = Cart::with(['variation.product'])
-            ->where('user_id', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        // Lấy chỉ những sản phẩm được chọn để thanh toán
+        $selectedIds = $request->input('selected_ids');
+        if ($selectedIds && !empty($selectedIds)) {
+            $cartItems = Cart::with(['variation.product'])
+                ->where('user_id', $user->id)
+                ->whereIn('id', $selectedIds)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else {
+            $cartItems = Cart::with(['variation.product'])
+                ->where('user_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+
         $subtotal = $cartItems->sum(function ($item) {
             if ($item->variation) {
                 $price = $item->variation->sale_price ?? $item->variation->price;
@@ -332,6 +344,7 @@ class CartClientController extends Controller
                 'discount_type' => $promotion->discount_type,
                 'discount_value' => $promotion->discount_value,
                 'discount_amount' => $discountAmount,
+                'subtotal' => $subtotal,
                 'description' => $promotion->description
             ]
         ]);

@@ -476,8 +476,8 @@
         }
 
         /* .checkout-radio span {
-                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                                                } */
+                                                                                                                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                                                                                                    } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -512,8 +512,12 @@
                 '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child')
             .innerText.replace(/\D/g, ''));
         const shipping = Number(document.querySelector(
-                '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child')
+                '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child'
+            )
             .innerText.replace(/\D/g, ''));
+
+        // Khởi tạo currentSubtotal
+        window.currentSubtotal = subtotal;
         const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
         const shippingRow = document.querySelector(
             '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child');
@@ -524,6 +528,14 @@
                 showVoucherMessage('Vui lòng nhập mã giảm giá!', 'danger');
                 return;
             }
+
+            // Lấy danh sách các sản phẩm được chọn
+            const selectedIds = [];
+            const selectedInputs = document.querySelectorAll('input[name="selected_ids[]"]');
+            selectedInputs.forEach(input => {
+                selectedIds.push(input.value);
+            });
+
             fetch("{{ route('client.cart.apply-voucher') }}", {
                     method: 'POST',
                     headers: {
@@ -532,7 +544,8 @@
                             .getAttribute('content')
                     },
                     body: JSON.stringify({
-                        voucher_code: code
+                        voucher_code: code,
+                        selected_ids: selectedIds
                     })
                 })
                 .then(res => res.json())
@@ -549,9 +562,22 @@
                                     'input[name="shipping_method"]:checked');
                                 return Number(checked?.dataset.fee || 0);
                             })();
-                            const newTotal = Math.max(0, subtotal + currentShipping - data.voucher
+                            // Tính lại subtotal dựa trên response từ server
+                            const serverSubtotal = data.voucher.subtotal || subtotal;
+                            const newTotal = Math.max(0, serverSubtotal + currentShipping - data
+                                .voucher
                                 .discount_amount);
                             totalRow.innerText = formatCurrency(newTotal);
+
+                            // Cập nhật subtotal trong DOM để phản ánh đúng giá trị
+                            const subtotalRow = document.querySelector(
+                                '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child'
+                            );
+                            if (subtotalRow) {
+                                subtotalRow.innerText = formatCurrency(serverSubtotal);
+                            }
+
+                            window.currentSubtotal = serverSubtotal;
                         }
                     } else {
                         showVoucherMessage(data.message, 'danger');
@@ -564,6 +590,17 @@
                                 return Number(checked?.dataset.fee || 0);
                             })();
                             totalRow.innerText = formatCurrency(subtotal + currentShipping);
+
+                            // Reset subtotal về giá trị ban đầu
+                            const subtotalRow = document.querySelector(
+                                '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child'
+                            );
+                            if (subtotalRow) {
+                                subtotalRow.innerText = formatCurrency(subtotal);
+                            }
+
+                            // Reset currentSubtotal về giá trị ban đầu
+                            window.currentSubtotal = subtotal;
                         }
                     }
                 })
@@ -579,9 +616,22 @@
                 if (discountRow) {
                     discount = Number(discountRow.innerText.replace(/\D/g, ''));
                 }
+                // Lấy subtotal hiện tại từ DOM hoặc từ voucher đã áp dụng
+                let currentSubtotal = window.currentSubtotal || subtotal;
+                if (appliedVoucherHidden.value) {
+                    try {
+                        const voucherData = JSON.parse(appliedVoucherHidden.value);
+                        if (voucherData.subtotal) {
+                            currentSubtotal = voucherData.subtotal;
+                        }
+                    } catch (e) {
+                        // Nếu không parse được, sử dụng subtotal mặc định
+                    }
+                }
                 if (shippingRow && totalRow) {
                     shippingRow.innerText = formatCurrency(fee);
-                    totalRow.innerText = formatCurrency(Math.max(0, subtotal + fee - discount));
+                    totalRow.innerText = formatCurrency(Math.max(0, currentSubtotal + fee -
+                        discount));
                 }
             });
         });
@@ -593,9 +643,21 @@
             if (discountRow) {
                 discount = Number(discountRow.innerText.replace(/\D/g, ''));
             }
+            // Lấy subtotal hiện tại từ DOM hoặc từ voucher đã áp dụng
+            let currentSubtotal = window.currentSubtotal || subtotal;
+            if (appliedVoucherHidden.value) {
+                try {
+                    const voucherData = JSON.parse(appliedVoucherHidden.value);
+                    if (voucherData.subtotal) {
+                        currentSubtotal = voucherData.subtotal;
+                    }
+                } catch (e) {
+                    // Nếu không parse được, sử dụng subtotal mặc định
+                }
+            }
             if (shippingRow && totalRow) {
                 shippingRow.innerText = formatCurrency(fee);
-                totalRow.innerText = formatCurrency(subtotal + fee - discount);
+                totalRow.innerText = formatCurrency(currentSubtotal + fee - discount);
             }
         }
 
