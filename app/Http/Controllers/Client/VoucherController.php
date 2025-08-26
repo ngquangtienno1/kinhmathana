@@ -15,6 +15,11 @@ class VoucherController extends Controller
         $vouchers = Promotion::where('is_active', true)
             ->where('start_date', '<=', $now)
             ->where('end_date', '>=', $now)
+            // Chỉ hiển thị voucher còn lượt sử dụng
+            ->where(function ($q) {
+                $q->whereNull('usage_limit')
+                  ->orWhereColumn('used_count', '<', 'usage_limit');
+            })
             ->orderBy('end_date', 'asc')
             ->get();
         return view('client.voucher.index', compact('vouchers'));
