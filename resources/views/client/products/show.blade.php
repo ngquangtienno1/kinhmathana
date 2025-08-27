@@ -1376,6 +1376,12 @@
                                     if (msgContainer) {
                                         msgContainer.appendChild(msg);
                                     }
+
+                                    // Tự động cuộn lên đầu trang để hiển thị thông báo
+                                    msgContainer.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
                                 } else {
                                     if (data.message) {
                                         var alertDiv = document.createElement('div');

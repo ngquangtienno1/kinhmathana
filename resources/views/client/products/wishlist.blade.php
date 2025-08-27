@@ -243,27 +243,27 @@
         .price .original-price {
             color: #999 !important;
             text-decoration: line-through;
-            font-size: 1.1em;
+            font-size: 0.9em;
             margin-right: 8px;
         }
 
         .price .sale-price {
             color: #e74c3c !important;
             font-weight: bold;
-            font-size: 1.3em;
+            font-size: 1.1em;
             text-decoration: none;
         }
 
         .price .sale-price .woocommerce-Price-amount {
             color: #e74c3c !important;
-            font-size: 1.3em;
+            font-size: 1.1em;
         }
 
         /* Giá chính của sản phẩm (không có khuyến mãi) */
         .price .woocommerce-Price-amount {
             color: #111;
             font-weight: 600;
-            font-size: 1.2em;
+            font-size: 1.0em;
         }
 
         /* Styling cho bảng wishlist */

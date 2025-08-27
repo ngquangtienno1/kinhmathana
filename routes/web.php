@@ -108,7 +108,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
     //Users routes
-    Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
         Route::get('index', [ClientUserController::class, 'index'])->name('index');
         Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
@@ -117,7 +117,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::patch('/orders/{id}/cancel', [OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
-    Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
         Route::get('profile', [ClientUserController::class, 'index'])->name('profile'); // Dạng lưới
     });
 
@@ -565,7 +565,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [AdminOrderController::class, 'show'])->name('show');
         Route::get('/{order}/print', [AdminOrderController::class, 'print'])->name('print');
-        Route::delete('/{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
 
         Route::put('{order}/status', [AdminOrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);

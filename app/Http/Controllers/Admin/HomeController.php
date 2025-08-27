@@ -63,7 +63,21 @@ class HomeController extends Controller
         // Thống kê sản phẩm
         $totalProducts = Product::count();
         $totalStock = Product::sum('quantity');
-        $outOfStockProducts = Product::where('quantity', '<=', 0)->count();
+
+        // Tính sản phẩm hết hàng (bao gồm cả sản phẩm đơn giản và có biến thể)
+        $outOfStockProducts = Product::where(function ($query) {
+            $query->where(function ($q) {
+                // Sản phẩm đơn giản: quantity <= 0
+                $q->where('product_type', 'simple')
+                    ->where('quantity', '<=', 0);
+            })->orWhere(function ($q) {
+                // Sản phẩm có biến thể: tổng quantity của tất cả variations <= 0
+                $q->where('product_type', 'variable')
+                    ->whereDoesntHave('variations', function ($subQ) {
+                        $subQ->where('quantity', '>', 0);
+                    });
+            });
+        })->count();
 
         // Thống kê khách hàng
         $userQuery = User::where('role_id', 3);
