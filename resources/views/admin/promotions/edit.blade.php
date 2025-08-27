@@ -121,9 +121,9 @@
                                 <div class="col-12 col-lg-6">
                                     <label class="form-label" for="start_date">Ngày bắt đầu <span
                                             class="text-danger">*</span></label>
-                                    <input type="date" name="start_date" id="start_date"
+                                    <input type="datetime-local" name="start_date" id="start_date"
                                         class="form-control @error('start_date') is-invalid @enderror"
-                                        value="{{ old('start_date', $promotion->start_date ? $promotion->start_date->format('Y-m-d') : '') }}"
+                                        value="{{ old('start_date', $promotion->start_date ? $promotion->start_date->format('Y-m-d\\TH:i') : '') }}"
                                         required>
                                     @error('start_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -132,9 +132,9 @@
                                 <div class="col-12 col-lg-6">
                                     <label class="form-label" for="end_date">Ngày kết thúc <span
                                             class="text-danger">*</span></label>
-                                    <input type="date" name="end_date" id="end_date"
+                                    <input type="datetime-local" name="end_date" id="end_date"
                                         class="form-control @error('end_date') is-invalid @enderror"
-                                        value="{{ old('end_date', $promotion->end_date ? $promotion->end_date->format('Y-m-d') : '') }}"
+                                        value="{{ old('end_date', $promotion->end_date ? $promotion->end_date->format('Y-m-d\\TH:i') : '') }}"
                                         required>
                                     @error('end_date')
                                         <div class="invalid-feedback">{{ $message }}</div>

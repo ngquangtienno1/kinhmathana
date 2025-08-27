@@ -12,20 +12,21 @@ class VoucherController extends Controller
 {
     public function index(Request $request)
     {
-        $today = now()->startOfDay(); // Bắt đầu của ngày hôm nay
-        $tomorrow = now()->addDay()->startOfDay(); // Bắt đầu của ngày mai
-        
+        $now = now();
+
         $vouchers = Promotion::where('is_active', true)
-            ->where('start_date', '<=', $tomorrow)  // Bắt đầu từ hôm nay hoặc ngày mai
-            ->where('end_date', '>=', $today)   // Kết thúc từ hôm nay trở đi (theo ngày)
+            // Chỉ hiển thị khi đã tới thời điểm bắt đầu
+            ->where('start_date', '<=', $now)
+            // Và chưa quá thời điểm kết thúc
+            ->where('end_date', '>=', $now)
             // Chỉ hiển thị voucher còn lượt sử dụng
             ->where(function ($q) {
-                $q->whereNull('usage_limit')  // Không giới hạn → luôn hiển thị
-                  ->orWhereColumn('used_count', '<', 'usage_limit'); // Còn lượt dùng
+                $q->whereNull('usage_limit')
+                  ->orWhereColumn('used_count', '<', 'usage_limit');
             })
             ->orderBy('end_date', 'asc')
             ->get();
-        
+
         return view('client.voucher.index', compact('vouchers'));
     }
 }
