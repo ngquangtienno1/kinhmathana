@@ -138,6 +138,22 @@ class AIChatController extends Controller
             // Lấy thông tin sản phẩm để hiển thị
             $suggestedProducts = $this->getSuggestedProducts($message);
 
+            // Trích xuất sản phẩm từ câu trả lời của AI
+            $extractedProducts = $this->extractProductsFromAIResponse($aiResponse);
+
+            // Kết hợp sản phẩm gợi ý và sản phẩm được trích xuất
+            $allProducts = array_merge($suggestedProducts, $extractedProducts);
+
+            // Loại bỏ trùng lặp dựa trên ID sản phẩm
+            $uniqueProducts = [];
+            $seenIds = [];
+            foreach ($allProducts as $product) {
+                if (!in_array($product['id'], $seenIds)) {
+                    $uniqueProducts[] = $product;
+                    $seenIds[] = $product['id'];
+                }
+            }
+
             // Lưu lịch sử chat và lấy history
             $chatHistory = $this->saveChatHistory($userId, $message, $aiResponse);
 
@@ -149,7 +165,7 @@ class AIChatController extends Controller
                 'success' => true,
                 'ai_response' => $aiResponse,
                 'user_message' => $message,
-                'suggested_products' => $suggestedProducts,
+                'suggested_products' => $uniqueProducts,
                 'chat_history' => $chatHistory
             ];
 
@@ -159,7 +175,7 @@ class AIChatController extends Controller
             }
 
             // Luôn trả về số lượng sản phẩm
-            $responseData['products_count'] = count($suggestedProducts);
+            $responseData['products_count'] = count($uniqueProducts);
 
             // Cache response thành công
             Cache::put($cacheKey, $responseData, $this->cacheTtl);
@@ -169,12 +185,11 @@ class AIChatController extends Controller
             Log::info("AI Chat: Success for user {$userId}", [
                 'message_length' => strlen($message),
                 'execution_time' => round($executionTime * 1000, 2) . 'ms',
-                'products_count' => count($suggestedProducts),
+                'products_count' => count($uniqueProducts),
                 'cache_hit' => false
             ]);
 
             return response()->json($responseData);
-
         } catch (\Exception $e) {
             $executionTime = microtime(true) - $startTime;
             Log::error('AI Chat Error: ' . $e->getMessage(), [
@@ -333,22 +348,28 @@ class AIChatController extends Controller
             'instagram' => $this->settings->instagram_url ?? ''
         ];
 
+        // Phân tích ý định người dùng
+        $intent = $this->analyzeUserIntent($userMessage);
+        $priceFilter = $this->extractPriceFilter($userMessage);
+        $productType = $this->extractProductType($userMessage);
+
         // Lấy danh sách sản phẩm kính mắt từ database
         try {
             $products = Product::where('status', 'Hoạt động')
-                ->select('id', 'name', 'price', 'sale_price', 'description_short', 'product_type', 'slug')
-                ->with(['categories:id,name', 'images', 'variations' => function ($query) {
+                ->select('id', 'name', 'price', 'sale_price', 'description_short', 'product_type', 'slug', 'brand_id', 'is_featured', 'views')
+                ->with(['categories:id,name', 'brand:id,name', 'images', 'variations' => function ($query) {
                     $query->where('status', 'Hoạt động');
                 }])
-                ->limit(20)
+                ->limit(30)
                 ->get();
 
             $productList = '';
             if ($products->count() > 0) {
-                $productList = "\n\nDanh sách sản phẩm kính mắt hiện có:\n";
+                $productList = "\n\nDANH SÁCH SẢN PHẨM HIỆN CÓ:\n";
                 foreach ($products as $product) {
                     $categoryNames = $product->categories->pluck('name')->implode(', ');
                     $categoryNames = $categoryNames ?: 'Không phân loại';
+                    $brandName = $product->brand ? $product->brand->name : 'Không có thương hiệu';
 
                     // Sử dụng method getProductPrice để xử lý cả simple và variable
                     $price = $this->getProductPrice($product);
@@ -360,7 +381,10 @@ class AIChatController extends Controller
                         $productUrl = '#';
                     }
 
-                    $productList .= "- {$product->name} ({$categoryNames}): {$price} - Xem chi tiết: {$productUrl}\n";
+                    $featuredTag = $product->is_featured ? ' [NỔI BẬT]' : '';
+                    $viewsInfo = $product->views > 0 ? " (Xem: {$product->views})" : '';
+
+                    $productList .= "- {$product->name} ({$brandName} - {$categoryNames}): {$price}{$featuredTag}{$viewsInfo} - Xem chi tiết: {$productUrl}\n";
                 }
             }
         } catch (\Exception $e) {
@@ -369,14 +393,26 @@ class AIChatController extends Controller
 
         // Tạo prompt nâng cao với thông tin filter giá
         $priceFilterInfo = '';
-        try {
-            $priceFilter = $this->extractPriceFilter($userMessage);
-            if ($priceFilter['price_range']) {
-                $priceFilterInfo = "\n\nYÊU CẦU GIÁ: Khách hàng đang tìm sản phẩm trong khoảng giá {$priceFilter['price_range']}. Hãy tập trung gợi ý các sản phẩm phù hợp với ngân sách này.";
-            }
-        } catch (\Exception $e) {
-            Log::error('Error extracting price filter in createEnhancedPrompt: ' . $e->getMessage());
-            $priceFilterInfo = '';
+        if ($priceFilter['price_range']) {
+            $priceFilterInfo = "\n\nYÊU CẦU GIÁ: Khách hàng đang tìm sản phẩm trong khoảng giá {$priceFilter['price_range']}. Hãy tập trung gợi ý các sản phẩm phù hợp với ngân sách này.";
+        }
+
+        // Thông tin về ý định tìm kiếm
+        $searchIntentInfo = '';
+        if ($intent['exact_search']) {
+            $searchIntentInfo = "\n\nÝ ĐỊNH TÌM KIẾM: Khách hàng đang tìm kiếm sản phẩm cụ thể. Hãy giúp họ tìm đúng sản phẩm họ cần.";
+        }
+        if ($intent['keyword_search'] && !empty($intent['keywords'])) {
+            $keywords = implode(', ', $intent['keywords']);
+            $searchIntentInfo = "\n\nTỪ KHÓA TÌM KIẾM: Khách hàng đang tìm kiếm với từ khóa: {$keywords}. Hãy gợi ý sản phẩm phù hợp.";
+        }
+
+        // Thông tin về loại sản phẩm
+        $productTypeInfo = '';
+        if ($productType === 'glasses') {
+            $productTypeInfo = "\n\nLOẠI SẢN PHẨM: Khách hàng đang tìm kính mắt, không phải phụ kiện.";
+        } elseif ($productType === 'accessories') {
+            $productTypeInfo = "\n\nLOẠI SẢN PHẨM: Khách hàng đang tìm phụ kiện kính mắt.";
         }
 
         return "Bạn là chuyên gia tư vấn kính mắt tại {$storeInfo['name']}. Trả lời ngắn gọn, thân thiện bằng tiếng Việt.
@@ -387,7 +423,8 @@ THÔNG TIN CỬA HÀNG:
 - Hotline: {$storeInfo['hotline']}
 - Email: {$storeInfo['email']}" .
             ($storeInfo['facebook'] ? "\n- Facebook: {$storeInfo['facebook']}" : "") .
-            ($storeInfo['instagram'] ? "\n- Instagram: {$storeInfo['instagram']}" : "") . "{$priceFilterInfo}
+            ($storeInfo['instagram'] ? "\n- Instagram: {$storeInfo['instagram']}" : "") .
+            $priceFilterInfo . $searchIntentInfo . $productTypeInfo . "
 
 {$productList}
 
@@ -396,12 +433,20 @@ Câu hỏi: {$userMessage}
 HƯỚNG DẪN QUAN TRỌNG:
 1. Trả lời ngắn gọn, không quá 3-4 câu
 2. CHỈ gợi ý sản phẩm có trong danh sách trên, KHÔNG được tạo ra sản phẩm không có
-3. Nếu hỏi 'mua kính', 'kính mắt', 'gọng kính' → CHỈ gợi ý sản phẩm KÍNH, không gợi ý phụ kiện
-4. Nếu hỏi 'phụ kiện', 'hộp đựng', 'nước xịt' → gợi ý phụ kiện
-5. Nếu hỏi giá → Chỉ nêu khoảng giá chung
-6. Nếu hỏi địa chỉ/hotline → Chỉ trả lời thông tin cần thiết
-7. KHÔNG được tạo ra tên sản phẩm, giá, hoặc thông tin không có trong danh sách
-8. Tập trung vào sản phẩm thực tế có trong danh sách";
+3. Nếu khách hàng tìm kiếm sản phẩm cụ thể → Giúp họ tìm đúng sản phẩm đó
+4. Nếu khách hàng hỏi về thương hiệu → Gợi ý sản phẩm của thương hiệu đó
+5. Nếu khách hàng hỏi về loại kính → Gợi ý sản phẩm phù hợp với loại đó
+6. Nếu hỏi 'mua kính', 'kính mắt', 'gọng kính' → CHỈ gợi ý sản phẩm KÍNH, không gợi ý phụ kiện
+7. Nếu hỏi 'phụ kiện', 'hộp đựng', 'nước xịt' → gợi ý phụ kiện
+8. Nếu hỏi giá → Chỉ nêu khoảng giá chung
+9. Nếu hỏi địa chỉ/hotline → Chỉ trả lời thông tin cần thiết
+10. KHÔNG được tạo ra tên sản phẩm, giá, hoặc thông tin không có trong danh sách
+11. Tập trung vào sản phẩm thực tế có trong danh sách
+12. Ưu tiên gợi ý sản phẩm nổi bật và có nhiều lượt xem
+13. Nếu không tìm thấy sản phẩm phù hợp → Thông báo và gợi ý sản phẩm tương tự
+14. LUÔN đề cập đến tên sản phẩm cụ thể khi gợi ý, ví dụ: 'Gọng kính Hana 1576 (450.000 VNĐ)'
+15. Khi gợi ý sản phẩm, luôn kèm theo giá trong ngoặc đơn
+16. Nếu có nhiều sản phẩm phù hợp, chỉ gợi ý 2-3 sản phẩm tiêu biểu nhất";
     }
 
     private function getSuggestedProducts($userMessage)
@@ -416,26 +461,11 @@ HƯỚNG DẪN QUAN TRỌNG:
             return $cachedProducts;
         }
 
-        // Kiểm tra xem tin nhắn có liên quan đến sản phẩm không
-        $productKeywords = [
-            'kính', 'sản phẩm', 'mẫu', 'loại', 'giá', 'mua', 'bán', 'có gì', 'nào',
-            'gọng kính', 'tròng kính', 'kính mắt', 'kính râm', 'kính cận', 'kính viễn',
-            'kính đeo', 'kính thời trang', 'kính nam', 'kính nữ', 'kính trẻ em',
-            'gọng', 'tròng', 'mắt kính', 'kính thuốc', 'kính áp tròng',
-            'giới thiệu', 'cho tôi', 'vài cái', 'một số', 'vài chiếc', 'một vài'
-        ];
+        // Phân tích tin nhắn để tìm ý định
+        $intent = $this->analyzeUserIntent($userMessage);
 
-        $hasProductIntent = false;
-        $messageLower = mb_strtolower($userMessage, 'UTF-8');
-
-        foreach ($productKeywords as $keyword) {
-            if (mb_strpos($messageLower, mb_strtolower($keyword, 'UTF-8')) !== false) {
-                $hasProductIntent = true;
-                break;
-            }
-        }
-
-        if (!$hasProductIntent) {
+        // Nếu không có ý định tìm sản phẩm, trả về mảng rỗng
+        if (!$intent['has_product_intent']) {
             return [];
         }
 
@@ -443,18 +473,36 @@ HƯỚNG DẪN QUAN TRỌNG:
         $priceFilter = $this->extractPriceFilter($userMessage);
         $productType = $this->extractProductType($userMessage);
 
-        // Tối ưu database query với eager loading và indexing
         try {
             $query = Product::where('status', 'Hoạt động')
-                ->select('id', 'name', 'price', 'sale_price', 'slug', 'description_short', 'product_type', 'is_featured', 'views')
+                ->select('id', 'name', 'price', 'sale_price', 'slug', 'description_short', 'product_type', 'is_featured', 'views', 'brand_id')
                 ->with([
                     'categories:id,name',
                     'images:id,product_id,image_path',
+                    'brand:id,name',
                     'variations' => function ($query) {
                         $query->where('status', 'Hoạt động')
-                              ->select('id', 'product_id', 'price', 'sale_price', 'discount_price', 'status');
+                            ->select('id', 'product_id', 'price', 'sale_price', 'discount_price', 'status');
                     }
                 ]);
+
+            // Tìm kiếm theo tên sản phẩm chính xác
+            if ($intent['exact_search']) {
+                $exactProducts = $this->searchExactProducts($userMessage, $query);
+                if (!empty($exactProducts)) {
+                    Cache::put($cacheKey, $exactProducts, 1800);
+                    return $exactProducts;
+                }
+            }
+
+            // Tìm kiếm theo từ khóa cụ thể
+            if ($intent['keyword_search']) {
+                $keywordProducts = $this->searchByKeywords($intent['keywords'], $query);
+                if (!empty($keywordProducts)) {
+                    Cache::put($cacheKey, $keywordProducts, 1800);
+                    return $keywordProducts;
+                }
+            }
 
             // Filter theo loại sản phẩm
             if ($productType === 'glasses') {
@@ -496,16 +544,12 @@ HƯỚNG DẪN QUAN TRỌNG:
                 ->limit(20)
                 ->get();
 
-
-
             // Lọc sản phẩm theo giá sau khi load (tối ưu hóa)
             if ($priceFilter['min_price'] !== null || $priceFilter['max_price'] !== null) {
                 $products = $products->filter(function ($product) use ($priceFilter) {
                     return $this->isProductInPriceRange($product, $priceFilter);
                 });
             }
-
-
 
             // Xử lý sản phẩm với batch processing để tối ưu memory
             $suggestedProducts = $this->processProductsBatch($products);
@@ -522,6 +566,234 @@ HƯỚNG DẪN QUAN TRỌNG:
         }
 
         return $suggestedProducts;
+    }
+
+    /**
+     * Phân tích ý định người dùng từ tin nhắn
+     */
+    private function analyzeUserIntent($userMessage)
+    {
+        $messageLower = mb_strtolower($userMessage, 'UTF-8');
+
+        // Từ khóa cho ý định tìm sản phẩm
+        $productKeywords = [
+            'kính',
+            'sản phẩm',
+            'mẫu',
+            'loại',
+            'giá',
+            'mua',
+            'bán',
+            'có gì',
+            'nào',
+            'gọng kính',
+            'tròng kính',
+            'kính mắt',
+            'kính râm',
+            'kính cận',
+            'kính viễn',
+            'kính đeo',
+            'kính thời trang',
+            'kính nam',
+            'kính nữ',
+            'kính trẻ em',
+            'gọng',
+            'tròng',
+            'mắt kính',
+            'kính thuốc',
+            'kính áp tròng',
+            'giới thiệu',
+            'cho tôi',
+            'vài cái',
+            'một số',
+            'vài chiếc',
+            'một vài',
+            'tìm',
+            'kiếm',
+            'xem',
+            'có',
+            'bán',
+            'mua',
+            'giá',
+            'bao nhiêu'
+        ];
+
+        // Từ khóa cho tìm kiếm chính xác
+        $exactSearchKeywords = [
+            'tìm',
+            'kiếm',
+            'có',
+            'bán',
+            'mua',
+            'xem',
+            'chi tiết',
+            'thông tin'
+        ];
+
+        // Từ khóa cho thương hiệu
+        $brandKeywords = [
+            'ray-ban',
+            'ray ban',
+            'gucci',
+            'prada',
+            'oakley',
+            'tom ford',
+            'versace',
+            'dolce',
+            'gabbana',
+            'armani',
+            'burberry',
+            'cartier',
+            'chanel',
+            'dior',
+            'fendi',
+            'hermes',
+            'louis vuitton',
+            'lv',
+            'michael kors',
+            'mk',
+            'tiffany'
+        ];
+
+        $hasProductIntent = false;
+        $exactSearch = false;
+        $keywords = [];
+
+        // Kiểm tra ý định tìm sản phẩm
+        foreach ($productKeywords as $keyword) {
+            if (mb_strpos($messageLower, mb_strtolower($keyword, 'UTF-8')) !== false) {
+                $hasProductIntent = true;
+                break;
+            }
+        }
+
+        // Kiểm tra tìm kiếm chính xác
+        foreach ($exactSearchKeywords as $keyword) {
+            if (mb_strpos($messageLower, mb_strtolower($keyword, 'UTF-8')) !== false) {
+                $exactSearch = true;
+                break;
+            }
+        }
+
+        // Trích xuất từ khóa thương hiệu
+        foreach ($brandKeywords as $brand) {
+            if (mb_strpos($messageLower, mb_strtolower($brand, 'UTF-8')) !== false) {
+                $keywords[] = $brand;
+            }
+        }
+
+        // Trích xuất từ khóa từ tin nhắn (loại bỏ các từ không cần thiết)
+        $stopWords = ['tôi', 'muốn', 'có', 'thể', 'cho', 'với', 'về', 'của', 'này', 'đó', 'kia', 'nào', 'gì', 'bao', 'nhiêu', 'và', 'hoặc', 'nhưng', 'mà', 'thì', 'là', 'đang', 'sẽ', 'đã', 'được', 'bởi', 'từ', 'đến', 'trong', 'ngoài', 'trên', 'dưới', 'trước', 'sau', 'giữa', 'bên', 'cạnh', 'gần', 'xa', 'cao', 'thấp', 'lớn', 'nhỏ', 'dài', 'ngắn', 'rộng', 'hẹp', 'dày', 'mỏng', 'nặng', 'nhẹ', 'đắt', 'rẻ', 'tốt', 'xấu', 'đẹp', 'xấu', 'mới', 'cũ', 'sạch', 'bẩn', 'nóng', 'lạnh', 'ấm', 'mát', 'khô', 'ướt', 'cứng', 'mềm', 'cứng', 'mềm', 'sáng', 'tối', 'sáng', 'tối', 'nhanh', 'chậm', 'nhanh', 'chậm', 'dễ', 'khó', 'dễ', 'khó', 'có', 'không', 'có', 'không', 'đúng', 'sai', 'đúng', 'sai', 'cùng', 'khác', 'cùng', 'khác', 'giống', 'khác', 'giống', 'khác', 'bằng', 'không', 'bằng', 'không', 'hơn', 'kém', 'hơn', 'kém', 'nhiều', 'ít', 'nhiều', 'ít', 'tất', 'cả', 'mỗi', 'một', 'một', 'số', 'vài', 'vài', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín', 'mười', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín', 'mười'];
+
+        $words = preg_split('/\s+/', $messageLower);
+        foreach ($words as $word) {
+            $word = trim($word, '.,!?;:()[]{}"\'-');
+            if (mb_strlen($word) > 2 && !in_array($word, $stopWords)) {
+                $keywords[] = $word;
+            }
+        }
+
+        return [
+            'has_product_intent' => $hasProductIntent,
+            'exact_search' => $exactSearch,
+            'keywords' => array_unique($keywords),
+            'keyword_search' => !empty($keywords)
+        ];
+    }
+
+    /**
+     * Tìm kiếm sản phẩm theo tên chính xác
+     */
+    private function searchExactProducts($userMessage, $query)
+    {
+        $messageLower = mb_strtolower($userMessage, 'UTF-8');
+
+        // Tìm các từ khóa có thể là tên sản phẩm
+        $potentialProductNames = [];
+
+        // Tách từ khóa từ tin nhắn
+        $words = preg_split('/\s+/', $messageLower);
+        foreach ($words as $word) {
+            $word = trim($word, '.,!?;:()[]{}"\'-');
+            if (mb_strlen($word) > 2) {
+                $potentialProductNames[] = $word;
+            }
+        }
+
+        $foundProducts = collect();
+
+        foreach ($potentialProductNames as $name) {
+            // Tìm kiếm theo tên sản phẩm
+            $products = clone $query;
+            $exactMatches = $products->whereRaw('LOWER(name) LIKE ?', ["%{$name}%"])
+                ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$name}%"])
+                ->get();
+
+            if ($exactMatches->count() > 0) {
+                $foundProducts = $foundProducts->merge($exactMatches);
+            }
+        }
+
+        // Loại bỏ trùng lặp và giới hạn kết quả
+        $uniqueProducts = $foundProducts->unique('id')->take(10);
+
+        return $this->processProductsBatch($uniqueProducts);
+    }
+
+    /**
+     * Tìm kiếm sản phẩm theo từ khóa
+     */
+    private function searchByKeywords($keywords, $query)
+    {
+        $foundProducts = collect();
+
+        foreach ($keywords as $keyword) {
+            if (mb_strlen($keyword) < 3) continue;
+
+            $products = clone $query;
+            $matches = $products->where(function ($q) use ($keyword) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$keyword}%"])
+                    ->orWhereRaw('LOWER(description_short) LIKE ?', ["%{$keyword}%"])
+                    ->orWhereHas('categories', function ($catQ) use ($keyword) {
+                        $catQ->whereRaw('LOWER(name) LIKE ?', ["%{$keyword}%"]);
+                    })
+                    ->orWhereHas('brand', function ($brandQ) use ($keyword) {
+                        $brandQ->whereRaw('LOWER(name) LIKE ?', ["%{$keyword}%"]);
+                    });
+            })->get();
+
+            if ($matches->count() > 0) {
+                $foundProducts = $foundProducts->merge($matches);
+            }
+        }
+
+        // Loại bỏ trùng lặp và sắp xếp theo độ phù hợp
+        $uniqueProducts = $foundProducts->unique('id');
+
+        // Tính điểm phù hợp cho mỗi sản phẩm
+        $scoredProducts = $uniqueProducts->map(function ($product) use ($keywords) {
+            $score = 0;
+            $productText = mb_strtolower($product->name . ' ' . $product->description_short, 'UTF-8');
+
+            foreach ($keywords as $keyword) {
+                if (mb_strpos($productText, $keyword) !== false) {
+                    $score += 1;
+                }
+            }
+
+            // Thêm điểm cho sản phẩm nổi bật và có nhiều lượt xem
+            if ($product->is_featured) $score += 2;
+            $score += min($product->views / 100, 5); // Tối đa 5 điểm cho lượt xem
+
+            return ['product' => $product, 'score' => $score];
+        });
+
+        // Sắp xếp theo điểm và lấy top 10
+        $topProducts = $scoredProducts->sortByDesc('score')
+            ->take(10)
+            ->pluck('product');
+
+        return $this->processProductsBatch($topProducts);
     }
 
     /**
@@ -1102,6 +1374,181 @@ HƯỚNG DẪN QUAN TRỌNG:
             return " ({$variationCount} biến thể)";
         }
         return '';
+    }
+
+    /**
+     * Trích xuất sản phẩm từ câu trả lời của AI
+     */
+    private function extractProductsFromAIResponse($aiResponse)
+    {
+        $extractedProducts = [];
+
+        try {
+            // Tìm các pattern sản phẩm trong câu trả lời của AI
+            $patterns = [
+                // Pattern: "Tên sản phẩm (giá)"
+                '/[A-Za-zÀ-ỹ\s]+(?:\s+\d+)?\s*\(([0-9,\.]+)\s*(?:VNĐ|đ|k|nghìn|ngàn)\)/u',
+                // Pattern: "Tên sản phẩm - giá"
+                '/[A-Za-zÀ-ỹ\s]+(?:\s+\d+)?\s*[-–]\s*([0-9,\.]+)\s*(?:VNĐ|đ|k|nghìn|ngàn)/u',
+                // Pattern: "Tên sản phẩm giá"
+                '/[A-Za-zÀ-ỹ\s]+(?:\s+\d+)?\s+([0-9,\.]+)\s*(?:VNĐ|đ|k|nghìn|ngàn)/u'
+            ];
+
+            foreach ($patterns as $pattern) {
+                if (preg_match_all($pattern, $aiResponse, $matches, PREG_SET_ORDER)) {
+                    foreach ($matches as $match) {
+                        $productName = trim($match[0]);
+                        $price = $this->normalizePriceFromText($match[1]);
+
+                        // Tìm sản phẩm trong database dựa trên tên
+                        $foundProduct = $this->findProductByName($productName);
+                        if ($foundProduct) {
+                            $extractedProducts[] = $foundProduct;
+                        }
+                    }
+                }
+            }
+
+            // Tìm kiếm theo từ khóa thương hiệu
+            $brandKeywords = [
+                'ray-ban',
+                'ray ban',
+                'gucci',
+                'prada',
+                'oakley',
+                'tom ford',
+                'versace',
+                'dolce',
+                'gabbana',
+                'armani',
+                'burberry',
+                'cartier',
+                'chanel',
+                'dior',
+                'fendi',
+                'hermes',
+                'louis vuitton',
+                'lv',
+                'michael kors',
+                'mk',
+                'tiffany'
+            ];
+
+            foreach ($brandKeywords as $brand) {
+                if (stripos($aiResponse, $brand) !== false) {
+                    $brandProducts = $this->findProductsByBrand($brand);
+                    $extractedProducts = array_merge($extractedProducts, $brandProducts);
+                }
+            }
+
+            // Loại bỏ trùng lặp
+            $uniqueProducts = [];
+            $seenIds = [];
+            foreach ($extractedProducts as $product) {
+                if (!in_array($product['id'], $seenIds)) {
+                    $uniqueProducts[] = $product;
+                    $seenIds[] = $product['id'];
+                }
+            }
+
+            return $uniqueProducts;
+        } catch (\Exception $e) {
+            Log::error('Error extracting products from AI response: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Chuẩn hóa giá từ text
+     */
+    private function normalizePriceFromText($priceText)
+    {
+        // Loại bỏ các ký tự không phải số
+        $price = preg_replace('/[^0-9]/', '', $priceText);
+        return (int) $price;
+    }
+
+    /**
+     * Tìm sản phẩm theo tên
+     */
+    private function findProductByName($productName)
+    {
+        try {
+            // Làm sạch tên sản phẩm
+            $cleanName = preg_replace('/\s*\([^)]*\)/', '', $productName); // Loại bỏ phần trong ngoặc
+            $cleanName = trim($cleanName);
+
+            // Tìm sản phẩm trong database
+            $product = Product::where('status', 'Hoạt động')
+                ->where(function ($query) use ($cleanName) {
+                    $query->whereRaw('LOWER(name) LIKE ?', ['%' . mb_strtolower($cleanName, 'UTF-8') . '%'])
+                        ->orWhereRaw('LOWER(name) LIKE ?', ['%' . mb_strtolower(str_replace(' ', '%', $cleanName), 'UTF-8') . '%']);
+                })
+                ->with(['categories:id,name', 'brand:id,name', 'images:id,product_id,image_path'])
+                ->first();
+
+            if ($product) {
+                return $this->formatProductForResponse($product);
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            Log::error('Error finding product by name: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Tìm sản phẩm theo thương hiệu
+     */
+    private function findProductsByBrand($brandName)
+    {
+        try {
+            $products = Product::where('status', 'Hoạt động')
+                ->whereHas('brand', function ($query) use ($brandName) {
+                    $query->whereRaw('LOWER(name) LIKE ?', ['%' . mb_strtolower($brandName, 'UTF-8') . '%']);
+                })
+                ->with(['categories:id,name', 'brand:id,name', 'images:id,product_id,image_path'])
+                ->limit(5)
+                ->get();
+
+            $formattedProducts = [];
+            foreach ($products as $product) {
+                $formattedProducts[] = $this->formatProductForResponse($product);
+            }
+
+            return $formattedProducts;
+        } catch (\Exception $e) {
+            Log::error('Error finding products by brand: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Format sản phẩm cho response
+     */
+    private function formatProductForResponse($product)
+    {
+        $categoryNames = $product->categories->pluck('name')->implode(', ');
+        $categoryNames = $categoryNames ?: 'Không phân loại';
+        $brandName = $product->brand ? $product->brand->name : 'Không có thương hiệu';
+        $price = $this->getProductPrice($product);
+        $imageUrl = $this->getProductImageUrl($product);
+        $productUrl = $this->getProductUrl($product);
+
+        return [
+            'id' => $product->id,
+            'name' => $this->truncateProductName($product->name),
+            'price' => $price,
+            'category' => $categoryNames,
+            'brand' => $brandName,
+            'image' => $imageUrl,
+            'url' => $productUrl,
+            'description' => $product->description_short,
+            'is_featured' => $product->is_featured,
+            'views' => $product->views,
+            'product_type' => $product->product_type
+        ];
     }
 
     /**
