@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Customer;
 use App\Models\OrderItem;
 use App\Models\Promotion;
@@ -12,12 +13,13 @@ use App\Models\Variation;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\PromotionUsage;
-use App\Models\ShippingProvider;
 
-use Illuminate\Support\Facades\Mail;
+use App\Models\ShippingProvider;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CartClientController extends Controller
 {
@@ -242,7 +244,28 @@ class CartClientController extends Controller
             str_contains(strtolower(session('error')), 'vnpay')
         );
 
-        return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions', 'paymentFailed'));
+        // Kiểm tra xem có lỗi hết hàng từ session không
+        $inventoryError = session()->has('inventory_error') || (
+            session()->has('error') && (
+                str_contains(strtolower(session('error')), 'hết hàng') ||
+                str_contains(strtolower(session('error')), 'không thể đặt hàng') ||
+                str_contains(strtolower(session('error')), 'tồn kho')
+            )
+        );
+
+        // Lấy message từ session và xóa để tránh hiển thị lại
+        $errorMessage = session('error');
+        $hasInventoryError = session('inventory_error');
+
+        // Xóa session message sau khi lấy
+        if ($errorMessage) {
+            session()->forget('error');
+        }
+        if ($hasInventoryError) {
+            session()->forget('inventory_error');
+        }
+
+        return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions', 'paymentFailed', 'inventoryError', 'errorMessage', 'hasInventoryError'));
     }
 
     public function applyVoucher(Request $request)
@@ -374,7 +397,11 @@ class CartClientController extends Controller
         // Kiểm tra số lượng tồn kho trước khi đặt hàng
         $inventoryCheck = $this->checkInventoryAvailability($cartItems);
         if (!$inventoryCheck['success']) {
-            return redirect()->route('client.cart.checkout')->with('error', $inventoryCheck['message'])->with('inventory_error', true);
+            // Sử dụng session thường thay vì flash message
+            session(['error' => $inventoryCheck['message']]);
+            session(['inventory_error' => true]);
+
+            return redirect()->route('client.cart.checkout.form');
         }
 
         $validated = $request->validate([
@@ -649,7 +676,16 @@ class CartClientController extends Controller
         // Kiểm tra số lượng tồn kho trước khi đặt hàng
         $inventoryCheck = $this->checkInventoryAvailability($cartItems);
         if (!$inventoryCheck['success']) {
-            return redirect()->route('client.cart.checkout')->with('error', $inventoryCheck['message'])->with('inventory_error', true);
+            // Debug log
+            Log::info('=== MOMO PAYMENT INVENTORY ERROR ===');
+            Log::info('Redirecting with error: ' . $inventoryCheck['message']);
+            Log::info('Setting inventory_error session flag');
+
+            // Sử dụng session thường thay vì flash message
+            session(['error' => $inventoryCheck['message']]);
+            session(['inventory_error' => true]);
+
+            return redirect()->route('client.cart.checkout.form');
         }
         $validated = $request->validate([
             'receiver_name' => 'required|string|max:255',
@@ -804,7 +840,7 @@ class CartClientController extends Controller
         // Kiểm tra số lượng tồn kho trước khi đặt hàng
         $inventoryCheck = $this->checkInventoryAvailability($cartItems);
         if (!$inventoryCheck['success']) {
-            return redirect()->route('client.cart.checkout')->with('error', $inventoryCheck['message'])->with('inventory_error', true);
+            return redirect()->route('client.cart.checkout.form')->with('error', $inventoryCheck['message'])->with('inventory_error', true);
         }
         $validated = $request->validate([
             'receiver_name' => 'required|string|max:255',
@@ -1206,7 +1242,7 @@ class CartClientController extends Controller
                     }
                 } else {
                     // Kiểm tra sản phẩm đơn giản
-                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    $product = Product::lockForUpdate()->find($item->product_id);
                     if (!$product) {
                         $unavailableItems[] = 'Sản phẩm không tồn tại';
                         $detailedMessages[] = 'Sản phẩm không tồn tại';
@@ -1230,10 +1266,8 @@ class CartClientController extends Controller
 
             if (!empty($unavailableItems)) {
                 DB::rollBack();
-                $message = "🛒 Không thể đặt hàng!\n\n";
-                $message .= "Một số sản phẩm trong giỏ hàng đã hết hàng hoặc không đủ số lượng:\n\n";
+                $message = "🛒 KHÔNG THỂ ĐẶT HÀNG!\n\n";
                 $message .= implode("\n", $detailedMessages);
-                $message .= "\n\n💡 Vui lòng kiểm tra lại giỏ hàng và cập nhật số lượng phù hợp.";
 
                 return [
                     'success' => false,

@@ -3,10 +3,10 @@
 @section('content')
 
 @section('breadcrumbs')
-<li class="breadcrumb-item">
-    <a href="#">Cài đặt</a>
-</li>
-<li class="breadcrumb-item active">Vai trò</li>
+    <li class="breadcrumb-item">
+        <a href="#">Cài đặt</a>
+    </li>
+    <li class="breadcrumb-item active">Vai trò</li>
 @endsection
 
 <div class="mb-9">
@@ -28,9 +28,9 @@
             </div>
             <div class="ms-xxl-auto">
                 @if (auth()->user()->hasPermission('them-vai-tro'))
-                <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
-                    <span class="fas fa-plus me-2"></span>Thêm vai trò
-                </a>
+                    <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+                        <span class="fas fa-plus me-2"></span>Thêm vai trò
+                    </a>
                 @endif
             </div>
         </div>
@@ -56,74 +56,79 @@
                 </thead>
                 <tbody class="list" id="roles-table-body">
                     @forelse($roles as $role)
-                    <tr class="position-static">
-                        <td class="fs-9 align-middle">
-                            <div class="form-check mb-0 fs-8">
-                                <input class="form-check-input" type="checkbox"
-                                    data-bulk-select-row='{"name":"{{ $role->name }}","description":"{{ $role->description }}"}' />
-                            </div>
-                        </td>
-                        <td class="id align-middle">{{ $role->id }}</td>
-                        <td class="name align-middle">
-                            @if ($role->name === 'Admin')
-                            <span class="badge bg-danger">{{ $role->name }}</span>
-                            @elseif($role->name === 'Nhân viên')
-                            <span class=" badge bg-secondary">{{ $role->name }}</span>
-                            @elseif($role->name === 'Khách hàng')
-                            <span class="badge bg-info">{{ $role->name }}</span>
-                            @elseif($role->name === 'Test')
-                            <span class="badge bg-warning text-dark">{{ $role->name }}</span>
-                            @else
-                            <span class="badge bg-success">{{ $role->name }}</span>
-                            @endif
-                        </td>
-                        <td class="description align-middle">{{ $role->description }}</td>
-                        <td class="permissions align-middle">
-                            @if ($role->permissions->count() === $totalPermissions)
-                            <span class="badge bg-primary">ALL</span>
-                            @else
-                            @php
-                            $groups = $role->permissions
-                            ->pluck('group_permissions')
-                            ->unique()
-                            ->filter()
-                            ->values();
-                            @endphp
-                            @foreach ($groups as $group)
-                            <span class="badge bg-primary">{{ $group ?: 'Khác' }}</span>
-                            @endforeach
-                            @endif
-                        </td>
-                        <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
-                            @if (auth()->user()->hasPermission('them-vai-tro'))
-                            <div class="btn-reveal-trigger position-static">
-                                <button
-                                    class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                    type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                                    aria-expanded="false" data-bs-reference="parent">
-                                    <span class="fas fa-ellipsis-h fs-10"></span>
-                                </button>
-                                @if (auth()->user()->hasPermission('sua-vai-tro'))
-                                <div class="dropdown-menu dropdown-menu-end py-2">
-                                    <a class="dropdown-item" href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
-                                    <div class="dropdown-divider"></div>
-                                    <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="dropdown-item text-danger"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
-                                    </form>
+                        <tr class="position-static">
+                            <td class="fs-9 align-middle">
+                                <div class="form-check mb-0 fs-8">
+                                    <input class="form-check-input" type="checkbox"
+                                        data-bulk-select-row='{"name":"{{ $role->name }}","description":"{{ $role->description }}"}' />
                                 </div>
+                            </td>
+                            <td class="id align-middle">{{ $role->id }}</td>
+                            <td class="name align-middle">
+                                @if ($role->name === 'Admin')
+                                    <span class="badge bg-danger">{{ $role->name }}</span>
+                                @elseif($role->name === 'Nhân viên')
+                                    <span class=" badge bg-secondary">{{ $role->name }}</span>
+                                @elseif($role->name === 'Khách hàng')
+                                    <span class="badge bg-info">{{ $role->name }}</span>
+                                @elseif($role->name === 'Test')
+                                    <span class="badge bg-warning text-dark">{{ $role->name }}</span>
+                                @else
+                                    <span class="badge bg-success">{{ $role->name }}</span>
                                 @endif
-                            </div>
-                            @endif
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="description align-middle">{{ $role->description }}</td>
+                            <td class="permissions align-middle">
+                                @if ($role->permissions->count() === $totalPermissions)
+                                    <span class="badge bg-primary">ALL</span>
+                                @else
+                                    @php
+                                        $groups = $role->permissions
+                                            ->pluck('group_permissions')
+                                            ->unique()
+                                            ->filter()
+                                            ->values();
+                                    @endphp
+                                    @foreach ($groups as $group)
+                                        <span class="badge bg-primary">{{ $group ?: 'Khác' }}</span>
+                                    @endforeach
+                                @endif
+                            </td>
+                            <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
+                                @if (auth()->user()->hasPermission('them-vai-tro'))
+                                    <div class="btn-reveal-trigger position-static">
+                                        <button
+                                            class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+                                            type="button" data-bs-toggle="dropdown" data-boundary="window"
+                                            aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                            <span class="fas fa-ellipsis-h fs-10"></span>
+                                        </button>
+                                        @if (auth()->user()->hasPermission('sua-vai-tro'))
+                                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                                @if ($role->id !== 1 && $role->id !== 3)
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <form action="{{ route('admin.roles.destroy', $role) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
+                                                    </form>
+                                                @else
+                                                    <span class="dropdown-item text-muted">Không thể sửa/xóa</span>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            </td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="6" class="text-center">Không có dữ liệu</td>
-                    </tr>
+                        <tr>
+                            <td colspan="6" class="text-center">Không có dữ liệu</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -146,8 +151,8 @@
 </div>
 
 @push('scripts')
-<script>
-    function deleteRole(id) {
+    <script>
+        function deleteRole(id) {
             if (confirm('Bạn có chắc chắn muốn xóa?')) {
                 fetch(`/admin/roles/${id}`, {
                         method: 'DELETE',
@@ -164,7 +169,7 @@
                     });
             }
         }
-</script>
+    </script>
 @endpush
 
 @endsection

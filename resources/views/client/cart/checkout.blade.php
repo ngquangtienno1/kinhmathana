@@ -27,13 +27,30 @@
                         <strong>✅ Thành công:</strong> {{ session('success') }}
                     </div>
                 @endif
-                @if (session('error'))
-                    <div class="alert alert-danger cart-alert"
-                        style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
-                        <strong>⚠️ Lỗi thanh toán:</strong> {{ session('error') }}
-                        @if ($paymentFailed)
-                            <br><small style="margin-top: 8px; display: block;">Vui lòng kiểm tra lại thông tin và thử thanh
-                                toán lại.</small>
+                @if ($errorMessage)
+                    <div class="alert alert-danger cart-alert">
+                        @if ($hasInventoryError)
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <span style="font-size: 16px;">🛒</span>
+                                <strong style="font-size: 14px; color: #721c24;">Lỗi tồn kho</strong>
+                            </div>
+                            <div class="inventory-error-message">
+                                {!! nl2br(e($errorMessage)) !!}
+                            </div>
+                        @elseif ($paymentFailed)
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <span style="font-size: 16px;">⚠️</span>
+                                <strong style="font-size: 14px; color: #721c24;">Lỗi thanh toán</strong>
+                            </div>
+                            <div>{{ $errorMessage }}</div>
+                            <small style="margin-top: 8px; display: block; color: #6c757d;">Vui lòng kiểm tra lại thông tin
+                                và thử thanh toán lại.</small>
+                        @else
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 16px;">⚠️</span>
+                                <strong style="font-size: 14px; color: #721c24;">Lỗi</strong>
+                            </div>
+                            <div style="margin-top: 8px;">{{ $errorMessage }}</div>
                         @endif
                     </div>
                 @endif
@@ -369,7 +386,7 @@
             border: none;
             border-radius: 0 8px 8px 0;
             padding: 0 28px;
-            neoocular-core.min0899.css?ver=6.8.1 font-size: 1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
@@ -475,9 +492,37 @@
             font-weight: 700;
         }
 
+        /* Style cho alert message */
+        .alert.alert-danger.cart-alert {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        /* Style cho inventory error message */
+        .cart-alert .inventory-error-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #856404;
+            white-space: pre-line;
+        }
+
+
+
         /* .checkout-radio span {
-                                                                                                                                                                                                                                        font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                                                                                                                                                                                                                                } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -725,53 +770,44 @@
             form.submit();
         });
 
-        // Tự động scroll đến thông báo lỗi nếu có
-        @if (session('error'))
+        // Tự động ẩn message sau 5 giây
+        @if ($errorMessage)
             document.addEventListener('DOMContentLoaded', function() {
                 const errorAlert = document.querySelector('.alert-danger');
                 if (errorAlert) {
-                    errorAlert.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                    
-                    // Nếu là thông báo hết hàng, thêm style đẹp hơn
-                    if (errorAlert.textContent.includes('hết hàng') || 
-                        errorAlert.textContent.includes('Hết hàng') || 
-                        errorAlert.textContent.includes('Không thể đặt hàng')) {
-                        errorAlert.style.cssText = `
-                            position: fixed;
-                            top: 100px;
-                            right: 20px;
-                            z-index: 9999;
-                            background: #f8d7da;
-                            color: #721c24;
-                            padding: 15px;
-                            border-radius: 5px;
-                            border: 1px solid #f5c6cb;
-                            min-width: 300px;
-                            max-width: 400px;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            gap: 10px;
-                            margin-bottom: 0;
-                        `;
-                        
-                        // Thêm nút đóng
-                        const closeBtn = document.createElement('button');
-                        closeBtn.type = 'button';
-                        closeBtn.className = 'close';
-                        closeBtn.style = 'background: none; border: none; font-size: 20px; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.2s ease; flex-shrink: 0; padding: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;';
-                        closeBtn.innerHTML = '&times;';
-                        closeBtn.onclick = function() {
-                            errorAlert.style.display = 'none';
-                        };
-                        errorAlert.appendChild(closeBtn);
-                    }
+                    console.log('Auto-hide message after 5 seconds');
+                    setTimeout(function() {
+                        if (errorAlert && errorAlert.parentNode) {
+                            errorAlert.style.transition = 'opacity 0.5s ease';
+                            errorAlert.style.opacity = '0';
+                            setTimeout(function() {
+                                if (errorAlert && errorAlert.parentNode) {
+                                    errorAlert.parentNode.removeChild(errorAlert);
+                                    console.log('Message hidden');
+                                }
+                            }, 500);
+                        }
+                    }, 5000);
                 }
             });
+        @endif
+
+        // Backup auto-hide script
+        @if ($errorMessage)
+            setTimeout(function() {
+                const errorAlert = document.querySelector('.alert-danger');
+                if (errorAlert) {
+                    console.log('Backup auto-hide triggered');
+                    errorAlert.style.transition = 'opacity 0.5s ease';
+                    errorAlert.style.opacity = '0';
+                    setTimeout(function() {
+                        if (errorAlert && errorAlert.parentNode) {
+                            errorAlert.parentNode.removeChild(errorAlert);
+                            console.log('Message hidden by backup script');
+                        }
+                    }, 500);
+                }
+            }, 5000);
         @endif
     });
 </script>

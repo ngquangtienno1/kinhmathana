@@ -154,11 +154,14 @@
             // Xử lý tất cả các thông báo
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
-                // Không tự động ẩn các alert có class cart-alert hoặc chứa thông báo hết hàng
-                if (!alert.classList.contains('cart-alert') && 
-                    !alert.textContent.includes('hết hàng') && 
+                // Không tự động ẩn các alert có class cart-alert hoặc chứa thông báo hết hàng/tồn kho
+                // (vì inventory error đã có auto-hide riêng sau 5 giây)
+                if (!alert.classList.contains('cart-alert') &&
+                    !alert.textContent.includes('hết hàng') &&
                     !alert.textContent.includes('Hết hàng') &&
-                    !alert.textContent.includes('Không thể đặt hàng')) {
+                    !alert.textContent.includes('Không thể đặt hàng') &&
+                    !alert.textContent.includes('tồn kho') &&
+                    !alert.textContent.includes('Lỗi tồn kho')) {
                     // Tự động ẩn sau 3 giây chỉ cho các alert thông thường
                     autoHideAlert(alert, 3000);
                 }
@@ -185,9 +188,9 @@
                         return response.json();
                     })
                     .then(function(data) {
-                       if (data.status === 'blocked') {
-    window.location.href = '/client/logout?blocked=1';
-}
+                        if (data.status === 'blocked') {
+                            window.location.href = '/client/logout?blocked=1';
+                        }
                     })
                     .catch(function() {});
             }
