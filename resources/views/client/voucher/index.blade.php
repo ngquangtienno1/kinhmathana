@@ -204,9 +204,9 @@
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ $voucher->name }}</h5>
                                 <p class="card-text text-muted small">{{ $voucher->description }}</p>
-                                
+
                                 <div class="mb-2">
-                                    <strong>Giảm: 
+                                    <strong>Giảm:
                                         @if ($voucher->discount_type === 'percentage')
                                             {{ number_format($voucher->discount_value, 0, ',', '.') }}%
                                         @else
@@ -214,7 +214,7 @@
                                         @endif
                                     </strong>
                                 </div>
-                                
+
                                 <div class="small text-muted mb-1">
                                     Đơn tối thiểu: {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫
                                 </div>
@@ -228,7 +228,7 @@
                                         Không giới hạn lượt dùng
                                     @endif
                                 </div>
-                                
+
                                 <div class="mt-auto">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="voucher-countdown text-danger small" data-end="{{ $voucher->end_date->format('Y-m-d h:i:s A') }}"></div>
@@ -259,33 +259,33 @@
                 document.querySelectorAll('.voucher-countdown').forEach(function(element) {
                     var endDate = element.getAttribute('data-end');
                     if (!endDate) return;
-                    
+
                     // Parse date with AM/PM format
                     var date = new Date(endDate);
                     var now = new Date();
                     var diff = date - now;
-                    
+
                     if (diff <= 0) {
                         element.innerHTML = 'Đã hết hạn';
                         element.style.color = '#999';
                         return;
                     }
-                    
+
                     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
                     var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                     var seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                    
+
                     var timeString = '';
                     if (days > 0) timeString += days + ' ngày ';
                     if (hours > 0) timeString += hours + ' giờ ';
                     if (minutes > 0) timeString += minutes + ' phút ';
                     timeString += seconds + ' giây';
-                    
+
                     element.innerHTML = timeString;
                 });
             }
-            
+
             // Update countdown every second
             updateCountdown();
             setInterval(updateCountdown, 1000);
