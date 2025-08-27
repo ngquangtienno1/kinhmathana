@@ -117,7 +117,7 @@ class OrderController extends Controller
             ->latest();
 
         // Tìm kiếm theo mã đơn hàng hoặc tên khách hàng
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
@@ -449,29 +449,6 @@ class OrderController extends Controller
             return back()->with('success', 'Đã gửi thông báo đơn hàng đến khách hàng. Cập nhật trạng thái đơn hàng thành công');
         } else {
             return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công');
-        }
-    }
-
-
-
-    /**
-     * Xóa đơn hàng
-     */
-    public function destroy(Order $order)
-    {
-        // Kiểm tra xem đơn hàng có ở trạng thái đã hủy không
-        if (!in_array($order->status, ['cancelled_by_customer', 'cancelled_by_admin'])) {
-            return back()->with('error', 'Chỉ có thể xóa đơn hàng đã hủy');
-        }
-
-        try {
-            $order->delete();
-
-            return redirect()
-                ->route('admin.orders.index')
-                ->with('success', 'Xóa đơn hàng thành công');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Có lỗi xảy ra khi xóa đơn hàng');
         }
     }
 

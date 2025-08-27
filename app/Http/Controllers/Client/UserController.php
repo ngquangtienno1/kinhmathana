@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
     // API: Kiểm tra trạng thái user (dùng cho polling tự động logout nếu bị chặn)
     public function getUserStatus(Request $request)
@@ -22,18 +23,12 @@ class UserController extends Controller {
         return response()->json(['status' => 'active']);
     }
     // API: Kiểm tra trạng thái user (dùng cho polling tự động logout nếu bị chặn)
-  
+
     // Hiển thị trang thông tin tài khoản
     public function index()
     {
-        $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
-        $totalOrders = $customer ? $customer->total_orders : 0;
-        $totalSpent = $customer ? $customer->total_spent : 0;
-        $customerType = $customer ? $customer->customer_type : null;
-        // Lấy danh sách đơn hàng của user, mới nhất trước, phân trang 10 bản ghi
-        $orders = $user->orders()->withCount('items')->orderByDesc('created_at')->paginate(10);
-        return view('client.users.index', compact('user', 'customer', 'totalOrders', 'totalSpent', 'customerType', 'orders'));
+        // Redirect tự động sang trang thông tin tài khoản
+        return redirect()->route('client.users.information');
     }
 
     public function profile()
@@ -74,9 +69,9 @@ class UserController extends Controller {
         // Xử lý avatar nếu có upload
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $avatarName = uniqid('avatar_').'.'.$avatar->getClientOriginalExtension();
+            $avatarName = uniqid('avatar_') . '.' . $avatar->getClientOriginalExtension();
             $avatar->move(public_path('uploads/avatars'), $avatarName);
-            $user->avatar = 'uploads/avatars/'.$avatarName;
+            $user->avatar = 'uploads/avatars/' . $avatarName;
         }
         $user->save();
         return back()->with('success1', 'Cập nhật thông tin thành công!');

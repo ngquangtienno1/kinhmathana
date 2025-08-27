@@ -42,6 +42,10 @@ class ProductController extends Controller
             }
         }
 
+        if ($request->filled('product_type')) {
+            $query->where('product_type', $request->product_type);
+        }
+
         if ($request->filled('category_id')) {
             $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('category_id', $request->category_id);
@@ -72,7 +76,11 @@ class ProductController extends Controller
         $deletedCount = Product::onlyTrashed()->count();
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
+        // Thống kê sp có biến thể và không có biến thể
+        $simpleProductsCount = Product::where('product_type', 'simple')->count();
+        $variableProductsCount = Product::where('product_type', 'variable')->count();
+
+        return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories', 'simpleProductsCount', 'variableProductsCount'));
     }
 
     public function show($id)
@@ -755,12 +763,12 @@ class ProductController extends Controller
     public function destroy($id, Request $request)
     {
         $product = Product::findOrFail($id);
-        $orderCount = $product->orderItems()->count();
+        $orderCount = $product->orderItems()->distinct('order_id')->count('order_id');
 
         // Chặn xóa mềm nếu sản phẩm đã có đơn hàng
         if ($orderCount > 0) {
             return redirect()->route('admin.products.list')
-                ->with('error', "Không thể xóa sản phẩm '{$product->name}' vì nó đã có trong {$orderCount} đơn hàng. Vui lòng xóa các đơn hàng liên quan trước.");
+                ->with('error', "Không thể xóa sản phẩm '{$product->name}' vì nó đã có trong {$orderCount} đơn hàng.");
         }
 
         try {
@@ -834,7 +842,7 @@ class ProductController extends Controller
             $product = Product::withTrashed()->findOrFail($id);
 
             // Kiểm tra xem sản phẩm có trong đơn hàng không
-            $orderCount = $product->orderItems()->count();
+            $orderCount = $product->orderItems()->distinct('order_id')->count('order_id');
             if ($orderCount > 0) {
                 return redirect()->route('admin.products.trashed')
                     ->with('error', "Không thể xóa vĩnh viễn sản phẩm này vì nó đang có trong {$orderCount} đơn hàng.");
@@ -945,7 +953,7 @@ class ProductController extends Controller
         foreach ($ids as $id) {
             $product = Product::find($id);
             if ($product) {
-                $orderCount = $product->orderItems()->count();
+                $orderCount = $product->orderItems()->distinct('order_id')->count('order_id');
                 if ($orderCount > 0) {
                     $productsWithOrders[] = [
                         'name' => $product->name,
@@ -963,7 +971,6 @@ class ProductController extends Controller
             foreach ($productsWithOrders as $item) {
                 $message .= "- {$item['name']}: {$item['orderCount']} đơn hàng\n";
             }
-            $message .= "\nVui lòng xóa các đơn hàng liên quan trước.";
             return redirect()->back()->with('error', $message);
         }
 
@@ -1056,7 +1063,7 @@ class ProductController extends Controller
             // Kiểm tra xem có sản phẩm nào đang được sử dụng trong đơn hàng không
             $productsWithOrders = [];
             foreach ($products as $product) {
-                $orderCount = $product->orderItems()->count();
+                $orderCount = $product->orderItems()->distinct('order_id')->count('order_id');
                 if ($orderCount > 0) {
                     $productsWithOrders[] = [
                         'name' => $product->name,

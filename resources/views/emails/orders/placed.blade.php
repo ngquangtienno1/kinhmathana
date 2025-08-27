@@ -93,7 +93,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Hana Eyewear" class="logo">
             <h2>Xin chào {{ $order->user->name }},</h2>
             <p>Cảm ơn bạn đã đặt hàng tại Hana Eyewear!</p>
             <div class="status-badge">Đã đặt hàng</div>
@@ -102,7 +101,7 @@
         <div class="order-info">
             <h3>📦 Thông tin đơn hàng #{{ $order->order_number }}</h3>
             <p><strong>Thời gian đặt hàng:</strong> {{ $order->created_at->format('H:i d/m/Y') }}</p>
-            
+
             <table class="order-items">
                 <thead>
                     <tr>
@@ -172,7 +171,7 @@
                 ☎️ Hotline: 0909.123.456<br>
                 📧 Email: support@hanaeyewear.vn<br>
                 🌐 Website: <a href="https://hanaeyewear.vn">hanaeyewear.vn</a><br>
-                🏪 Cửa hàng: Hà Nội 
+                🏪 Cửa hàng: Hà Nội
             </p>
         </div>
 
@@ -189,4 +188,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>
