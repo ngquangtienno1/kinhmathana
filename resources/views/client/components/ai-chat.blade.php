@@ -30,7 +30,6 @@
                             <p>Tư vấn kính mắt chuyên nghiệp</p>
                             <small>
                                 @if (auth()->check())
-                                    Giới hạn: 5 tin nhắn/giờ
                                 @else
                                     Vui lòng đăng nhập để chat
                                 @endif
@@ -117,6 +116,16 @@
                                         data-question="Hotline liên hệ là gì?">Hotline</button>
                                     <button class="quick-question-btn" data-question="Có những loại kính nào?">Sản
                                         phẩm</button>
+                                    <button class="quick-question-btn" data-question="Tìm kính nam thời trang">Kính
+                                        nam</button>
+                                    <button class="quick-question-btn" data-question="Kính nữ đẹp có gì?">Kính
+                                        nữ</button>
+                                    <button class="quick-question-btn" data-question="Kính cận giá rẻ dưới 500k">Kính
+                                        cận rẻ</button>
+                                    <button class="quick-question-btn"
+                                        data-question="Kính râm thương hiệu nào tốt?">Kính râm</button>
+                                    <button class="quick-question-btn" data-question="Phụ kiện kính mắt có gì?">Phụ
+                                        kiện</button>
                                 </div>
                             </div>
                         </div>
@@ -432,57 +441,130 @@
                 background: #000;
             }
 
-            /* Product Suggestions */
-            .product-suggestions {
+            /* Product Suggestions - CHỈ TRONG KHUNG CHAT */
+            .ai-chat-messages .product-suggestions {
                 margin-top: 12px;
                 padding-top: 12px;
                 border-top: 1px solid #e5e7eb;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
             }
 
-            .product-suggestions-title {
+            .ai-chat-messages .product-suggestions-title {
                 font-size: 12px;
                 color: #666;
                 margin-bottom: 8px;
                 font-weight: 600;
+                width: 100%;
+                max-width: 100%;
             }
 
-            .product-suggestions-list {
+            .ai-chat-messages .product-suggestions-list {
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
+                gap: 8px;
                 margin-top: 8px;
+                width: 100%;
+                max-width: 100%;
             }
 
-            .product-item {
+            .ai-chat-messages .product-item {
                 background: #232323;
-                border-radius: 6px;
-                padding: 8px 12px;
+                border-radius: 8px;
+                padding: 10px;
                 cursor: pointer;
                 transition: all 0.3s ease;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                border: 1px solid #e5e7eb;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
 
-            .product-item:hover {
+            .ai-chat-messages .product-item:hover {
                 background: #333;
                 transform: translateX(2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             }
 
-            .product-item .product-name {
-                font-size: 12px;
+            .ai-chat-messages .product-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+                margin-right: 10px;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .ai-chat-messages .product-image {
+                width: 40px;
+                height: 40px;
+                border-radius: 6px;
+                overflow: hidden;
+                background: #f5f5f5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .ai-chat-messages .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .ai-chat-messages .product-image i {
+                color: #999;
+                font-size: 16px;
+            }
+
+            .ai-chat-messages .product-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .ai-chat-messages .product-name {
+                font-size: 13px;
                 color: #ffffff;
                 font-weight: 500;
-                flex: 1;
-                margin-right: 8px;
                 margin-bottom: 0;
+                line-height: 1.3;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
             }
 
-            .product-item .product-price {
+            .ai-chat-messages .product-category {
                 font-size: 11px;
+                color: #ccc;
+                font-weight: 400;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
+            }
+
+            .ai-chat-messages .product-price {
+                font-size: 12px;
                 color: #ffffff;
                 font-weight: 600;
                 text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+                flex-shrink: 0;
+                text-align: right;
+                white-space: nowrap;
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             /* Typing Indicator */
@@ -1069,22 +1151,37 @@
                 } else {
                     let productsHtml = '';
                     if (suggestedProducts && suggestedProducts.length > 0) {
+                        // Kiểm tra xem AI có đề cập đến sản phẩm cụ thể không
+                        const hasSpecificProducts = message.includes('(') && message.includes('VNĐ');
+
+                        const title = hasSpecificProducts ?
+                            '🎯 Sản phẩm được đề cập:' :
+                            '💡 Sản phẩm gợi ý:';
 
                         productsHtml = `
-                    <div class="product-suggestions">
-                        <div class="product-suggestions-title">Sản phẩm gợi ý:</div>
-                        <div class="product-suggestions-list">
+                    <div class="product-suggestions" style="width: 100%; max-width: 100%; overflow: hidden;">
+                        <div class="product-suggestions-title" style="width: 100%; max-width: 100%;">${title}</div>
+                        <div class="product-suggestions-list" style="width: 100%; max-width: 100%;">
                             ${suggestedProducts.map((product, index) => `
-                                                                <div class="product-item"
-                                                                     data-product-url="${product.url}"
-                                                                     data-product-name="${product.name}"
-                                                                     tabindex="0"
-                                                                     role="button"
-                                                                     title="Xem chi tiết ${product.name}">
-                                                                    <span class="product-name">${product.name}</span>
-                                                                    <span class="product-price">${product.price}</span>
-                                                                </div>
-                                                            `).join('')}
+                                                <div class="product-item"
+                                                     data-product-url="${product.url}"
+                                                     data-product-name="${product.name}"
+                                                     tabindex="0"
+                                                     role="button"
+                                                     title="Xem chi tiết ${product.name}"
+                                                     style="width: 100%; max-width: 100%; box-sizing: border-box;">
+                                                    <div class="product-info" style="min-width: 0; overflow: hidden;">
+                                                        <div class="product-image" style="flex-shrink: 0;">
+                                                            ${product.image ? `<img src="${product.image}" alt="${product.name}" loading="lazy">` : '<i class="fas fa-image"></i>'}
+                                                        </div>
+                                                        <div class="product-details" style="min-width: 0; overflow: hidden; flex: 1;">
+                                                            <span class="product-name" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.name}</span>
+                                                            ${product.category ? `<span class="product-category" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.category}</span>` : ''}
+                                                        </div>
+                                                    </div>
+                                                    <span class="product-price" style="flex-shrink: 0; white-space: nowrap; max-width: 80px; overflow: hidden; text-overflow: ellipsis;">${product.price}</span>
+                                                </div>
+                                            `).join('')}
                         </div>
                     </div>
                 `;
