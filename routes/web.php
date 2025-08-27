@@ -108,7 +108,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
     //Users routes
-    Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
         Route::get('index', [ClientUserController::class, 'index'])->name('index');
         Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
@@ -117,7 +117,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::patch('/orders/{id}/cancel', [OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
-    Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
         Route::get('profile', [ClientUserController::class, 'index'])->name('profile'); // Dạng lưới
     });
 
