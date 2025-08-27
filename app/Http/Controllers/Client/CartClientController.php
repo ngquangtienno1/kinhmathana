@@ -26,6 +26,10 @@ class CartClientController extends Controller
     public function index()
     {
         $user = Auth::user();
+        
+        // Cleanup các session thanh toán cũ (quá 30 phút)
+        $this->cleanupOldPaymentSessions();
+        
         $cartItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
             ->where('user_id', $user->id)
             ->orderBy('updated_at', 'desc')
@@ -813,6 +817,36 @@ class CartClientController extends Controller
 
         $momoOrderId = 'MOMO' . time();
 
+        // Kiểm tra & trừ tồn kho có khóa hàng (first-wins) trước khi tạo session
+        try {
+            DB::beginTransaction();
+            
+            foreach ($cartItems as $item) {
+                if ($item->variation_id) {
+                    $variation = Variation::lockForUpdate()->find($item->variation_id);
+                    if (!$variation || ($variation->quantity ?? 0) < $item->quantity) {
+                        DB::rollBack();
+                        return redirect()->route('client.cart.checkout.form')->with('error', 'Sản phẩm đã hết hàng');
+                    }
+                    $variation->quantity = ($variation->quantity ?? 0) - $item->quantity;
+                    $variation->save();
+                } else {
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if (!$product || ($product->quantity ?? 0) < $item->quantity) {
+                        DB::rollBack();
+                        return redirect()->route('client.cart.checkout.form')->with('error', 'Sản phẩm đã hết hàng');
+                    }
+                    $product->quantity = ($product->quantity ?? 0) - $item->quantity;
+                    $product->save();
+                }
+            }
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra, vui lòng thử lại!');
+        }
+
         // Lưu thông tin đơn hàng vào session để tạo sau khi thanh toán thành công
         $orderData = [
             'user_id' => $user->id,
@@ -840,6 +874,7 @@ class CartClientController extends Controller
             'cart_items' => $cartItems->toArray(),
             'selected_ids' => $selectedIds,
             'ids' => $selectedIds ? (is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds)) : null,
+            'created_at' => now()->toDateTimeString(),
         ];
 
         session(['pending_momo_order' => $orderData]);
@@ -975,6 +1010,36 @@ class CartClientController extends Controller
 
         $vnpOrderId = 'VNPAY' . time();
 
+        // Kiểm tra & trừ tồn kho có khóa hàng (first-wins) trước khi tạo session
+        try {
+            DB::beginTransaction();
+            
+            foreach ($cartItems as $item) {
+                if ($item->variation_id) {
+                    $variation = Variation::lockForUpdate()->find($item->variation_id);
+                    if (!$variation || ($variation->quantity ?? 0) < $item->quantity) {
+                        DB::rollBack();
+                        return redirect()->route('client.cart.checkout.form')->with('error', 'Sản phẩm đã hết hàng');
+                    }
+                    $variation->quantity = ($variation->quantity ?? 0) - $item->quantity;
+                    $variation->save();
+                } else {
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if (!$product || ($product->quantity ?? 0) < $item->quantity) {
+                        DB::rollBack();
+                        return redirect()->route('client.cart.checkout.form')->with('error', 'Sản phẩm đã hết hàng');
+                    }
+                    $product->quantity = ($product->quantity ?? 0) - $item->quantity;
+                    $product->save();
+                }
+            }
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra, vui lòng thử lại!');
+        }
+
         // Lưu thông tin đơn hàng vào session để tạo sau khi thanh toán thành công
         $orderData = [
             'user_id' => $user->id,
@@ -1002,9 +1067,8 @@ class CartClientController extends Controller
             'cart_items' => $cartItems->toArray(),
             'selected_ids' => $selectedIds,
             'ids' => $selectedIds ? (is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds)) : null,
+            'created_at' => now()->toDateTimeString(),
         ];
-
-
 
         session(['pending_vnpay_order' => $orderData]);
 
@@ -1101,17 +1165,48 @@ class CartClientController extends Controller
 
                         // Xóa session
                         session()->forget('pending_vnpay_order');
+                        
+                        // Xóa session checkout_selected_ids nếu có
+                        if (session('checkout_selected_ids')) {
+                            session()->forget('checkout_selected_ids');
+                        }
 
                         return view('client.cart.thankyou');
                     } catch (\Exception $e) {
+                        // Lỗi khi tạo đơn hàng, hoàn trả tồn kho
+                        $this->restoreInventory($orderData['cart_items']);
+                        session()->forget('pending_vnpay_order');
+                        
+                        // Xóa session checkout_selected_ids nếu có
+                        if (session('checkout_selected_ids')) {
+                            session()->forget('checkout_selected_ids');
+                        }
+                        
                         return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra khi xử lý đơn hàng!');
                     }
                 } else {
-                    // Thanh toán thất bại, xóa session
+                    // Thanh toán thất bại, hoàn trả lại tồn kho và xóa session
+                    $this->restoreInventory($orderData['cart_items']);
                     session()->forget('pending_vnpay_order');
+                    
+                    // Xóa session checkout_selected_ids nếu có
+                    if (session('checkout_selected_ids')) {
+                        session()->forget('checkout_selected_ids');
+                    }
+                    
                     return redirect()->route('client.cart.checkout.form')->with('error', 'Thanh toán thất bại hoặc bị huỷ! (Mã: ' . $vnp_ResponseCode . ')');
                 }
             } else {
+                // Không tìm thấy thông tin đơn hàng, hoàn trả tồn kho nếu có
+                if ($orderData) {
+                    $this->restoreInventory($orderData['cart_items']);
+                }
+                
+                // Xóa session checkout_selected_ids nếu có
+                if (session('checkout_selected_ids')) {
+                    session()->forget('checkout_selected_ids');
+                }
+                
                 return redirect()->route('client.cart.checkout.form')->with('error', 'Không tìm thấy thông tin đơn hàng!');
             }
         }
@@ -1156,19 +1251,55 @@ class CartClientController extends Controller
 
                     // Xóa session
                     session()->forget('pending_momo_order');
+                    
+                    // Xóa session checkout_selected_ids nếu có
+                    if (session('checkout_selected_ids')) {
+                        session()->forget('checkout_selected_ids');
+                    }
 
                     return view('client.cart.thankyou');
                 } catch (\Exception $e) {
+                    // Lỗi khi tạo đơn hàng, hoàn trả tồn kho
+                    $this->restoreInventory($orderData['cart_items']);
+                    session()->forget('pending_momo_order');
+                    
+                    // Xóa session checkout_selected_ids nếu có
+                    if (session('checkout_selected_ids')) {
+                        session()->forget('checkout_selected_ids');
+                    }
+                    
                     return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra khi xử lý đơn hàng!');
                 }
             } elseif (in_array($resultCode, [7002, '7002'])) {
+                // Thanh toán đang xử lý, giữ nguyên session và tồn kho
+                // Xóa session checkout_selected_ids nếu có
+                if (session('checkout_selected_ids')) {
+                    session()->forget('checkout_selected_ids');
+                }
                 return view('client.cart.thankyou', ['pending' => true]);
-            } else {
-                // Thanh toán thất bại, xóa session
-                session()->forget('pending_momo_order');
-                return redirect()->route('client.cart.checkout.form')->with('error', 'Thanh toán thất bại hoặc bị huỷ! (Mã: ' . $resultCode . ')');
-            }
+                            } else {
+                    // Thanh toán thất bại, hoàn trả lại tồn kho và xóa session
+                    $this->restoreInventory($orderData['cart_items']);
+                    session()->forget('pending_momo_order');
+                    
+                    // Xóa session checkout_selected_ids nếu có
+                    if (session('checkout_selected_ids')) {
+                        session()->forget('checkout_selected_ids');
+                    }
+                    
+                    return redirect()->route('client.cart.checkout.form')->with('error', 'Thanh toán thất bại hoặc bị huỷ! (Mã: ' . $resultCode . ')');
+                }
         } else {
+            // Không tìm thấy thông tin đơn hàng, hoàn trả tồn kho nếu có
+            if ($orderData) {
+                $this->restoreInventory($orderData['cart_items']);
+            }
+            
+            // Xóa session checkout_selected_ids nếu có
+            if (session('checkout_selected_ids')) {
+                session()->forget('checkout_selected_ids');
+            }
+            
             return redirect()->route('client.cart.checkout.form')->with('error', 'Không tìm thấy thông tin đơn hàng!');
         }
     }
@@ -1234,22 +1365,7 @@ class CartClientController extends Controller
                 ]);
             }
 
-            // Trừ số lượng sản phẩm
-            foreach ($orderData['cart_items'] as $item) {
-                if (isset($item['variation_id']) && $item['variation_id']) {
-                    $variation = Variation::find($item['variation_id']);
-                    if ($variation) {
-                        $variation->quantity = max(0, $variation->quantity - $item['quantity']);
-                        $variation->save();
-                    }
-                } else {
-                    $product = \App\Models\Product::find($item['product_id']);
-                    if ($product) {
-                        $product->quantity = max(0, $product->quantity - $item['quantity']);
-                        $product->save();
-                    }
-                }
-            }
+            // Lưu ý: Tồn kho đã được trừ trước đó khi tạo session thanh toán
 
             // Xóa giỏ hàng
             if ($orderData['selected_ids']) {
@@ -1274,11 +1390,6 @@ class CartClientController extends Controller
             }
 
             DB::commit();
-            
-            // Xóa session checkout_selected_ids sau khi đặt hàng thành công
-            if (session('checkout_selected_ids')) {
-                session()->forget('checkout_selected_ids');
-            }
             
             return $order;
         } catch (\Exception $e) {
@@ -1365,6 +1476,79 @@ class CartClientController extends Controller
                 'success' => false,
                 'message' => 'Có lỗi xảy ra khi kiểm tra tồn kho. Vui lòng thử lại!'
             ];
+        }
+    }
+
+    /**
+     * Cleanup các session thanh toán cũ (quá 30 phút)
+     */
+    private function cleanupOldPaymentSessions()
+    {
+        // Kiểm tra session MoMo cũ
+        if (session('pending_momo_order')) {
+            $orderData = session('pending_momo_order');
+            if (isset($orderData['created_at'])) {
+                $createdTime = \Carbon\Carbon::parse($orderData['created_at']);
+                if ($createdTime->diffInMinutes(now()) > 30) {
+                    // Session quá cũ, hoàn trả tồn kho và xóa session
+                    $this->restoreInventory($orderData['cart_items']);
+                    session()->forget('pending_momo_order');
+                    
+                    // Xóa session checkout_selected_ids nếu có
+                    if (session('checkout_selected_ids')) {
+                        session()->forget('checkout_selected_ids');
+                    }
+                }
+            }
+        }
+        
+        // Kiểm tra session VNPAY cũ
+        if (session('pending_vnpay_order')) {
+            $orderData = session('pending_vnpay_order');
+            if (isset($orderData['created_at'])) {
+                $createdTime = \Carbon\Carbon::parse($orderData['created_at']);
+                if ($createdTime->diffInMinutes(now()) > 30) {
+                    // Session quá cũ, hoàn trả tồn kho và xóa session
+                    $this->restoreInventory($orderData['cart_items']);
+                    session()->forget('pending_vnpay_order');
+                    
+                    // Xóa session checkout_selected_ids nếu có
+                    if (session('checkout_selected_ids')) {
+                        session()->forget('checkout_selected_ids');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Hoàn trả lại tồn kho khi thanh toán thất bại
+     */
+    private function restoreInventory($cartItems)
+    {
+        try {
+            DB::beginTransaction();
+            
+            foreach ($cartItems as $item) {
+                if (isset($item['variation_id']) && $item['variation_id']) {
+                    $variation = Variation::find($item['variation_id']);
+                    if ($variation) {
+                        $variation->quantity = ($variation->quantity ?? 0) + $item['quantity'];
+                        $variation->save();
+                    }
+                } else {
+                    $product = \App\Models\Product::find($item['product_id']);
+                    if ($product) {
+                        $product->quantity = ($product->quantity ?? 0) + $item['quantity'];
+                        $product->save();
+                    }
+                }
+            }
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi hoàn trả tồn kho: ' . $e->getMessage());
         }
     }
 
