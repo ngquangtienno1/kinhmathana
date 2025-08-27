@@ -219,7 +219,7 @@
                                     Đơn tối thiểu: {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫
                                 </div>
                                 <div class="small text-muted mb-1">
-                                    HSD: {{ $voucher->end_date->format('d/m/Y') }}
+                                    HSD: <span class="text-danger">{{ $voucher->end_date->timezone('Asia/Ho_Chi_Minh')->format('d/m/Y H:i') }}</span>
                                 </div>
                                 <div class="small text-muted mb-2">
                                     @if($voucher->usage_limit)
@@ -230,8 +230,7 @@
                                 </div>
 
                                 <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="voucher-countdown text-danger small" data-end="{{ $voucher->end_date->format('Y-m-d h:i:s A') }}"></div>
+                                    <div class="d-flex justify-content-end align-items-center">
                                         <button class="btn btn-dark btn-sm copy-voucher-btn" data-code="{{ $voucher->code }}">
                                             Sao chép mã
                                         </button>
@@ -254,6 +253,9 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
+            // Bỏ đồng hồ đếm ngược theo yêu cầu
+=======
             // Countdown timer
             function updateCountdown() {
                 document.querySelectorAll('.voucher-countdown').forEach(function(element) {
@@ -289,6 +291,7 @@
             // Update countdown every second
             updateCountdown();
             setInterval(updateCountdown, 1000);
+>>>>>>> bd8d2f26ce3cbeb5c217b18f46eea82f8352283c
 
             // Tạo sẵn div chứa flash message nếu chưa có
             if (!document.getElementById('js-flash-message')) {
