@@ -431,77 +431,88 @@ class CartClientController extends Controller
             $grandTotal = 0;
         $paymentMethod = PaymentMethod::where('code', $request->payment_method)->first();
 
-        $order = Order::create([
-            'user_id' => $user->id,
-            'order_number' => 'DH' . time(),
-            'promotion_id' => $promotion ? $promotion->id : null,
-            'shipping_provider_id' => $shippingProvider ? $shippingProvider->id : null,
-            'customer_name' => $validated['receiver_name'],
-            'customer_phone' => $validated['receiver_phone'],
-            'customer_email' => $validated['receiver_email'] ?? null,
-            'customer_address' => $validated['address'],
-            'receiver_name' => $validated['receiver_name'],
-            'receiver_phone' => $validated['receiver_phone'],
-            'receiver_email' => $validated['receiver_email'] ?? null,
-            'shipping_address' => $validated['address'],
-            'total_amount' => $grandTotal,
-            'subtotal' => $subtotal,
-            'promotion_amount' => $discountAmount,
-            'shipping_fee' => $shippingFee,
-            'payment_method_id' => $paymentMethod ? $paymentMethod->id : null,
-            'payment_status' => 'unpaid',
-            'status' => 'pending',
-            'note' => $validated['note'] ?? '',
-        ]);
-        if ($order->shipping_provider_id === null && $shippingProvider && $shippingProvider->id) {
-            $order->shipping_provider_id = $shippingProvider->id;
-            $order->save();
-        }
-
-        foreach ($cartItems as $item) {
-            $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
-                'variation_id' => $item->variation ? $item->variation->id : null,
-                'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
-                'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
-                'price' => $price,
-                'quantity' => $item->quantity,
-                'subtotal' => $price * $item->quantity,
-                'discount_amount' => 0,
-                'product_options' => $item->variation ? json_encode([
-                    'color' => $item->variation->color->name ?? null,
-                    'size' => $item->variation->size->name ?? null,
-                    'spherical' => $item->variation->spherical->name ?? null,
-                    'cylindrical' => $item->variation->cylindrical->name ?? null,
-                ]) : null,
-                'note' => null,
-            ]);
-        }
-
-        // Trừ số lượng sản phẩm sau khi tạo đơn hàng thành công
         try {
+            DB::beginTransaction();
+
+            // Kiểm tra & trừ tồn kho có khóa hàng (first-wins)
             foreach ($cartItems as $item) {
                 if ($item->variation_id) {
-                    $variation = Variation::find($item->variation_id);
-                    if ($variation) {
-                        $variation->quantity = max(0, $variation->quantity - $item->quantity);
-                        $variation->save();
+                    $variation = Variation::lockForUpdate()->find($item->variation_id);
+                    if (!$variation || ($variation->quantity ?? 0) < $item->quantity) {
+                        DB::rollBack();
+                        return redirect()->route('client.cart.checkout.form')->with('error', 'Sản phẩm đã hết hàng');
                     }
+                    $variation->quantity = ($variation->quantity ?? 0) - $item->quantity;
+                    $variation->save();
                 } else {
-                    $product = \App\Models\Product::find($item->product_id);
-                    if ($product) {
-                        $product->quantity = max(0, $product->quantity - $item->quantity);
-                        $product->save();
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if (!$product || ($product->quantity ?? 0) < $item->quantity) {
+                        DB::rollBack();
+                        return redirect()->route('client.cart.checkout.form')->with('error', 'Sản phẩm đã hết hàng');
                     }
+                    $product->quantity = ($product->quantity ?? 0) - $item->quantity;
+                    $product->save();
                 }
             }
+
+            // Tạo đơn hàng & items trong cùng transaction
+            $order = Order::create([
+                'user_id' => $user->id,
+                'order_number' => 'DH' . time(),
+                'promotion_id' => $promotion ? $promotion->id : null,
+                'shipping_provider_id' => $shippingProvider ? $shippingProvider->id : null,
+                'customer_name' => $validated['receiver_name'],
+                'customer_phone' => $validated['receiver_phone'],
+                'customer_email' => $validated['receiver_email'] ?? null,
+                'customer_address' => $validated['address'],
+                'receiver_name' => $validated['receiver_name'],
+                'receiver_phone' => $validated['receiver_phone'],
+                'receiver_email' => $validated['receiver_email'] ?? null,
+                'shipping_address' => $validated['address'],
+                'total_amount' => $grandTotal,
+                'subtotal' => $subtotal,
+                'promotion_amount' => $discountAmount,
+                'shipping_fee' => $shippingFee,
+                'payment_method_id' => $paymentMethod ? $paymentMethod->id : null,
+                'payment_status' => 'unpaid',
+                'status' => 'pending',
+                'note' => $validated['note'] ?? '',
+            ]);
+            if ($order->shipping_provider_id === null && $shippingProvider && $shippingProvider->id) {
+                $order->shipping_provider_id = $shippingProvider->id;
+                $order->save();
+            }
+
+            foreach ($cartItems as $item) {
+                $price = $item->variation ? ($item->variation->sale_price ?? $item->variation->price) : ($item->product->sale_price ?? $item->product->price);
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->variation ? $item->variation->product_id : $item->product_id,
+                    'variation_id' => $item->variation ? $item->variation->id : null,
+                    'product_name' => $item->variation ? ($item->variation->product->name ?? '') : ($item->product->name ?? ''),
+                    'product_sku' => $item->variation ? ($item->variation->sku ?? '') : ($item->product->sku ?? ''),
+                    'price' => $price,
+                    'quantity' => $item->quantity,
+                    'subtotal' => $price * $item->quantity,
+                    'discount_amount' => 0,
+                    'product_options' => $item->variation ? json_encode([
+                        'color' => $item->variation->color->name ?? null,
+                        'size' => $item->variation->size->name ?? null,
+                        'spherical' => $item->variation->spherical->name ?? null,
+                        'cylindrical' => $item->variation->cylindrical->name ?? null,
+                    ]) : null,
+                    'note' => null,
+                ]);
+            }
+
+            DB::commit();
         } catch (\Exception $e) {
-            // Lỗi trừ số lượng sản phẩm
+            DB::rollBack();
+            Log::error('Lỗi đặt hàng (transaction): ' . $e->getMessage());
+            return redirect()->route('client.cart.checkout.form')->with('error', 'Có lỗi xảy ra, vui lòng thử lại!');
         }
 
-        // Ghi log sử dụng khuyến mãi nếu có
+        // Ghi log sử dụng khuyến mãi nếu có (sau khi đặt hàng thành công)
         if ($promotion && $discountAmount > 0) {
             try {
                 if (!\App\Models\PromotionUsage::where('promotion_id', $promotion->id)
