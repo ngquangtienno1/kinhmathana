@@ -135,96 +135,116 @@
         {{-- Lưới voucher vuông --}}
         <div class="qodef-content-grid">
             <style>
-                .voucher-list-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 24px;
-                    margin: 32px 0;
-                }
-
-                @media (max-width: 1024px) {
-                    .voucher-list-grid {
-                        grid-template-columns: repeat(2, 1fr) !important;
-                    }
-                }
-
-                @media (max-width: 600px) {
-                    .voucher-list-grid {
-                        grid-template-columns: 1fr !important;
-                    }
-                }
-
-                .copy-voucher-btn {
+                .btn.btn-dark {
                     background: #111;
                     color: #fff;
                     border: none;
                     border-radius: 6px;
                     padding: 8px 16px;
-                    font-size: 15px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    transition: background 0.2s, box-shadow 0.2s;
-                    position: relative;
+                    font-weight: 600;
+                    font-size: 0.9em;
+                    font-family: Inter, sans-serif;
+                    transition: background 0.2s;
                 }
 
-                .copy-success-msg {
-                    color: #27ae60;
-                    font-size: 13px;
-                    font-weight: 500;
-                    min-height: 18px;
-                    margin-top: 4px;
-                    display: none;
-                    transition: opacity 0.2s;
+                .btn.btn-dark:hover {
+                    background: #333;
+                }
+
+                .card-title {
+                    font-weight: 600;
+                    color: #111;
+                    font-size: 1.1em;
+                    font-family: Inter, sans-serif;
+                }
+
+                .card-text {
+                    color: #666;
+                    font-size: 0.9em;
+                    line-height: 1.4;
+                    font-family: Inter, sans-serif;
+                }
+
+                .text-muted {
+                    color: #666 !important;
+                    font-family: Inter, sans-serif;
+                }
+
+                .text-danger {
+                    color: #e74c3c !important;
+                    font-family: Inter, sans-serif;
+                }
+
+                .text-success {
+                    color: #27ae60 !important;
+                    font-family: Inter, sans-serif;
+                }
+
+                .alert {
+                    font-family: Inter, sans-serif;
+                }
+
+                .card {
+                    font-family: Inter, sans-serif;
                 }
             </style>
-            <div class="voucher-list-grid">
-                @forelse($vouchers as $voucher)
-                    <div class="voucher-card"
-                        style="min-width: 0; max-width: 100%; min-height: 260px; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 20px 18px 18px 18px; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
-                        <div style="margin-bottom: 12px;">
-                            <div style="font-weight: bold; font-size: 20px; color: #222; margin-bottom: 4px;">
-                                {{ $voucher->name }}</div>
-                            <div style="color: #888; font-size: 15px; margin-bottom: 8px;">{{ $voucher->description }}
-                            </div>
-                            <div style="font-size: 15px; margin-bottom: 6px;">
-                                <span>Giảm:
-                                    @if ($voucher->discount_type === 'percentage')
-                                        {{ number_format($voucher->discount_value, 0, ',', '.') }}%
-                                    @else
-                                        {{ number_format($voucher->discount_value, 0, ',', '.') }}₫
-                                    @endif
-                                </span>
-                            </div>
-                            <div style="font-size: 14px; color: #666; margin-bottom: 6px;">Đơn tối thiểu:
-                                {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫</div>
-                            <div style="font-size: 14px; color: #666; margin-bottom: 6px;">HSD:
-                                {{ $voucher->end_date->utc()->format('Y-m-d\TH:i:s\Z') }}</div>
-                            {{-- Hiển thị số lượt còn lại --}}
-                            <div style="font-size: 14px; color: #666; margin-bottom: 6px;">
-                                @if($voucher->usage_limit)
-                                    Còn lại: {{ $voucher->usage_limit - $voucher->used_count }} lượt
-                                @else
-                                    Không giới hạn lượt dùng
-                                @endif
-                            </div>
+
+            <div class="row">
+                @if($vouchers->count() > 0)
+                    <div class="col-12 mb-3">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Hiển thị các mã giảm giá còn hiệu lực và còn lượt sử dụng
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="text-align: left;">
-                                <div class="voucher-countdown" data-end="{{ $voucher->end_date->utc()->format('Y-m-d H:i:s') }}"
-                                    style="font-size: 16px; color: #e74c3c; font-weight: bold;"></div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    <button class="copy-voucher-btn" data-code="{{ $voucher->code }}">Sao chép
-                                        mã</button>
-                                    <span class="copy-success-msg"
-                                        style="min-height: 18px; margin-top: 4px; display: none;">Đã sao chép!</span>
+                    </div>
+                @endif
+                @forelse($vouchers as $voucher)
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ $voucher->name }}</h5>
+                                <p class="card-text text-muted small">{{ $voucher->description }}</p>
+                                
+                                <div class="mb-2">
+                                    <strong>Giảm: 
+                                        @if ($voucher->discount_type === 'percentage')
+                                            {{ number_format($voucher->discount_value, 0, ',', '.') }}%
+                                        @else
+                                            {{ number_format($voucher->discount_value, 0, ',', '.') }}₫
+                                        @endif
+                                    </strong>
+                                </div>
+                                
+                                <div class="small text-muted mb-1">
+                                    Đơn tối thiểu: {{ number_format($voucher->minimum_purchase, 0, ',', '.') }}₫
+                                </div>
+                                <div class="small text-muted mb-1">
+                                    HSD: {{ $voucher->end_date->format('d/m/Y') }}
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    @if($voucher->usage_limit)
+                                        Còn lại: {{ $voucher->usage_limit - $voucher->used_count }} lượt
+                                    @else
+                                        Không giới hạn lượt dùng
+                                    @endif
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="voucher-countdown text-danger small" data-end="{{ $voucher->end_date->format('Y-m-d h:i:s A') }}"></div>
+                                        <button class="btn btn-dark btn-sm copy-voucher-btn" data-code="{{ $voucher->code }}">
+                                            Sao chép mã
+                                        </button>
+                                    </div>
+                                    <div class="copy-success-msg text-success small mt-1" style="display: none;">Đã sao chép!</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div>Hiện không có mã giảm giá nào.</div>
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">Hiện không có mã giảm giá nào.</p>
+                    </div>
                 @endforelse
             </div>
         </div>
@@ -234,6 +254,42 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Countdown timer
+            function updateCountdown() {
+                document.querySelectorAll('.voucher-countdown').forEach(function(element) {
+                    var endDate = element.getAttribute('data-end');
+                    if (!endDate) return;
+                    
+                    // Parse date with AM/PM format
+                    var date = new Date(endDate);
+                    var now = new Date();
+                    var diff = date - now;
+                    
+                    if (diff <= 0) {
+                        element.innerHTML = 'Đã hết hạn';
+                        element.style.color = '#999';
+                        return;
+                    }
+                    
+                    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    
+                    var timeString = '';
+                    if (days > 0) timeString += days + ' ngày ';
+                    if (hours > 0) timeString += hours + ' giờ ';
+                    if (minutes > 0) timeString += minutes + ' phút ';
+                    timeString += seconds + ' giây';
+                    
+                    element.innerHTML = timeString;
+                });
+            }
+            
+            // Update countdown every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+
             // Tạo sẵn div chứa flash message nếu chưa có
             if (!document.getElementById('js-flash-message')) {
                 var flashDiv = document.createElement('div');
