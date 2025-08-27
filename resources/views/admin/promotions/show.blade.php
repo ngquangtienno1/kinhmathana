@@ -86,11 +86,11 @@
                                     </tr>
                                     <tr>
                                         <th>Ngày bắt đầu</th>
-                                        <td>{{ $promotion->start_date->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $promotion->start_date->format('d/m/Y h:i A') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Ngày kết thúc</th>
-                                        <td>{{ $promotion->end_date->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $promotion->end_date->format('d/m/Y h:i A') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Trạng thái</th>
@@ -102,11 +102,11 @@
                                     </tr>
                                     <tr>
                                         <th>Ngày tạo</th>
-                                        <td>{{ $promotion->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $promotion->created_at->format('d/m/Y h:i A') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Ngày cập nhật</th>
-                                        <td>{{ $promotion->updated_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $promotion->updated_at->format('d/m/Y h:i A') }}</td>
                                     </tr>
                                 </tbody>
                             </table>

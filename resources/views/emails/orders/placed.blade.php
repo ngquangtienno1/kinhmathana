@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>[Hana Eyewear] Xác nhận đơn hàng #{{ $order->order_number }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,11 +12,13 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
         }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -23,10 +26,12 @@
             background: #f8f9fa;
             border-radius: 8px;
         }
+
         .logo {
             max-width: 150px;
             margin-bottom: 15px;
         }
+
         .order-info {
             background: #ffffff;
             padding: 20px;
@@ -34,19 +39,24 @@
             margin-bottom: 20px;
             border: 1px solid #e9ecef;
         }
+
         .order-items {
             width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
         }
-        .order-items th, .order-items td {
+
+        .order-items th,
+        .order-items td {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #e9ecef;
         }
+
         .order-items th {
             background: #f8f9fa;
         }
+
         .footer {
             margin-top: 30px;
             padding: 20px;
@@ -54,6 +64,7 @@
             border-radius: 8px;
             text-align: center;
         }
+
         .contact-info {
             background: #ffffff;
             padding: 15px;
@@ -61,17 +72,21 @@
             margin-top: 20px;
             border: 1px solid #e9ecef;
         }
+
         .signature {
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #e9ecef;
         }
+
         .bold {
             font-weight: bold;
         }
+
         .text-right {
             text-align: right;
         }
+
         .status-badge {
             display: inline-block;
             padding: 5px 10px;
@@ -80,16 +95,20 @@
             color: white;
             font-size: 14px;
         }
+
         @media only screen and (max-width: 600px) {
             .container {
                 padding: 10px;
             }
-            .order-items th, .order-items td {
+
+            .order-items th,
+            .order-items td {
                 padding: 5px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -112,13 +131,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($order->items as $item)
-                    <tr>
-                        <td>{{ $item->product_name }}</td>
-                        <td class="text-right">{{ $item->quantity }}</td>
-                        <td class="text-right">{{ number_format($item->price) }}đ</td>
-                        <td class="text-right">{{ number_format($item->subtotal) }}đ</td>
-                    </tr>
+                    @foreach ($order->items as $item)
+                        <tr>
+                            <td>{{ $item->product_name }}</td>
+                            <td class="text-right">{{ $item->quantity }}</td>
+                            <td class="text-right">{{ number_format($item->price) }}đ</td>
+                            <td class="text-right">{{ number_format($item->subtotal) }}đ</td>
+                        </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
@@ -126,11 +145,11 @@
                         <td colspan="3" class="text-right"><strong>Tạm tính:</strong></td>
                         <td class="text-right">{{ number_format($order->subtotal) }}đ</td>
                     </tr>
-                    @if(($order->promotion_amount ?? 0) > 0)
-                    <tr>
-                        <td colspan="3" class="text-right"><strong>Giảm giá:</strong></td>
-                        <td class="text-right">-{{ number_format($order->promotion_amount) }}đ</td>
-                    </tr>
+                    @if (($order->promotion_amount ?? 0) > 0)
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Giảm giá:</strong></td>
+                            <td class="text-right">-{{ number_format($order->promotion_amount) }}đ</td>
+                        </tr>
                     @endif
                     <tr>
                         <td colspan="3" class="text-right"><strong>Phí vận chuyển:</strong></td>
@@ -184,7 +203,8 @@
         </div>
 
         <div class="footer">
-            <p style="color: #6c757d; font-size: 12px;">Email này được gửi tự động, vui lòng không trả lời email này.</p>
+            <p style="color: #6c757d; font-size: 12px;">Email này được gửi tự động, vui lòng không trả lời email này.
+            </p>
         </div>
     </div>
 </body>

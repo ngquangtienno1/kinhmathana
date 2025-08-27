@@ -37,14 +37,7 @@ class PromotionController extends Controller
         // Filter by status
         if ($request->filled('status')) {
             if ($request->status === 'active') {
-                // Active means: enabled, within time window, and remaining uses
-                $query->where('is_active', true)
-                    ->where('start_date', '<=', now())  // <= để hiển thị ngay khi tạo
-                    ->where('end_date', '>=', now())    // >= để còn hiệu lực
-                    ->where(function ($q) {
-                        $q->whereNull('usage_limit')
-                          ->orWhereColumn('used_count', '<', 'usage_limit');
-                    });
+                $query->where('is_active', true);
             } elseif ($request->status === 'inactive') {
                 $query->where('is_active', false);
             }
@@ -60,14 +53,7 @@ class PromotionController extends Controller
         $query->orderBy($sort, $direction);
 
         $promotions = $query->get();
-        $activeCount = Promotion::where('is_active', true)
-            ->where('start_date', '<=', now())  // <= để hiển thị ngay khi tạo
-            ->where('end_date', '>=', now())    // >= để còn hiệu lực
-            ->where(function ($q) {
-                $q->whereNull('usage_limit')
-                  ->orWhereColumn('used_count', '<', 'usage_limit');
-            })
-            ->count();
+        $activeCount = Promotion::where('is_active', true)->count();
         $inactiveCount = Promotion::where('is_active', false)->count();
         $percentageCount = Promotion::where('discount_type', 'percentage')->count();
         $fixedCount = Promotion::where('discount_type', 'fixed')->count();
@@ -161,6 +147,21 @@ class PromotionController extends Controller
         ], $messages);
 
         try {
+            // Chuyển đổi ngày thành datetime (cuối ngày cho end_date)
+            // Kiểm tra và làm sạch format ngày
+            $startDate = $validated['start_date'];
+            $endDate = $validated['end_date'];
+            
+            // Nếu có format datetime-local cũ, chỉ lấy phần ngày
+            if (strpos($startDate, 'T') !== false) {
+                $startDate = substr($startDate, 0, 10);
+            }
+            if (strpos($endDate, 'T') !== false) {
+                $endDate = substr($endDate, 0, 10);
+            }
+            
+            $validated['start_date'] = $startDate . ' 00:00:00';
+            $validated['end_date'] = $endDate . ' 23:59:59';
 
             // Create promotion
             $promotion = Promotion::create($validated);
@@ -290,6 +291,21 @@ class PromotionController extends Controller
         ]);
 
         try {
+            // Chuyển đổi ngày thành datetime (cuối ngày cho end_date)
+            // Kiểm tra và làm sạch format ngày
+            $startDate = $validated['start_date'];
+            $endDate = $validated['end_date'];
+            
+            // Nếu có format datetime-local cũ, chỉ lấy phần ngày
+            if (strpos($startDate, 'T') !== false) {
+                $startDate = substr($startDate, 0, 10);
+            }
+            if (strpos($endDate, 'T') !== false) {
+                $endDate = substr($endDate, 0, 10);
+            }
+            
+            $validated['start_date'] = $startDate . ' 00:00:00';
+            $validated['end_date'] = $endDate . ' 23:59:59';
 
             // Update promotion
             $promotion->update($validated);
@@ -400,10 +416,12 @@ class PromotionController extends Controller
 
     public function validatePromotionCode($code, $cartTotal, User $user)
     {
+        $today = now()->startOfDay(); // Bắt đầu của ngày hôm nay
+        $tomorrow = now()->addDay()->startOfDay(); // Bắt đầu của ngày mai
         $promotion = Promotion::where('code', $code)
             ->where('is_active', true)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->where('start_date', '<=', $tomorrow)  // Bắt đầu từ hôm nay hoặc ngày mai
+            ->where('end_date', '>=', $today)   // Kết thúc từ hôm nay trở đi (theo ngày)
             ->first();
 
         if (!$promotion) {
