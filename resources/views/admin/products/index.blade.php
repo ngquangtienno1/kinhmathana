@@ -30,6 +30,18 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link {{ request('product_type') === 'simple' ? 'active' : '' }}"
+                href="{{ route('admin.products.list', ['product_type' => 'simple']) }}">
+                Sản phẩm đơn giản <span class="text-body-tertiary fw-semibold">({{ $simpleProductsCount }})</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request('product_type') === 'variable' ? 'active' : '' }}"
+                href="{{ route('admin.products.list', ['product_type' => 'variable']) }}">
+                Sản phẩm có biến thể <span class="text-body-tertiary fw-semibold">({{ $variableProductsCount }})</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {{ request('bin') === '1' ? 'active' : '' }}"
                 href="{{ route('admin.products.trashed') }}">
                 Thùng rác <span class="text-body-tertiary fw-semibold">({{ $deletedCount }})</span>

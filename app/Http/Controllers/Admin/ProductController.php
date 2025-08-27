@@ -42,6 +42,10 @@ class ProductController extends Controller
             }
         }
 
+        if ($request->filled('product_type')) {
+            $query->where('product_type', $request->product_type);
+        }
+
         if ($request->filled('category_id')) {
             $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('category_id', $request->category_id);
@@ -72,7 +76,11 @@ class ProductController extends Controller
         $deletedCount = Product::onlyTrashed()->count();
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories'));
+        // Thống kê sp có biến thể và không có biến thể
+        $simpleProductsCount = Product::where('product_type', 'simple')->count();
+        $variableProductsCount = Product::where('product_type', 'variable')->count();
+
+        return view('admin.products.index', compact('products', 'activeCount', 'deletedCount', 'categories', 'simpleProductsCount', 'variableProductsCount'));
     }
 
     public function show($id)
