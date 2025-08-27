@@ -160,6 +160,13 @@
                         if (is_string($selectedIds)) {
                             $selectedIds = explode(',', $selectedIds);
                         }
+                        // Nếu không có selected_ids từ request, kiểm tra session
+                        if (empty($selectedIds) && session('checkout_selected_ids')) {
+                            $selectedIds = session('checkout_selected_ids');
+                            if (is_string($selectedIds)) {
+                                $selectedIds = explode(',', $selectedIds);
+                            }
+                        }
                     @endphp
                     @if (!empty($selectedIds))
                         @foreach ($selectedIds as $id)
@@ -501,21 +508,18 @@
             border: 1px solid #f5c6cb;
             border-radius: 8px;
             font-size: 13px;
-            line-height: 1.4;
         }
 
         /* Style cho inventory error message */
         .cart-alert .inventory-error-message {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
+            background: #f8d7da;
             border-radius: 6px;
             padding: 10px 12px;
             margin-top: 8px;
+            font-weight: bold;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 14px;
             color: #856404;
-            white-space: pre-line;
         }
 
 
@@ -580,6 +584,11 @@
             selectedInputs.forEach(input => {
                 selectedIds.push(input.value);
             });
+            
+            // Nếu không có selected_ids từ form, có thể đang ở trạng thái lỗi tồn kho
+            if (selectedIds.length === 0) {
+                console.log('No selected_ids found in form, this might be an inventory error case');
+            }
 
             fetch("{{ route('client.cart.apply-voucher') }}", {
                     method: 'POST',

@@ -99,6 +99,11 @@ class CartClientController extends Controller
                 'variation_id' => $variationId,
                 'quantity' => $quantity,
             ]);
+            
+            // Xóa session checkout_selected_ids khi thêm sản phẩm mới (có thể thay đổi danh sách)
+            if (session('checkout_selected_ids')) {
+                session()->forget('checkout_selected_ids');
+            }
         }
 
         return redirect()->route('client.cart.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
@@ -140,6 +145,11 @@ class CartClientController extends Controller
         $newQty = $requestedQty;
         $cartItem->quantity = $newQty;
         $cartItem->save();
+        
+        // Xóa session checkout_selected_ids khi cập nhật số lượng (có thể thay đổi tổng tiền)
+        if (session('checkout_selected_ids')) {
+            session()->forget('checkout_selected_ids');
+        }
 
         // Tính lại tổng tiền dòng
         if ($cartItem->variation) {
@@ -178,6 +188,18 @@ class CartClientController extends Controller
         $user = Auth::user();
         $cartItem = Cart::where('user_id', $user->id)->findOrFail($id);
         $cartItem->delete();
+        
+        // Xóa session checkout_selected_ids nếu sản phẩm bị xóa nằm trong danh sách đã chọn
+        if (session('checkout_selected_ids')) {
+            $selectedIds = session('checkout_selected_ids');
+            if (is_string($selectedIds)) {
+                $selectedIds = explode(',', $selectedIds);
+            }
+            if (in_array($id, $selectedIds)) {
+                session()->forget('checkout_selected_ids');
+            }
+        }
+        
         return redirect()->route('client.cart.index')->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng!');
     }
 
@@ -189,6 +211,19 @@ class CartClientController extends Controller
             return redirect()->route('client.cart.index')->with('error', 'Vui lòng chọn sản phẩm để xoá!');
         }
         Cart::where('user_id', $user->id)->whereIn('id', $ids)->delete();
+        
+        // Xóa session checkout_selected_ids nếu có sản phẩm bị xóa nằm trong danh sách đã chọn
+        if (session('checkout_selected_ids')) {
+            $selectedIds = session('checkout_selected_ids');
+            if (is_string($selectedIds)) {
+                $selectedIds = explode(',', $selectedIds);
+            }
+            $intersection = array_intersect($ids, $selectedIds);
+            if (!empty($intersection)) {
+                session()->forget('checkout_selected_ids');
+            }
+        }
+        
         return redirect()->route('client.cart.index')->with('success', 'Đã xoá các sản phẩm đã chọn khỏi giỏ hàng!');
     }
 
@@ -196,6 +231,12 @@ class CartClientController extends Controller
     {
         $user = Auth::user();
         $selectedIds = $request->input('selected_ids');
+        
+        // Nếu không có selected_ids từ request, kiểm tra session
+        if (!$selectedIds && session('checkout_selected_ids')) {
+            $selectedIds = session('checkout_selected_ids');
+        }
+        
         if ($selectedIds) {
             $ids = is_array($selectedIds) ? $selectedIds : explode(',', $selectedIds);
             $checkoutItems = Cart::with(['variation.product', 'variation.color', 'variation.size'])
@@ -264,6 +305,11 @@ class CartClientController extends Controller
         if ($hasInventoryError) {
             session()->forget('inventory_error');
         }
+        
+        // Xóa checkout_selected_ids sau khi đã sử dụng (chỉ xóa nếu không có lỗi tồn kho)
+        if (session('checkout_selected_ids') && !$hasInventoryError) {
+            session()->forget('checkout_selected_ids');
+        }
 
         return view('client.cart.checkout', compact('checkoutItems', 'shippingProviders', 'paymentMethods', 'promotions', 'paymentFailed', 'inventoryError', 'errorMessage', 'hasInventoryError'));
     }
@@ -307,6 +353,15 @@ class CartClientController extends Controller
 
         // Lấy chỉ những sản phẩm được chọn để thanh toán
         $selectedIds = $request->input('selected_ids');
+        
+        // Nếu không có selected_ids từ request, kiểm tra session (trường hợp lỗi tồn kho)
+        if (empty($selectedIds) && session('checkout_selected_ids')) {
+            $selectedIds = session('checkout_selected_ids');
+            if (is_string($selectedIds)) {
+                $selectedIds = explode(',', $selectedIds);
+            }
+        }
+        
         if ($selectedIds && !empty($selectedIds)) {
             $cartItems = Cart::with(['variation.product'])
                 ->where('user_id', $user->id)
@@ -400,6 +455,11 @@ class CartClientController extends Controller
             // Sử dụng session thường thay vì flash message
             session(['error' => $inventoryCheck['message']]);
             session(['inventory_error' => true]);
+            
+            // Lưu selected_ids vào session để giữ lại khi redirect
+            if ($selectedIds) {
+                session(['checkout_selected_ids' => $selectedIds]);
+            }
 
             return redirect()->route('client.cart.checkout.form');
         }
@@ -533,6 +593,11 @@ class CartClientController extends Controller
             }
 
             DB::commit();
+            
+            // Xóa session checkout_selected_ids sau khi đặt hàng thành công
+            if (session('checkout_selected_ids')) {
+                session()->forget('checkout_selected_ids');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Lỗi đặt hàng (transaction): ' . $e->getMessage());
@@ -684,6 +749,11 @@ class CartClientController extends Controller
             // Sử dụng session thường thay vì flash message
             session(['error' => $inventoryCheck['message']]);
             session(['inventory_error' => true]);
+            
+            // Lưu selected_ids vào session để giữ lại khi redirect
+            if ($selectedIds) {
+                session(['checkout_selected_ids' => $selectedIds]);
+            }
 
             return redirect()->route('client.cart.checkout.form');
         }
@@ -840,6 +910,11 @@ class CartClientController extends Controller
         // Kiểm tra số lượng tồn kho trước khi đặt hàng
         $inventoryCheck = $this->checkInventoryAvailability($cartItems);
         if (!$inventoryCheck['success']) {
+            // Lưu selected_ids vào session để giữ lại khi redirect
+            if ($selectedIds) {
+                session(['checkout_selected_ids' => $selectedIds]);
+            }
+            
             return redirect()->route('client.cart.checkout.form')->with('error', $inventoryCheck['message'])->with('inventory_error', true);
         }
         $validated = $request->validate([
@@ -1199,6 +1274,12 @@ class CartClientController extends Controller
             }
 
             DB::commit();
+            
+            // Xóa session checkout_selected_ids sau khi đặt hàng thành công
+            if (session('checkout_selected_ids')) {
+                session()->forget('checkout_selected_ids');
+            }
+            
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
