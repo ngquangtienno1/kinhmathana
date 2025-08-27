@@ -134,6 +134,61 @@
         </div>
         {{-- Lưới voucher vuông --}}
         <div class="qodef-content-grid">
+            <style>
+                .btn.btn-dark {
+                    background: #111;
+                    color: #fff;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    font-weight: 600;
+                    font-size: 0.9em;
+                    font-family: Inter, sans-serif;
+                    transition: background 0.2s;
+                }
+
+                .btn.btn-dark:hover {
+                    background: #333;
+                }
+
+                .card-title {
+                    font-weight: 600;
+                    color: #111;
+                    font-size: 1.1em;
+                    font-family: Inter, sans-serif;
+                }
+
+                .card-text {
+                    color: #666;
+                    font-size: 0.9em;
+                    line-height: 1.4;
+                    font-family: Inter, sans-serif;
+                }
+
+                .text-muted {
+                    color: #666 !important;
+                    font-family: Inter, sans-serif;
+                }
+
+                .text-danger {
+                    color: #e74c3c !important;
+                    font-family: Inter, sans-serif;
+                }
+
+                .text-success {
+                    color: #27ae60 !important;
+                    font-family: Inter, sans-serif;
+                }
+
+                .alert {
+                    font-family: Inter, sans-serif;
+                }
+
+                .card {
+                    font-family: Inter, sans-serif;
+                }
+            </style>
+
             <div class="row">
                 @if($vouchers->count() > 0)
                     <div class="col-12 mb-3">
