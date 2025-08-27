@@ -60,7 +60,7 @@
                         <span class="fas fa-search search-box-icon"></span>
                     </div>
                 </div>
-                <div style="flex: 1; min-width: 200px;">
+                <div>
                     <select class="form-select" name="category_id" id="category_id">
                         <option value="">Tất cả danh mục</option>
                         @foreach ($categories as $category)
@@ -70,18 +70,6 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <input class="form-control" type="date" name="date_from" placeholder="Ngày tạo từ"
-                        value="{{ request('date_from') }}" />
-                </div>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-primary" onclick="applyFilters()">
-                        <span class="fas fa-filter me-2"></span>Lọc
-                    </button>
-                    <a href="{{ route('admin.products.list') }}" class="btn btn-secondary">
-                        <span class="fas fa-eraser me-2"></span>Bỏ lọc
-                    </a>
                 </div>
                 <div class="ms-auto">
                     <button id="bulk-delete-btn" class="btn btn-danger me-2" style="display: none;" type="button">
@@ -309,7 +297,6 @@
     // Hàm lọc sản phẩm theo danh mục và ngày
     function applyFilters() {
         const categoryId = document.getElementById('category_id').value;
-        const dateFrom = document.querySelector('input[name="date_from"]').value;
 
         let url = new URL(window.location);
 
@@ -317,12 +304,6 @@
             url.searchParams.set('category_id', categoryId);
         } else {
             url.searchParams.delete('category_id');
-        }
-
-        if (dateFrom) {
-            url.searchParams.set('date_from', dateFrom);
-        } else {
-            url.searchParams.delete('date_from');
         }
 
         // Giữ nguyên search term nếu có
@@ -333,6 +314,15 @@
 
         window.location.href = url.toString();
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('category_id');
+
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function() {
+                applyFilters();
+            });
+        }
+    })
 </script>
 
 @endsection

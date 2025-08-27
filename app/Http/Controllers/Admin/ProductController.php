@@ -52,11 +52,6 @@ class ProductController extends Controller
             });
         }
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from)
-                ->whereDate('created_at', '<=', now()->toDateString());
-        }
-
         $products = $query->orderBy('created_at', 'desc')->get();
 
         foreach ($products as $product) {
