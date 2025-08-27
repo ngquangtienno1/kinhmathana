@@ -117,7 +117,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ getLogoUrl() }}" alt="Hana Eyewear" class="logo">
             <h2>Xin chào {{ $order->user->name }},</h2>
             <p>Đơn hàng của bạn đã được giao thành công!</p>
             <div class="status-badge">Đã giao hàng</div>
@@ -218,5 +217,4 @@
         </div>
     </div>
 </body>
-
 </html>

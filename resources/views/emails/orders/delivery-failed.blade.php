@@ -116,7 +116,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Hana Eyewear" class="logo">
             <h2>Xin chào {{ $order->user->name }},</h2>
             <p>Rất tiếc! Đơn hàng của bạn chưa thể giao thành công.</p>
             <div class="status-badge" style="background: #dc3545;">Giao hàng thất bại</div>
@@ -125,7 +124,7 @@
         <div class="order-info">
             <h3>📦 Thông tin đơn hàng #{{ $order->order_number }}</h3>
             <p><strong>Thời gian giao hàng:</strong>
-                @if ($order->last_delivery_attempt)
+                @if($order->last_delivery_attempt)
                     {{ $order->last_delivery_attempt->format('H:i d/m/Y') }}
                 @else
                     Không xác định
@@ -226,5 +225,4 @@
         </div>
     </div>
 </body>
-
 </html>

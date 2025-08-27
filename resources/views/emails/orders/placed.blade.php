@@ -112,7 +112,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Hana Eyewear" class="logo">
             <h2>Xin chào {{ $order->user->name }},</h2>
             <p>Cảm ơn bạn đã đặt hàng tại Hana Eyewear!</p>
             <div class="status-badge">Đã đặt hàng</div>
@@ -209,5 +208,4 @@
         </div>
     </div>
 </body>
-
 </html>
