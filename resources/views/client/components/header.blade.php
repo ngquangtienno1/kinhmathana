@@ -560,7 +560,6 @@
                                                             @endif
                                                         </small></div>
                                                 @endif
-                                                <p class="qodef-e-quantity">Số lượng: {{ $item->quantity }}</p>
                                                 <p class="qodef-e-price">
                                                     <span class="woocommerce-Price-amount amount">
                                                         <bdi>{{ number_format($price, 0, ',', '.') }}₫</bdi>
@@ -570,27 +569,7 @@
                                         </li>
                                     @endforeach
                                 </ul>
-                                <div class="qodef-m-order-details">
-                                    <h5 class="qodef-m-order-label">Tổng:</h5>
-                                    <h5 class="qodef-m-order-amount">
-                                        <span class="woocommerce-Price-amount amount">
-                                            <bdi>
-                                                @php
-                                                    $subtotal = $cartItems->sum(function ($item) {
-                                                        $cartProduct = $item->variation
-                                                            ? $item->variation->product
-                                                            : $item->product;
-                                                        $price = $item->variation
-                                                            ? $item->variation->sale_price ?? $item->variation->price
-                                                            : $cartProduct->sale_price ?? $cartProduct->price;
-                                                        return $price * $item->quantity;
-                                                    });
-                                                @endphp
-                                                {{ number_format($subtotal, 0, ',', '.') }}₫
-                                            </bdi>
-                                        </span>
-                                    </h5>
-                                </div>
+                               
                                 <div class="qodef-m-action">
                                     <a itemprop="url" href="{{ route('client.cart.index') }}"
                                         class="qodef-m-action-link">Xem giỏ hàng & Thanh toán</a>
@@ -1057,7 +1036,6 @@
                                                             @endif
                                                         </small></div>
                                                 @endif
-                                                <p class="qodef-e-quantity">Số lượng: {{ $item->quantity }}</p>
                                                 <p class="qodef-e-price">
                                                     <span class="woocommerce-Price-amount amount">
                                                         <bdi>{{ number_format($price, 0, ',', '.') }}₫</bdi>
@@ -1068,7 +1046,6 @@
                                     @endforeach
                                 </ul>
                                 <div class="qodef-m-order-details">
-                                    <h5 class="qodef-m-order-label">Tổng:</h5>
                                     <h5 class="qodef-m-order-amount">
                                         <span class="woocommerce-Price-amount amount">
                                             <bdi>
