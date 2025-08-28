@@ -10,14 +10,17 @@ class UserObserver
 {
     public function created(User $user)
     {
-        // Tự động tạo customer khi user có role_id = 3
         if ($user->role_id == 3) {
-            Customer::create([
-                'user_id' => $user->id,
-                'customer_type' => 'new',
-                'total_orders' => 0,
-                'total_spent' => 0,
-            ]);
+            $existingCustomer = Customer::where('user_id', $user->id)->first();
+
+            if (!$existingCustomer) {
+                Customer::create([
+                    'user_id' => $user->id,
+                    'customer_type' => 'new',
+                    'total_orders' => 0,
+                    'total_spent' => 0,
+                ]);
+            }
         }
     }
 

@@ -23,45 +23,83 @@
 
                 @if (session('success'))
                     <div class="alert alert-success"
-                        style="margin-bottom: 16px; padding: 12px 16px; background: #e8f8f5; color: #148f77; border: 1.5px solid #1abc9c; border-radius: 6px;">
-                        <strong>✅ Thành công:</strong> {{ session('success') }}
+                        style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%); color: #148f77; border: 1.5px solid #1abc9c; border-radius: 8px; box-shadow: 0 2px 4px rgba(26, 188, 156, 0.1);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 20px;">✅</span>
+                            <div>
+                                <strong style="font-size: 16px; color: #148f77;">Thành công!</strong>
+                                <div style="margin-top: 4px; color: #148f77;">{{ session('success') }}</div>
+                            </div>
+                        </div>
                     </div>
                 @endif
                 @if ($errorMessage)
                     <div class="alert alert-danger cart-alert">
                         @if ($hasInventoryError)
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span style="font-size: 16px;">🛒</span>
-                                <strong style="font-size: 14px; color: #721c24;">Lỗi tồn kho</strong>
-                            </div>
-                            <div class="inventory-error-message">
-                                {!! nl2br(e($errorMessage)) !!}
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="flex-shrink: 0; margin-top: 2px;">
+                                    <span style="font-size: 20px;">🛒</span>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <strong style="font-size: 16px; color: #d32f2f;">Không thể đặt hàng</strong>
+                                    </div>
+                                    <div class="inventory-error-message" style="color: #424242; line-height: 1.5;">
+                                        {!! nl2br(e($errorMessage)) !!}
+                                    </div>
+                                </div>
                             </div>
                         @elseif ($paymentFailed)
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span style="font-size: 16px;">⚠️</span>
-                                <strong style="font-size: 14px; color: #721c24;">Lỗi thanh toán</strong>
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="flex-shrink: 0; margin-top: 2px;">
+                                    <span style="font-size: 20px;">💳</span>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <strong style="font-size: 16px; color: #d32f2f;">Thanh toán không thành
+                                            công</strong>
+                                    </div>
+                                    <div style="color: #424242; line-height: 1.5;">
+                                        {{ $errorMessage }}
+                                    </div>
+                                </div>
                             </div>
-                            <div>{{ $errorMessage }}</div>
-                            <small style="margin-top: 8px; display: block; color: #6c757d;">Vui lòng kiểm tra lại thông tin
-                                và thử thanh toán lại.</small>
                         @else
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 16px;">⚠️</span>
-                                <strong style="font-size: 14px; color: #721c24;">Lỗi</strong>
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="flex-shrink: 0; margin-top: 2px;">
+                                    <span style="font-size: 20px;">⚠️</span>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <strong style="font-size: 16px; color: #d32f2f;">Có lỗi xảy ra</strong>
+                                    </div>
+                                    <div style="color: #424242; line-height: 1.5;">
+                                        {{ $errorMessage }}
+                                    </div>
+                                </div>
                             </div>
-                            <div style="margin-top: 8px;">{{ $errorMessage }}</div>
                         @endif
                     </div>
                 @endif
                 @if ($errors->any())
                     <div class="alert alert-danger"
-                        style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
-                        <ul style="margin-bottom:0; padding-left: 20px;">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #ffeaea 0%, #ffebee 100%); color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 8px; box-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <div style="flex-shrink: 0; margin-top: 2px;">
+                                <span style="font-size: 20px;">⚠️</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <strong style="font-size: 16px; color: #d32f2f;">Vui lòng kiểm tra lại thông
+                                        tin</strong>
+                                </div>
+                                <ul style="margin: 0; padding-left: 20px; color: #424242; line-height: 1.5;">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 @endif
 
@@ -525,8 +563,8 @@
 
 
         /* .checkout-radio span {
-                                                                                                                                                                                                                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -584,7 +622,7 @@
             selectedInputs.forEach(input => {
                 selectedIds.push(input.value);
             });
-            
+
             // Nếu không có selected_ids từ form, có thể đang ở trạng thái lỗi tồn kho
             if (selectedIds.length === 0) {
                 console.log('No selected_ids found in form, this might be an inventory error case');

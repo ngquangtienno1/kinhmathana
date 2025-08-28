@@ -32,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        User::observe(UserObserver::class);
+
         // Chỉ thực hiện cấu hình nếu bảng website_settings tồn tại
         if (Schema::hasTable('website_settings')) {
             Config::set('mail.mailers.smtp.host', getSetting('smtp_host') ?? env('MAIL_HOST', 'default.host.com'));

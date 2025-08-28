@@ -32,23 +32,23 @@
                                 <ul id="menu-footer-menu-column-2" class="menu">
                                     <li id="menu-item-121"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-121">
-                                        <a href="book-an-appointment/index.html">Khám mắt miễn phí</a>
+                                        <span>Khám mắt miễn phí</span>
                                     </li>
                                     <li id="menu-item-122"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-122">
-                                        <a href="our-staff/index.html">Bảo hành</a>
+                                        <span>Bảo hành</span>
                                     </li>
                                     <li id="menu-item-123"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-123">
-                                        <a href="vouchers/index.html">Đổi trả</a>
+                                        <span>Đổi trả</span>
                                     </li>
                                     <li id="menu-item-124"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-124">
-                                        <a href="pricing-plans/index.html">Vận chuyển</a>
+                                        <span>Vận chuyển</span>
                                     </li>
                                     <li id="menu-item-125"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-125">
-                                        <a href="latest-lens-technology/index.html">Thu cũ - Đổi mới</a>
+                                        <span>Thu cũ - Đổi mới</span>
                                     </li>
                                 </ul>
                             </div>
@@ -56,28 +56,28 @@
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-3" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-3">
-                            <h5 class="qodef-widget-title">Công ty</h5>
+                            <h5 class="qodef-widget-title">Liên hệ</h5>
                             <div class="menu-footer-menu-column-3-container">
                                 <ul id="menu-footer-menu-column-3" class="menu">
                                     <li id="menu-item-126"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-126">
-                                        <a href="contact-us/index.html">Liên hệ</a>
+                                        <span>Liên hệ</span>
                                     </li>
                                     <li id="menu-item-127"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-127">
-                                        <a href="faq-page/index.html">Câu hỏi thường gặp</a>
+                                        <span>Câu hỏi thường gặp</span>
                                     </li>
                                     <li id="menu-item-128"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-128">
-                                        <a href="checkout/index.html">Giao hàng</a>
+                                        <span>Giao hàng</span>
                                     </li>
                                     <li id="menu-item-129"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-129">
-                                        <a href="get-in-touch/index.html">Cửa hàng</a>
+                                        <span>Cửa hàng</span>
                                     </li>
                                     <li id="menu-item-130"
                                         class="menu-item menu-item-type-custom menu-item-object-custom menu-item-130">
-                                        <a href="shop/four-columns-grid/index.html">Bộ sưu tập</a>
+                                        <span>Bộ sưu tập</span>
                                     </li>
                                 </ul>
                             </div>
@@ -85,30 +85,13 @@
                     </div>
                     <div class="qodef-grid-item">
                         <div id="nav_menu-5" class="widget widget_nav_menu" data-area="qodef-footer-top-area-column-4">
-                            <h5 class="qodef-widget-title">Thông tin chung</h5>
+                            <h5 class="qodef-widget-title">Vị trí cửa hàng</h5>
                             <div class="menu-footer-menu-column-4-container">
-                                <ul id="menu-footer-menu-column-4" class="menu">
-                                    <li id="menu-item-6524"
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6524">
-                                        <a href="meet-the-doctor/index.html">Đội ngũ bác sĩ</a>
-                                    </li>
-                                    <li id="menu-item-6525"
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6525">
-                                        <a href="about-us/index.html">Về chúng tôi</a>
-                                    </li>
-                                    <li id="menu-item-6526"
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6526">
-                                        <a href="shop/index.html">Sản phẩm</a>
-                                    </li>
-                                    <li id="menu-item-6527"
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6527">
-                                        <a href="product/way-glasses/index.html">Sản phẩm khuyến mãi</a>
-                                    </li>
-                                    <li id="menu-item-6952"
-                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6952">
-                                        <a href="blog-right-sidebar/index.html">Tin tức</a>
-                                    </li>
-                                </ul>
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1125.7788898975248!2d105.74713088092435!3d21.038070031819533!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1756345369752!5m2!1svi!2s"
+                                    width="100%" height="200" style="border:0; border-radius: 8px;"
+                                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
                             </div>
                         </div>
                     </div>
@@ -127,33 +110,29 @@
                             data-area="qodef-footer-bottom-area-column-1">
                             <div class="qodef-social-icons-group">
                                 <span class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                                    style="margin: -12px 23px 0px 0px"> <a itemprop="url"
-                                        href="https://www.instagram.com/qodeinteractive/" target="_blank"> <span
-                                            class="qodef-icon-elegant-icons social_instagram qodef-icon qodef-e"
-                                            style="font-size: 14px"></span> </a> </span><span
+                                    style="margin: -12px 23px 0px 0px"> <span
+                                        class="qodef-icon-elegant-icons social_instagram qodef-icon qodef-e"
+                                        style="font-size: 14px"></span> </span><span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                                    style="margin: -12px 22px 0px 0px"> <a itemprop="url"
-                                        href="https://www.facebook.com/QodeInteractive/" target="_blank"> <span
-                                            class="qodef-icon-elegant-icons social_facebook qodef-icon qodef-e"
-                                            style="font-size: 14px"></span> </a> </span><span
+                                    style="margin: -12px 22px 0px 0px"> <span
+                                        class="qodef-icon-elegant-icons social_facebook qodef-icon qodef-e"
+                                        style="font-size: 14px"></span> </span><span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                                    style="margin: -12px 25px 0px 0px"> <a itemprop="url"
-                                        href="https://www.pinterest.com/qodeinteractive/" target="_blank"> <span
-                                            class="qodef-icon-elegant-icons social_pinterest qodef-icon qodef-e"
-                                            style="font-size: 14px"></span> </a> </span><span
+                                    style="margin: -12px 25px 0px 0px"> <span
+                                        class="qodef-icon-elegant-icons social_pinterest qodef-icon qodef-e"
+                                        style="font-size: 14px"></span> </span><span
                                     class="qodef-shortcode qodef-m  qodef-icon-holder  qodef-layout--normal"
-                                    style="margin: -12px 0 0 0"> <a itemprop="url"
-                                        href="https://twitter.com/qodeinteractive" target="_blank"> <span
-                                            class="qodef-icon-elegant-icons social_twitter qodef-icon qodef-e"
-                                            style="font-size: 14px"></span> </a> </span>
+                                    style="margin: -12px 0 0 0"> <span
+                                        class="qodef-icon-elegant-icons social_twitter qodef-icon qodef-e"
+                                        style="font-size: 14px"></span> </span>
                             </div>
                         </div>
                     </div>
                     <div class="qodef-grid-item">
                         <div id="text-2" class="widget widget_text" data-area="qodef-footer-bottom-area-column-2">
                             <div class="textwidget">
-                                <div style="font-size:14px">@ 2025 <a href="https://qodeinteractive.com/"
-                                        target="_blank" rel="noopener" style="font-size:14px">Kính Mắt Hana</a>, Đã
+                                <div style="font-size:14px">@ 2025 <span style="font-size:14px">Kính Mắt Hana</span>,
+                                    Đã
                                     đăng ký bản quyền</div>
                             </div>
                         </div>

@@ -126,10 +126,9 @@ class Order extends Model
     public function getPaymentStatusLabelAttribute()
     {
         return match ($this->payment_status) {
-            'unpaid' => 'Chờ thanh toán',
+            'unpaid' => 'Chưa thanh toán',
             'paid' => 'Đã thanh toán',
-            'cod' => 'Thanh toán khi nhận hàng',
-            'confirmed' => 'Đã xác nhận thanh toán',
+            'failed' => 'Thanh toán thất bại',
             default => 'Không xác định'
         };
     }
