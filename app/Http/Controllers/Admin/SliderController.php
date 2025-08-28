@@ -255,7 +255,7 @@ class SliderController extends Controller
             $sliders = Slider::withTrashed()->whereIn('id', $ids)->get();
             foreach ($sliders as $slider) {
                 if ($slider->image) {
-                    \Storage::disk('public')->delete($slider->image);
+                    Storage::disk('public')->delete($slider->image);
                 }
                 $slider->forceDelete();
             }

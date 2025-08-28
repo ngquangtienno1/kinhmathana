@@ -111,7 +111,7 @@ class PromotionController extends Controller
                 'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
                 'end_date.required' => 'Vui lòng chọn ngày kết thúc.',
                 'end_date.date' => 'Ngày kết thúc không hợp lệ.',
-                'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+                'end_date.after_or_equal' => 'Ngày kết thúc phải từ ngày bắt đầu trở đi.',
                 'products.array' => 'Danh sách sản phẩm không hợp lệ.',
                 'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
                 'categories.array' => 'Danh sách danh mục không hợp lệ.',
@@ -139,7 +139,7 @@ class PromotionController extends Controller
                 'usage_limit' => 'nullable|integer|min:1',
                 'is_active' => 'boolean',
                 'start_date' => 'required|date',
-                'end_date' => 'required|date|after:start_date',
+                'end_date' => 'required|date|after_or_equal:start_date',
                 'products' => 'nullable|array',
                 'products.*' => 'exists:products,id',
                 'categories' => 'nullable|array',
@@ -147,6 +147,21 @@ class PromotionController extends Controller
         ], $messages);
 
         try {
+            // Chuyển đổi ngày thành datetime (cuối ngày cho end_date)
+            // Kiểm tra và làm sạch format ngày
+            $startDate = $validated['start_date'];
+            $endDate = $validated['end_date'];
+            
+            // Nếu có format datetime-local cũ, chỉ lấy phần ngày
+            if (strpos($startDate, 'T') !== false) {
+                $startDate = substr($startDate, 0, 10);
+            }
+            if (strpos($endDate, 'T') !== false) {
+                $endDate = substr($endDate, 0, 10);
+            }
+            
+            $validated['start_date'] = $startDate . ' 00:00:00';
+            $validated['end_date'] = $endDate . ' 23:59:59';
 
             // Create promotion
             $promotion = Promotion::create($validated);
@@ -238,7 +253,7 @@ class PromotionController extends Controller
                 'usage_limit' => 'nullable|integer|min:1',
                 'is_active' => 'boolean',
                 'start_date' => 'required|date',
-                'end_date' => 'required|date|after:start_date',
+                'end_date' => 'required|date|after_or_equal:start_date',
                 'products' => 'nullable|array',
                 'products.*' => 'exists:products,id',
                 'categories' => 'nullable|array',
@@ -268,7 +283,7 @@ class PromotionController extends Controller
                 'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
                 'end_date.required' => 'Vui lòng chọn ngày kết thúc.',
                 'end_date.date' => 'Ngày kết thúc không hợp lệ.',
-                'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+                'end_date.after_or_equal' => 'Ngày kết thúc phải từ ngày bắt đầu trở đi.',
                 'products.array' => 'Danh sách sản phẩm không hợp lệ.',
                 'products.*.exists' => 'Sản phẩm được chọn không tồn tại.',
                 'categories.array' => 'Danh sách danh mục không hợp lệ.',
@@ -276,6 +291,21 @@ class PromotionController extends Controller
         ]);
 
         try {
+            // Chuyển đổi ngày thành datetime (cuối ngày cho end_date)
+            // Kiểm tra và làm sạch format ngày
+            $startDate = $validated['start_date'];
+            $endDate = $validated['end_date'];
+            
+            // Nếu có format datetime-local cũ, chỉ lấy phần ngày
+            if (strpos($startDate, 'T') !== false) {
+                $startDate = substr($startDate, 0, 10);
+            }
+            if (strpos($endDate, 'T') !== false) {
+                $endDate = substr($endDate, 0, 10);
+            }
+            
+            $validated['start_date'] = $startDate . ' 00:00:00';
+            $validated['end_date'] = $endDate . ' 23:59:59';
 
             // Update promotion
             $promotion->update($validated);
@@ -386,10 +416,12 @@ class PromotionController extends Controller
 
     public function validatePromotionCode($code, $cartTotal, User $user)
     {
+        $today = now()->startOfDay(); // Bắt đầu của ngày hôm nay
+        $tomorrow = now()->addDay()->startOfDay(); // Bắt đầu của ngày mai
         $promotion = Promotion::where('code', $code)
             ->where('is_active', true)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->where('start_date', '<=', $tomorrow)  // Bắt đầu từ hôm nay hoặc ngày mai
+            ->where('end_date', '>=', $today)   // Kết thúc từ hôm nay trở đi (theo ngày)
             ->first();
 
         if (!$promotion) {

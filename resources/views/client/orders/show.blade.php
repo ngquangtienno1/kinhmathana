@@ -384,15 +384,27 @@
                     $order->status !== 'cancelled_by_customer' &&
                         $order->status !== 'cancelled_by_admin' &&
                         $order->status !== 'completed')
-                    <div class="alert alert-warning mt-3" role="alert">
-                        Vui lòng thanh toán <span
-                            class="text-danger fw-bold">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span> khi
-                        nhận hàng.
-                    </div>
+
+                    @if ($order->paymentMethod && $order->paymentMethod->code === 'cod' && $order->payment_status === 'unpaid')
+                        <div class="alert alert-warning mt-3" role="alert">
+                            Vui lòng thanh toán <span
+                                class="text-danger fw-bold">{{ number_format($order->total_amount, 0, ',', '.') }}₫</span>
+                            khi
+                            nhận hàng.
+                        </div>
+                    @endif
+
                     <div class="mt-2">
                         <b>Phương thức thanh toán:</b>
                         <span>
                             {{ $order->paymentMethod->name ?? 'Không xác định' }}
+                        </span>
+                    </div>
+                    <div class="mt-2">
+                        <b>Trạng thái thanh toán:</b>
+                        <span
+                            class="{{ $order->payment_status === 'paid' ? 'text-success fw-bold' : ($order->payment_status === 'failed' ? 'text-danger fw-bold' : 'text-warning fw-bold') }}">
+                            {{ $order->payment_status_label }}
                         </span>
                     </div>
                 @endif
@@ -411,12 +423,13 @@
 
             {{-- Ẩn nút Đánh giá tổng đơn hàng ở dưới cùng --}}
             {{--
-            @if ($order->status == 'completed')
-                <a href="{{ route('client.orders.review', $order->id) }}" class="btn btn-outline-primary">Đánh giá</a>
-            @else
-                <a href="{{ route('client.orders.review', $order->id) }}" class="btn btn-outline-primary">Yêu Cầu Trả Hàng/Hoàn Tiền</a>
-            @endif
-            --}}
+    @if ($order->status == 'completed')
+    <a href="{{ route('client.orders.review', $order->id) }}" class="btn btn-outline-primary">Đánh giá</a>
+    @else
+    <a href="{{ route('client.orders.review', $order->id) }}" class="btn btn-outline-primary">Yêu Cầu Trả Hàng/Hoàn
+        Tiền</a>
+    @endif
+    --}}
 
             <button type="button" class="btn btn-outline-secondary" onclick="openChatSupport()">Liên Hệ Người Bán</button>
         </div>
@@ -451,7 +464,8 @@
                                 <label class="form-label">Chất lượng sản phẩm</label>
                                 <div id="star-rating" class="mb-1">
                                     @for ($i = 1; $i <= 5; $i++)
-                                        <span class="star fs-3" data-value="{{ $i }}">&#9733;</span>
+                                        <span class="star fs-3" data-value="{{ $i }}">
+                                            &#9733;</span>
                                     @endfor
                                     <input type="hidden" name="rating" id="rating" value="5">
                                 </div>

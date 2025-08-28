@@ -61,12 +61,20 @@
                                                     $price = $item->variation
                                                         ? $item->variation->sale_price ?? $item->variation->price
                                                         : $cartProduct->sale_price ?? $cartProduct->price;
+                                                    $availableQty = $item->variation
+                                                        ? $item->variation->quantity
+                                                        : $cartProduct->quantity;
+                                                    $isOutOfStock = $availableQty <= 0;
                                                 @endphp
                                                 <tr class="woocommerce-cart-form__cart-item cart_item">
-                                                    <td><input type="checkbox" class="select-cart-item"
+                                                    <td>
+                                                        <input type="checkbox" class="select-cart-item"
                                                             name="selected_ids[]" value="{{ $item->id }}"
                                                             data-price="{{ $price }}"
-                                                            data-qty="{{ $item->quantity }}"></td>
+                                                            data-qty="{{ $item->quantity }}"
+                                                            @if($isOutOfStock) data-out-of-stock="1" @endif
+                                                        >
+                                                    </td>
 
                                                     <td class="product-thumbnail">
                                                         <a href="{{ route('client.products.show', $cartProduct->slug) }}">
@@ -105,29 +113,45 @@
                                                         </span>
                                                     </td>
                                                     <td class="product-quantity" data-title="Số lượng">
-                                                        <div class="qodef-quantity-buttons quantity"
-                                                            data-id="{{ $item->id }}">
-                                                            <label class="screen-reader-text"
-                                                                for="quantity_{{ $item->id }}">
-                                                                {{ $cartProduct->name }} số lượng
-                                                            </label>
-                                                            <span class="qodef-quantity-minus"></span>
-                                                            <input type="text" id="quantity_{{ $item->id }}"
-                                                                class="input-text qty text qodef-quantity-input"
-                                                                data-step="1" data-min="1" name="quantity"
-                                                                value="{{ $item->quantity }}" title="Số lượng"
-                                                                size="4" placeholder="" inputmode="numeric">
-                                                            <span class="qodef-quantity-plus"></span>
-                                                        </div>
-                                                        @php
-                                                            $availableQty = $item->variation
-                                                                ? $item->variation->quantity
-                                                                : $cartProduct->quantity;
-                                                        @endphp
-                                                        <div class="stock-info"
-                                                            style="font-size: 0.85em; color: #666; margin-top: 4px;">
-                                                            Còn lại: {{ $availableQty }} sản phẩm
-                                                        </div>
+                                                        @if($isOutOfStock)
+                                                            <div class="qodef-quantity-buttons quantity out-of-stock"
+                                                                data-id="{{ $item->id }}" style="opacity: 0.5;">
+                                                                <label class="screen-reader-text"
+                                                                    for="quantity_{{ $item->id }}">
+                                                                    {{ $cartProduct->name }} số lượng
+                                                                </label>
+                                                                <span class="qodef-quantity-minus" style="pointer-events: none;"></span>
+                                                                <input type="text" id="quantity_{{ $item->id }}"
+                                                                    class="input-text qty text qodef-quantity-input"
+                                                                    data-step="1" data-min="1" name="quantity"
+                                                                    value="0" title="Số lượng" readonly
+                                                                    size="4" placeholder="" inputmode="numeric">
+                                                                <span class="qodef-quantity-plus" style="pointer-events: none;"></span>
+                                                            </div>
+                                                            <div class="stock-info"
+                                                                style="font-size: 0.85em; color: #dc3545; margin-top: 4px; font-weight: bold;">
+                                                                ❌ Hết hàng
+                                                            </div>
+                                                        @else
+                                                            <div class="qodef-quantity-buttons quantity"
+                                                                data-id="{{ $item->id }}">
+                                                                <label class="screen-reader-text"
+                                                                    for="quantity_{{ $item->id }}">
+                                                                    {{ $cartProduct->name }} số lượng
+                                                                </label>
+                                                                <span class="qodef-quantity-minus"></span>
+                                                                <input type="text" id="quantity_{{ $item->id }}"
+                                                                    class="input-text qty text qodef-quantity-input"
+                                                                    data-step="1" data-min="1" name="quantity"
+                                                                    value="{{ $item->quantity }}" title="Số lượng"
+                                                                    size="4" placeholder="" inputmode="numeric">
+                                                                <span class="qodef-quantity-plus"></span>
+                                                            </div>
+                                                            <div class="stock-info"
+                                                                style="font-size: 0.85em; color: #666; margin-top: 4px;">
+                                                                Còn lại: {{ $availableQty }} sản phẩm
+                                                            </div>
+                                                        @endif
                                                     </td>
                                                     <td class="product-subtotal" data-title="Thành tiền">
                                                         <span class="woocommerce-Price-amount amount">
@@ -361,6 +385,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.qodef-quantity-buttons').forEach(function(group) {
+                // Bỏ qua sản phẩm hết hàng
+                if (group.classList.contains('out-of-stock')) {
+                    return;
+                }
+                
                 const minus = group.querySelector('.qodef-quantity-minus');
                 const plus = group.querySelector('.qodef-quantity-plus');
                 const input = group.querySelector('.qodef-quantity-input');
@@ -489,10 +518,22 @@
             }
 
             function toggleBulkButtons() {
-                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb
-                    .checked);
+                const anyChecked = Array.from(document.querySelectorAll('.select-cart-item')).some(cb => cb.checked);
                 document.getElementById('bulk-remove-btn').disabled = !anyChecked;
-                document.getElementById('bulk-checkout-btn').disabled = !anyChecked;
+
+                // Kiểm tra nếu có sản phẩm hết hàng được chọn
+                let hasOutOfStock = Array.from(document.querySelectorAll('.select-cart-item:checked')).some(cb => cb.dataset.outOfStock === "1");
+                const checkoutBtn = document.getElementById('bulk-checkout-btn');
+                if (anyChecked && !hasOutOfStock) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.title = '';
+                } else if (hasOutOfStock) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.title = 'Không thể thanh toán sản phẩm hết hàng';
+                } else {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.title = '';
+                }
             }
             document.getElementById('select-all-cart-items').addEventListener('change', function() {
                 const checked = this.checked;
@@ -542,6 +583,12 @@
                     showCartAlert('Vui lòng chọn ít nhất một sản phẩm để thanh toán!', 'danger');
                     return;
                 }
+                // Nếu có sản phẩm hết hàng được chọn thì không cho thanh toán
+                let hasOutOfStock = checked.some(cb => cb.dataset.outOfStock === "1");
+                if (hasOutOfStock) {
+                    showCartAlert('Không thể thanh toán sản phẩm hết hàng!', 'danger');
+                    return;
+                }
                 let selectedIds = checked.map(cb => cb.value);
                 document.getElementById('selected_checkout_ids').value = selectedIds.join(',');
                 document.getElementById('bulk-checkout-form').submit();
@@ -549,17 +596,34 @@
 
             function updateCartTotalsBySelection() {
                 let subtotal = 0;
+                let hasOutOfStockItems = false;
+
                 document.querySelectorAll('.select-cart-item:checked').forEach(function(cb) {
                     const price = parseFloat(cb.getAttribute('data-price')) || 0;
                     const qty = parseInt(cb.getAttribute('data-qty')) || 1;
-                    subtotal += price * qty;
+                    if (cb.dataset.outOfStock === "1" || qty === 0) {
+                        hasOutOfStockItems = true;
+                    } else {
+                        subtotal += price * qty;
+                    }
                 });
+
                 document.querySelectorAll('.cart-subtotal-value').forEach(function(el) {
                     el.innerText = numberFormat(subtotal) + '₫';
                 });
                 document.querySelectorAll('.order-total-value').forEach(function(el) {
                     el.innerHTML = '<strong>' + numberFormat(subtotal) + '₫</strong>';
                 });
+
+                // Disable checkout if any out-of-stock item is selected
+                const checkoutBtn = document.getElementById('bulk-checkout-btn');
+                if (hasOutOfStockItems) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.title = 'Không thể thanh toán sản phẩm hết hàng';
+                } else {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.title = '';
+                }
             }
 
             function numberFormat(number) {

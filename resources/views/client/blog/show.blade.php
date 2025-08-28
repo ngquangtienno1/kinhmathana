@@ -134,7 +134,7 @@
                                                 <div class="qodef-e-inner">
                                                     <div class="qodef-e-image">
                                                         <img loading="lazy"
-                                                            src="{{ $comment->user->avatar ?? asset('default-avatar.png') }}"
+                                                            src="{{ $comment->user->avatar ? asset($comment->user->avatar) : asset('default-avatar.png') }}"
                                                             width="64" height="64"
                                                             alt="{{ $comment->user->name }}"
                                                             class="avatar avatar-64 alignnone photo" />
@@ -150,14 +150,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @if ($comment->replies && $comment->replies->filter(function($reply) { return $reply->status === 'đã duyệt' && !$reply->is_hidden; })->count())
+                                                @if (
+                                                    $comment->replies &&
+                                                        $comment->replies->filter(function ($reply) {
+                                                                return $reply->status === 'đã duyệt' && !$reply->is_hidden;
+                                                            })->count())
                                                     <ul class="children">
-                                                        @foreach ($comment->replies->filter(function($reply) { return $reply->status === 'đã duyệt' && !$reply->is_hidden; }) as $reply)
+                                                        @foreach ($comment->replies->filter(function ($reply) {
+            return $reply->status === 'đã duyệt' && !$reply->is_hidden;
+        }) as $reply)
                                                             <li class="qodef-comment-item qodef-e">
                                                                 <div class="qodef-e-inner">
                                                                     <div class="qodef-e-image">
                                                                         <img loading="lazy"
-                                                                            src="{{ $reply->user->avatar ?? asset('default-avatar.png') }}"
+                                                                            src="{{ $reply->user->avatar ? asset($reply->user->avatar) : asset('default-avatar.png') }}"
                                                                             width="48" height="48"
                                                                             alt="{{ $reply->user->name }}"
                                                                             class="avatar avatar-48 alignnone photo" />
@@ -308,7 +314,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="block-16" class="widget widget_block" data-area="qodef-main-sidebar">
+                            {{-- <div id="block-16" class="widget widget_block" data-area="qodef-main-sidebar">
                                 <div style="margin-bottom:-27px; margin-top:7px;">
                                     <h5> Tags</h5>
                                 </div>
@@ -337,8 +343,8 @@
                                         style="font-size: 13.30303030303pt;" aria-label="Vibrant (6 items)">Vibrant<span
                                             class="tag-link-count"> (6)</span></a>
                                 </p>
-                            </div>
-                            <div id="neoocular_core_separator-9" class="widget widget_neoocular_core_separator"
+                            </div> --}}
+                            {{-- <div id="neoocular_core_separator-9" class="widget widget_neoocular_core_separator"
                                 data-area="qodef-main-sidebar">
                                 <div class="qodef-shortcode qodef-m  qodef-separator clear ">
                                     <div class="qodef-m-line"
@@ -354,7 +360,7 @@
                             <div id="neoocular_core_instagram_list-2" class="widget widget_neoocular_core_instagram_list"
                                 data-area="qodef-main-sidebar">
                                 <div class="qodef-shortcode qodef-m  qodef-instagram-list qodef-instagram-columns"> </div>
-                            </div>
+                            </div> --}}
                             <div id="neoocular_core_separator-5" class="widget widget_neoocular_core_separator"
                                 data-area="qodef-main-sidebar">
                                 <div class="qodef-shortcode qodef-m  qodef-separator clear ">

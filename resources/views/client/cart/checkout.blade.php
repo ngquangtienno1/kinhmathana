@@ -23,28 +23,83 @@
 
                 @if (session('success'))
                     <div class="alert alert-success"
-                        style="margin-bottom: 16px; padding: 12px 16px; background: #e8f8f5; color: #148f77; border: 1.5px solid #1abc9c; border-radius: 6px;">
-                        <strong>✅ Thành công:</strong> {{ session('success') }}
+                        style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%); color: #148f77; border: 1.5px solid #1abc9c; border-radius: 8px; box-shadow: 0 2px 4px rgba(26, 188, 156, 0.1);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 20px;">✅</span>
+                            <div>
+                                <strong style="font-size: 16px; color: #148f77;">Thành công!</strong>
+                                <div style="margin-top: 4px; color: #148f77;">{{ session('success') }}</div>
+                            </div>
+                        </div>
                     </div>
                 @endif
-                @if (session('error'))
-                    <div class="alert alert-danger"
-                        style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
-                        <strong>⚠️ Lỗi thanh toán:</strong> {{ session('error') }}
-                        @if ($paymentFailed)
-                            <br><small style="margin-top: 8px; display: block;">Vui lòng kiểm tra lại thông tin và thử thanh
-                                toán lại.</small>
+                @if ($errorMessage)
+                    <div class="alert alert-danger cart-alert">
+                        @if ($hasInventoryError)
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="flex-shrink: 0; margin-top: 2px;">
+                                    <span style="font-size: 20px;">🛒</span>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <strong style="font-size: 16px; color: #d32f2f;">Không thể đặt hàng</strong>
+                                    </div>
+                                    <div class="inventory-error-message" style="color: #424242; line-height: 1.5;">
+                                        {!! nl2br(e($errorMessage)) !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif ($paymentFailed)
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="flex-shrink: 0; margin-top: 2px;">
+                                    <span style="font-size: 20px;">💳</span>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <strong style="font-size: 16px; color: #d32f2f;">Thanh toán không thành
+                                            công</strong>
+                                    </div>
+                                    <div style="color: #424242; line-height: 1.5;">
+                                        {{ $errorMessage }}
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="flex-shrink: 0; margin-top: 2px;">
+                                    <span style="font-size: 20px;">⚠️</span>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <strong style="font-size: 16px; color: #d32f2f;">Có lỗi xảy ra</strong>
+                                    </div>
+                                    <div style="color: #424242; line-height: 1.5;">
+                                        {{ $errorMessage }}
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 @endif
                 @if ($errors->any())
                     <div class="alert alert-danger"
-                        style="margin-bottom: 16px; padding: 12px 16px; background: #ffeaea; color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 6px;">
-                        <ul style="margin-bottom:0; padding-left: 20px;">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #ffeaea 0%, #ffebee 100%); color: #c0392b; border: 1.5px solid #e74c3c; border-radius: 8px; box-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <div style="flex-shrink: 0; margin-top: 2px;">
+                                <span style="font-size: 20px;">⚠️</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <strong style="font-size: 16px; color: #d32f2f;">Vui lòng kiểm tra lại thông
+                                        tin</strong>
+                                </div>
+                                <ul style="margin: 0; padding-left: 20px; color: #424242; line-height: 1.5;">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 @endif
 
@@ -142,6 +197,13 @@
                         $selectedIds = request()->input('selected_ids');
                         if (is_string($selectedIds)) {
                             $selectedIds = explode(',', $selectedIds);
+                        }
+                        // Nếu không có selected_ids từ request, kiểm tra session
+                        if (empty($selectedIds) && session('checkout_selected_ids')) {
+                            $selectedIds = session('checkout_selected_ids');
+                            if (is_string($selectedIds)) {
+                                $selectedIds = explode(',', $selectedIds);
+                            }
                         }
                     @endphp
                     @if (!empty($selectedIds))
@@ -369,7 +431,7 @@
             border: none;
             border-radius: 0 8px 8px 0;
             padding: 0 28px;
-            neoocular-core.min0899.css?ver=6.8.1 font-size: 1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
@@ -475,9 +537,34 @@
             font-weight: 700;
         }
 
+        /* Style cho alert message */
+        .alert.alert-danger.cart-alert {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        /* Style cho inventory error message */
+        .cart-alert .inventory-error-message {
+            background: #f8d7da;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            color: #856404;
+        }
+
+
+
         /* .checkout-radio span {
-                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
-                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                    font-weight:600; margin-left:6px; min-width:70px; display:inline-block;
+                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         @media (max-width: 900px) {
             .checkout-main-flex {
@@ -512,8 +599,12 @@
                 '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child')
             .innerText.replace(/\D/g, ''));
         const shipping = Number(document.querySelector(
-                '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child')
+                '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child'
+            )
             .innerText.replace(/\D/g, ''));
+
+        // Khởi tạo currentSubtotal
+        window.currentSubtotal = subtotal;
         const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
         const shippingRow = document.querySelector(
             '.checkout-summary-totals .checkout-summary-total-row:nth-child(2) span:last-child');
@@ -524,6 +615,19 @@
                 showVoucherMessage('Vui lòng nhập mã giảm giá!', 'danger');
                 return;
             }
+
+            // Lấy danh sách các sản phẩm được chọn
+            const selectedIds = [];
+            const selectedInputs = document.querySelectorAll('input[name="selected_ids[]"]');
+            selectedInputs.forEach(input => {
+                selectedIds.push(input.value);
+            });
+
+            // Nếu không có selected_ids từ form, có thể đang ở trạng thái lỗi tồn kho
+            if (selectedIds.length === 0) {
+                console.log('No selected_ids found in form, this might be an inventory error case');
+            }
+
             fetch("{{ route('client.cart.apply-voucher') }}", {
                     method: 'POST',
                     headers: {
@@ -532,7 +636,8 @@
                             .getAttribute('content')
                     },
                     body: JSON.stringify({
-                        voucher_code: code
+                        voucher_code: code,
+                        selected_ids: selectedIds
                     })
                 })
                 .then(res => res.json())
@@ -549,9 +654,22 @@
                                     'input[name="shipping_method"]:checked');
                                 return Number(checked?.dataset.fee || 0);
                             })();
-                            const newTotal = Math.max(0, subtotal + currentShipping - data.voucher
+                            // Tính lại subtotal dựa trên response từ server
+                            const serverSubtotal = data.voucher.subtotal || subtotal;
+                            const newTotal = Math.max(0, serverSubtotal + currentShipping - data
+                                .voucher
                                 .discount_amount);
                             totalRow.innerText = formatCurrency(newTotal);
+
+                            // Cập nhật subtotal trong DOM để phản ánh đúng giá trị
+                            const subtotalRow = document.querySelector(
+                                '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child'
+                            );
+                            if (subtotalRow) {
+                                subtotalRow.innerText = formatCurrency(serverSubtotal);
+                            }
+
+                            window.currentSubtotal = serverSubtotal;
                         }
                     } else {
                         showVoucherMessage(data.message, 'danger');
@@ -564,6 +682,17 @@
                                 return Number(checked?.dataset.fee || 0);
                             })();
                             totalRow.innerText = formatCurrency(subtotal + currentShipping);
+
+                            // Reset subtotal về giá trị ban đầu
+                            const subtotalRow = document.querySelector(
+                                '.checkout-summary-totals .checkout-summary-total-row:nth-child(1) span:last-child'
+                            );
+                            if (subtotalRow) {
+                                subtotalRow.innerText = formatCurrency(subtotal);
+                            }
+
+                            // Reset currentSubtotal về giá trị ban đầu
+                            window.currentSubtotal = subtotal;
                         }
                     }
                 })
@@ -579,9 +708,22 @@
                 if (discountRow) {
                     discount = Number(discountRow.innerText.replace(/\D/g, ''));
                 }
+                // Lấy subtotal hiện tại từ DOM hoặc từ voucher đã áp dụng
+                let currentSubtotal = window.currentSubtotal || subtotal;
+                if (appliedVoucherHidden.value) {
+                    try {
+                        const voucherData = JSON.parse(appliedVoucherHidden.value);
+                        if (voucherData.subtotal) {
+                            currentSubtotal = voucherData.subtotal;
+                        }
+                    } catch (e) {
+                        // Nếu không parse được, sử dụng subtotal mặc định
+                    }
+                }
                 if (shippingRow && totalRow) {
                     shippingRow.innerText = formatCurrency(fee);
-                    totalRow.innerText = formatCurrency(Math.max(0, subtotal + fee - discount));
+                    totalRow.innerText = formatCurrency(Math.max(0, currentSubtotal + fee -
+                        discount));
                 }
             });
         });
@@ -593,9 +735,21 @@
             if (discountRow) {
                 discount = Number(discountRow.innerText.replace(/\D/g, ''));
             }
+            // Lấy subtotal hiện tại từ DOM hoặc từ voucher đã áp dụng
+            let currentSubtotal = window.currentSubtotal || subtotal;
+            if (appliedVoucherHidden.value) {
+                try {
+                    const voucherData = JSON.parse(appliedVoucherHidden.value);
+                    if (voucherData.subtotal) {
+                        currentSubtotal = voucherData.subtotal;
+                    }
+                } catch (e) {
+                    // Nếu không parse được, sử dụng subtotal mặc định
+                }
+            }
             if (shippingRow && totalRow) {
                 shippingRow.innerText = formatCurrency(fee);
-                totalRow.innerText = formatCurrency(subtotal + fee - discount);
+                totalRow.innerText = formatCurrency(currentSubtotal + fee - discount);
             }
         }
 
@@ -663,17 +817,44 @@
             form.submit();
         });
 
-        // Tự động scroll đến thông báo lỗi nếu có
-        @if (session('error'))
+        // Tự động ẩn message sau 5 giây
+        @if ($errorMessage)
             document.addEventListener('DOMContentLoaded', function() {
                 const errorAlert = document.querySelector('.alert-danger');
                 if (errorAlert) {
-                    errorAlert.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
+                    console.log('Auto-hide message after 5 seconds');
+                    setTimeout(function() {
+                        if (errorAlert && errorAlert.parentNode) {
+                            errorAlert.style.transition = 'opacity 0.5s ease';
+                            errorAlert.style.opacity = '0';
+                            setTimeout(function() {
+                                if (errorAlert && errorAlert.parentNode) {
+                                    errorAlert.parentNode.removeChild(errorAlert);
+                                    console.log('Message hidden');
+                                }
+                            }, 500);
+                        }
+                    }, 5000);
                 }
             });
+        @endif
+
+        // Backup auto-hide script
+        @if ($errorMessage)
+            setTimeout(function() {
+                const errorAlert = document.querySelector('.alert-danger');
+                if (errorAlert) {
+                    console.log('Backup auto-hide triggered');
+                    errorAlert.style.transition = 'opacity 0.5s ease';
+                    errorAlert.style.opacity = '0';
+                    setTimeout(function() {
+                        if (errorAlert && errorAlert.parentNode) {
+                            errorAlert.parentNode.removeChild(errorAlert);
+                            console.log('Message hidden by backup script');
+                        }
+                    }, 500);
+                }
+            }, 5000);
         @endif
     });
 </script>

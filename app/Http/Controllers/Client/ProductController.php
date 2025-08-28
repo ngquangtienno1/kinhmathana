@@ -149,10 +149,56 @@ class ProductController extends Controller
                 $query->orderBy('created_at', 'desc');
                 break;
             case 'price':
-                $query->orderBy('price', 'asc');
+                // Sắp xếp theo giá thấp nhất, tính cả variations
+                $query->orderByRaw('
+                    CASE
+                        -- Nếu có variations, lấy giá thấp nhất từ variations
+                        WHEN EXISTS (SELECT 1 FROM variations WHERE product_id = products.id)
+                        THEN (
+                            SELECT MIN(
+                                CASE
+                                    WHEN v.sale_price > 0 AND v.sale_price < v.price THEN v.sale_price
+                                    ELSE v.price
+                                END
+                            )
+                            FROM variations v
+                            WHERE v.product_id = products.id
+                        )
+                        -- Nếu không có variations, dùng giá sản phẩm chính
+                        ELSE (
+                            CASE
+                                WHEN sale_price > 0 AND sale_price < price THEN sale_price
+                                ELSE price
+                            END
+                        )
+                    END ASC
+                ');
                 break;
             case 'price-desc':
-                $query->orderBy('price', 'desc');
+                // Sắp xếp theo giá cao nhất, tính cả variations
+                $query->orderByRaw('
+                    CASE
+                        -- Nếu có variations, lấy giá cao nhất từ variations
+                        WHEN EXISTS (SELECT 1 FROM variations WHERE product_id = products.id)
+                        THEN (
+                            SELECT MAX(
+                                CASE
+                                    WHEN v.sale_price > 0 AND v.sale_price < v.price THEN v.sale_price
+                                    ELSE v.price
+                                END
+                            )
+                            FROM variations v
+                            WHERE v.product_id = products.id
+                        )
+                        -- Nếu không có variations, dùng giá sản phẩm chính
+                        ELSE (
+                            CASE
+                                WHEN sale_price > 0 AND sale_price < price THEN sale_price
+                                ELSE price
+                            END
+                        )
+                    END DESC
+                ');
                 break;
             default:
                 $query->orderBy('created_at', 'desc');

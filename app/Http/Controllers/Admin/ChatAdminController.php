@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Message;
 use App\Events\ChatMessage;
+use App\Events\ChatMessageToAdmin;
 use App\Events\MessageDeleted;
+use App\Events\MessageEdited;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -67,6 +69,10 @@ class ChatAdminController extends Controller
         ]);
 
         event(new ChatMessage($from_id, $from_name, $to_id, $message, $from_avatar, null, 'text', $msg->id));
+
+        // Gửi tin nhắn đến admin channel chung
+        event(new ChatMessageToAdmin($from_id, $from_name, $to_id, $message, $from_avatar, null, 'text', $msg->id));
+
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -95,6 +101,7 @@ class ChatAdminController extends Controller
         ]);
 
         event(new ChatMessage($from_id, $from_name, $request->to_id, '[IMAGE]', $from_avatar, $imagePath, 'image', $msg->id));
+        event(new ChatMessageToAdmin($from_id, $from_name, $request->to_id, '[IMAGE]', $from_avatar, $imagePath, 'image', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -123,6 +130,7 @@ class ChatAdminController extends Controller
         ]);
 
         event(new ChatMessage($from_id, $from_name, $request->to_id, '[VOICE]', $from_avatar, $voicePath, 'voice', $msg->id));
+        event(new ChatMessageToAdmin($from_id, $from_name, $request->to_id, '[VOICE]', $from_avatar, $voicePath, 'voice', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -151,6 +159,7 @@ class ChatAdminController extends Controller
         ]);
 
         event(new ChatMessage($from_id, $from_name, $request->to_id, $file->getClientOriginalName(), $from_avatar, $filePath, 'file', $msg->id));
+        event(new ChatMessageToAdmin($from_id, $from_name, $request->to_id, $file->getClientOriginalName(), $from_avatar, $filePath, 'file', $msg->id));
         return response()->json(['status' => 'sent', 'message' => $msg]);
     }
 
@@ -164,8 +173,9 @@ class ChatAdminController extends Controller
         try {
             $message = Message::findOrFail($request->message_id);
 
-            // Kiểm tra quyền chỉnh sửa (chỉ admin mới được chỉnh sửa)
-            if (Auth::id() != $message->from_id) {
+            // Kiểm tra quyền chỉnh sửa (admin có thể chỉnh sửa tất cả tin nhắn)
+            $user = Auth::user();
+            if (!$user || $user->role_id != 1) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Bạn không có quyền chỉnh sửa tin nhắn này'
@@ -175,6 +185,9 @@ class ChatAdminController extends Controller
             $message->update([
                 'message' => $request->new_message
             ]);
+
+            // Broadcast event chỉnh sửa tin nhắn
+            event(new MessageEdited($message->id, $message->from_id, $message->to_id, $request->new_message));
 
             return response()->json([
                 'success' => true,
@@ -199,8 +212,9 @@ class ChatAdminController extends Controller
         try {
             $message = Message::findOrFail($request->message_id);
 
-            // Kiểm tra quyền xóa (chỉ admin mới được xóa)
-            if (Auth::id() != $message->from_id) {
+            // Kiểm tra quyền xóa (admin có thể xóa tất cả tin nhắn)
+            $user = Auth::user();
+            if (!$user || $user->role_id != 1) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Bạn không có quyền xóa tin nhắn này'

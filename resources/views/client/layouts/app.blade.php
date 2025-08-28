@@ -154,8 +154,17 @@
             // Xử lý tất cả các thông báo
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
-                // Tự động ẩn sau 3 giây
-                autoHideAlert(alert, 3000);
+                // Không tự động ẩn các alert có class cart-alert hoặc chứa thông báo hết hàng/tồn kho
+                // (vì inventory error đã có auto-hide riêng sau 5 giây)
+                if (!alert.classList.contains('cart-alert') &&
+                    !alert.textContent.includes('hết hàng') &&
+                    !alert.textContent.includes('Hết hàng') &&
+                    !alert.textContent.includes('Không thể đặt hàng') &&
+                    !alert.textContent.includes('tồn kho') &&
+                    !alert.textContent.includes('Lỗi tồn kho')) {
+                    // Tự động ẩn sau 3 giây chỉ cho các alert thông thường
+                    autoHideAlert(alert, 3000);
+                }
 
                 // Thêm sự kiện click để ẩn thủ công
                 alert.addEventListener('click', function(e) {
@@ -180,13 +189,12 @@
                     })
                     .then(function(data) {
                         if (data.status === 'blocked') {
-                            // Tự động logout nếu bị chặn
-                            window.location.href = '/client/logout';
+                            window.location.href = '/client/logout?blocked=1';
                         }
                     })
                     .catch(function() {});
             }
-            setInterval(pollUserStatus, 6000); // 6s
+            setInterval(pollUserStatus, 5000);
         });
     </script>
 </body>

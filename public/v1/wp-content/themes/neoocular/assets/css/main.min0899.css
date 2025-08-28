@@ -7730,46 +7730,7 @@ body:not([class*="neoocular-core"])
 .touchevents .qodef-woo-product-list .qodef-e-inner {
     cursor: pointer;
 }
-.qodef-woo-product-list .qodef-e-inner:hover .qodef-woo-product-image-inner {
-    opacity: 1;
-    transition: opacity 0.3s ease-out 0.2s;
-}
-.qodef-woo-product-list
-    .qodef-e-inner:hover
-    .qodef-woo-product-image-inner
-    > :nth-child(2) {
-    opacity: 1 !important;
-    transform: translateY(0);
-    transition: opacity 0.4s ease-out 0.25s, transform 0.3s ease 0.25s !important;
-}
-.qodef-woo-product-list
-    .qodef-e-inner:hover
-    .qodef-woo-product-image-inner
-    > :nth-child(1) {
-    opacity: 1 !important;
-    transform: translateY(0);
-    transition: opacity 0.4s ease-out 0.35s, transform 0.3s ease 0.35s !important;
-}
-.qodef-woo-product-list
-    .qodef-e-inner:hover
-    .qodef-woo-product-image-inner
-    > :nth-child(3) {
-    opacity: 1 !important;
-    transform: translateY(0);
-    transition: opacity 0.4s ease-out 0.45s, transform 0.3s ease 0.45s !important;
-}
-.qodef-woo-product-list
-    .qodef-e-inner:hover
-    .qodef-woo-product-image-inner
-    > :only-child {
-    opacity: 1 !important;
-    transform: translateY(0);
-    transition: opacity 0.4s ease-out 0.25s, transform 0.3s ease 0.25s !important;
-}
-.qodef-woo-product-list .qodef-e-inner:hover .price {
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
-}
+/* Các rule hover đã được xóa */
 .qodef-woo-product-list .qodef-woo-product-price {
     transition: opacity 0.3s ease-out 0.2s;
 }

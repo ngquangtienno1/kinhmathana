@@ -3,10 +3,10 @@
 @section('content')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item">
-        <a href="#">Cài đặt</a>
-    </li>
-    <li class="breadcrumb-item active">Cài đặt chung</li>
+<li class="breadcrumb-item">
+    <a href="#">Cài đặt</a>
+</li>
+<li class="breadcrumb-item active">Cài đặt chung</li>
 @endsection
 
 <div class="mb-9">
@@ -24,8 +24,8 @@
                     type="button" role="tab" aria-controls="general" aria-selected="true">Thông tin chung</button>
             </li>
             {{-- <li class="nav-item" role="presentation">
-                <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping"
-                    type="button" role="tab" aria-controls="shipping" aria-selected="false">Cấu hình vận
+                <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button"
+                    role="tab" aria-controls="shipping" aria-selected="false">Cấu hình vận
                     chuyển</button>
             </li> --}}
             <li class="nav-item" role="presentation">
@@ -33,8 +33,8 @@
                     role="tab" aria-controls="email" aria-selected="false">Cấu hình email</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai" type="button"
-                    role="tab" aria-controls="ai" aria-selected="false">Cấu hình AI</button>
+                <button class="nav-link" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai" type="button" role="tab"
+                    aria-controls="ai" aria-selected="false">Cấu hình AI</button>
             </li>
         </ul>
         <div class="tab-content" id="settingsTabContent">
@@ -50,8 +50,8 @@
                             <label for="logo_url">Logo</label>
                             <div class="mb-2">
                                 @if (isset($settings->logo_url))
-                                    <img src="{{ $settings->logo_url }}" alt="Logo" class="img-thumbnail"
-                                        style="max-height: 100px;">
+                                <img src="{{ $settings->logo_url }}" alt="Logo" class="img-thumbnail"
+                                    style="max-height: 100px;">
                                 @endif
                             </div>
                             <input type="file" class="form-control" id="logo_url" name="logo_url" accept="image/*">
@@ -92,8 +92,8 @@
                             <label for="default_shipping_fee">Phí ship mặc định</label>
                             <input type="number" class="form-control" id="default_shipping_fee"
                                 name="default_shipping_fee"
-                                value="{{ old('default_shipping_fee', $settings->default_shipping_fee ?? 0) }}"
-                                min="0" required>
+                                value="{{ old('default_shipping_fee', $settings->default_shipping_fee ?? 0) }}" min="0"
+                                required>
                         </div>
                     </div>
                 </div>
@@ -128,8 +128,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="mail_from_address">Mail From Address</label>
-                            <input type="email" class="form-control" id="mail_from_address"
-                                name="mail_from_address"
+                            <input type="email" class="form-control" id="mail_from_address" name="mail_from_address"
                                 value="{{ old('mail_from_address', $settings->mail_from_address ?? '') }}">
                         </div>
                         <div class="form-group mb-3">
@@ -145,13 +144,12 @@
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label for="enable_ai_recommendation">Bật AI gợi ý sản phẩm</label>
-                            <select class="form-control" id="enable_ai_recommendation"
-                                name="enable_ai_recommendation">
-                                <option value="0"
-                                    {{ old('enable_ai_recommendation', $settings->enable_ai_recommendation ?? 0) == 0 ? 'selected' : '' }}>
+                            <select class="form-control" id="enable_ai_recommendation" name="enable_ai_recommendation">
+                                <option value="0" {{ old('enable_ai_recommendation', $settings->enable_ai_recommendation
+                                    ?? 0) == 0 ? 'selected' : '' }}>
                                     Tắt</option>
-                                <option value="1"
-                                    {{ old('enable_ai_recommendation', $settings->enable_ai_recommendation ?? 0) == 1 ? 'selected' : '' }}>
+                                <option value="1" {{ old('enable_ai_recommendation', $settings->enable_ai_recommendation
+                                    ?? 0) == 1 ? 'selected' : '' }}>
                                     Bật</option>
                             </select>
                         </div>
@@ -171,11 +169,11 @@
                         <div class="form-group mb-3">
                             <label for="ai_chat_enabled">Bật AI Chat Bot</label>
                             <select class="form-control" id="ai_chat_enabled" name="ai_chat_enabled">
-                                <option value="0"
-                                    {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 0 ? 'selected' : '' }}>
+                                <option value="0" {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 0 ?
+                                    'selected' : '' }}>
                                     Tắt</option>
-                                <option value="1"
-                                    {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 1 ? 'selected' : '' }}>
+                                <option value="1" {{ old('ai_chat_enabled', $settings->ai_chat_enabled ?? 0) == 1 ?
+                                    'selected' : '' }}>
                                     Bật</option>
                             </select>
                             <small class="form-text text-muted">Hiển thị AI chat bot cho khách hàng</small>
@@ -183,14 +181,12 @@
                         <div class="form-group mb-3">
                             <label for="ai_guest_limit">Giới hạn chat cho khách (tin nhắn/giờ)</label>
                             <input type="number" class="form-control" id="ai_guest_limit" name="ai_guest_limit"
-                                value="{{ old('ai_guest_limit', $settings->ai_guest_limit ?? 5) }}" min="1"
-                                max="50">
+                                value="{{ old('ai_guest_limit', $settings->ai_guest_limit ?? 5) }}" min="1" max="50">
                         </div>
                         <div class="form-group mb-3">
                             <label for="ai_user_limit">Giới hạn chat cho user (tin nhắn/giờ)</label>
                             <input type="number" class="form-control" id="ai_user_limit" name="ai_user_limit"
-                                value="{{ old('ai_user_limit', $settings->ai_user_limit ?? 20) }}" min="1"
-                                max="100">
+                                value="{{ old('ai_user_limit', $settings->ai_user_limit ?? 20) }}" min="1" max="100">
                         </div>
                     </div>
                     <div class="col-md-6">

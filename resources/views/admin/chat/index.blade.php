@@ -14,13 +14,13 @@
         <!-- Sidebar: Danh sách khách hàng -->
         <div class="card p-3 p-xl-1 chat-sidebar me-3 phoenix-offcanvas phoenix-offcanvas-start" id="chat-sidebar"
             style="width: 300px; min-width: 320px;">
-            <div class="form-icon-container mb-4 d-sm-none d-xl-block">
+            <div class="form-icon-container mb-4">
                 <input class="form-control form-icon-input" type="text" id="search-user"
                     placeholder="Tìm kiếm khách hàng..." />
                 <span class="fas fa-user text-body fs-9 form-icon"></span>
             </div>
-            <ul class="nav nav-phoenix-pills mb-5 d-sm-none d-xl-flex" id="contactListTab"
-                data-chat-thread-tab="data-chat-thread-tab" role="tablist">
+            <ul class="nav nav-phoenix-pills mb-5" id="contactListTab" data-chat-thread-tab="data-chat-thread-tab"
+                role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link cursor-pointer active" data-bs-toggle="tab" data-chat-thread-list="all"
                         role="tab" aria-selected="true">Tất cả</a>
@@ -44,12 +44,12 @@
                                         data-user-id="{{ $user->id }}" data-bs-toggle="tab"
                                         data-chat-thread="data-chat-thread" href="#tab-thread-{{ $user->id }}"
                                         role="tab" aria-selected="false">
-                                        <div class="avatar avatar-xl status-online position-relative me-2 me-sm-0 me-xl-2">
+                                        <div class="avatar avatar-xl status-online position-relative me-2">
                                             <img class="rounded-circle border border-2 border-light-subtle"
                                                 src="{{ $user->avatar ? asset($user->avatar) : 'https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png' }}"
                                                 alt="" />
                                         </div>
-                                        <div class="flex-1 d-sm-none d-xl-block">
+                                        <div class="flex-1">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <h5 class="text-body fw-normal name text-nowrap">{{ $user->name }}
                                                 </h5>
@@ -362,13 +362,26 @@
                 cluster: 'ap1',
                 forceTLS: true
             });
-            var adminChannel = pusher.subscribe('chat-user-' + adminId);
+
+            // Channel chung cho tất cả tin nhắn đến admin
+            var adminChannel = pusher.subscribe('chat-admin-' + adminId);
             adminChannel.bind('chat-message', function(data) {
+                // Kiểm tra xem user đã có trong danh sách chưa
+                const existingUser = document.querySelector(`[data-user-id="${data.from_id}"]`);
+
+                if (!existingUser) {
+                    // Thêm user mới vào danh sách
+                    addNewUserToList(data.user);
+                }
+
+                // Cập nhật last message
+                updateSidebarLastMsg(data.from_id, data.message, new Date());
+
+                // Nếu đang chat với user này thì hiển thị tin nhắn
                 if (selectedUserId == data.from_id) {
                     appendMessage(data, false);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
-                updateSidebarLastMsg(data.from_id, data.message, new Date());
             });
 
             // Lắng nghe event xóa tin nhắn cho admin channel
@@ -379,6 +392,75 @@
                 }
             });
 
+            // Lắng nghe event chỉnh sửa tin nhắn cho admin channel
+            adminChannel.bind('message-edited', function(data) {
+                const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
+                if (messageElement) {
+                    const messageContent = messageElement.querySelector(
+                        '.sent-message-content, .received-message-content');
+                    if (messageContent) {
+                        messageContent.innerHTML = `<p class="mb-0">${data.new_message}</p>`;
+                    }
+                }
+            });
+
+            // Hàm thêm user mới vào danh sách
+            function addNewUserToList(user) {
+                const userList = document.getElementById('user-list');
+                const newUserHtml = `
+                    <li class="nav-item read" role="presentation">
+                        <a class="nav-link d-flex align-items-center justify-content-center p-2 user-item"
+                            data-user-id="${user.id}" data-bs-toggle="tab"
+                            data-chat-thread="data-chat-thread" href="#tab-thread-${user.id}"
+                            role="tab" aria-selected="false">
+                            <div class="avatar avatar-xl status-online position-relative me-2">
+                                <img class="rounded-circle border border-2 border-light-subtle"
+                                    src="${user.avatar || 'https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png'}"
+                                    alt="" />
+                            </div>
+                            <div class="flex-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="text-body fw-normal name text-nowrap">${user.name}</h5>
+                                    <p class="fs-10 text-body-tertiary text-opacity-85 mb-0 text-nowrap"
+                                        id="last-time-${user.id}"></p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="fs-9 mb-0 line-clamp-1 text-body-tertiary text-opacity-85 message"
+                                        id="last-msg-${user.id}"></p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                `;
+
+                // Thêm user mới vào đầu danh sách
+                userList.insertAdjacentHTML('afterbegin', newUserHtml);
+
+                // Thêm event listener cho user mới
+                const newUserItem = userList.querySelector(`[data-user-id="${user.id}"]`);
+                newUserItem.addEventListener('click', function() {
+                    document.querySelectorAll('.user-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedUserId = this.getAttribute('data-user-id');
+                    const name = this.querySelector('.name').textContent;
+                    chatWith.textContent = name;
+                    userStatus.style.display = '';
+                    chatInput.contentEditable = true;
+                    sendBtn.disabled = false;
+                    loadConversation(selectedUserId);
+                });
+
+                // Cập nhật usersData
+                if (window.usersData) {
+                    window.usersData.push({
+                        id: user.id,
+                        avatar: user.avatar ||
+                            'https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png'
+                    });
+                }
+            }
+
+            // Subscribe vào các channel của user hiện tại (để tương thích ngược)
             @foreach ($users as $user)
                 var channelName = 'chat-user-{{ $user->id }}';
                 var channel = pusher.subscribe(channelName);
@@ -394,6 +476,18 @@
                     const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
                     if (messageElement) {
                         messageElement.remove();
+                    }
+                });
+
+                // Lắng nghe event chỉnh sửa tin nhắn cho mỗi user
+                channel.bind('message-edited', function(data) {
+                    const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
+                    if (messageElement) {
+                        const messageContent = messageElement.querySelector(
+                            '.sent-message-content, .received-message-content');
+                        if (messageContent) {
+                            messageContent.innerHTML = `<p class="mb-0">${data.new_message}</p>`;
+                        }
                     }
                 });
             @endforeach
@@ -905,13 +999,19 @@
 
                 if (isSidebarCollapsed) {
                     // Thu gọn sidebar
-                    sidebar.classList.add('collapsed');
+                    sidebar.style.width = '0';
+                    sidebar.style.minWidth = '0';
+                    sidebar.style.overflow = 'hidden';
+                    sidebar.style.opacity = '0';
                     chatCol.classList.add('expanded');
                     toggleSidebarBtn.innerHTML = '<span class="fa-solid fa-bars-staggered"></span>';
                     toggleSidebarBtn.title = 'Mở rộng danh sách khách hàng';
                 } else {
                     // Mở rộng sidebar
-                    sidebar.classList.remove('collapsed');
+                    sidebar.style.width = '300px';
+                    sidebar.style.minWidth = '320px';
+                    sidebar.style.overflow = 'visible';
+                    sidebar.style.opacity = '1';
                     chatCol.classList.remove('expanded');
                     toggleSidebarBtn.innerHTML = '<span class="fa-solid fa-bars"></span>';
                     toggleSidebarBtn.title = 'Thu gọn danh sách khách hàng';
@@ -1038,10 +1138,6 @@
 
                 .card.tab-content {
                     transition: all 0.3s ease;
-                }
-
-                .chat-sidebar.collapsed {
-                    display: none !important;
                 }
 
                 .card.tab-content.expanded {

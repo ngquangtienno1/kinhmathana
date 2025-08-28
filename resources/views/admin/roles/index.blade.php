@@ -105,16 +105,20 @@
                                         </button>
                                         @if (auth()->user()->hasPermission('sua-vai-tro'))
                                             <div class="dropdown-menu dropdown-menu-end py-2">
-                                                <a class="dropdown-item"
-                                                    href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
-                                                <div class="dropdown-divider"></div>
-                                                <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
-                                                </form>
+                                                @if ($role->id !== 1 && $role->id !== 3)
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.roles.edit', $role) }}">Sửa</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <form action="{{ route('admin.roles.destroy', $role) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">Xóa</button>
+                                                    </form>
+                                                @else
+                                                    <span class="dropdown-item text-muted">Không thể sửa/xóa</span>
+                                                @endif
                                             </div>
                                         @endif
                                     </div>

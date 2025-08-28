@@ -720,6 +720,18 @@
         }
     });
 
+    // Lắng nghe event chỉnh sửa tin nhắn
+    channel.bind('message-edited', data => {
+        const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
+        if (messageElement) {
+            // Tìm phần nội dung tin nhắn và cập nhật
+            const messageContent = messageElement.querySelector('span');
+            if (messageContent) {
+                messageContent.textContent = data.new_message;
+            }
+        }
+    });
+
     // Hàm mở modal xem hình ảnh tự custom
     window.openImageModal = function(imageSrc) {
         // Tạo modal overlay

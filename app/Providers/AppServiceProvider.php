@@ -17,11 +17,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-
-
-
-
-
     /**
      * Register any application services.
      */
@@ -37,16 +32,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // if (config('app.env') === 'local') {
-        //     URL::forceScheme('https');
-        // }
-
         User::observe(UserObserver::class);
 
-        Relation::enforceMorphMap([
-            'product' => Product::class,
-            'news' => News::class,
-        ]);
         // Chỉ thực hiện cấu hình nếu bảng website_settings tồn tại
         if (Schema::hasTable('website_settings')) {
             Config::set('mail.mailers.smtp.host', getSetting('smtp_host') ?? env('MAIL_HOST', 'default.host.com'));

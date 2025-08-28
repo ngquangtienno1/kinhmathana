@@ -108,7 +108,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
     Route::post('postRegister', [AuthenticationClientController::class, 'postRegister'])->name('postRegister');
 
     //Users routes
-    Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
         Route::get('index', [ClientUserController::class, 'index'])->name('index');
         Route::get('information', [ClientUserController::class, 'profile'])->name('information'); // Dạng lưới
         Route::post('information', [ClientUserController::class, 'update'])->name('information.update');
@@ -117,7 +117,7 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::patch('/orders/{id}/cancel', [OrderClientController::class, 'cancel'])->name('orders.cancel');
     });
     //Users routes
-    Route::prefix('users')->name('users.')->group(function () {
+    Route::prefix('users')->name('users.')->middleware('auth')->group(function () {
         Route::get('profile', [ClientUserController::class, 'index'])->name('profile'); // Dạng lưới
     });
 
@@ -205,7 +205,8 @@ Route::prefix('client')->name('client.')->middleware('notAdmin')->group(function
         Route::get('/history', [AIChatController::class, 'getChatHistory'])->name('history');
         Route::delete('/clear', [AIChatController::class, 'clearChatHistory'])->name('clear');
         Route::get('/stats', [AIChatController::class, 'getChatStats'])->name('stats')->middleware('auth');
-        Route::get('/test-enhanced', [AIChatController::class, 'testEnhanced'])->name('test-enhanced');
+        Route::get('/performance', [AIChatController::class, 'getPerformanceStats'])->name('performance')->middleware('auth');
+        Route::post('/reset-limit', [AIChatController::class, 'resetLimit'])->name('reset-limit');
     });
 });
 
@@ -498,7 +499,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::post('/{id}/mark-as-unread', [NotificationController::class, 'markAsUnread'])->name('mark-as-unread');
         Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
         Route::get('/dropdown', [NotificationController::class, 'getDropdownNotifications'])->name('dropdown');
-        // Test routes - Chỉ nên sử dụng trong môi trường development
+
         if (app()->environment('local', 'development')) {
             Route::get('/test/new-order', [NotificationController::class, 'testNewOrder'])->name('test.new-order');
             Route::get('/test/order-status', [NotificationController::class, 'testOrderStatus'])->name('test.order-status');
@@ -564,7 +565,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'checkAdmin'])->grou
         Route::get('/', [AdminOrderController::class, 'index'])->name('index');
         Route::get('/{order}/show', [AdminOrderController::class, 'show'])->name('show');
         Route::get('/{order}/print', [AdminOrderController::class, 'print'])->name('print');
-        Route::delete('/{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
 
         Route::put('{order}/status', [AdminOrderController::class, 'updateStatus'])->name('update-status')
             ->middleware(['permission:cap-nhat-trang-thai-don-hang']);

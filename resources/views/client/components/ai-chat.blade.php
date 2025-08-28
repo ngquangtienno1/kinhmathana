@@ -4,52 +4,59 @@
 
 @if ($settings && $settings->ai_chat_enabled)
     <!-- AI Chat Bot cho Hana Optical -->
-    <div id="hana-ai-chat-component">
-        <div id="ai-chat-toggle-btn" class="hana-ai-toggle-btn">
-            <button
-                class="btn rounded-circle shadow d-flex align-items-center justify-content-center hana-ai-toggle-button">
+    <div class="hana-ai-chat-component">
+        <div id="ai-chat-toggle-btn" class="ai-chat-toggle-btn">
+            <button class="btn rounded-circle shadow d-flex align-items-center justify-content-center ai-toggle-button">
                 <i class="fas fa-robot"></i>
-                <div class="hana-ai-badge">AI</div>
+                <div class="ai-badge">AI</div>
             </button>
-            <div id="ai-chat-tooltip" class="hana-ai-tooltip">
-                <div class="hana-ai-tooltip-title">🤖 Hana AI Assistant</div>
-                <div class="hana-ai-tooltip-subtitle">Tư vấn kính mắt, màu sắc, phong thủy</div>
+            <div id="ai-chat-tooltip" class="ai-chat-tooltip">
+                <div class="tooltip-title">🤖 Hana AI Assistant</div>
+                <div class="tooltip-subtitle">Tư vấn kính mắt, màu sắc, phong thủy</div>
             </div>
         </div>
 
         <!-- Khung AI Chat -->
-        <div id="ai-chat-container" class="hana-ai-container">
-            <div class="hana-ai-wrapper">
+        <div id="ai-chat-container" class="ai-chat-container">
+            <div class="ai-chat-wrapper">
                 <!-- Header -->
-                <div class="hana-ai-header">
-                    <div class="hana-ai-header-left">
-                        <div class="hana-ai-avatar">
+                <div class="ai-chat-header">
+                    <div class="ai-chat-header-left">
+                        <div class="ai-chat-avatar">
                             <i class="fas fa-robot text-white"></i>
                         </div>
-                        <div class="hana-ai-info">
+                        <div class="ai-chat-info">
                             <h6>Hana AI Assistant</h6>
                             <p>Tư vấn kính mắt chuyên nghiệp</p>
                             <small>
                                 @if (auth()->check())
-                                    Giới hạn: 20 tin nhắn/giờ
                                 @else
-                                    Giới hạn: 5 tin nhắn/giờ
+                                    Vui lòng đăng nhập để chat
                                 @endif
                             </small>
+                            <div class="ai-chat-status">
+                                <span class="status-indicator" id="ai-status-indicator">
+                                    <i class="fas fa-circle"></i> Đang kết nối...
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="hana-ai-actions">
-                        <button id="ai-chat-clear-btn" class="hana-ai-btn" title="Xóa lịch sử">
+                    <div class="ai-chat-actions">
+                        <button id="ai-chat-clear-btn" class="ai-chat-btn" title="Xóa lịch sử">
                             <i class="fas fa-trash"></i>
                         </button>
-                        <button id="ai-chat-minimize-btn" class="hana-ai-btn">
+                        <button id="ai-chat-reset-limit-btn" class="ai-chat-btn" title="Reset giới hạn chat"
+                            style="display: none;">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button id="ai-chat-minimize-btn" class="ai-chat-btn">
                             <i class="fa-solid fa-chevron-down"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Messages -->
-                <div id="ai-chat-messages" class="hana-ai-messages">
+                <div id="ai-chat-messages" class="ai-chat-messages">
                     <!-- Tin nhắn chào mừng -->
                     <div class="d-flex mb-3 justify-content-start">
                         <div style="max-width: 80%; display: flex; align-items: flex-end; gap: 8px;">
@@ -60,13 +67,22 @@
                             <div style="display: flex; flex-direction: column; align-items: flex-start;">
                                 <span
                                     style="display: inline-block; padding: 12px 16px; border-radius: 18px; font-size: 14px; background: #fff; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.08); word-break: break-word; border: 1px solid #e5e7eb;">
-                                    👋 Xin chào! Tôi là Hana AI Assistant, chuyên gia tư vấn kính mắt. Tôi có thể giúp
-                                    bạn:
-                                    <br>• Chọn kính phù hợp với khuôn mặt
-                                    <br>• Tư vấn màu sắc và kiểu dáng
-                                    <br>• Giải đáp về phong thủy kính mắt
-                                    <br>• Thông tin về các loại kính
-                                    <br><br>Hãy hỏi tôi bất cứ điều gì về kính mắt nhé! 😊
+                                    @if (auth()->check())
+                                        👋 Xin chào {{ auth()->user()->name }}! Tôi là Hana AI Assistant, chuyên gia tư
+                                        vấn
+                                        kính
+                                        mắt. Tôi có thể giúp bạn:
+                                        <br>• Chọn kính phù hợp với khuôn mặt
+                                        <br>• Tư vấn màu sắc và kiểu dáng
+                                        <br>• Giải đáp về phong thủy kính mắt
+                                        <br>• Thông tin về các loại kính
+                                        <br><br>Hãy hỏi tôi bất cứ điều gì về kính mắt nhé! 😊
+                                    @else
+                                        🔐 Vui lòng đăng nhập để sử dụng AI Chat
+                                        <br><br><a href="/client/login"
+                                            style="color: #007bff; text-decoration: underline;">Đăng nhập
+                                            ngay</a>
+                                    @endif
                                 </span>
                                 <span style="font-size:11px;color:#999;margin-top:4px;">Vừa xong</span>
                             </div>
@@ -83,20 +99,33 @@
                             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
                                 <span style="font-size: 12px; color: #666; margin-bottom: 4px;">💡 Câu hỏi nhanh:</span>
                                 <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                                    <button class="hana-ai-quick-btn"
-                                        data-question="Tư vấn chọn kính cho khuôn mặt tròn">Khuôn mặt tròn</button>
-                                    <button class="hana-ai-quick-btn"
-                                        data-question="Kính mắt phong thủy có tác dụng gì?">Phong thủy</button>
-                                    <button class="hana-ai-quick-btn" data-question="Giá kính mắt khoảng bao nhiêu?">Giá
+                                    <button class="quick-question-btn"
+                                        data-question="Tư vấn chọn kính cho khuôn mặt tròn">Khuôn
+                                        mặt tròn</button>
+                                    <button class="quick-question-btn"
+                                        data-question="Kính mắt phong thủy có tác dụng gì?">Phong
+                                        thủy</button>
+                                    <button class="quick-question-btn"
+                                        data-question="Giá kính mắt khoảng bao nhiêu?">Giá
                                         cả</button>
-                                    <button class="hana-ai-quick-btn" data-question="Cách bảo quản kính mắt">Bảo
+                                    <button class="quick-question-btn" data-question="Cách bảo quản kính mắt">Bảo
                                         quản</button>
-                                    <button class="hana-ai-quick-btn" data-question="Địa chỉ cửa hàng ở đâu?">Địa
+                                    <button class="quick-question-btn" data-question="Địa chỉ cửa hàng ở đâu?">Địa
                                         chỉ</button>
-                                    <button class="hana-ai-quick-btn"
+                                    <button class="quick-question-btn"
                                         data-question="Hotline liên hệ là gì?">Hotline</button>
-                                    <button class="hana-ai-quick-btn" data-question="Có những loại kính nào?">Sản
+                                    <button class="quick-question-btn" data-question="Có những loại kính nào?">Sản
                                         phẩm</button>
+                                    <button class="quick-question-btn" data-question="Tìm kính nam thời trang">Kính
+                                        nam</button>
+                                    <button class="quick-question-btn" data-question="Kính nữ đẹp có gì?">Kính
+                                        nữ</button>
+                                    <button class="quick-question-btn" data-question="Kính cận giá rẻ dưới 500k">Kính
+                                        cận rẻ</button>
+                                    <button class="quick-question-btn"
+                                        data-question="Kính râm thương hiệu nào tốt?">Kính râm</button>
+                                    <button class="quick-question-btn" data-question="Phụ kiện kính mắt có gì?">Phụ
+                                        kiện</button>
                                 </div>
                             </div>
                         </div>
@@ -104,10 +133,10 @@
                 </div>
 
                 <!-- Input -->
-                <div class="hana-ai-input-area">
-                    <input class="hana-ai-input" type="text" id="ai-chat-input"
+                <div class="ai-chat-input-area">
+                    <input class="ai-chat-input" type="text" id="ai-chat-input"
                         placeholder="Nhập câu hỏi về kính mắt..." autocomplete="off">
-                    <button class="hana-ai-send-btn" id="ai-chat-send-btn">
+                    <button class="ai-chat-send-btn" id="ai-chat-send-btn">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </div>
@@ -117,348 +146,452 @@
 
     <style>
         /* AI Chat Component - Scoped Styles */
-        #hana-ai-chat-component {
-            /* AI Chat Toggle Button */
-            --hana-ai-primary: #232323;
-            --hana-ai-secondary: #f9fafb;
-            --hana-ai-text: #333;
-            --hana-ai-text-light: #666;
-            --hana-ai-border: #e5e7eb;
-            --hana-ai-shadow: rgba(0, 0, 0, 0.15);
-            --hana-ai-white: #fff;
-            --hana-ai-bg-light: #fafafa;
+        .hana-ai-chat-component {
+
+            /* Toggle Button */
+            .ai-chat-toggle-btn {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                z-index: 10000;
+            }
+
+            .ai-toggle-button {
+                width: 60px;
+                height: 60px;
+                background: #232323;
+                color: #fff;
+                border: none;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                position: relative;
+                animation: hanaPulse 2s infinite;
+                transition: all 0.3s ease;
+            }
+
+            .ai-toggle-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .ai-toggle-button i {
+                font-size: 1.5rem;
+            }
+
+            .ai-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                width: 20px;
+                height: 20px;
+                background: #232323;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                color: white;
+                font-weight: bold;
+                animation: hanaBounce 1s infinite;
+            }
+
+            /* Tooltip */
+            .ai-chat-tooltip {
+                display: none;
+                position: absolute;
+                left: 70px;
+                bottom: 0;
+                background: #fff;
+                color: #333;
+                border: 1px solid #e5e7eb;
+                padding: 12px 20px;
+                border-radius: 12px;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                white-space: normal;
+                z-index: 10001;
+                min-width: 250px;
+                max-width: 300px;
+                word-wrap: break-word;
+            }
+
+            .tooltip-title {
+                font-weight: 600;
+                margin-bottom: 6px;
+                line-height: 1.3;
+            }
+
+            .tooltip-subtitle {
+                font-size: 12px;
+                color: #666;
+                line-height: 1.4;
+            }
+
+            /* Chat Container */
+            .ai-chat-container {
+                position: fixed;
+                bottom: 100px;
+                left: 20px;
+                z-index: 9999;
+                width: 380px;
+                max-width: 90vw;
+                display: none;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+                background: #fff;
+                border: 1px solid #e5e7eb;
+                transition: all 0.3s ease;
+            }
+
+            .ai-chat-wrapper {
+                display: flex;
+                flex-direction: column;
+                height: 500px;
+            }
+
+            /* Header */
+            .ai-chat-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem;
+                background: #232323;
+                border-radius: 12px 12px 0 0;
+            }
+
+            .ai-chat-header-left {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .ai-chat-avatar {
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .ai-chat-info h6 {
+                font-weight: bold;
+                color: white;
+                font-size: 16px;
+                margin: 0;
+            }
+
+            .ai-chat-info p {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 12px;
+                margin: 0;
+            }
+
+            .ai-chat-info small {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 10px;
+            }
+
+            .ai-chat-status {
+                margin-top: 4px;
+            }
+
+            .status-indicator {
+                font-size: 10px;
+                color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .status-indicator i {
+                font-size: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .status-indicator.connected i {
+                color: #4ade80;
+                animation: hanaPulse 2s infinite;
+            }
+
+            .status-indicator.cached i {
+                color: #fbbf24;
+            }
+
+            .status-indicator.error i {
+                color: #f87171;
+                animation: hanaShake 0.5s infinite;
+            }
+
+            .ai-chat-actions {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .ai-chat-btn {
+                width: 32px;
+                height: 32px;
+                background: rgba(255, 255, 255, 0.9);
+                border: none;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .ai-chat-btn:hover {
+                background: white;
+                transform: scale(1.1);
+            }
+
+            /* Messages */
+            .ai-chat-messages {
+                flex-grow: 1;
+                padding: 1rem;
+                overflow-y: auto;
+                background: #fafafa;
+                scrollbar-width: thin;
+                scrollbar-color: #c1c1c1 #f1f1f1;
+            }
+
+            .ai-chat-messages::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .ai-chat-messages::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+
+            .ai-chat-messages::-webkit-scrollbar-thumb {
+                background: #c1c1c1;
+                border-radius: 3px;
+            }
+
+            .ai-chat-messages::-webkit-scrollbar-thumb:hover {
+                background: #a8a8a8;
+            }
+
+            /* Input */
+            .ai-chat-input-area {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 1rem;
+                background: #fff;
+                border-radius: 0 0 12px 12px;
+                border-top: 1px solid #e5e7eb;
+            }
+
+            .ai-chat-input {
+                flex-grow: 1;
+                border: none;
+                border-radius: 25px;
+                padding: 0.75rem 1rem;
+                font-size: 14px;
+                background: #f9fafb;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+            }
+
+            .ai-chat-input:focus {
+                outline: none;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                background: white;
+            }
+
+            .ai-chat-send-btn {
+                width: 40px;
+                height: 40px;
+                border: none;
+                border-radius: 50%;
+                background: #f9fafb;
+                color: #232323;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .ai-chat-send-btn:hover {
+                background: #232323;
+                color: white;
+                transform: scale(1.1);
+            }
+
+            /* Quick Questions */
+            .quick-question-btn {
+                background: #232323;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 15px;
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .quick-question-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                background: #000;
+            }
+
+            /* Product Suggestions - CHỈ TRONG KHUNG CHAT */
+            .ai-chat-messages .product-suggestions {
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid #e5e7eb;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .ai-chat-messages .product-suggestions-title {
+                font-size: 12px;
+                color: #666;
+                margin-bottom: 8px;
+                font-weight: 600;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .ai-chat-messages .product-suggestions-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 8px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .ai-chat-messages .product-item {
+                background: #232323;
+                border-radius: 8px;
+                padding: 10px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: 1px solid #e5e7eb;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .ai-chat-messages .product-item:hover {
+                background: #333;
+                transform: translateX(2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .ai-chat-messages .product-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+                margin-right: 10px;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .ai-chat-messages .product-image {
+                width: 40px;
+                height: 40px;
+                border-radius: 6px;
+                overflow: hidden;
+                background: #f5f5f5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .ai-chat-messages .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .ai-chat-messages .product-image i {
+                color: #999;
+                font-size: 16px;
+            }
+
+            .ai-chat-messages .product-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .ai-chat-messages .product-name {
+                font-size: 13px;
+                color: #ffffff;
+                font-weight: 500;
+                margin-bottom: 0;
+                line-height: 1.3;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
+            }
+
+            .ai-chat-messages .product-category {
+                font-size: 11px;
+                color: #ccc;
+                font-weight: 400;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
+            }
+
+            .ai-chat-messages .product-price {
+                font-size: 12px;
+                color: #ffffff;
+                font-weight: 600;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+                flex-shrink: 0;
+                text-align: right;
+                white-space: nowrap;
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Typing Indicator */
+            .ai-typing {
+                display: inline-block;
+                padding: 12px 16px;
+                border-radius: 18px;
+                background: #fff;
+                color: #333;
+                font-size: 14px;
+                border: 1px solid #e5e7eb;
+            }
+
+            .ai-typing::after {
+                content: '';
+                display: inline-block;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: #232323;
+                margin-left: 4px;
+                animation: hanaTyping 1s infinite;
+            }
         }
 
-        #hana-ai-chat-component .hana-ai-toggle-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 10000;
-        }
-
-        #hana-ai-chat-component .hana-ai-toggle-button {
-            width: 60px;
-            height: 60px;
-            background: var(--hana-ai-primary);
-            color: var(--hana-ai-white);
-            border: none;
-            box-shadow: 0 4px 20px var(--hana-ai-shadow);
-            position: relative;
-            animation: hanaAiPulse 2s infinite;
-            transition: all 0.3s ease;
-        }
-
-        #hana-ai-chat-component .hana-ai-toggle-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        #hana-ai-chat-component .hana-ai-toggle-button i {
-            font-size: 1.5rem;
-        }
-
-        #hana-ai-chat-component .hana-ai-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 20px;
-            height: 20px;
-            background: var(--hana-ai-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: var(--hana-ai-white);
-            font-weight: bold;
-            animation: hanaAiBounce 1s infinite;
-        }
-
-        /* AI Chat Tooltip */
-        #hana-ai-chat-component .hana-ai-tooltip {
-            display: none;
-            position: absolute;
-            left: 70px;
-            bottom: 0;
-            background: var(--hana-ai-white);
-            color: var(--hana-ai-text);
-            border: 1px solid var(--hana-ai-border);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            white-space: nowrap;
-            z-index: 10001;
-            max-width: 200px;
-        }
-
-        #hana-ai-chat-component .hana-ai-tooltip-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        #hana-ai-chat-component .hana-ai-tooltip-subtitle {
-            font-size: 12px;
-            color: var(--hana-ai-text-light);
-        }
-
-        /* AI Chat Container */
-        #hana-ai-chat-component .hana-ai-container {
-            position: fixed;
-            bottom: 100px;
-            left: 20px;
-            z-index: 9999;
-            width: 380px;
-            max-width: 90vw;
-            display: none;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            background: var(--hana-ai-white);
-            border: 1px solid var(--hana-ai-border);
-            transition: all 0.3s ease;
-        }
-
-        #hana-ai-chat-component .hana-ai-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 500px;
-        }
-
-        /* AI Chat Header */
-        #hana-ai-chat-component .hana-ai-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background: var(--hana-ai-primary);
-            border-radius: 12px 12px 0 0;
-        }
-
-        #hana-ai-chat-component .hana-ai-header-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        #hana-ai-chat-component .hana-ai-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #hana-ai-chat-component .hana-ai-info h6 {
-            font-weight: bold;
-            color: var(--hana-ai-white);
-            font-size: 16px;
-            margin: 0;
-        }
-
-        #hana-ai-chat-component .hana-ai-info p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            margin: 0;
-        }
-
-        #hana-ai-chat-component .hana-ai-info small {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 10px;
-        }
-
-        #hana-ai-chat-component .hana-ai-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        #hana-ai-chat-component .hana-ai-btn {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        #hana-ai-chat-component .hana-ai-btn:hover {
-            background: var(--hana-ai-white);
-            transform: scale(1.1);
-        }
-
-        /* AI Chat Messages */
-        #hana-ai-chat-component .hana-ai-messages {
-            flex-grow: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            background: var(--hana-ai-bg-light);
-            scrollbar-width: thin;
-            scrollbar-color: #c1c1c1 #f1f1f1;
-        }
-
-        #hana-ai-chat-component .hana-ai-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #hana-ai-chat-component .hana-ai-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-
-        #hana-ai-chat-component .hana-ai-messages::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-
-        #hana-ai-chat-component .hana-ai-messages::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
-        /* AI Chat Input */
-        #hana-ai-chat-component .hana-ai-input-area {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: var(--hana-ai-white);
-            border-radius: 0 0 12px 12px;
-            border-top: 1px solid var(--hana-ai-border);
-        }
-
-        #hana-ai-chat-component .hana-ai-input {
-            flex-grow: 1;
-            border: none;
-            border-radius: 25px;
-            padding: 0.75rem 1rem;
-            font-size: 14px;
-            background: var(--hana-ai-secondary);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        #hana-ai-chat-component .hana-ai-input:focus {
-            outline: none;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-            background: var(--hana-ai-white);
-        }
-
-        #hana-ai-chat-component .hana-ai-send-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 50%;
-            background: var(--hana-ai-secondary);
-            color: var(--hana-ai-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        #hana-ai-chat-component .hana-ai-send-btn:hover {
-            background: var(--hana-ai-primary);
-            color: var(--hana-ai-white);
-            transform: scale(1.1);
-        }
-
-        /* Quick Questions */
-        #hana-ai-chat-component .hana-ai-quick-btn {
-            background: var(--hana-ai-primary);
-            color: var(--hana-ai-white);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        #hana-ai-chat-component .hana-ai-quick-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background: #000;
-        }
-
-        /* Product Suggestions */
-        #hana-ai-chat-component .hana-ai-product-suggestions {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--hana-ai-border);
-        }
-
-        #hana-ai-chat-component .hana-ai-product-title {
-            font-size: 12px;
-            color: var(--hana-ai-text-light);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        #hana-ai-chat-component .hana-ai-product-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        #hana-ai-chat-component .hana-ai-product-card {
-            background: #f8f9fa;
-            border: 1px solid var(--hana-ai-border);
-            border-radius: 8px;
-            padding: 8px;
-            min-width: 120px;
-            max-width: 150px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        #hana-ai-chat-component .hana-ai-product-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        #hana-ai-chat-component .hana-ai-product-image {
-            width: 100%;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-bottom: 4px;
-        }
-
-        #hana-ai-chat-component .hana-ai-product-name {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--hana-ai-text);
-            margin-bottom: 2px;
-            line-height: 1.2;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        #hana-ai-chat-component .hana-ai-product-category {
-            font-size: 10px;
-            color: var(--hana-ai-text-light);
-            margin-bottom: 2px;
-        }
-
-        #hana-ai-chat-component .hana-ai-product-price {
-            font-size: 11px;
-            color: var(--hana-ai-primary);
-            font-weight: 600;
-        }
-
-        /* Animations */
-        #hana-ai-chat-component .hana-ai-shake {
-            animation: hanaAiShake 0.5s infinite;
-        }
-
-        @keyframes hanaAiShake {
+        /* Hana AI Chat Animations */
+        @keyframes hanaShake {
             0% {
                 transform: translateX(0);
             }
@@ -480,7 +613,7 @@
             }
         }
 
-        @keyframes hanaAiPulse {
+        @keyframes hanaPulse {
             0% {
                 transform: scale(1);
             }
@@ -494,7 +627,7 @@
             }
         }
 
-        @keyframes hanaAiBounce {
+        @keyframes hanaBounce {
 
             0%,
             20%,
@@ -513,28 +646,7 @@
             }
         }
 
-        #hana-ai-chat-component .hana-ai-typing {
-            display: inline-block;
-            padding: 12px 16px;
-            border-radius: 18px;
-            background: var(--hana-ai-white);
-            color: var(--hana-ai-text);
-            font-size: 14px;
-            border: 1px solid var(--hana-ai-border);
-        }
-
-        #hana-ai-chat-component .hana-ai-typing::after {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--hana-ai-primary);
-            margin-left: 4px;
-            animation: hanaAiTyping 1s infinite;
-        }
-
-        @keyframes hanaAiTyping {
+        @keyframes hanaTyping {
 
             0%,
             60%,
@@ -547,29 +659,53 @@
             }
         }
 
+        @keyframes hanaSlideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes hanaSlideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
-            #hana-ai-chat-component .hana-ai-toggle-btn {
+            .hana-ai-chat-component .ai-chat-toggle-btn {
                 bottom: 15px;
                 left: 15px;
             }
 
-            #hana-ai-chat-component .hana-ai-toggle-button {
+            .hana-ai-chat-component .ai-toggle-button {
                 width: 55px;
                 height: 55px;
             }
 
-            #hana-ai-chat-component .hana-ai-toggle-button i {
+            .hana-ai-chat-component .ai-toggle-button i {
                 font-size: 1.3rem;
             }
 
-            #hana-ai-chat-component .hana-ai-badge {
+            .hana-ai-chat-component .ai-badge {
                 width: 18px;
                 height: 18px;
                 font-size: 9px;
             }
 
-            #hana-ai-chat-component .hana-ai-container {
+            .hana-ai-chat-component .ai-chat-container {
                 bottom: 80px;
                 left: 15px;
                 right: 15px;
@@ -577,259 +713,212 @@
                 max-width: none;
             }
 
-            #hana-ai-chat-component .hana-ai-wrapper {
+            .hana-ai-chat-component .ai-chat-wrapper {
                 height: 450px;
             }
 
-            #hana-ai-chat-component .hana-ai-tooltip {
+            .hana-ai-chat-component .ai-chat-tooltip {
                 left: 60px;
-                max-width: 180px;
+                min-width: 200px;
+                max-width: 250px;
                 font-size: 13px;
-            }
-
-            #hana-ai-chat-component .hana-ai-tooltip-title {
-                font-size: 13px;
-            }
-
-            #hana-ai-chat-component .hana-ai-tooltip-subtitle {
-                font-size: 11px;
             }
         }
 
         @media (max-width: 480px) {
-            #hana-ai-chat-component .hana-ai-toggle-btn {
+            .hana-ai-chat-component .ai-chat-toggle-btn {
                 bottom: 10px;
                 left: 10px;
             }
 
-            #hana-ai-chat-component .hana-ai-toggle-button {
+            .hana-ai-chat-component .ai-toggle-button {
                 width: 50px;
                 height: 50px;
             }
 
-            #hana-ai-chat-component .hana-ai-toggle-button i {
+            .hana-ai-chat-component .ai-toggle-button i {
                 font-size: 1.2rem;
             }
 
-            #hana-ai-chat-component .hana-ai-badge {
+            .hana-ai-chat-component .ai-badge {
                 width: 16px;
                 height: 16px;
                 font-size: 8px;
             }
 
-            #hana-ai-chat-component .hana-ai-container {
+            .hana-ai-chat-component .ai-chat-container {
                 bottom: 70px;
                 left: 10px;
                 right: 10px;
             }
 
-            #hana-ai-chat-component .hana-ai-wrapper {
+            .hana-ai-chat-component .ai-chat-wrapper {
                 height: 400px;
             }
 
-            #hana-ai-chat-component .hana-ai-header {
+            .hana-ai-chat-component .ai-chat-header {
                 padding: 0.75rem;
             }
 
-            #hana-ai-chat-component .hana-ai-avatar {
+            .hana-ai-chat-component .ai-chat-avatar {
                 width: 35px;
                 height: 35px;
             }
 
-            #hana-ai-chat-component .hana-ai-info h6 {
+            .hana-ai-chat-component .ai-chat-info h6 {
                 font-size: 14px;
             }
 
-            #hana-ai-chat-component .hana-ai-info p {
+            .hana-ai-chat-component .ai-chat-info p {
                 font-size: 11px;
             }
 
-            #hana-ai-chat-component .hana-ai-info small {
+            .hana-ai-chat-component .ai-chat-info small {
                 font-size: 9px;
             }
 
-            #hana-ai-chat-component .hana-ai-messages {
+            .hana-ai-chat-component .ai-chat-messages {
                 padding: 0.75rem;
             }
 
-            #hana-ai-chat-component .hana-ai-input-area {
+            .hana-ai-chat-component .ai-chat-input-area {
                 padding: 0.75rem;
             }
 
-            #hana-ai-chat-component .hana-ai-input {
+            .hana-ai-chat-component .ai-chat-input {
                 padding: 0.5rem 0.75rem;
                 font-size: 13px;
             }
 
-            #hana-ai-chat-component .hana-ai-send-btn {
+            .hana-ai-chat-component .ai-chat-send-btn {
                 width: 35px;
                 height: 35px;
             }
 
-            #hana-ai-chat-component .hana-ai-quick-btn {
+            .hana-ai-chat-component .quick-question-btn {
                 padding: 5px 10px;
                 font-size: 10px;
             }
 
-            #hana-ai-chat-component .hana-ai-product-card {
-                min-width: 100px;
-                max-width: 120px;
-                padding: 6px;
-            }
-
-            #hana-ai-chat-component .hana-ai-product-image {
-                height: 50px;
-            }
-
-            #hana-ai-chat-component .hana-ai-product-name {
-                font-size: 10px;
-            }
-
-            #hana-ai-chat-component .hana-ai-product-category {
-                font-size: 9px;
-            }
-
-            #hana-ai-chat-component .hana-ai-product-price {
-                font-size: 10px;
-            }
-
-            #hana-ai-chat-component .hana-ai-tooltip {
+            .hana-ai-chat-component .ai-chat-tooltip {
                 left: 55px;
-                max-width: 160px;
+                min-width: 180px;
+                max-width: 220px;
                 font-size: 12px;
-                padding: 6px 12px;
+                padding: 8px 16px;
             }
         }
 
         @media (max-width: 360px) {
-            #hana-ai-chat-component .hana-ai-container {
+            .hana-ai-chat-component .ai-chat-container {
                 bottom: 60px;
                 left: 5px;
                 right: 5px;
             }
 
-            #hana-ai-chat-component .hana-ai-wrapper {
+            .hana-ai-chat-component .ai-chat-wrapper {
                 height: 350px;
             }
 
-            #hana-ai-chat-component .hana-ai-header {
+            .hana-ai-chat-component .ai-chat-header {
                 padding: 0.5rem;
             }
 
-            #hana-ai-chat-component .hana-ai-avatar {
+            .hana-ai-chat-component .ai-chat-avatar {
                 width: 30px;
                 height: 30px;
             }
 
-            #hana-ai-chat-component .hana-ai-info h6 {
+            .hana-ai-chat-component .ai-chat-info h6 {
                 font-size: 13px;
             }
 
-            #hana-ai-chat-component .hana-ai-info p {
+            .hana-ai-chat-component .ai-chat-info p {
                 font-size: 10px;
             }
 
-            #hana-ai-chat-component .hana-ai-messages {
+            .hana-ai-chat-component .ai-chat-messages {
                 padding: 0.5rem;
             }
 
-            #hana-ai-chat-component .hana-ai-input-area {
+            .hana-ai-chat-component .ai-chat-input-area {
                 padding: 0.5rem;
-            }
-
-            #hana-ai-chat-component .hana-ai-product-card {
-                min-width: 90px;
-                max-width: 110px;
             }
         }
 
         /* Landscape orientation for mobile */
         @media (max-height: 500px) and (orientation: landscape) {
-            #hana-ai-chat-component .hana-ai-container {
+            .hana-ai-chat-component .ai-chat-container {
                 bottom: 10px;
                 top: 10px;
                 height: calc(100vh - 20px);
             }
 
-            #hana-ai-chat-component .hana-ai-wrapper {
+            .hana-ai-chat-component .ai-chat-wrapper {
                 height: 100%;
-            }
-        }
-
-        /* High DPI displays */
-        @media (-webkit-min-device-pixel-ratio: 2),
-        (min-resolution: 192dpi) {
-            #hana-ai-chat-component .hana-ai-toggle-button {
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-
-            #hana-ai-chat-component .hana-ai-container {
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             }
         }
 
         /* Dark mode support */
         @media (prefers-color-scheme: dark) {
-            #hana-ai-chat-component {
-                --hana-ai-primary: #232323;
-                --hana-ai-secondary: #2a2a2a;
-                --hana-ai-text: #fff;
-                --hana-ai-text-light: #ccc;
-                --hana-ai-border: #333;
-                --hana-ai-shadow: rgba(0, 0, 0, 0.3);
-                --hana-ai-white: #1a1a1a;
-                --hana-ai-bg-light: #0f0f0f;
+            .hana-ai-chat-component .ai-chat-container {
+                background: #1a1a1a;
+                border-color: #333;
             }
 
-            #hana-ai-chat-component .hana-ai-container {
-                background: var(--hana-ai-white);
-                border-color: var(--hana-ai-border);
+            .hana-ai-chat-component .ai-chat-messages {
+                background: #0f0f0f;
             }
 
-            #hana-ai-chat-component .hana-ai-messages {
-                background: var(--hana-ai-bg-light);
+            .hana-ai-chat-component .ai-chat-input {
+                background: #2a2a2a;
+                color: #fff;
             }
 
-            #hana-ai-chat-component .hana-ai-input {
-                background: var(--hana-ai-secondary);
-                color: var(--hana-ai-text);
-            }
-
-            #hana-ai-chat-component .hana-ai-input:focus {
+            .hana-ai-chat-component .ai-chat-input:focus {
                 background: #333;
             }
 
-            #hana-ai-chat-component .hana-ai-send-btn {
-                background: var(--hana-ai-secondary);
-                color: var(--hana-ai-text);
+            .hana-ai-chat-component .ai-chat-send-btn {
+                background: #2a2a2a;
+                color: #fff;
             }
 
-            #hana-ai-chat-component .hana-ai-product-card {
-                background: var(--hana-ai-secondary);
-                border-color: var(--hana-ai-border);
+            .hana-ai-chat-component .ai-chat-tooltip {
+                background: #1a1a1a;
+                border-color: #333;
+                color: #fff;
             }
 
-            #hana-ai-chat-component .hana-ai-product-name {
-                color: var(--hana-ai-text);
-            }
-
-            #hana-ai-chat-component .hana-ai-product-category {
-                color: var(--hana-ai-text-light);
-            }
-
-            #hana-ai-chat-component .hana-ai-tooltip {
-                background: var(--hana-ai-white);
-                border-color: var(--hana-ai-border);
-                color: var(--hana-ai-text);
-            }
-
-            #hana-ai-chat-component .hana-ai-tooltip-subtitle {
-                color: var(--hana-ai-text-light);
+            .hana-ai-chat-component .tooltip-subtitle {
+                color: #ccc;
             }
         }
     </style>
 
     <script>
+        // Load chat history từ localStorage
+        function loadChatHistory() {
+            const history = localStorage.getItem('ai_chat_history');
+            if (history) {
+                try {
+                    const chatHistory = JSON.parse(history);
+                    if (chatHistory.length > 0) {
+                        chatHistory.forEach(item => {
+                            // Hiển thị tin nhắn người dùng
+                            appendAiMessage(item.user_message, true);
+
+                            // Hiển thị tin nhắn AI
+                            appendAiMessage(item.ai_response, false);
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error loading chat history:', e);
+                    localStorage.removeItem('ai_chat_history');
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const aiChatToggleBtn = document.getElementById('ai-chat-toggle-btn');
             const aiChatContainer = document.getElementById('ai-chat-container');
@@ -842,6 +931,9 @@
 
             let isAiChatOpen = false;
             let isTyping = false;
+
+            // Load chat history khi khởi tạo
+            loadChatHistory();
 
             // Hiển thị tooltip khi hover
             aiChatToggleBtn.addEventListener('mouseenter', function() {
@@ -877,6 +969,10 @@
             // Xóa lịch sử chat
             aiChatClearBtn.onclick = () => {
                 if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử chat?')) {
+                    // Xóa localStorage
+                    localStorage.removeItem('ai_chat_history');
+
+                    // Xóa server session
                     fetch('/client/ai-chat/clear', {
                             method: 'DELETE',
                             headers: {
@@ -912,6 +1008,52 @@
                 }
             };
 
+            // Reset giới hạn chat (chỉ để test)
+            const aiChatResetLimitBtn = document.getElementById('ai-chat-reset-limit-btn');
+            aiChatResetLimitBtn.onclick = () => {
+                if (confirm('Bạn có chắc muốn reset giới hạn chat? (Chỉ để test)')) {
+                    // Reset rate limit
+                    fetch('/client/ai-chat/reset-limit', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                appendAiMessage('✅ Đã reset giới hạn chat. Bạn có thể chat lại!', false);
+                                aiChatResetLimitBtn.style.display = 'none';
+                            }
+                        });
+                }
+            };
+
+            // Event delegation cho product items
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.product-item')) {
+                    const productItem = e.target.closest('.product-item');
+                    const url = productItem.dataset.productUrl;
+                    const name = productItem.dataset.productName;
+
+
+                    openProduct(url, name);
+                }
+            });
+
+            // Keyboard support cho product items
+            document.addEventListener('keydown', function(e) {
+                if (e.target.classList.contains('product-item')) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const url = e.target.dataset.productUrl;
+                        const name = e.target.dataset.productName;
+                        openProduct(url, name);
+                    }
+                }
+            });
+
             // Gửi tin nhắn
             function sendAiMessage() {
                 const message = aiChatInput.value.trim();
@@ -923,6 +1065,9 @@
 
                 // Hiển thị typing indicator
                 showTypingIndicator();
+
+                // Cập nhật status
+                updateAIStatus('connected', 'Đang xử lý...');
 
                 // Gọi API AI
                 fetch('/client/ai-chat/send', {
@@ -940,13 +1085,46 @@
                     .then(data => {
                         hideTypingIndicator();
                         if (data.success) {
-                            appendAiMessage(data.ai_response, false, data.suggested_products);
+                            // Cập nhật status dựa trên response
+                            if (data.is_fallback) {
+                                updateAIStatus('error', 'API tạm lỗi (Fallback)');
+                            } else {
+                                updateAIStatus('connected', 'Đã xử lý');
+                            }
+
+                            // Thêm thông tin về filter giá nếu có
+                            let responseMessage = data.ai_response;
+                            if (data.price_filter && data.products_count !== undefined) {
+                                responseMessage +=
+                                    `\n\nTìm thấy ${data.products_count} sản phẩm phù hợp với yêu cầu giá của bạn.`;
+                            }
+
+                            appendAiMessage(responseMessage, false, data.suggested_products);
+
+                            // Lưu chat history vào localStorage
+                            if (data.chat_history) {
+                                localStorage.setItem('ai_chat_history', JSON.stringify(data.chat_history));
+                            }
+
+                            // Track performance metrics
+                            trackPerformanceMetrics(data);
                         } else {
-                            appendAiMessage('Xin lỗi, tôi gặp sự cố. Vui lòng thử lại sau.', false);
+                            updateAIStatus('error', 'Có lỗi xảy ra');
+
+                            if (data.require_login) {
+                                appendAiMessage(
+                                    '🔐 Vui lòng đăng nhập để sử dụng AI Chat. <a href="/client/login" style="color: #007bff; text-decoration: underline;">Đăng nhập ngay</a>',
+                                    false);
+                            } else if (data.message && data.message.includes('vượt quá giới hạn')) {
+                                appendAiMessage(`⏰ ${data.message}`, false);
+                            } else {
+                                appendAiMessage('Xin lỗi, tôi gặp sự cố. Vui lòng thử lại sau.', false);
+                            }
                         }
                     })
                     .catch(error => {
                         hideTypingIndicator();
+                        updateAIStatus('error', 'Lỗi kết nối');
                         appendAiMessage('Xin lỗi, có lỗi kết nối. Vui lòng thử lại sau.', false);
                     });
             }
@@ -973,18 +1151,37 @@
                 } else {
                     let productsHtml = '';
                     if (suggestedProducts && suggestedProducts.length > 0) {
+                        // Kiểm tra xem AI có đề cập đến sản phẩm cụ thể không
+                        const hasSpecificProducts = message.includes('(') && message.includes('VNĐ');
+
+                        const title = hasSpecificProducts ?
+                            '🎯 Sản phẩm được đề cập:' :
+                            '💡 Sản phẩm gợi ý:';
+
                         productsHtml = `
-                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
-                        <div style="font-size: 12px; color: #666; margin-bottom: 8px; font-weight: 600;">🛍️ Sản phẩm gợi ý:</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                            ${suggestedProducts.map(product => `
-                                                                    <div style="background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-width: 120px; max-width: 150px; cursor: pointer;" onclick="window.open('${product.url}', '_blank')">
-                                                                        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px; margin-bottom: 4px;">` : ''}
-                                                                        <div style="font-size: 11px; font-weight: 600; color: #333; margin-bottom: 2px; line-height: 1.2;">${product.name}</div>
-                                                                        <div style="font-size: 10px; color: #666; margin-bottom: 2px;">${product.category}</div>
-                                                                        <div style="font-size: 11px; color: #232323; font-weight: 600;">${product.price}</div>
-                                                                    </div>
-                                                                `).join('')}
+                    <div class="product-suggestions" style="width: 100%; max-width: 100%; overflow: hidden;">
+                        <div class="product-suggestions-title" style="width: 100%; max-width: 100%;">${title}</div>
+                        <div class="product-suggestions-list" style="width: 100%; max-width: 100%;">
+                            ${suggestedProducts.map((product, index) => `
+                                                <div class="product-item"
+                                                     data-product-url="${product.url}"
+                                                     data-product-name="${product.name}"
+                                                     tabindex="0"
+                                                     role="button"
+                                                     title="Xem chi tiết ${product.name}"
+                                                     style="width: 100%; max-width: 100%; box-sizing: border-box;">
+                                                    <div class="product-info" style="min-width: 0; overflow: hidden;">
+                                                        <div class="product-image" style="flex-shrink: 0;">
+                                                            ${product.image ? `<img src="${product.image}" alt="${product.name}" loading="lazy">` : '<i class="fas fa-image"></i>'}
+                                                        </div>
+                                                        <div class="product-details" style="min-width: 0; overflow: hidden; flex: 1;">
+                                                            <span class="product-name" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.name}</span>
+                                                            ${product.category ? `<span class="product-category" style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.category}</span>` : ''}
+                                                        </div>
+                                                    </div>
+                                                    <span class="product-price" style="flex-shrink: 0; white-space: nowrap; max-width: 80px; overflow: hidden; text-overflow: ellipsis;">${product.price}</span>
+                                                </div>
+                                            `).join('')}
                         </div>
                     </div>
                 `;
@@ -1023,7 +1220,7 @@
                     <i class="fas fa-robot text-white" style="font-size: 14px;"></i>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <span class="hana-ai-typing">Hana AI đang trả lời...</span>
+                    <span class="ai-typing">Hana AI đang trả lời...</span>
                 </div>
             </div>
         `;
@@ -1038,6 +1235,63 @@
                 if (typingIndicator) {
                     typingIndicator.remove();
                 }
+            }
+
+            // Function để mở sản phẩm
+            function openProduct(url, productName) {
+                try {
+
+
+                    if (url && url !== '#' && url !== 'undefined') {
+                        // Thêm tracking cho analytics
+
+
+                        // Mở sản phẩm trong tab mới
+                        const newWindow = window.open(url, '_blank');
+
+                        if (newWindow) {
+                            // Hiển thị thông báo nhỏ
+                            showProductNotification(productName);
+                        } else {
+                            // Nếu popup bị block, thử mở trong tab hiện tại
+                            window.location.href = url;
+                        }
+                    } else {
+
+                        alert('Không thể mở sản phẩm này. Vui lòng thử lại sau.');
+                    }
+                } catch (error) {
+                    console.error('Error in openProduct:', error);
+                    alert('Có lỗi xảy ra khi mở sản phẩm. Vui lòng thử lại.');
+                }
+            }
+
+            // Hiển thị thông báo khi click sản phẩm
+            function showProductNotification(productName) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #232323;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10002;
+            font-size: 14px;
+            max-width: 300px;
+            word-wrap: break-word;
+            animation: hanaSlideIn 0.3s ease;
+        `;
+                notification.textContent = `Đã mở sản phẩm: ${productName}`;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.animation = 'hanaSlideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
             }
 
             // Event listeners
@@ -1067,7 +1321,7 @@
                         }
                     })
                     .catch(error => {
-                        console.log('Không thể tải lịch sử chat');
+
                     });
             }
 
@@ -1076,12 +1330,40 @@
 
             // Quick questions functionality
             document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('hana-ai-quick-btn')) {
+                if (e.target.classList.contains('quick-question-btn')) {
                     const question = e.target.getAttribute('data-question');
                     aiChatInput.value = question;
                     sendAiMessage();
                 }
             });
+
+            // Helper functions
+            function updateAIStatus(status, message) {
+                const statusIndicator = document.getElementById('ai-status-indicator');
+                if (statusIndicator) {
+                    statusIndicator.className = `status-indicator ${status}`;
+                    statusIndicator.innerHTML = `<i class="fas fa-circle"></i> ${message}`;
+                }
+            }
+
+            function trackPerformanceMetrics(data) {
+                // Track cache hits
+                if (data.cache_hit) {
+                    updateAIStatus('cached', 'Từ cache');
+                }
+
+                // Track response time
+                const responseTime = performance.now();
+                console.log(`AI Chat Response Time: ${responseTime.toFixed(2)}ms`);
+            }
+
+            // Check AI status on load
+            function checkAIStatus() {
+                updateAIStatus('connected', 'Sẵn sàng');
+            }
+
+            // Initialize status
+            checkAIStatus();
         });
     </script>
 @endif
